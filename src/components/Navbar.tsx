@@ -61,12 +61,12 @@ const Navbar = () => {
             <div className="flex flex-col px-6 py-4 gap-4">
               {links.map((l) => (
                 <a
-                  key={l}
-                  href={`#${l.toLowerCase()}`}
+                  key={l.label}
+                  href={l.href}
                   onClick={() => setOpen(false)}
                   className="text-xs tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors font-body font-light"
                 >
-                  {l}
+                  {l.label}
                 </a>
               ))}
               <a
