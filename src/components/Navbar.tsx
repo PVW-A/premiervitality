@@ -28,9 +28,9 @@ const Navbar = () => {
           ))}
         </div>
         <div className="hidden md:flex items-center gap-5">
-          <button className="text-muted-foreground hover:text-foreground transition-colors">
+          <a href="/auth" className="text-muted-foreground hover:text-foreground transition-colors">
             <User size={18} strokeWidth={1.2} />
-          </button>
+          </a>
           <button className="text-muted-foreground hover:text-foreground transition-colors">
             <ShoppingCart size={18} strokeWidth={1.2} />
           </button>
