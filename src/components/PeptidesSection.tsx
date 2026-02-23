@@ -36,13 +36,13 @@ const card = {
 const PeptidesSection = () => (
   <section id="peptides" className="py-28 px-6">
     <div className="max-w-6xl mx-auto">
-      <p className="text-sm tracking-[0.3em] uppercase text-primary text-center mb-3 font-body">
+      <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground text-center mb-3 font-body font-light">
         Our Protocols
       </p>
-      <h2 className="font-heading text-4xl md:text-5xl font-semibold text-center mb-4">
+      <h2 className="text-3xl md:text-5xl font-extralight text-center mb-4 tracking-tight">
         Featured Peptides
       </h2>
-      <p className="text-muted-foreground text-center max-w-lg mx-auto mb-16 font-body">
+      <p className="text-muted-foreground text-center max-w-lg mx-auto mb-16 font-body font-light text-sm">
         Each protocol is tailored to your unique biology and wellness goals.
       </p>
       <div className="grid md:grid-cols-2 gap-6">
@@ -56,9 +56,9 @@ const PeptidesSection = () => (
             custom={i}
             className="bg-card border border-border rounded-lg p-8 hover:border-primary/30 transition-colors duration-300 group"
           >
-            <p.icon className="w-8 h-8 text-primary mb-5 group-hover:scale-110 transition-transform duration-300" />
-            <h3 className="font-heading text-2xl font-semibold mb-3">{p.title}</h3>
-            <p className="text-muted-foreground font-body leading-relaxed">{p.desc}</p>
+            <p.icon className="w-6 h-6 text-primary mb-5 group-hover:scale-110 transition-transform duration-300" />
+            <h3 className="text-xl font-light mb-3 tracking-tight">{p.title}</h3>
+            <p className="text-muted-foreground font-body font-light text-sm leading-relaxed">{p.desc}</p>
           </motion.div>
         ))}
       </div>

@@ -16,16 +16,16 @@ const AboutSection = () => (
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
         >
-          <p className="text-sm tracking-[0.3em] uppercase text-primary mb-3 font-body">
+          <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-3 font-body font-light">
             About Us
           </p>
-          <h2 className="font-heading text-4xl md:text-5xl font-semibold mb-6">
-            Science Meets <span className="text-primary">Vitality</span>
+          <h2 className="text-3xl md:text-5xl font-extralight mb-6 tracking-tight">
+            Science Meets Vitality
           </h2>
-          <p className="text-muted-foreground font-body leading-relaxed mb-4">
+          <p className="text-muted-foreground font-body font-light text-sm leading-relaxed mb-4">
             We are a physician-led vitality clinic specializing in peptide therapy. Our evidence-based approach combines cutting-edge research with personalized treatment plans.
           </p>
-          <p className="text-muted-foreground font-body leading-relaxed">
+          <p className="text-muted-foreground font-body font-light text-sm leading-relaxed">
             Every protocol is designed around your labs, lifestyle, and goals — because optimal health isn't one-size-fits-all.
           </p>
         </motion.div>
@@ -38,7 +38,7 @@ const AboutSection = () => (
         >
           {stats.map((s) => (
             <div key={s.label} className="text-center p-6 bg-secondary rounded-lg">
-              <p className="font-heading text-3xl font-bold text-primary mb-1">{s.value}</p>
+              <p className="text-2xl font-extralight text-foreground mb-1">{s.value}</p>
               <p className="text-xs tracking-widest uppercase text-muted-foreground font-body">
                 {s.label}
               </p>
