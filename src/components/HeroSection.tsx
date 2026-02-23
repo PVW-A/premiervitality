@@ -46,7 +46,7 @@ const HeroSection = () => (
       >
         <a
           href="#contact"
-          className="px-8 py-3 bg-primary text-primary-foreground font-medium tracking-wide uppercase text-sm rounded-sm hover:opacity-90 transition-opacity"
+          className="px-8 py-3 bg-primary text-primary-foreground font-light tracking-widest uppercase text-xs rounded-sm hover:opacity-90 transition-opacity"
         >
           Schedule Consultation
         </a>
