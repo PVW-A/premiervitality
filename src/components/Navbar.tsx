@@ -5,7 +5,12 @@ import PVMonogram from "./PVMonogram";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
-  const links = ["About", "Services", "Peptides", "Contact"];
+  const links = [
+    { label: "About", href: "#about" },
+    { label: "Services", href: "#services" },
+    { label: "Peptides", href: "/peptides" },
+    { label: "Contact", href: "#contact" },
+  ];
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
@@ -19,11 +24,11 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-10">
           {links.map((l) => (
             <a
-              key={l}
-              href={`#${l.toLowerCase()}`}
+              key={l.label}
+              href={l.href}
               className="text-xs font-body font-light tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300"
             >
-              {l}
+              {l.label}
             </a>
           ))}
         </div>
@@ -56,12 +61,12 @@ const Navbar = () => {
             <div className="flex flex-col px-6 py-4 gap-4">
               {links.map((l) => (
                 <a
-                  key={l}
-                  href={`#${l.toLowerCase()}`}
+                  key={l.label}
+                  href={l.href}
                   onClick={() => setOpen(false)}
                   className="text-xs tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors font-body font-light"
                 >
-                  {l}
+                  {l.label}
                 </a>
               ))}
               <a
