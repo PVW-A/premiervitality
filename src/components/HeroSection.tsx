@@ -18,7 +18,7 @@ const HeroSection = () => (
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="text-sm tracking-[0.3em] uppercase text-primary mb-6 font-body"
+        className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-6 font-body font-light"
       >
         Advanced Peptide Therapy
       </motion.p>
