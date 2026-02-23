@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import PVMonogram from "@/components/PVMonogram";
-import { LogOut, Pill, Package, Clock } from "lucide-react";
+import { LogOut, Pill, Package, Clock, BookOpen } from "lucide-react";
 
 interface PatientPeptide {
   id: string;
@@ -138,6 +138,14 @@ const Portal = () => {
           <p className="text-sm text-muted-foreground font-body font-light mt-1">
             Your peptide inventory and order status at a glance.
           </p>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate("/catalog")}
+            className="mt-3 text-xs tracking-wider uppercase font-body font-light rounded-none border-primary/40 text-primary hover:bg-primary/10"
+          >
+            <BookOpen size={14} className="mr-1.5" /> View Full Catalog & Pricing
+          </Button>
         </div>
 
         {/* Peptide Inventory */}
