@@ -1,12 +1,16 @@
 import { motion } from "framer-motion";
 import PVMonogram from "./PVMonogram";
+import heroBg from "@/assets/hero-bg.jpg";
 
 const HeroSection = () => (
   <section
     className="relative min-h-screen flex items-center justify-center overflow-hidden"
     id="home"
   >
-    <div className="absolute inset-0 bg-background" />
+    <div className="absolute inset-0">
+      <img src={heroBg} alt="" className="w-full h-full object-cover opacity-40" />
+      <div className="absolute inset-0 bg-background/60" />
+    </div>
     <div className="relative z-10 max-w-3xl mx-auto px-6 text-center flex flex-col items-center">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
