@@ -59,7 +59,7 @@ const HeroSection = () => (
         className="flex flex-col sm:flex-row gap-6 items-center justify-center"
       >
         <a
-          href="#peptides"
+          href="/peptides"
           className="px-10 py-3 border border-primary/30 text-xs font-body font-light tracking-[0.25em] uppercase text-foreground hover:bg-primary/5 transition-colors"
         >
           Explore Protocols
