@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import PVMonogram from "./PVMonogram";
+import heroBg from "@/assets/hero-bg.jpg";
 
 const HeroSection = () => (
   <section
