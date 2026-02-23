@@ -135,24 +135,39 @@ export type Database = {
       }
       peptides: {
         Row: {
+          administration: string | null
+          benefits: string | null
+          candidates: string | null
+          category: string | null
           created_at: string
           description: string | null
           id: string
           name: string
+          price: number | null
           unit: string | null
         }
         Insert: {
+          administration?: string | null
+          benefits?: string | null
+          candidates?: string | null
+          category?: string | null
           created_at?: string
           description?: string | null
           id?: string
           name: string
+          price?: number | null
           unit?: string | null
         }
         Update: {
+          administration?: string | null
+          benefits?: string | null
+          candidates?: string | null
+          category?: string | null
           created_at?: string
           description?: string | null
           id?: string
           name?: string
+          price?: number | null
           unit?: string | null
         }
         Relationships: []
