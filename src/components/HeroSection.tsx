@@ -34,7 +34,7 @@ const HeroSection = () => (
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.3 }}
-        className="text-lg text-muted-foreground max-w-xl mx-auto mb-10 font-body leading-relaxed"
+        className="text-base text-muted-foreground max-w-xl mx-auto mb-10 font-body font-light leading-relaxed"
       >
         Science-backed peptide protocols designed for longevity, performance, and recovery.
       </motion.p>
