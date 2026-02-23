@@ -52,7 +52,7 @@ const HeroSection = () => (
         </a>
         <a
           href="#peptides"
-          className="px-8 py-3 border border-primary/30 text-primary font-medium tracking-wide uppercase text-sm rounded-sm hover:bg-primary/10 transition-colors"
+          className="px-8 py-3 border border-border text-foreground font-light tracking-widest uppercase text-xs rounded-sm hover:bg-secondary transition-colors"
         >
           Explore Peptides
         </a>

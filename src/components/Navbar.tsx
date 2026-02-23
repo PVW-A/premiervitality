@@ -9,8 +9,8 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
-        <a href="#" className="font-heading text-xl font-semibold tracking-wide text-primary">
-          PREMIER VITALITY
+        <a href="#" className="text-lg font-light tracking-[0.2em] uppercase text-foreground">
+          Premier Vitality
         </a>
         <div className="hidden md:flex items-center gap-8">
           {links.map((l) => (

@@ -56,9 +56,9 @@ const PeptidesSection = () => (
             custom={i}
             className="bg-card border border-border rounded-lg p-8 hover:border-primary/30 transition-colors duration-300 group"
           >
-            <p.icon className="w-8 h-8 text-primary mb-5 group-hover:scale-110 transition-transform duration-300" />
-            <h3 className="font-heading text-2xl font-semibold mb-3">{p.title}</h3>
-            <p className="text-muted-foreground font-body leading-relaxed">{p.desc}</p>
+            <p.icon className="w-6 h-6 text-primary mb-5 group-hover:scale-110 transition-transform duration-300" />
+            <h3 className="text-xl font-light mb-3 tracking-tight">{p.title}</h3>
+            <p className="text-muted-foreground font-body font-light text-sm leading-relaxed">{p.desc}</p>
           </motion.div>
         ))}
       </div>

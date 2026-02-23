@@ -38,7 +38,7 @@ const AboutSection = () => (
         >
           {stats.map((s) => (
             <div key={s.label} className="text-center p-6 bg-secondary rounded-lg">
-              <p className="font-heading text-3xl font-bold text-primary mb-1">{s.value}</p>
+              <p className="text-2xl font-extralight text-foreground mb-1">{s.value}</p>
               <p className="text-xs tracking-widest uppercase text-muted-foreground font-body">
                 {s.label}
               </p>
