@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Zap, Shield, HeartPulse, Brain } from "lucide-react";
+import { Zap, Shield, HeartPulse, Brain, Lock } from "lucide-react";
 
 const peptides = [
   {
@@ -62,6 +62,26 @@ const PeptidesSection = () => (
           </motion.div>
         ))}
       </div>
+
+      {/* CTA to full catalog */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.5 }}
+        className="mt-12 text-center"
+      >
+        <a
+          href="/catalog"
+          className="inline-flex items-center gap-2 px-6 py-3 text-xs font-body font-light tracking-[0.2em] uppercase border border-primary/40 text-primary hover:bg-primary/10 transition-colors"
+        >
+          <Lock size={14} strokeWidth={1.2} />
+          View Full Catalog & Pricing
+        </a>
+        <p className="text-xs text-muted-foreground font-body font-light mt-3">
+          Pricing available to registered patients only
+        </p>
+      </motion.div>
     </div>
   </section>
 );
