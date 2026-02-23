@@ -1,36 +1,48 @@
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User, ShoppingCart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import PVMonogram from "./PVMonogram";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
-  const links = ["About", "Peptides", "Services", "Contact"];
+  const links = ["About", "Services", "Peptides", "Contact"];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-      <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
-        <a href="#" className="text-lg font-light tracking-[0.2em] uppercase text-foreground">
-          Premier Vitality
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
+      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
+        <a href="#" className="flex items-center gap-3">
+          <PVMonogram className="w-8 h-8" />
+          <span className="text-xs tracking-[0.35em] uppercase text-foreground font-body font-light hidden sm:inline">
+            Premier Vitality
+          </span>
         </a>
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-10">
           {links.map((l) => (
             <a
               key={l}
               href={`#${l.toLowerCase()}`}
-              className="text-sm font-body tracking-widest uppercase text-muted-foreground hover:text-primary transition-colors duration-300"
+              className="text-xs font-body font-light tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300"
             >
               {l}
             </a>
           ))}
+        </div>
+        <div className="hidden md:flex items-center gap-5">
+          <button className="text-muted-foreground hover:text-foreground transition-colors">
+            <User size={18} strokeWidth={1.2} />
+          </button>
+          <button className="text-muted-foreground hover:text-foreground transition-colors">
+            <ShoppingCart size={18} strokeWidth={1.2} />
+          </button>
           <a
             href="#contact"
-            className="ml-4 px-5 py-2 text-sm font-medium tracking-wide uppercase bg-primary text-primary-foreground rounded-sm hover:opacity-90 transition-opacity"
+            className="ml-2 px-5 py-2 text-xs font-body font-light tracking-[0.2em] uppercase border border-primary/40 text-primary hover:bg-primary/10 transition-colors rounded-none"
           >
-            Book Now
+            Order
           </a>
         </div>
         <button className="md:hidden text-foreground" onClick={() => setOpen(!open)}>
-          {open ? <X size={24} /> : <Menu size={24} />}
+          {open ? <X size={22} strokeWidth={1.2} /> : <Menu size={22} strokeWidth={1.2} />}
         </button>
       </div>
       <AnimatePresence>
@@ -47,7 +59,7 @@ const Navbar = () => {
                   key={l}
                   href={`#${l.toLowerCase()}`}
                   onClick={() => setOpen(false)}
-                  className="text-sm tracking-widest uppercase text-muted-foreground hover:text-primary transition-colors"
+                  className="text-xs tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors font-body font-light"
                 >
                   {l}
                 </a>
@@ -55,9 +67,9 @@ const Navbar = () => {
               <a
                 href="#contact"
                 onClick={() => setOpen(false)}
-                className="px-5 py-2 text-sm font-medium tracking-wide uppercase bg-primary text-primary-foreground rounded-sm text-center"
+                className="px-5 py-2 text-xs font-body font-light tracking-[0.2em] uppercase border border-primary/40 text-primary text-center"
               >
-                Book Now
+                Order
               </a>
             </div>
           </motion.div>
