@@ -5,7 +5,12 @@ import PVMonogram from "./PVMonogram";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
-  const links = ["About", "Services", "Peptides", "Contact"];
+  const links = [
+    { label: "About", href: "#about" },
+    { label: "Services", href: "#services" },
+    { label: "Peptides", href: "/peptides" },
+    { label: "Contact", href: "#contact" },
+  ];
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
