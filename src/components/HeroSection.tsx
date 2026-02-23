@@ -29,13 +29,6 @@ const HeroSection = () => (
         Premier Vitality
       </motion.h1>
 
-      {/* Gold divider */}
-      <motion.div
-        initial={{ scaleX: 0 }}
-        animate={{ scaleX: 1 }}
-        transition={{ duration: 0.8, delay: 0.4 }}
-        className="w-24 h-px bg-primary mb-8"
-      />
 
       <motion.p
         initial={{ opacity: 0 }}
