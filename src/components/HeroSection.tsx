@@ -26,9 +26,9 @@ const HeroSection = () => (
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.15 }}
-        className="font-heading text-5xl md:text-7xl font-semibold leading-tight mb-6"
+        className="text-4xl md:text-6xl font-extralight leading-tight mb-6 tracking-tight"
       >
-        Unlock Your Body's <span className="text-primary">Full Potential</span>
+        Unlock Your Body's Full Potential
       </motion.h1>
       <motion.p
         initial={{ opacity: 0, y: 30 }}
