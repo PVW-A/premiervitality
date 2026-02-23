@@ -22,10 +22,10 @@ const AboutSection = () => (
           <h2 className="text-3xl md:text-5xl font-extralight mb-6 tracking-tight">
             Science Meets Vitality
           </h2>
-          <p className="text-muted-foreground font-body leading-relaxed mb-4">
+          <p className="text-muted-foreground font-body font-light text-sm leading-relaxed mb-4">
             We are a physician-led vitality clinic specializing in peptide therapy. Our evidence-based approach combines cutting-edge research with personalized treatment plans.
           </p>
-          <p className="text-muted-foreground font-body leading-relaxed">
+          <p className="text-muted-foreground font-body font-light text-sm leading-relaxed">
             Every protocol is designed around your labs, lifestyle, and goals — because optimal health isn't one-size-fits-all.
           </p>
         </motion.div>
