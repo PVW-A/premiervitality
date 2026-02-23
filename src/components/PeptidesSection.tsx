@@ -36,13 +36,13 @@ const card = {
 const PeptidesSection = () => (
   <section id="peptides" className="py-28 px-6">
     <div className="max-w-6xl mx-auto">
-      <p className="text-sm tracking-[0.3em] uppercase text-primary text-center mb-3 font-body">
+      <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground text-center mb-3 font-body font-light">
         Our Protocols
       </p>
-      <h2 className="font-heading text-4xl md:text-5xl font-semibold text-center mb-4">
+      <h2 className="text-3xl md:text-5xl font-extralight text-center mb-4 tracking-tight">
         Featured Peptides
       </h2>
-      <p className="text-muted-foreground text-center max-w-lg mx-auto mb-16 font-body">
+      <p className="text-muted-foreground text-center max-w-lg mx-auto mb-16 font-body font-light text-sm">
         Each protocol is tailored to your unique biology and wellness goals.
       </p>
       <div className="grid md:grid-cols-2 gap-6">
