@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Syringe, SprayCan, Pill, Droplets, Check, ShoppingCart } from "lucide-react";
+import { ChevronDown, Syringe, SprayCan, Pill, Droplets, Check, CheckCircle, Loader2 } from "lucide-react";
 import peptideVial from "@/assets/peptide-vial.png";
 import type { PeptideGroup } from "@/components/PeptideCard";
-import { openCalendly } from "@/hooks/useCalendly";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 const categoryColors: Record<string, string> = {
   "Recovery & Healing": "text-green-400/80 border-green-500/15",
@@ -32,6 +35,8 @@ interface CatalogPeptideCardProps {
   onToggle: () => void;
   selectedVariationId: string | null;
   onSelectVariation: (id: string | null) => void;
+  requestedPeptideIds: Set<string>;
+  onRequestSubmitted: (peptideId: string) => void;
 }
 
 const CatalogPeptideCard = ({
@@ -41,9 +46,35 @@ const CatalogPeptideCard = ({
   onToggle,
   selectedVariationId,
   onSelectVariation,
+  requestedPeptideIds,
+  onRequestSubmitted,
 }: CatalogPeptideCardProps) => {
+  const { user } = useAuth();
+  const [submitting, setSubmitting] = useState(false);
   const candidatesList = group.candidates?.split(", ").filter(Boolean) || [];
   const selectedVariation = group.variations.find(v => v.id === selectedVariationId);
+  const isRequested = selectedVariation ? requestedPeptideIds.has(selectedVariation.id) : false;
+
+  const handleRequest = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user || !selectedVariation) return;
+    setSubmitting(true);
+    const label = selectedVariation.name.replace(group.baseName, "").replace(/^\s*—\s*/, "").trim() || selectedVariation.name;
+    const { error } = await supabase.from("peptide_requests").insert({
+      user_id: user.id,
+      peptide_id: selectedVariation.id,
+      peptide_name: group.baseName,
+      variation_label: label,
+      price: selectedVariation.price,
+    });
+    setSubmitting(false);
+    if (error) {
+      toast.error("Failed to submit request. Please try again.");
+    } else {
+      toast.success("Peptide request submitted!");
+      onRequestSubmitted(selectedVariation.id);
+    }
+  };
 
   return (
     <motion.div
@@ -85,7 +116,6 @@ const CatalogPeptideCard = ({
             </div>
           </div>
 
-          {/* Show selected price in header when collapsed */}
           {!isExpanded && selectedVariation && selectedVariation.price != null && (
             <span className="text-lg font-heading font-light text-primary">${selectedVariation.price}</span>
           )}
@@ -119,7 +149,6 @@ const CatalogPeptideCard = ({
                       </p>
                     )}
 
-                    {/* Selectable Formulations */}
                     {group.variations.length > 0 && (
                       <div>
                         <p className="text-[10px] tracking-[0.3em] uppercase text-primary/70 font-body font-extralight mb-2.5">
@@ -129,6 +158,7 @@ const CatalogPeptideCard = ({
                           {group.variations.map(v => {
                             const label = v.name.replace(group.baseName, "").replace(/^\s*—\s*/, "").trim() || v.name;
                             const isSelected = selectedVariationId === v.id;
+                            const variationRequested = requestedPeptideIds.has(v.id);
                             return (
                               <button
                                 key={v.id}
@@ -149,6 +179,11 @@ const CatalogPeptideCard = ({
                                 </div>
                                 {v.administration && routeIcon(v.administration)}
                                 <span className="flex-1">{label}</span>
+                                {variationRequested && (
+                                  <span className="flex items-center gap-1 text-green-400 text-[10px]">
+                                    <CheckCircle size={10} /> Requested
+                                  </span>
+                                )}
                                 {v.price != null && (
                                   <span className={`font-heading transition-colors ${isSelected ? "text-primary text-sm" : "text-foreground/40"}`}>
                                     ${v.price}
@@ -161,7 +196,6 @@ const CatalogPeptideCard = ({
                       </div>
                     )}
 
-                    {/* Selected price summary */}
                     {selectedVariation && selectedVariation.price != null && (
                       <div className="flex items-center justify-between py-3 px-4 border border-primary/20 bg-primary/5">
                         <div>
@@ -195,13 +229,30 @@ const CatalogPeptideCard = ({
 
                 {/* CTA */}
                 <div className="pt-1">
-                  <button
-                    onClick={(e) => { e.stopPropagation(); openCalendly(); }}
-                    className="inline-flex items-center gap-2 px-6 py-2.5 text-[10px] font-body font-extralight tracking-[0.3em] uppercase border border-primary/30 text-primary hover:bg-primary/5 transition-all duration-300"
-                  >
-                    <ShoppingCart size={12} strokeWidth={1} />
-                    Request This Peptide
-                  </button>
+                  {selectedVariation ? (
+                    isRequested ? (
+                      <button
+                        disabled
+                        className="inline-flex items-center gap-2 px-6 py-2.5 text-[10px] font-body font-extralight tracking-[0.3em] uppercase border border-green-500/30 text-green-400 bg-green-500/5 cursor-default"
+                      >
+                        <CheckCircle size={12} strokeWidth={1} />
+                        Peptide Requested
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleRequest}
+                        disabled={submitting}
+                        className="inline-flex items-center gap-2 px-6 py-2.5 text-[10px] font-body font-extralight tracking-[0.3em] uppercase border border-primary/30 text-primary hover:bg-primary/5 transition-all duration-300 disabled:opacity-50"
+                      >
+                        {submitting ? <Loader2 size={12} strokeWidth={1} className="animate-spin" /> : <Pill size={12} strokeWidth={1} />}
+                        Request This Peptide
+                      </button>
+                    )
+                  ) : (
+                    <p className="text-[10px] text-muted-foreground/40 font-body font-extralight tracking-wide">
+                      Select a concentration above to request this peptide.
+                    </p>
+                  )}
                   <p className="text-[10px] text-muted-foreground/40 font-body font-extralight mt-2 tracking-wide">
                     Comprehensive lab work required prior to prescribing this protocol.
                   </p>

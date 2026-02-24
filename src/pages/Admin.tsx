@@ -12,8 +12,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import PVMonogram from "@/components/PVMonogram";
 import AdminOverview from "@/components/admin/AdminOverview";
-import { LogOut, Users, Pill, Package, Plus, Trash2, BarChart3 } from "lucide-react";
+import { LogOut, Users, Pill, Package, Plus, Trash2, BarChart3, ClipboardList, CheckCircle, XCircle } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
+import { Textarea } from "@/components/ui/textarea";
 
 type OrderStatus = Database["public"]["Enums"]["order_status"];
 
@@ -57,6 +58,19 @@ interface Order {
   patient_name?: string;
 }
 
+interface PeptideRequest {
+  id: string;
+  user_id: string;
+  peptide_id: string;
+  peptide_name: string;
+  variation_label: string | null;
+  price: number | null;
+  status: string;
+  deny_reason: string | null;
+  created_at: string;
+  patient_name?: string;
+}
+
 const ORDER_STATUSES: OrderStatus[] = ["pending", "processing", "shipped", "delivered", "cancelled"];
 
 const statusColor: Record<string, string> = {
@@ -75,6 +89,9 @@ const Admin = () => {
   const [peptides, setPeptides] = useState<Peptide[]>([]);
   const [patientPeptides, setPatientPeptides] = useState<PatientPeptide[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [peptideRequests, setPeptideRequests] = useState<PeptideRequest[]>([]);
+  const [denyDialogOpen, setDenyDialogOpen] = useState<string | null>(null);
+  const [denyReason, setDenyReason] = useState("");
 
   // Dialog states
   const [peptideDialogOpen, setPeptideDialogOpen] = useState(false);
@@ -103,11 +120,12 @@ const Admin = () => {
   const fetchAll = useCallback(async () => {
     if (!user || !isAdmin) return;
 
-    const [profilesRes, peptidesRes, ppRes, ordersRes] = await Promise.all([
+    const [profilesRes, peptidesRes, ppRes, ordersRes, requestsRes] = await Promise.all([
       supabase.from("profiles").select("user_id, first_name, last_name, phone"),
       supabase.from("peptides").select("*").order("name"),
       supabase.from("patient_peptides").select("*, peptides(name)"),
       supabase.from("orders").select("*").order("created_at", { ascending: false }),
+      supabase.from("peptide_requests").select("*").order("created_at", { ascending: false }),
     ]);
 
     if (profilesRes.data) setPatients(profilesRes.data);
@@ -127,6 +145,13 @@ const Admin = () => {
       setOrders(ordersRes.data.map((o: any) => ({
         ...o,
         patient_name: patientMap.get(o.user_id) || "Unknown",
+      })));
+    }
+
+    if (requestsRes.data) {
+      setPeptideRequests(requestsRes.data.map((r: any) => ({
+        ...r,
+        patient_name: patientMap.get(r.user_id) || "Unknown",
       })));
     }
   }, [user, isAdmin]);
@@ -169,6 +194,23 @@ const Admin = () => {
 
   const handleRemoveAssignment = async (id: string) => {
     await supabase.from("patient_peptides").delete().eq("id", id);
+    fetchAll();
+  };
+
+  const handleApproveRequest = async (id: string) => {
+    await supabase.from("peptide_requests").update({ status: "approved" }).eq("id", id);
+    fetchAll();
+  };
+
+  const handleDenyRequest = async (id: string) => {
+    await supabase.from("peptide_requests").update({ status: "denied", deny_reason: denyReason || null }).eq("id", id);
+    setDenyDialogOpen(null);
+    setDenyReason("");
+    fetchAll();
+  };
+
+  const handleDeleteRequest = async (id: string) => {
+    await supabase.from("peptide_requests").delete().eq("id", id);
     fetchAll();
   };
 
@@ -235,6 +277,14 @@ const Admin = () => {
             </TabsTrigger>
             <TabsTrigger value="orders" className="text-xs tracking-wider uppercase font-body font-light data-[state=active]:bg-background">
               <Package size={14} className="mr-1.5" /> Orders
+            </TabsTrigger>
+            <TabsTrigger value="requests" className="text-xs tracking-wider uppercase font-body font-light data-[state=active]:bg-background">
+              <ClipboardList size={14} className="mr-1.5" /> Requests
+              {peptideRequests.filter(r => r.status === "pending").length > 0 && (
+                <Badge variant="outline" className="ml-1.5 bg-primary/20 text-primary border-primary/30 text-[9px] px-1.5 py-0">
+                  {peptideRequests.filter(r => r.status === "pending").length}
+                </Badge>
+              )}
             </TabsTrigger>
           </TabsList>
 
@@ -536,6 +586,109 @@ const Admin = () => {
                 </Card>
               )}
             </div>
+          </TabsContent>
+
+          {/* REQUESTS TAB */}
+          <TabsContent value="requests" className="space-y-4">
+            <h2 className="text-xl font-heading font-light text-foreground">Peptide Requests</h2>
+
+            {peptideRequests.length === 0 ? (
+              <Card className="border-border bg-card">
+                <CardContent className="py-10 text-center">
+                  <p className="text-sm text-muted-foreground font-body font-light">No peptide requests yet.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-3">
+                {peptideRequests.map(r => (
+                  <Card key={r.id} className="border-border bg-card">
+                    <CardContent className="py-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-sm font-body font-light text-foreground">{r.patient_name}</span>
+                            <Badge variant="outline" className={
+                              r.status === "pending" ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" :
+                              r.status === "approved" ? "bg-green-500/20 text-green-400 border-green-500/30" :
+                              "bg-destructive/20 text-destructive border-destructive/30"
+                            }>{r.status}</Badge>
+                            {r.price != null && (
+                              <span className="text-xs text-primary font-body font-light">${r.price}</span>
+                            )}
+                          </div>
+                          <p className="text-sm text-foreground/80 font-body font-light">
+                            {r.peptide_name}{r.variation_label ? ` — ${r.variation_label}` : ""}
+                          </p>
+                          <p className="text-xs text-muted-foreground font-body font-light">
+                            {new Date(r.created_at).toLocaleDateString()} at {new Date(r.created_at).toLocaleTimeString()}
+                          </p>
+                          {r.status === "denied" && r.deny_reason && (
+                            <p className="text-xs text-destructive font-body font-light mt-1">
+                              Reason: {r.deny_reason}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {r.status === "pending" && (
+                            <>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleApproveRequest(r.id)}
+                                className="text-green-400 hover:text-green-300 hover:bg-green-500/10 h-8 text-xs tracking-wider uppercase font-body font-light"
+                              >
+                                <CheckCircle size={14} className="mr-1" /> Approve
+                              </Button>
+                              <Dialog open={denyDialogOpen === r.id} onOpenChange={(open) => { setDenyDialogOpen(open ? r.id : null); if (!open) setDenyReason(""); }}>
+                                <DialogTrigger asChild>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="text-destructive hover:text-destructive/80 hover:bg-destructive/10 h-8 text-xs tracking-wider uppercase font-body font-light"
+                                  >
+                                    <XCircle size={14} className="mr-1" /> Deny
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="bg-card border-border">
+                                  <DialogHeader>
+                                    <DialogTitle className="font-heading font-light text-foreground">Deny Request</DialogTitle>
+                                  </DialogHeader>
+                                  <div className="space-y-4">
+                                    <p className="text-sm text-muted-foreground font-body font-light">
+                                      Denying <span className="text-foreground">{r.peptide_name}</span> for <span className="text-foreground">{r.patient_name}</span>
+                                    </p>
+                                    <div className="space-y-2">
+                                      <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Reason (optional)</Label>
+                                      <Textarea
+                                        value={denyReason}
+                                        onChange={(e) => setDenyReason(e.target.value)}
+                                        placeholder="e.g. Lab results required before prescribing..."
+                                        className="bg-secondary border-border font-body font-light text-sm"
+                                        rows={3}
+                                      />
+                                    </div>
+                                    <Button
+                                      onClick={() => handleDenyRequest(r.id)}
+                                      variant="destructive"
+                                      className="w-full text-xs tracking-wider uppercase font-body font-light rounded-none"
+                                    >
+                                      Confirm Denial
+                                    </Button>
+                                  </div>
+                                </DialogContent>
+                              </Dialog>
+                            </>
+                          )}
+                          <Button variant="ghost" size="icon" onClick={() => handleDeleteRequest(r.id)} className="text-muted-foreground hover:text-destructive h-8 w-8">
+                            <Trash2 size={14} />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </main>

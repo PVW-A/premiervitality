@@ -1,6 +1,6 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import PVMonogram from "@/components/PVMonogram";
@@ -34,10 +34,23 @@ const Catalog = () => {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [expandedName, setExpandedName] = useState<string | null>(null);
   const [selectedVariation, setSelectedVariation] = useState<string | null>(null);
+  const [requestedPeptideIds, setRequestedPeptideIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
   }, [user, loading, navigate]);
+
+  const fetchRequests = useCallback(async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("peptide_requests")
+      .select("peptide_id")
+      .eq("user_id", user.id)
+      .eq("status", "pending");
+    if (data) {
+      setRequestedPeptideIds(new Set(data.map(r => r.peptide_id)));
+    }
+  }, [user]);
 
   useEffect(() => {
     if (!user) return;
@@ -50,7 +63,12 @@ const Catalog = () => {
       if (data) setPeptides(data);
     };
     fetchPeptides();
-  }, [user]);
+    fetchRequests();
+  }, [user, fetchRequests]);
+
+  const handleRequestSubmitted = useCallback((peptideId: string) => {
+    setRequestedPeptideIds(prev => new Set(prev).add(peptideId));
+  }, []);
 
   const groups = useMemo(() => {
     const map = new Map<string, PeptideGroup>();
@@ -140,7 +158,7 @@ const Catalog = () => {
             Peptide Collection & Pricing
           </h1>
           <p className="text-muted-foreground/60 max-w-md mx-auto mb-8 font-body font-extralight text-sm leading-relaxed">
-            Select a peptide, choose your preferred concentration, and see pricing instantly.
+            Select a peptide, choose your preferred concentration, and request it instantly.
           </p>
         </div>
 
@@ -191,6 +209,8 @@ const Catalog = () => {
               onToggle={() => setExpandedName(expandedName === group.baseName ? null : group.baseName)}
               selectedVariationId={selectedVariation}
               onSelectVariation={setSelectedVariation}
+              requestedPeptideIds={requestedPeptideIds}
+              onRequestSubmitted={handleRequestSubmitted}
             />
           ))}
           {filtered.length === 0 && (
