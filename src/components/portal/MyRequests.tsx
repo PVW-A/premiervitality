@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { ClipboardList, ExternalLink, MapPin, Truck, Loader2 } from "lucide-react";
+import { ClipboardList, ExternalLink, MapPin, Truck, Loader2, RotateCcw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -43,6 +43,7 @@ export default function MyRequests({
     Record<string, { kit: boolean; delivery: "pickup" | "shipping" }>
   >({});
   const [generatingId, setGeneratingId] = useState<string | null>(null);
+  const [resettingId, setResettingId] = useState<string | null>(null);
 
   const getOptions = (id: string) =>
     options[id] ?? { kit: false, delivery: "pickup" as const };
@@ -168,17 +169,58 @@ export default function MyRequests({
                       )}
                     </div>
 
-                    {/* Already has payment link - show Pay Now (not if already paid) */}
+                    {/* Already has payment link - show Pay Now + Edit (not if already paid) */}
                     {r.status === "approved" && r.payment_url && (
-                      <Button
-                        size="sm"
-                        onClick={() =>
-                          window.open(r.payment_url!, "_blank")
-                        }
-                        className="text-xs tracking-wider uppercase font-body font-light rounded-none gap-1.5"
-                      >
-                        <ExternalLink size={14} /> Pay Now
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={resettingId === r.id}
+                          onClick={async () => {
+                            setResettingId(r.id);
+                            try {
+                              const { error } = await supabase
+                                .from("peptide_requests")
+                                .update({
+                                  payment_url: null,
+                                  square_order_id: null,
+                                  include_injection_kit: false,
+                                  delivery_method: null,
+                                })
+                                .eq("id", r.id);
+                              if (error) throw error;
+                              // Pre-fill options from what they had
+                              setOption(r.id, {
+                                kit: r.include_injection_kit,
+                                delivery: (r.delivery_method as "pickup" | "shipping") || "pickup",
+                              });
+                              toast.success("Order reset — reconfigure below");
+                              onRefresh();
+                            } catch (e: any) {
+                              toast.error(e.message || "Failed to reset order");
+                            } finally {
+                              setResettingId(null);
+                            }
+                          }}
+                          className="text-xs tracking-wider uppercase font-body font-light rounded-none gap-1.5"
+                        >
+                          {resettingId === r.id ? (
+                            <Loader2 size={14} className="animate-spin" />
+                          ) : (
+                            <RotateCcw size={14} />
+                          )}
+                          Edit Order
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() =>
+                            window.open(r.payment_url!, "_blank")
+                          }
+                          className="text-xs tracking-wider uppercase font-body font-light rounded-none gap-1.5"
+                        >
+                          <ExternalLink size={14} /> Pay Now
+                        </Button>
+                      </div>
                     )}
                   </div>
 
