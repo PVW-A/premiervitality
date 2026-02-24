@@ -28,6 +28,7 @@ export type Database = {
           priority_support: boolean
           slug: string
           sort_order: number
+          square_plan_id: string | null
         }
         Insert: {
           annual_price: number
@@ -42,6 +43,7 @@ export type Database = {
           priority_support?: boolean
           slug: string
           sort_order?: number
+          square_plan_id?: string | null
         }
         Update: {
           annual_price?: number
@@ -56,6 +58,7 @@ export type Database = {
           priority_support?: boolean
           slug?: string
           sort_order?: number
+          square_plan_id?: string | null
         }
         Relationships: []
       }
@@ -339,6 +342,7 @@ export type Database = {
           id: string
           last_name: string | null
           phone: string | null
+          square_customer_id: string | null
           updated_at: string
           user_id: string
         }
@@ -348,6 +352,7 @@ export type Database = {
           id?: string
           last_name?: string | null
           phone?: string | null
+          square_customer_id?: string | null
           updated_at?: string
           user_id: string
         }
@@ -357,6 +362,7 @@ export type Database = {
           id?: string
           last_name?: string | null
           phone?: string | null
+          square_customer_id?: string | null
           updated_at?: string
           user_id?: string
         }
