@@ -126,8 +126,8 @@ const Peptides = () => {
               <Input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search peptides..."
-                className="pl-10 bg-secondary border-border font-body font-light text-sm"
+                placeholder="Search by name, category, or method..."
+                className="pl-10 bg-card/40 border-border/50 font-body font-extralight text-sm tracking-wide placeholder:text-muted-foreground/30"
               />
             </div>
           </div>
