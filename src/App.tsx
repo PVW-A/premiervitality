@@ -10,6 +10,7 @@ import Portal from "./pages/Portal";
 import Admin from "./pages/Admin";
 import Catalog from "./pages/Catalog";
 import PeptidesPage from "./pages/Peptides";
+import OurWhy from "./pages/OurWhy";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/admin" element={<Admin />} />
             <Route path="/catalog" element={<Catalog />} />
             <Route path="/peptides" element={<PeptidesPage />} />
+            <Route path="/our-why" element={<OurWhy />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
