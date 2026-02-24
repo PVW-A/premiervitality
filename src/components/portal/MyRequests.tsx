@@ -138,9 +138,19 @@ export default function MyRequests({
                       <p className="text-xs text-muted-foreground font-body font-light">
                         Requested{" "}
                         {new Date(r.created_at).toLocaleDateString()}
-                        {r.price && (
+                        {r.price != null && (
                           <span className="ml-2 text-foreground">
-                            ${r.price.toFixed(2)}
+                            {r.payment_url ? (
+                              <>
+                                ${(
+                                  r.price +
+                                  (r.include_injection_kit ? INJECTION_KIT_PRICE : 0) +
+                                  (r.delivery_method === "shipping" ? SHIPPING_PRICE : 0)
+                                ).toFixed(2)}
+                              </>
+                            ) : (
+                              <>${r.price.toFixed(2)}</>
+                            )}
                           </span>
                         )}
                       </p>
