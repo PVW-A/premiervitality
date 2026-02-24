@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import nicolasPhoto from "@/assets/nicolas-loo.jpg";
 
 const founders = [
   {
