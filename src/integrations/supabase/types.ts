@@ -113,6 +113,7 @@ export type Database = {
           order_id: string
           peptide_id: string
           quantity: number
+          unit_price: number | null
         }
         Insert: {
           created_at?: string
@@ -120,6 +121,7 @@ export type Database = {
           order_id: string
           peptide_id: string
           quantity?: number
+          unit_price?: number | null
         }
         Update: {
           created_at?: string
@@ -127,6 +129,7 @@ export type Database = {
           order_id?: string
           peptide_id?: string
           quantity?: number
+          unit_price?: number | null
         }
         Relationships: [
           {
@@ -152,6 +155,7 @@ export type Database = {
           id: string
           notes: string | null
           status: Database["public"]["Enums"]["order_status"]
+          total_amount: number | null
           tracking_number: string | null
           updated_at: string
           user_id: string
@@ -162,6 +166,7 @@ export type Database = {
           id?: string
           notes?: string | null
           status?: Database["public"]["Enums"]["order_status"]
+          total_amount?: number | null
           tracking_number?: string | null
           updated_at?: string
           user_id: string
@@ -172,6 +177,7 @@ export type Database = {
           id?: string
           notes?: string | null
           status?: Database["public"]["Enums"]["order_status"]
+          total_amount?: number | null
           tracking_number?: string | null
           updated_at?: string
           user_id?: string
@@ -231,6 +237,7 @@ export type Database = {
           benefits: string | null
           candidates: string | null
           category: string | null
+          cost: number | null
           created_at: string
           description: string | null
           id: string
@@ -243,6 +250,7 @@ export type Database = {
           benefits?: string | null
           candidates?: string | null
           category?: string | null
+          cost?: number | null
           created_at?: string
           description?: string | null
           id?: string
@@ -255,6 +263,7 @@ export type Database = {
           benefits?: string | null
           candidates?: string | null
           category?: string | null
+          cost?: number | null
           created_at?: string
           description?: string | null
           id?: string
