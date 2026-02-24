@@ -119,7 +119,7 @@ const peptides = [
     name: "DSIP",
     category: "Sleep & Recovery",
     price: 300,
-    description: "Delta Sleep-Inducing Peptide — a neuropeptide that promotes deep, restorative delta-wave sleep. Helps normalize sleep architecture without grogginess or dependency.",
+    description: "Delta Sleep-Inducing Peptide, a neuropeptide that promotes deep, restorative delta-wave sleep. Helps normalize sleep architecture without grogginess or dependency.",
     benefits: ["Promotes deep delta-wave sleep", "Reduces sleep latency", "Normalizes circadian rhythm", "No morning grogginess", "Stress hormone regulation", "Non-addictive"],
     candidates: ["Individuals with insomnia or disrupted sleep", "Shift workers", "Those with high stress affecting sleep", "Patients seeking alternatives to prescription sleep aids"],
     administration: "Subcutaneous injection or nasal spray, taken 30-60 minutes before bed",

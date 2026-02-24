@@ -44,7 +44,7 @@ const OurWhy = () => (
               I'm not here to make promises. I'm here because I believe the science is worth pursuing, and because I refuse to sit on the sidelines while the people I care about, and people like them, wait for answers that may never come from conventional medicine alone.
             </p>
             <p>
-              Peptide Vitality exists because of that urgency. Every protocol we develop, every patient we serve, is a step closer to the future I want for my family — and for yours.
+              Peptide Vitality exists because of that urgency. Every protocol we develop, every patient we serve, is a step closer to the future I want for my family and for yours.
             </p>
           </div>
         </motion.div>

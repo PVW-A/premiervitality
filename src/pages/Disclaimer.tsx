@@ -28,7 +28,7 @@ const Disclaimer = () => (
           <p>The statements made on this website have not been evaluated by the Food and Drug Administration (FDA). The products and services offered are not intended to diagnose, treat, cure, or prevent any disease.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">Limitation of Liability</h2>
-          <p>Under no circumstances shall Premier Vitality & Wellness, its founders, physicians, employees, or affiliates be held liable for any damages whatsoever — including direct, indirect, incidental, punitive, or consequential damages — arising from your use of this website or any treatments, products, or services referenced herein.</p>
+          <p>Under no circumstances shall Premier Vitality & Wellness, its founders, physicians, employees, or affiliates be held liable for any damages whatsoever, including direct, indirect, incidental, punitive, or consequential damages, arising from your use of this website or any treatments, products, or services referenced herein.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">Emergency Situations</h2>
           <p>If you are experiencing a medical emergency, call 911 or your local emergency services immediately. Do not rely on this website for emergency medical guidance.</p>
