@@ -89,6 +89,9 @@ const Admin = () => {
   const [peptides, setPeptides] = useState<Peptide[]>([]);
   const [patientPeptides, setPatientPeptides] = useState<PatientPeptide[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [peptideRequests, setPeptideRequests] = useState<PeptideRequest[]>([]);
+  const [denyDialogOpen, setDenyDialogOpen] = useState<string | null>(null);
+  const [denyReason, setDenyReason] = useState("");
 
   // Dialog states
   const [peptideDialogOpen, setPeptideDialogOpen] = useState(false);
