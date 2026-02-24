@@ -234,8 +234,10 @@ export type Database = {
       peptide_requests: {
         Row: {
           created_at: string
+          delivery_method: string | null
           deny_reason: string | null
           id: string
+          include_injection_kit: boolean
           payment_url: string | null
           peptide_id: string
           peptide_name: string
@@ -248,8 +250,10 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          delivery_method?: string | null
           deny_reason?: string | null
           id?: string
+          include_injection_kit?: boolean
           payment_url?: string | null
           peptide_id: string
           peptide_name: string
@@ -262,8 +266,10 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          delivery_method?: string | null
           deny_reason?: string | null
           id?: string
+          include_injection_kit?: boolean
           payment_url?: string | null
           peptide_id?: string
           peptide_name?: string

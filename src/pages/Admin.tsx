@@ -202,14 +202,9 @@ const Admin = () => {
   const handleApproveRequest = async (id: string) => {
     setApprovingId(id);
     try {
-      const { data, error } = await supabase.functions.invoke("create-payment-link", {
-        body: { request_id: id },
-      });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      // toast handled by sonner
+      await supabase.from("peptide_requests").update({ status: "approved" }).eq("id", id);
       const { toast } = await import("sonner");
-      toast.success("Request approved & payment link generated");
+      toast.success("Request approved — patient can now configure & pay");
     } catch (e: any) {
       const { toast } = await import("sonner");
       toast.error(e.message || "Failed to approve request");

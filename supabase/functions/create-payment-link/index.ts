@@ -6,6 +6,8 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const INJECTION_KIT_PRICE = 2000; // $20.00 in cents
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -24,7 +26,7 @@ Deno.serve(async (req) => {
     const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-    // Verify caller is admin
+    // Get caller identity
     const userClient = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: authHeader } },
     });
@@ -39,24 +41,9 @@ Deno.serve(async (req) => {
     }
 
     const userId = claimsData.claims.sub as string;
-
-    // Use service role client for DB operations
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
-    // Check admin role
-    const { data: isAdmin } = await adminClient.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
-
-    if (!isAdmin) {
-      return new Response(JSON.stringify({ error: "Forbidden" }), {
-        status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const { request_id } = await req.json();
+    const { request_id, include_injection_kit, delivery_method } = await req.json();
     if (!request_id) {
       return new Response(JSON.stringify({ error: "Missing request_id" }), {
         status: 400,
@@ -78,7 +65,23 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Get price — from request row first, then fall back to peptides table
+    // Ensure the caller owns this request
+    if (requestRow.user_id !== userId) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Must be approved
+    if (requestRow.status !== "approved") {
+      return new Response(JSON.stringify({ error: "Request is not approved" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Get price
     let price = requestRow.price;
     if (!price) {
       const { data: peptide } = await adminClient
@@ -92,14 +95,10 @@ Deno.serve(async (req) => {
     if (!price || price <= 0) {
       return new Response(
         JSON.stringify({ error: "No price found for this peptide" }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Build Square payment link
     const SQUARE_ACCESS_TOKEN = Deno.env.get("SQUARE_ACCESS_TOKEN");
     const SQUARE_LOCATION_ID = Deno.env.get("SQUARE_LOCATION_ID");
 
@@ -110,16 +109,29 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Calculate total in cents
+    let totalCents = Math.round(price * 100);
+    const addKit = include_injection_kit === true;
+    if (addKit) {
+      totalCents += INJECTION_KIT_PRICE;
+    }
+
     const peptideName = requestRow.variation_label
       ? `${requestRow.peptide_name} — ${requestRow.variation_label}`
       : requestRow.peptide_name;
 
+    // Build line item description
+    const parts = [peptideName];
+    if (addKit) parts.push("+ Injection Kit ($20)");
+    const deliveryLabel = delivery_method === "shipping" ? "Shipping" : "Pickup";
+    parts.push(`[${deliveryLabel}]`);
+
     const payload = {
       idempotency_key: crypto.randomUUID(),
       quick_pay: {
-        name: peptideName,
+        name: parts.join(" "),
         price_money: {
-          amount: Math.round(price * 100),
+          amount: totalCents,
           currency: "USD",
         },
         location_id: SQUARE_LOCATION_ID,
@@ -145,24 +157,21 @@ Deno.serve(async (req) => {
       console.error("Square API error:", JSON.stringify(squareData));
       return new Response(
         JSON.stringify({ error: "Square API error", details: squareData }),
-        {
-          status: 502,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
+        { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const paymentUrl =
-      squareData.payment_link?.url || squareData.payment_link?.long_url;
+    const paymentUrl = squareData.payment_link?.url || squareData.payment_link?.long_url;
     const squareOrderId = squareData.related_resources?.orders?.[0]?.id || squareData.payment_link?.order_id || null;
 
-    // Update the request with payment link and approved status
+    // Save options and payment link
     const { error: updateError } = await adminClient
       .from("peptide_requests")
       .update({
-        status: "approved",
         payment_url: paymentUrl,
         square_order_id: squareOrderId,
+        include_injection_kit: addKit,
+        delivery_method: delivery_method || "pickup",
       })
       .eq("id", request_id);
 
@@ -170,10 +179,7 @@ Deno.serve(async (req) => {
       console.error("DB update error:", updateError);
       return new Response(
         JSON.stringify({ error: "Failed to update request" }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
@@ -183,19 +189,13 @@ Deno.serve(async (req) => {
         payment_url: paymentUrl,
         square_order_id: squareOrderId,
       }),
-      {
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (e) {
     console.error("Unexpected error:", e);
     return new Response(
       JSON.stringify({ error: "Internal server error", details: String(e) }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });
