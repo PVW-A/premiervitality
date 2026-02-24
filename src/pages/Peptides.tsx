@@ -109,14 +109,14 @@ const Peptides = () => {
             Back to Home
           </Link>
 
-          <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground text-center mb-3 font-body font-light">
-            Our Protocols
+          <p className="text-[10px] tracking-[0.4em] uppercase text-primary/60 text-center mb-4 font-body font-extralight">
+            Exclusive Protocols
           </p>
-          <h1 className="text-3xl md:text-5xl font-extralight text-center mb-4 tracking-tight font-heading">
-            Peptide Catalog
+          <h1 className="text-3xl md:text-5xl font-extralight text-center mb-5 tracking-tight font-heading">
+            The Peptide Collection
           </h1>
-          <p className="text-muted-foreground text-center max-w-lg mx-auto mb-10 font-body font-light text-sm">
-            Explore our complete range of peptide therapies. Click any protocol to learn more.
+          <p className="text-muted-foreground/60 text-center max-w-md mx-auto mb-12 font-body font-extralight text-sm leading-relaxed">
+            Physician-curated peptide therapies, each protocol individually tailored to your biochemistry. Select a compound below to review clinical applications.
           </p>
 
           {/* Search */}
@@ -126,36 +126,33 @@ const Peptides = () => {
               <Input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search peptides..."
-                className="pl-10 bg-secondary border-border font-body font-light text-sm"
+                placeholder="Search by name, category, or method..."
+                className="pl-10 bg-card/40 border-border/50 font-body font-extralight text-sm tracking-wide placeholder:text-muted-foreground/30"
               />
             </div>
           </div>
 
           {/* Category filters */}
-          <div className="flex flex-wrap justify-center gap-2 mb-10">
+          <div className="flex flex-wrap justify-center gap-2 mb-12">
             <button
               onClick={() => setActiveCategory(null)}
-              className={`px-4 py-2 text-[10px] tracking-[0.15em] uppercase font-body font-light border rounded transition-colors ${
-                !activeCategory ? "bg-primary/15 text-primary border-primary/30" : "border-border text-muted-foreground hover:text-foreground hover:border-muted-foreground"
+              className={`px-4 py-2 text-[9px] tracking-[0.2em] uppercase font-body font-extralight border transition-all duration-300 ${
+                !activeCategory ? "bg-primary/10 text-primary/80 border-primary/20" : "border-border/40 text-muted-foreground/50 hover:text-foreground/60 hover:border-border/60"
               }`}
             >
-              All ({groups.length})
+              All
             </button>
-            {categories.map(cat => {
-              const count = groups.filter(g => g.category === cat).length;
-              return (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
-                  className={`px-4 py-2 text-[10px] tracking-[0.15em] uppercase font-body font-light border rounded transition-colors ${
-                    activeCategory === cat ? "bg-primary/15 text-primary border-primary/30" : "border-border text-muted-foreground hover:text-foreground hover:border-muted-foreground"
-                  }`}
-                >
-                  {cat} ({count})
-                </button>
-              );
-            })}
+            {categories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
+                className={`px-4 py-2 text-[9px] tracking-[0.2em] uppercase font-body font-extralight border transition-all duration-300 ${
+                  activeCategory === cat ? "bg-primary/10 text-primary/80 border-primary/20" : "border-border/40 text-muted-foreground/50 hover:text-foreground/60 hover:border-border/60"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
 
           {/* Loading */}
