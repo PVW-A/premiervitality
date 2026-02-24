@@ -41,12 +41,26 @@ const Services = () => {
   });
 
   const handleJoin = (tierSlug: string) => {
-    if (!user) {
-      navigate("/auth", { state: { redirectTo: `/services?join=${tierSlug}` } });
-      return;
+    const links = squareLinks[tierSlug];
+    if (links) {
+      const url = billingCycle === "monthly" ? links.monthly : links.annual;
+      window.open(url, "_blank");
     }
-    // For now, just navigate to contact — Square checkout will be wired later
-    navigate("/#contact");
+  };
+
+  const squareLinks: Record<string, { monthly: string; annual: string }> = {
+    essential: {
+      monthly: "https://square.link/u/zWb8E2dA",
+      annual: "https://square.link/u/lTAiIdGI",
+    },
+    premium: {
+      monthly: "https://square.link/u/gH4QeARi",
+      annual: "https://square.link/u/HuLd1lAl",
+    },
+    elite: {
+      monthly: "https://square.link/u/Vef3c9jk",
+      annual: "https://square.link/u/K2CBoxiE",
+    },
   };
 
   const tierAccents: Record<string, string> = {
@@ -54,7 +68,6 @@ const Services = () => {
     premium: "border-primary/60",
     elite: "border-primary",
   };
-
   const savingsPercent = (monthly: number, annual: number) =>
     Math.round(((monthly - annual) / monthly) * 100);
 
