@@ -41,7 +41,7 @@ const OurWhy = () => (
               I started researching everything I could find. I read the studies, followed the clinical trials, talked to physicians and researchers. That's when I discovered peptide therapy and the growing body of evidence behind its potential to support neurological health, cellular repair, and overall vitality.
             </p>
             <p>
-              I'm not here to make promises. I'm here because I believe the science is worth pursuing, and because I refuse to sit on the sidelines while the people I care about — and people like them — wait for answers that may never come from conventional medicine alone.
+              I'm not here to make promises. I'm here because I believe the science is worth pursuing, and because I refuse to sit on the sidelines while the people I care about, and people like them, wait for answers that may never come from conventional medicine alone.
             </p>
             <p>
               Peptide Vitality exists because of that urgency. Every protocol we develop, every patient we serve, is a step closer to the future I want for my family — and for yours.
