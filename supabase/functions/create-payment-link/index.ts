@@ -8,6 +8,8 @@ const corsHeaders = {
 
 const INJECTION_KIT_PRICE = 3000; // $30.00 in cents
 const SHIPPING_PRICE = 3500; // $35.00 in cents
+const SHIPPING_SKU = "SHIP-FEDEX-ONP";
+const INJECTION_KIT_SKU = "ET-INS-05ML-31G-516-40";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -44,7 +46,10 @@ Deno.serve(async (req) => {
     const userId = claimsData.claims.sub as string;
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
-    const { request_id, include_injection_kit, delivery_method } = await req.json();
+    const body = await req.json();
+    const request_id = body?.request_id as string | undefined;
+    const include_injection_kit = body?.include_injection_kit;
+    const delivery_method = body?.delivery_method;
     if (!request_id) {
       return new Response(JSON.stringify({ error: "Missing request_id" }), {
         status: 400,
@@ -110,37 +115,61 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Calculate total in cents
-    let totalCents = Math.round(price * 100);
-    const addKit = include_injection_kit === true;
-    if (addKit) {
-      totalCents += INJECTION_KIT_PRICE;
-    }
-    const addShipping = delivery_method === "shipping";
-    if (addShipping) {
-      totalCents += SHIPPING_PRICE;
-    }
+    // Normalize add-ons from payload
+    const addKit =
+      include_injection_kit === true || include_injection_kit === "true";
+
+    const normalizedDeliveryMethod =
+      typeof delivery_method === "string" &&
+      delivery_method.toLowerCase() === "shipping"
+        ? "shipping"
+        : "pickup";
+    const addShipping = normalizedDeliveryMethod === "shipping";
 
     const peptideName = requestRow.variation_label
       ? `${requestRow.peptide_name} — ${requestRow.variation_label}`
       : requestRow.peptide_name;
 
-    // Build line item description
-    const parts = [peptideName];
-    if (addKit) parts.push("+ Injection Kit ($30)");
-    if (addShipping) parts.push("+ Shipping ($35)");
-    const deliveryLabel = addShipping ? "Shipping" : "Pickup";
-    parts.push(`[${deliveryLabel}]`);
+    const lineItems: Array<Record<string, unknown>> = [
+      {
+        name: peptideName,
+        quantity: "1",
+        base_price_money: {
+          amount: Math.round(price * 100),
+          currency: "USD",
+        },
+      },
+    ];
+
+    if (addKit) {
+      lineItems.push({
+        name: `Injection Kit (${INJECTION_KIT_SKU})`,
+        quantity: "1",
+        note: `SKU: ${INJECTION_KIT_SKU}`,
+        base_price_money: {
+          amount: INJECTION_KIT_PRICE,
+          currency: "USD",
+        },
+      });
+    }
+
+    if (addShipping) {
+      lineItems.push({
+        name: `Overnight Shipping (${SHIPPING_SKU})`,
+        quantity: "1",
+        note: `SKU: ${SHIPPING_SKU}`,
+        base_price_money: {
+          amount: SHIPPING_PRICE,
+          currency: "USD",
+        },
+      });
+    }
 
     const payload = {
       idempotency_key: crypto.randomUUID(),
-      quick_pay: {
-        name: parts.join(" "),
-        price_money: {
-          amount: totalCents,
-          currency: "USD",
-        },
+      order: {
         location_id: SQUARE_LOCATION_ID,
+        line_items: lineItems,
       },
     };
 
@@ -177,7 +206,7 @@ Deno.serve(async (req) => {
         payment_url: paymentUrl,
         square_order_id: squareOrderId,
         include_injection_kit: addKit,
-        delivery_method: delivery_method || "pickup",
+        delivery_method: normalizedDeliveryMethod,
       })
       .eq("id", request_id);
 
