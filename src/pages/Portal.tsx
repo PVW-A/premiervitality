@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import PVMonogram from "@/components/PVMonogram";
+import MyRequests from "@/components/portal/MyRequests";
 import { LogOut, Pill, Package, Clock, BookOpen } from "lucide-react";
 
 interface PatientPeptide {

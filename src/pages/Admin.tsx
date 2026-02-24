@@ -652,9 +652,15 @@ const Admin = () => {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => handleApproveRequest(r.id)}
+                                disabled={approvingId === r.id}
                                 className="text-green-400 hover:text-green-300 hover:bg-green-500/10 h-8 text-xs tracking-wider uppercase font-body font-light"
                               >
-                                <CheckCircle size={14} className="mr-1" /> Approve
+                                {approvingId === r.id ? (
+                                  <span className="animate-spin mr-1">⏳</span>
+                                ) : (
+                                  <CheckCircle size={14} className="mr-1" />
+                                )}
+                                {approvingId === r.id ? "Approving..." : "Approve"}
                               </Button>
                               <Dialog open={denyDialogOpen === r.id} onOpenChange={(open) => { setDenyDialogOpen(open ? r.id : null); if (!open) setDenyReason(""); }}>
                                 <DialogTrigger asChild>
