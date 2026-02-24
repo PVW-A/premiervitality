@@ -147,6 +147,13 @@ const Admin = () => {
         patient_name: patientMap.get(o.user_id) || "Unknown",
       })));
     }
+
+    if (requestsRes.data) {
+      setPeptideRequests(requestsRes.data.map((r: any) => ({
+        ...r,
+        patient_name: patientMap.get(r.user_id) || "Unknown",
+      })));
+    }
   }, [user, isAdmin]);
 
   useEffect(() => { fetchAll(); }, [fetchAll]);
