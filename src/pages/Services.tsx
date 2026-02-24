@@ -41,12 +41,11 @@ const Services = () => {
   });
 
   const handleJoin = (tierSlug: string) => {
-    if (!user) {
-      navigate("/auth", { state: { redirectTo: `/services?join=${tierSlug}` } });
-      return;
+    const links = squareLinks[tierSlug];
+    if (links) {
+      const url = billingCycle === "monthly" ? links.monthly : links.annual;
+      window.open(url, "_blank");
     }
-    // For now, just navigate to contact — Square checkout will be wired later
-    navigate("/#contact");
   };
 
   const squareLinks: Record<string, { monthly: string; annual: string }> = {
