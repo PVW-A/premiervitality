@@ -11,6 +11,9 @@ import Admin from "./pages/Admin";
 import Catalog from "./pages/Catalog";
 import PeptidesPage from "./pages/Peptides";
 import OurWhy from "./pages/OurWhy";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
+import Disclaimer from "./pages/Disclaimer";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +33,9 @@ const App = () => (
             <Route path="/catalog" element={<Catalog />} />
             <Route path="/peptides" element={<PeptidesPage />} />
             <Route path="/our-why" element={<OurWhy />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/disclaimer" element={<Disclaimer />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
