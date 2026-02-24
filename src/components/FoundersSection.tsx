@@ -12,6 +12,7 @@ const founders = [
     initials: "NL",
     name: "Nicolas Loo",
     title: "Co-Founder",
+    photo: nicolasPhoto,
     bio: "Driven by a passion for innovation and patient experience, Nicolas bridges cutting-edge science with modern wellness — ensuring every protocol is as seamless as it is effective.",
   },
 ];
