@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, FlaskConical, Syringe, SprayCan, Pill, Droplets } from "lucide-react";
+import { ChevronDown, Syringe, SprayCan, Pill, Droplets } from "lucide-react";
 import peptideVial from "@/assets/peptide-vial.png";
 
 interface PeptideVariation {
@@ -22,29 +21,24 @@ interface PeptideGroup {
 }
 
 const categoryColors: Record<string, string> = {
-  "Recovery & Healing": "bg-green-500/15 text-green-400 border-green-500/25",
-  "Weight Management": "bg-orange-500/15 text-orange-400 border-orange-500/25",
-  "Anti-Aging & Performance": "bg-purple-500/15 text-purple-400 border-purple-500/25",
-  "Sexual Wellness": "bg-pink-500/15 text-pink-400 border-pink-500/25",
-  "Immune Support": "bg-blue-500/15 text-blue-400 border-blue-500/25",
-  "Cognitive & Mood": "bg-cyan-500/15 text-cyan-400 border-cyan-500/25",
-  "Skin & Hair": "bg-amber-500/15 text-amber-400 border-amber-500/25",
-  "Sleep & Recovery": "bg-indigo-500/15 text-indigo-400 border-indigo-500/25",
-  "Joint & Mobility": "bg-teal-500/15 text-teal-400 border-teal-500/25",
-  "Hormone Optimization": "bg-rose-500/15 text-rose-400 border-rose-500/25",
+  "Recovery & Healing": "text-green-400/80 border-green-500/15",
+  "Weight Management": "text-orange-400/80 border-orange-500/15",
+  "Anti-Aging & Performance": "text-purple-400/80 border-purple-500/15",
+  "Sexual Wellness": "text-pink-400/80 border-pink-500/15",
+  "Immune Support": "text-blue-400/80 border-blue-500/15",
+  "Cognitive & Mood": "text-cyan-400/80 border-cyan-500/15",
+  "Skin & Hair": "text-amber-400/80 border-amber-500/15",
+  "Sleep & Recovery": "text-indigo-400/80 border-indigo-500/15",
+  "Joint & Mobility": "text-teal-400/80 border-teal-500/15",
+  "Hormone Optimization": "text-rose-400/80 border-rose-500/15",
 };
 
 const routeIcon = (route: string) => {
   const r = route.toLowerCase();
-  if (r.includes("nasal")) return <SprayCan size={13} strokeWidth={1.3} />;
-  if (r.includes("capsule") || r.includes("tablet") || r.includes("oral")) return <Pill size={13} strokeWidth={1.3} />;
-  if (r.includes("topical") || r.includes("cream")) return <Droplets size={13} strokeWidth={1.3} />;
-  return <Syringe size={13} strokeWidth={1.3} />;
-};
-
-const extractVariationLabel = (fullName: string, baseName: string): string => {
-  const after = fullName.replace(baseName, "").replace(/^\s*—\s*/, "").trim();
-  return after || fullName;
+  if (r.includes("nasal")) return <SprayCan size={12} strokeWidth={1} />;
+  if (r.includes("capsule") || r.includes("tablet") || r.includes("oral")) return <Pill size={12} strokeWidth={1} />;
+  if (r.includes("topical") || r.includes("cream")) return <Droplets size={12} strokeWidth={1} />;
+  return <Syringe size={12} strokeWidth={1} />;
 };
 
 const priceRange = (variations: PeptideVariation[]): string => {
@@ -70,62 +64,71 @@ const PeptideCard = ({ group, index, isExpanded, onToggle }: PeptideCardProps) =
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-30px" }}
       transition={{ duration: 0.4, delay: Math.min(index * 0.02, 0.2) }}
     >
       <div
         onClick={onToggle}
-        className={`bg-card border rounded-lg overflow-hidden cursor-pointer transition-all duration-300 ${
-          isExpanded ? "border-primary/30" : "border-border hover:border-primary/20"
+        className={`group bg-card/60 backdrop-blur-sm border overflow-hidden cursor-pointer transition-all duration-500 ${
+          isExpanded
+            ? "border-primary/20 shadow-[0_0_40px_-12px_hsl(var(--primary)/0.08)]"
+            : "border-border/60 hover:border-primary/10 hover:bg-card/80"
         }`}
       >
         {/* Header */}
-        <div className="flex items-center gap-4 p-4 sm:p-5">
-          <div className="w-12 h-12 sm:w-14 sm:h-14 flex-shrink-0 rounded-lg bg-secondary/50 overflow-hidden flex items-center justify-center">
-            <img src={peptideVial} alt={group.baseName} className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
+        <div className="flex items-center gap-4 p-5 sm:p-6">
+          <div className="w-11 h-11 flex-shrink-0 rounded bg-secondary/30 overflow-hidden flex items-center justify-center">
+            <img src={peptideVial} alt="" className="w-9 h-9 object-contain opacity-70" />
           </div>
+
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap mb-0.5">
-              <h3 className="text-base font-heading font-light text-foreground tracking-tight">{group.baseName}</h3>
+            <div className="flex items-center gap-3 flex-wrap">
+              <h3 className="text-base font-heading font-light text-foreground tracking-wide">{group.baseName}</h3>
               {group.category && (
-                <span className={`inline-flex px-2 py-0.5 text-[9px] tracking-wider uppercase font-body font-light border rounded ${categoryColors[group.category] || ""}`}>
+                <span className={`inline-flex px-2.5 py-0.5 text-[8px] tracking-[0.2em] uppercase font-body font-light border ${categoryColors[group.category] || "text-muted-foreground border-border/50"}`}>
                   {group.category}
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-2 flex-wrap mt-1">
+            <div className="flex items-center gap-3 mt-1.5">
               {group.routes.map(route => (
-                <span key={route} className="inline-flex items-center gap-1 text-[10px] text-muted-foreground font-body font-light">
+                <span key={route} className="inline-flex items-center gap-1 text-[10px] text-muted-foreground/70 font-body font-extralight tracking-wide">
                   {routeIcon(route)}
                   {route}
                 </span>
               ))}
             </div>
           </div>
+
           {range && (
             <div className="flex-shrink-0 text-right hidden sm:block">
-              <p className="text-lg font-heading font-light text-foreground">{range}</p>
+              <p className="text-sm font-heading font-light text-foreground/80 tracking-wide">{range}</p>
               {group.variations.length > 1 && (
-                <p className="text-[10px] tracking-wider uppercase text-muted-foreground font-body font-light">{group.variations.length} options</p>
+                <p className="text-[9px] tracking-[0.2em] uppercase text-muted-foreground/50 font-body font-extralight mt-0.5">
+                  {group.variations.length} formulations
+                </p>
               )}
             </div>
           )}
+
           <ChevronDown
-            size={16}
-            strokeWidth={1.2}
-            className={`flex-shrink-0 text-muted-foreground transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+            size={14}
+            strokeWidth={1}
+            className={`flex-shrink-0 text-muted-foreground/40 transition-transform duration-500 ${isExpanded ? "rotate-180" : ""}`}
           />
         </div>
 
         {/* Mobile price */}
         {range && (
-          <div className="px-4 pb-2 sm:hidden">
-            <p className="text-base font-heading font-light text-foreground">
+          <div className="px-5 pb-3 sm:hidden">
+            <p className="text-sm font-heading font-light text-foreground/80 tracking-wide">
               {range}
               {group.variations.length > 1 && (
-                <span className="text-[10px] tracking-wider uppercase text-muted-foreground font-body font-light ml-2">{group.variations.length} options</span>
+                <span className="text-[9px] tracking-[0.2em] uppercase text-muted-foreground/50 font-body font-extralight ml-3">
+                  {group.variations.length} formulations
+                </span>
               )}
             </p>
           </div>
@@ -138,77 +141,96 @@ const PeptideCard = ({ group, index, isExpanded, onToggle }: PeptideCardProps) =
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
               className="overflow-hidden"
             >
-              <div className="px-4 sm:px-5 pb-5 pt-2 border-t border-border space-y-4">
+              <div className="px-5 sm:px-6 pb-7 pt-3 space-y-6">
+                {/* Subtle divider */}
+                <div className="w-full h-px bg-gradient-to-r from-transparent via-primary/15 to-transparent" />
+
                 {/* Description */}
                 {group.description && (
-                  <p className="text-sm text-muted-foreground font-body font-light leading-relaxed">{group.description}</p>
+                  <p className="text-sm text-muted-foreground/80 font-body font-extralight leading-[1.8] max-w-3xl italic">
+                    {group.description}
+                  </p>
                 )}
 
-                {/* Benefits & Candidates */}
-                <div className="grid md:grid-cols-2 gap-5">
-                  {benefitsList.length > 0 && (
-                    <div>
-                      <p className="text-xs tracking-[0.2em] uppercase text-primary font-body font-light mb-2">Benefits</p>
-                      <ul className="space-y-1.5">
-                        {benefitsList.map((b, j) => (
-                          <li key={j} className="text-sm text-muted-foreground font-body font-light flex items-start gap-2">
-                            <span className="mt-1.5 w-1 h-1 rounded-full bg-primary flex-shrink-0" />
-                            {b}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  {candidatesList.length > 0 && (
-                    <div>
-                      <p className="text-xs tracking-[0.2em] uppercase text-primary font-body font-light mb-2">Ideal Candidates</p>
-                      <ul className="space-y-1.5">
-                        {candidatesList.map((c, j) => (
-                          <li key={j} className="text-sm text-muted-foreground font-body font-light flex items-start gap-2">
-                            <span className="mt-1.5 w-1 h-1 rounded-full bg-primary flex-shrink-0" />
-                            {c}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-
-                {/* Available options */}
-                <div>
-                  <p className="text-xs tracking-[0.2em] uppercase text-primary font-body font-light mb-2">Available Options</p>
-                  <div className="grid gap-2">
-                    {group.variations.map(v => (
-                      <div key={v.id} className="flex items-center justify-between py-2 px-3 rounded bg-secondary/40 border border-border/50">
-                        <div className="flex items-center gap-2">
-                          {v.administration && routeIcon(v.administration)}
-                          <span className="text-sm font-body font-light text-foreground">
-                            {extractVariationLabel(v.name, group.baseName)}
-                          </span>
-                        </div>
-                        {v.price && (
-                          <span className="text-sm font-heading font-light text-foreground">${v.price}</span>
-                        )}
+                {/* Benefits & Ideal Candidates in refined columns */}
+                {(benefitsList.length > 0 || candidatesList.length > 0) && (
+                  <div className="grid md:grid-cols-2 gap-8">
+                    {benefitsList.length > 0 && (
+                      <div>
+                        <p className="text-[10px] tracking-[0.3em] uppercase text-primary/70 font-body font-extralight mb-3">
+                          Clinical Benefits
+                        </p>
+                        <ul className="space-y-2">
+                          {benefitsList.map((b, j) => (
+                            <li key={j} className="text-[13px] text-foreground/60 font-body font-extralight flex items-start gap-2.5 leading-relaxed">
+                              <span className="mt-2 w-[3px] h-[3px] rounded-full bg-primary/40 flex-shrink-0" />
+                              {b}
+                            </li>
+                          ))}
+                        </ul>
                       </div>
-                    ))}
+                    )}
+                    {candidatesList.length > 0 && (
+                      <div>
+                        <p className="text-[10px] tracking-[0.3em] uppercase text-primary/70 font-body font-extralight mb-3">
+                          Ideal Patient Profile
+                        </p>
+                        <ul className="space-y-2">
+                          {candidatesList.map((c, j) => (
+                            <li key={j} className="text-[13px] text-foreground/60 font-body font-extralight flex items-start gap-2.5 leading-relaxed">
+                              <span className="mt-2 w-[3px] h-[3px] rounded-full bg-primary/40 flex-shrink-0" />
+                              {c}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </div>
-                </div>
+                )}
+
+                {/* Available formulations — minimal, elegant */}
+                {group.variations.length > 1 && (
+                  <div>
+                    <p className="text-[10px] tracking-[0.3em] uppercase text-primary/70 font-body font-extralight mb-3">
+                      Available Formulations
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {group.variations.map(v => {
+                        const label = v.name.replace(group.baseName, "").replace(/^\s*—\s*/, "").trim() || v.name;
+                        return (
+                          <span
+                            key={v.id}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-body font-extralight text-foreground/60 border border-border/40 tracking-wide"
+                          >
+                            {v.administration && routeIcon(v.administration)}
+                            {label}
+                            {v.price && (
+                              <span className="text-foreground/40 ml-1">·</span>
+                            )}
+                            {v.price && (
+                              <span className="text-foreground/50 font-heading">${v.price}</span>
+                            )}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
 
                 {/* CTA */}
-                <div className="pt-1">
+                <div className="pt-2">
                   <a
                     href="/#contact"
                     onClick={(e) => e.stopPropagation()}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-body font-light tracking-[0.2em] uppercase bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                    className="inline-flex items-center gap-2 px-6 py-2.5 text-[10px] font-body font-extralight tracking-[0.3em] uppercase border border-primary/30 text-primary hover:bg-primary/5 transition-all duration-300"
                   >
-                    <FlaskConical size={13} strokeWidth={1.5} />
-                    Labs Required
+                    Schedule Consultation
                   </a>
-                  <p className="text-[11px] text-muted-foreground font-body font-light mt-1.5">
-                    Lab work must be completed before this protocol can be prescribed.
+                  <p className="text-[10px] text-muted-foreground/40 font-body font-extralight mt-2 tracking-wide">
+                    Comprehensive lab work required prior to prescribing this protocol.
                   </p>
                 </div>
               </div>

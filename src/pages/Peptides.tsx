@@ -109,14 +109,14 @@ const Peptides = () => {
             Back to Home
           </Link>
 
-          <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground text-center mb-3 font-body font-light">
-            Our Protocols
+          <p className="text-[10px] tracking-[0.4em] uppercase text-primary/60 text-center mb-4 font-body font-extralight">
+            Exclusive Protocols
           </p>
-          <h1 className="text-3xl md:text-5xl font-extralight text-center mb-4 tracking-tight font-heading">
-            Peptide Catalog
+          <h1 className="text-3xl md:text-5xl font-extralight text-center mb-5 tracking-tight font-heading">
+            The Peptide Collection
           </h1>
-          <p className="text-muted-foreground text-center max-w-lg mx-auto mb-10 font-body font-light text-sm">
-            Explore our complete range of peptide therapies. Click any protocol to learn more.
+          <p className="text-muted-foreground/60 text-center max-w-md mx-auto mb-12 font-body font-extralight text-sm leading-relaxed">
+            Physician-curated peptide therapies, each protocol individually tailored to your biochemistry. Select a compound below to review clinical applications.
           </p>
 
           {/* Search */}
