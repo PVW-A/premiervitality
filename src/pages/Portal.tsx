@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import PVMonogram from "@/components/PVMonogram";
+import MyRequests from "@/components/portal/MyRequests";
 import { LogOut, Pill, Package, Clock, BookOpen } from "lucide-react";
 
 interface PatientPeptide {
@@ -41,6 +42,7 @@ const Portal = () => {
   const navigate = useNavigate();
   const [peptides, setPeptides] = useState<PatientPeptide[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [requests, setRequests] = useState<any[]>([]);
   const [profile, setProfile] = useState<{ first_name: string | null; last_name: string | null } | null>(null);
 
   useEffect(() => {
@@ -81,6 +83,14 @@ const Portal = () => {
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
       if (orderData) setOrders(orderData);
+
+      // Fetch peptide requests
+      const { data: reqData } = await supabase
+        .from("peptide_requests")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      if (reqData) setRequests(reqData);
     };
 
     fetchData();
@@ -203,6 +213,10 @@ const Portal = () => {
             </div>
           )}
         </section>
+
+
+        {/* My Requests */}
+        <MyRequests requests={requests} />
 
         {/* Orders */}
         <section>

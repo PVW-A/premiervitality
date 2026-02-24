@@ -197,9 +197,26 @@ const Admin = () => {
     fetchAll();
   };
 
+  const [approvingId, setApprovingId] = useState<string | null>(null);
+
   const handleApproveRequest = async (id: string) => {
-    await supabase.from("peptide_requests").update({ status: "approved" }).eq("id", id);
-    fetchAll();
+    setApprovingId(id);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-payment-link", {
+        body: { request_id: id },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      // toast handled by sonner
+      const { toast } = await import("sonner");
+      toast.success("Request approved & payment link generated");
+    } catch (e: any) {
+      const { toast } = await import("sonner");
+      toast.error(e.message || "Failed to approve request");
+    } finally {
+      setApprovingId(null);
+      fetchAll();
+    }
   };
 
   const handleDenyRequest = async (id: string) => {
@@ -635,9 +652,15 @@ const Admin = () => {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => handleApproveRequest(r.id)}
+                                disabled={approvingId === r.id}
                                 className="text-green-400 hover:text-green-300 hover:bg-green-500/10 h-8 text-xs tracking-wider uppercase font-body font-light"
                               >
-                                <CheckCircle size={14} className="mr-1" /> Approve
+                                {approvingId === r.id ? (
+                                  <span className="animate-spin mr-1">⏳</span>
+                                ) : (
+                                  <CheckCircle size={14} className="mr-1" />
+                                )}
+                                {approvingId === r.id ? "Approving..." : "Approve"}
                               </Button>
                               <Dialog open={denyDialogOpen === r.id} onOpenChange={(open) => { setDenyDialogOpen(open ? r.id : null); if (!open) setDenyReason(""); }}>
                                 <DialogTrigger asChild>
