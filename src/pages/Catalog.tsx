@@ -1,4 +1,5 @@
 import { useAuth } from "@/hooks/useAuth";
+import { openCalendly } from "@/hooks/useCalendly";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
