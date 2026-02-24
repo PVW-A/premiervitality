@@ -58,6 +58,19 @@ interface Order {
   patient_name?: string;
 }
 
+interface PeptideRequest {
+  id: string;
+  user_id: string;
+  peptide_id: string;
+  peptide_name: string;
+  variation_label: string | null;
+  price: number | null;
+  status: string;
+  deny_reason: string | null;
+  created_at: string;
+  patient_name?: string;
+}
+
 const ORDER_STATUSES: OrderStatus[] = ["pending", "processing", "shipped", "delivered", "cancelled"];
 
 const statusColor: Record<string, string> = {
