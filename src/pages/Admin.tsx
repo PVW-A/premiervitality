@@ -197,6 +197,23 @@ const Admin = () => {
     fetchAll();
   };
 
+  const handleApproveRequest = async (id: string) => {
+    await supabase.from("peptide_requests").update({ status: "approved" }).eq("id", id);
+    fetchAll();
+  };
+
+  const handleDenyRequest = async (id: string) => {
+    await supabase.from("peptide_requests").update({ status: "denied", deny_reason: denyReason || null }).eq("id", id);
+    setDenyDialogOpen(null);
+    setDenyReason("");
+    fetchAll();
+  };
+
+  const handleDeleteRequest = async (id: string) => {
+    await supabase.from("peptide_requests").delete().eq("id", id);
+    fetchAll();
+  };
+
   const handleCreateOrder = async () => {
     if (!newOrder.user_id) return;
     await supabase.from("orders").insert({
