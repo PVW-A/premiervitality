@@ -29,6 +29,9 @@ const AboutSection = () => (
           <p className="text-muted-foreground font-body font-light text-sm leading-relaxed">
             Every protocol is designed around your labs, lifestyle, and goals because optimal health isn't one-size-fits-all.
           </p>
+          <Link to="/about" className="mt-4 inline-block text-xs tracking-[0.2em] uppercase text-primary/80 hover:text-primary transition-colors font-body">
+            Learn More About Us →
+          </Link>
         </motion.div>
         <motion.div
           initial={{ opacity: 0, x: 40 }}
