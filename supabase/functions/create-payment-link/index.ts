@@ -100,8 +100,23 @@ Deno.serve(async (req) => {
     }
 
     // Build Square payment link
-    const SQUARE_ACCESS_TOKEN = Deno.env.get("SQUARE_ACCESS_TOKEN")!;
-    const SQUARE_LOCATION_ID = Deno.env.get("SQUARE_LOCATION_ID")!;
+    const SQUARE_ACCESS_TOKEN = Deno.env.get("SQUARE_ACCESS_TOKEN");
+    const SQUARE_LOCATION_ID = Deno.env.get("SQUARE_LOCATION_ID");
+
+    console.log("Square token info:", {
+      tokenPresent: !!SQUARE_ACCESS_TOKEN,
+      tokenLength: SQUARE_ACCESS_TOKEN?.length ?? 0,
+      tokenPrefix: SQUARE_ACCESS_TOKEN?.substring(0, 10) ?? "MISSING",
+      locationPresent: !!SQUARE_LOCATION_ID,
+      locationValue: SQUARE_LOCATION_ID?.substring(0, 6) ?? "MISSING",
+    });
+
+    if (!SQUARE_ACCESS_TOKEN || !SQUARE_LOCATION_ID) {
+      return new Response(
+        JSON.stringify({ error: "Missing Square credentials" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     const peptideName = requestRow.variation_label
       ? `${requestRow.peptide_name} — ${requestRow.variation_label}`
