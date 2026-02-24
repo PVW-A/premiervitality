@@ -8,8 +8,15 @@ const stats = [
 ];
 
 const AboutSection = () => (
-  <section id="about" className="py-28 px-6 bg-card/50">
-    <div className="max-w-5xl mx-auto">
+  <section id="about" className="relative py-28 px-6 overflow-hidden">
+    {/* Layered luxury background */}
+    <div className="absolute inset-0 bg-gradient-to-br from-[hsl(220,20%,6%)] via-[hsl(220,18%,8%)] to-[hsl(230,20%,5%)]" />
+    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(40,45%,58%,0.04),transparent_60%)]" />
+    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(40,45%,58%,0.03),transparent_50%)]" />
+    <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")' }} />
+    <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+    <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+    <div className="max-w-5xl mx-auto relative z-10">
       <div className="grid md:grid-cols-2 gap-16 items-center">
         <motion.div
           initial={{ opacity: 0, x: -40 }}
