@@ -42,6 +42,7 @@ const Portal = () => {
   const navigate = useNavigate();
   const [peptides, setPeptides] = useState<PatientPeptide[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [requests, setRequests] = useState<any[]>([]);
   const [profile, setProfile] = useState<{ first_name: string | null; last_name: string | null } | null>(null);
 
   useEffect(() => {
