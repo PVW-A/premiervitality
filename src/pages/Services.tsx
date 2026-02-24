@@ -49,12 +49,26 @@ const Services = () => {
     navigate("/#contact");
   };
 
+  const squareLinks: Record<string, { monthly: string; annual: string }> = {
+    essential: {
+      monthly: "https://square.link/u/zWb8E2dA",
+      annual: "https://square.link/u/lTAiIdGI",
+    },
+    premium: {
+      monthly: "https://square.link/u/gH4QeARi",
+      annual: "https://square.link/u/HuLd1lAl",
+    },
+    elite: {
+      monthly: "https://square.link/u/Vef3c9jk",
+      annual: "https://square.link/u/K2CBoxiE",
+    },
+  };
+
   const tierAccents: Record<string, string> = {
     essential: "border-border",
     premium: "border-primary/60",
     elite: "border-primary",
   };
-
   const savingsPercent = (monthly: number, annual: number) =>
     Math.round(((monthly - annual) / monthly) * 100);
 
