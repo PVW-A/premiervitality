@@ -11,7 +11,7 @@ const peptides = [
     name: "BPC-157",
     category: "Recovery & Healing",
     price: 350,
-    description: "Body Protection Compound — a naturally occurring peptide found in gastric juice. Promotes tissue repair, reduces inflammation, and accelerates healing of muscles, tendons, and ligaments.",
+    description: "Body Protection Compound, a naturally occurring peptide found in gastric juice. Promotes tissue repair, reduces inflammation, and accelerates healing of muscles, tendons, and ligaments.",
     benefits: ["Accelerates wound and tissue healing", "Reduces inflammation", "Supports gut health", "Promotes tendon and ligament repair", "Neuroprotective properties"],
     candidates: ["Athletes recovering from injury", "Individuals with chronic joint or tendon pain", "Those with gut issues like leaky gut or IBS", "Post-surgical recovery patients"],
     administration: "Subcutaneous injection, typically once or twice daily",
