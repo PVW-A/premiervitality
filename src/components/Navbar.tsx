@@ -64,9 +64,9 @@ const Navbar = () => {
               {links.map((l) => (
                 <a
                   key={l.label}
-                  href={l.href}
-                  onClick={() => setOpen(false)}
-                  className="text-xs tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors font-body font-light"
+                  href={l.onClick ? undefined : l.href}
+                  onClick={(e) => { if (l.onClick) { e.preventDefault(); l.onClick(); } setOpen(false); }}
+                  className="text-xs tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors font-body font-light cursor-pointer"
                 >
                   {l.label}
                 </a>
