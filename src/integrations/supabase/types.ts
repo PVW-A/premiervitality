@@ -231,6 +231,53 @@ export type Database = {
           },
         ]
       }
+      peptide_requests: {
+        Row: {
+          created_at: string
+          deny_reason: string | null
+          id: string
+          peptide_id: string
+          peptide_name: string
+          price: number | null
+          status: string
+          updated_at: string
+          user_id: string
+          variation_label: string | null
+        }
+        Insert: {
+          created_at?: string
+          deny_reason?: string | null
+          id?: string
+          peptide_id: string
+          peptide_name: string
+          price?: number | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          variation_label?: string | null
+        }
+        Update: {
+          created_at?: string
+          deny_reason?: string | null
+          id?: string
+          peptide_id?: string
+          peptide_name?: string
+          price?: number | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          variation_label?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "peptide_requests_peptide_id_fkey"
+            columns: ["peptide_id"]
+            isOneToOne: false
+            referencedRelation: "peptides"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       peptides: {
         Row: {
           administration: string | null
