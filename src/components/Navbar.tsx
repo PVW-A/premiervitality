@@ -10,6 +10,7 @@ const Navbar = () => {
     { label: "About", href: "/about" },
     { label: "Services", href: "/services" },
     { label: "Peptides", href: "/peptides" },
+    { label: "News", href: "/news" },
     { label: "Contact", href: "#", onClick: openCalendly },
   ];
 
