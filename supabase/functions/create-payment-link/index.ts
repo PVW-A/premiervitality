@@ -143,7 +143,7 @@ Deno.serve(async (req) => {
 
     if (addKit) {
       lineItems.push({
-        name: `Injection Kit (${INJECTION_KIT_SKU})`,
+        name: "Injection Kit",
         quantity: "1",
         note: `SKU: ${INJECTION_KIT_SKU}`,
         base_price_money: {
@@ -155,7 +155,7 @@ Deno.serve(async (req) => {
 
     if (addShipping) {
       lineItems.push({
-        name: `Overnight Shipping (${SHIPPING_SKU})`,
+        name: "Overnight Shipping",
         quantity: "1",
         note: `SKU: ${SHIPPING_SKU}`,
         base_price_money: {
