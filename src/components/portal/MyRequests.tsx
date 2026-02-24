@@ -25,6 +25,7 @@ const statusBadge: Record<string, string> = {
   pending: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
   approved: "bg-green-500/20 text-green-400 border-green-500/30",
   denied: "bg-destructive/20 text-destructive border-destructive/30",
+  paid: "bg-primary/20 text-primary border-primary/30",
 };
 
 const PICKUP_ADDRESS = "1870 W. Fry Rd. Ste 1, Chandler, AZ 85224";
@@ -132,7 +133,7 @@ export default function MyRequests({
                           variant="outline"
                           className={statusBadge[r.status] || ""}
                         >
-                          {r.status}
+                          {r.status === "paid" ? "Confirmed" : r.status}
                         </Badge>
                       </div>
                       <p className="text-xs text-muted-foreground font-body font-light">
@@ -161,7 +162,7 @@ export default function MyRequests({
                       )}
                     </div>
 
-                    {/* Already has payment link */}
+                    {/* Already has payment link - show Pay Now (not if already paid) */}
                     {r.status === "approved" && r.payment_url && (
                       <Button
                         size="sm"
