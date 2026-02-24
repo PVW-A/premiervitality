@@ -32,19 +32,19 @@ const OurWhy = () => (
 
           <div className="space-y-6 text-muted-foreground font-body font-light text-sm leading-relaxed">
             <p>
-              This company was never just a business idea for me — it was born from watching the people I love the most struggle with something I couldn't fix.
+              This company was never just a business idea for me. It was born from watching the people I love the most struggle with something I couldn't fix.
             </p>
             <p>
-              Several members of my family have battled degenerative brain diseases. I've watched brilliant, vibrant people slowly lose pieces of themselves — their memories, their independence, their spark. It's the kind of thing that changes you permanently.
+              Several members of my family have battled degenerative brain diseases. I've watched brilliant, vibrant people slowly lose pieces of themselves: their memories, their independence, their spark. It's the kind of thing that changes you permanently.
             </p>
             <p>
-              I started researching everything I could find. I read the studies, followed the clinical trials, talked to physicians and researchers. That's when I discovered peptide therapy — and the growing body of evidence behind its potential to support neurological health, cellular repair, and overall vitality.
+              I started researching everything I could find. I read the studies, followed the clinical trials, talked to physicians and researchers. That's when I discovered peptide therapy and the growing body of evidence behind its potential to support neurological health, cellular repair, and overall vitality.
             </p>
             <p>
-              I'm not here to make promises. I'm here because I believe the science is worth pursuing, and because I refuse to sit on the sidelines while the people I care about — and people like them — wait for answers that may never come from conventional medicine alone.
+              I'm not here to make promises. I'm here because I believe the science is worth pursuing, and because I refuse to sit on the sidelines while the people I care about, and people like them, wait for answers that may never come from conventional medicine alone.
             </p>
             <p>
-              Peptide Vitality exists because of that urgency. Every protocol we develop, every patient we serve, is a step closer to the future I want for my family — and for yours.
+              Peptide Vitality exists because of that urgency. Every protocol we develop, every patient we serve, is a step closer to the future I want for my family and for yours.
             </p>
           </div>
         </motion.div>

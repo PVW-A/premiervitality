@@ -26,7 +26,7 @@ const AboutSection = () => (
             We are a physician-led vitality clinic specializing in peptide therapy. Our evidence-based approach combines cutting-edge research with personalized treatment plans.
           </p>
           <p className="text-muted-foreground font-body font-light text-sm leading-relaxed">
-            Every protocol is designed around your labs, lifestyle, and goals — because optimal health isn't one-size-fits-all.
+            Every protocol is designed around your labs, lifestyle, and goals because optimal health isn't one-size-fits-all.
           </p>
         </motion.div>
         <motion.div
