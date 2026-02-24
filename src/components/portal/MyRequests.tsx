@@ -28,7 +28,8 @@ const statusBadge: Record<string, string> = {
 };
 
 const PICKUP_ADDRESS = "1870 W. Fry Rd. Ste 1, Chandler, AZ 85224";
-const INJECTION_KIT_PRICE = 20;
+const INJECTION_KIT_PRICE = 30;
+const SHIPPING_PRICE = 35;
 
 export default function MyRequests({
   requests,
@@ -84,6 +85,7 @@ export default function MyRequests({
     const opts = getOptions(r.id);
     let total = r.price ?? 0;
     if (opts.kit) total += INJECTION_KIT_PRICE;
+    if (opts.delivery === "shipping") total += SHIPPING_PRICE;
     return total;
   };
 
@@ -174,7 +176,7 @@ export default function MyRequests({
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
                           <Label className="text-sm font-body font-light text-foreground">
-                            Injection Kit — $20.00
+                            Injection Kit — $30.00
                           </Label>
                           <p className="text-xs text-muted-foreground font-body font-light">
                             Includes 35 needles &amp; 35 alcohol swabs
@@ -245,10 +247,10 @@ export default function MyRequests({
                             />
                             <div>
                               <p className="text-sm font-body font-light text-foreground">
-                                Ship to my address
+                                Ship to my address — $35.00
                               </p>
                               <p className="text-xs text-muted-foreground font-body font-light mt-0.5">
-                                Shipping address collected at checkout
+                                Overnight priority · address collected at checkout
                               </p>
                             </div>
                           </button>
