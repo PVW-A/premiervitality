@@ -278,6 +278,14 @@ const Admin = () => {
             <TabsTrigger value="orders" className="text-xs tracking-wider uppercase font-body font-light data-[state=active]:bg-background">
               <Package size={14} className="mr-1.5" /> Orders
             </TabsTrigger>
+            <TabsTrigger value="requests" className="text-xs tracking-wider uppercase font-body font-light data-[state=active]:bg-background">
+              <ClipboardList size={14} className="mr-1.5" /> Requests
+              {peptideRequests.filter(r => r.status === "pending").length > 0 && (
+                <Badge variant="outline" className="ml-1.5 bg-primary/20 text-primary border-primary/30 text-[9px] px-1.5 py-0">
+                  {peptideRequests.filter(r => r.status === "pending").length}
+                </Badge>
+              )}
+            </TabsTrigger>
           </TabsList>
 
           {/* OVERVIEW TAB */}
