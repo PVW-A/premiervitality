@@ -89,7 +89,7 @@ For candidates: List 2-4 ideal patient profiles, comma-separated. Frame aspirati
           },
           {
             role: "user",
-            content: `Generate clinical descriptions, benefits, and ideal candidate profiles for these peptides:\n\n${peptideList}`,
+            content: `Generate clinical descriptions, benefits, and ideal candidate profiles for these peptides. IMPORTANT: The "name" field in your response must be the EXACT name in quotes, do not include the category in brackets.\n\n${peptideList}`,
           },
         ],
       }),
