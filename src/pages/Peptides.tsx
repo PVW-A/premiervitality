@@ -133,29 +133,26 @@ const Peptides = () => {
           </div>
 
           {/* Category filters */}
-          <div className="flex flex-wrap justify-center gap-2 mb-10">
+          <div className="flex flex-wrap justify-center gap-2 mb-12">
             <button
               onClick={() => setActiveCategory(null)}
-              className={`px-4 py-2 text-[10px] tracking-[0.15em] uppercase font-body font-light border rounded transition-colors ${
-                !activeCategory ? "bg-primary/15 text-primary border-primary/30" : "border-border text-muted-foreground hover:text-foreground hover:border-muted-foreground"
+              className={`px-4 py-2 text-[9px] tracking-[0.2em] uppercase font-body font-extralight border transition-all duration-300 ${
+                !activeCategory ? "bg-primary/10 text-primary/80 border-primary/20" : "border-border/40 text-muted-foreground/50 hover:text-foreground/60 hover:border-border/60"
               }`}
             >
-              All ({groups.length})
+              All
             </button>
-            {categories.map(cat => {
-              const count = groups.filter(g => g.category === cat).length;
-              return (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
-                  className={`px-4 py-2 text-[10px] tracking-[0.15em] uppercase font-body font-light border rounded transition-colors ${
-                    activeCategory === cat ? "bg-primary/15 text-primary border-primary/30" : "border-border text-muted-foreground hover:text-foreground hover:border-muted-foreground"
-                  }`}
-                >
-                  {cat} ({count})
-                </button>
-              );
-            })}
+            {categories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
+                className={`px-4 py-2 text-[9px] tracking-[0.2em] uppercase font-body font-extralight border transition-all duration-300 ${
+                  activeCategory === cat ? "bg-primary/10 text-primary/80 border-primary/20" : "border-border/40 text-muted-foreground/50 hover:text-foreground/60 hover:border-border/60"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
 
           {/* Loading */}
