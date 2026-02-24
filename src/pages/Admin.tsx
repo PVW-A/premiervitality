@@ -197,9 +197,26 @@ const Admin = () => {
     fetchAll();
   };
 
+  const [approvingId, setApprovingId] = useState<string | null>(null);
+
   const handleApproveRequest = async (id: string) => {
-    await supabase.from("peptide_requests").update({ status: "approved" }).eq("id", id);
-    fetchAll();
+    setApprovingId(id);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-payment-link", {
+        body: { request_id: id },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      // toast handled by sonner
+      const { toast } = await import("sonner");
+      toast.success("Request approved & payment link generated");
+    } catch (e: any) {
+      const { toast } = await import("sonner");
+      toast.error(e.message || "Failed to approve request");
+    } finally {
+      setApprovingId(null);
+      fetchAll();
+    }
   };
 
   const handleDenyRequest = async (id: string) => {
