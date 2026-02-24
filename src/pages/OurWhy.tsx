@@ -35,7 +35,7 @@ const OurWhy = () => (
               This company was never just a business idea for me. It was born from watching the people I love the most struggle with something I couldn't fix.
             </p>
             <p>
-              Several members of my family have battled degenerative brain diseases. I've watched brilliant, vibrant people slowly lose pieces of themselves — their memories, their independence, their spark. It's the kind of thing that changes you permanently.
+              Several members of my family have battled degenerative brain diseases. I've watched brilliant, vibrant people slowly lose pieces of themselves: their memories, their independence, their spark. It's the kind of thing that changes you permanently.
             </p>
             <p>
               I started researching everything I could find. I read the studies, followed the clinical trials, talked to physicians and researchers. That's when I discovered peptide therapy — and the growing body of evidence behind its potential to support neurological health, cellular repair, and overall vitality.
