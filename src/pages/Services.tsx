@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { openCalendly } from "@/hooks/useCalendly";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Check, Sparkles } from "lucide-react";
@@ -236,9 +237,9 @@ const Services = () => {
           <p className="text-muted-foreground font-body font-light text-sm leading-relaxed">
             All memberships include access to our complete peptide catalog with
             member-exclusive pricing. Need help choosing?{" "}
-            <a href="/#contact" className="text-primary hover:underline">
+            <button onClick={openCalendly} className="text-primary hover:underline">
               Contact us
-            </a>{" "}
+            </button>{" "}
             for a free consultation.
           </p>
         </section>

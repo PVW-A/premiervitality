@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Menu, X, User, ShoppingCart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import PVMonogram from "./PVMonogram";
+import { openCalendly } from "@/hooks/useCalendly";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -9,7 +10,7 @@ const Navbar = () => {
     { label: "About", href: "/about" },
     { label: "Services", href: "/services" },
     { label: "Peptides", href: "/peptides" },
-    { label: "Contact", href: "#contact" },
+    { label: "Contact", href: "#", onClick: openCalendly },
   ];
 
   return (
@@ -25,8 +26,9 @@ const Navbar = () => {
           {links.map((l) => (
             <a
               key={l.label}
-              href={l.href}
-              className="text-xs font-body font-light tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300"
+              href={l.onClick ? undefined : l.href}
+              onClick={l.onClick ? (e) => { e.preventDefault(); l.onClick!(); } : undefined}
+              className="text-xs font-body font-light tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 cursor-pointer"
             >
               {l.label}
             </a>
@@ -39,12 +41,12 @@ const Navbar = () => {
           <button className="text-muted-foreground hover:text-foreground transition-colors">
             <ShoppingCart size={18} strokeWidth={1.2} />
           </button>
-          <a
-            href="#contact"
+          <button
+            onClick={openCalendly}
             className="ml-2 px-5 py-2 text-xs font-body font-light tracking-[0.2em] uppercase border border-primary/40 text-primary hover:bg-primary/10 transition-colors rounded-none"
           >
             Order
-          </a>
+          </button>
         </div>
         <button className="md:hidden text-foreground" onClick={() => setOpen(!open)}>
           {open ? <X size={22} strokeWidth={1.2} /> : <Menu size={22} strokeWidth={1.2} />}
@@ -62,20 +64,19 @@ const Navbar = () => {
               {links.map((l) => (
                 <a
                   key={l.label}
-                  href={l.href}
-                  onClick={() => setOpen(false)}
-                  className="text-xs tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors font-body font-light"
+                  href={l.onClick ? undefined : l.href}
+                  onClick={(e) => { if (l.onClick) { e.preventDefault(); l.onClick(); } setOpen(false); }}
+                  className="text-xs tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors font-body font-light cursor-pointer"
                 >
                   {l.label}
                 </a>
               ))}
-              <a
-                href="#contact"
-                onClick={() => setOpen(false)}
+              <button
+                onClick={() => { openCalendly(); setOpen(false); }}
                 className="px-5 py-2 text-xs font-body font-light tracking-[0.2em] uppercase border border-primary/40 text-primary text-center"
               >
                 Order
-              </a>
+              </button>
             </div>
           </motion.div>
         )}

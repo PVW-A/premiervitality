@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import PVMonogram from "./PVMonogram";
+import { openCalendly } from "@/hooks/useCalendly";
 import heroBg from "@/assets/hero-bg.jpg";
 
 const HeroSection = () => (
@@ -61,12 +62,12 @@ const HeroSection = () => (
         >
           Explore Protocols
         </a>
-        <a
-          href="#contact"
+        <button
+          onClick={openCalendly}
           className="text-xs font-body font-light tracking-[0.25em] uppercase text-muted-foreground hover:text-foreground transition-colors"
         >
           Request Consultation
-        </a>
+        </button>
       </motion.div>
 
     </div>
