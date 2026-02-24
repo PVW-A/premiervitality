@@ -14,6 +14,98 @@ export type Database = {
   }
   public: {
     Tables: {
+      membership_tiers: {
+        Row: {
+          annual_price: number
+          blood_work_frequency: string
+          consultation_frequency: string
+          created_at: string
+          discount_pct: number
+          features: Json | null
+          id: string
+          monthly_price: number
+          name: string
+          priority_support: boolean
+          slug: string
+          sort_order: number
+        }
+        Insert: {
+          annual_price: number
+          blood_work_frequency: string
+          consultation_frequency: string
+          created_at?: string
+          discount_pct?: number
+          features?: Json | null
+          id?: string
+          monthly_price: number
+          name: string
+          priority_support?: boolean
+          slug: string
+          sort_order?: number
+        }
+        Update: {
+          annual_price?: number
+          blood_work_frequency?: string
+          consultation_frequency?: string
+          created_at?: string
+          discount_pct?: number
+          features?: Json | null
+          id?: string
+          monthly_price?: number
+          name?: string
+          priority_support?: boolean
+          slug?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      memberships: {
+        Row: {
+          billing_cycle: string
+          cancelled_at: string | null
+          created_at: string
+          id: string
+          renews_at: string | null
+          started_at: string
+          status: string
+          tier_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          billing_cycle?: string
+          cancelled_at?: string | null
+          created_at?: string
+          id?: string
+          renews_at?: string | null
+          started_at?: string
+          status?: string
+          tier_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          billing_cycle?: string
+          cancelled_at?: string | null
+          created_at?: string
+          id?: string
+          renews_at?: string | null
+          started_at?: string
+          status?: string
+          tier_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "memberships_tier_id_fkey"
+            columns: ["tier_id"]
+            isOneToOne: false
+            referencedRelation: "membership_tiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_items: {
         Row: {
           created_at: string
