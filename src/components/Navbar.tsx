@@ -71,13 +71,12 @@ const Navbar = () => {
                   {l.label}
                 </a>
               ))}
-              <a
-                href="#contact"
-                onClick={() => setOpen(false)}
+              <button
+                onClick={() => { openCalendly(); setOpen(false); }}
                 className="px-5 py-2 text-xs font-body font-light tracking-[0.2em] uppercase border border-primary/40 text-primary text-center"
               >
                 Order
-              </a>
+              </button>
             </div>
           </motion.div>
         )}
