@@ -1,6 +1,6 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -49,52 +49,48 @@ const Portal = () => {
     if (!loading && !user) navigate("/auth");
   }, [user, loading, navigate]);
 
-  useEffect(() => {
+  const fetchData = useCallback(async () => {
     if (!user) return;
 
-    const fetchData = async () => {
-      // Fetch profile
-      const { data: profileData } = await supabase
-        .from("profiles")
-        .select("first_name, last_name")
-        .eq("user_id", user.id)
-        .single();
-      setProfile(profileData);
+    const { data: profileData } = await supabase
+      .from("profiles")
+      .select("first_name, last_name")
+      .eq("user_id", user.id)
+      .single();
+    setProfile(profileData);
 
-      // Fetch patient peptides with peptide names
-      const { data: ppData } = await supabase
-        .from("patient_peptides")
-        .select("*, peptides(name)")
-        .eq("user_id", user.id);
+    const { data: ppData } = await supabase
+      .from("patient_peptides")
+      .select("*, peptides(name)")
+      .eq("user_id", user.id);
 
-      if (ppData) {
-        setPeptides(
-          ppData.map((pp: any) => ({
-            ...pp,
-            peptide_name: pp.peptides?.name ?? "Unknown",
-          }))
-        );
-      }
+    if (ppData) {
+      setPeptides(
+        ppData.map((pp: any) => ({
+          ...pp,
+          peptide_name: pp.peptides?.name ?? "Unknown",
+        }))
+      );
+    }
 
-      // Fetch orders
-      const { data: orderData } = await supabase
-        .from("orders")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-      if (orderData) setOrders(orderData);
+    const { data: orderData } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+    if (orderData) setOrders(orderData);
 
-      // Fetch peptide requests
-      const { data: reqData } = await supabase
-        .from("peptide_requests")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-      if (reqData) setRequests(reqData);
-    };
-
-    fetchData();
+    const { data: reqData } = await supabase
+      .from("peptide_requests")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+    if (reqData) setRequests(reqData);
   }, [user]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const getDaysRemaining = (qty: number, perDay: number) => {
     if (!perDay || perDay <= 0) return "—";
@@ -216,7 +212,7 @@ const Portal = () => {
 
 
         {/* My Requests */}
-        <MyRequests requests={requests} />
+        <MyRequests requests={requests} onRefresh={fetchData} />
 
         {/* Orders */}
         <section>
