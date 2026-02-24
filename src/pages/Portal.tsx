@@ -214,6 +214,10 @@ const Portal = () => {
           )}
         </section>
 
+
+        {/* My Requests */}
+        <MyRequests requests={requests} />
+
         {/* Orders */}
         <section>
           <div className="flex items-center gap-2 mb-4">
