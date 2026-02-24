@@ -32,7 +32,7 @@ const OurWhy = () => (
 
           <div className="space-y-6 text-muted-foreground font-body font-light text-sm leading-relaxed">
             <p>
-              This company was never just a business idea for me — it was born from watching the people I love the most struggle with something I couldn't fix.
+              This company was never just a business idea for me. It was born from watching the people I love the most struggle with something I couldn't fix.
             </p>
             <p>
               Several members of my family have battled degenerative brain diseases. I've watched brilliant, vibrant people slowly lose pieces of themselves — their memories, their independence, their spark. It's the kind of thing that changes you permanently.
