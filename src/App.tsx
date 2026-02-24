@@ -10,6 +10,7 @@ import Portal from "./pages/Portal";
 import Admin from "./pages/Admin";
 import Catalog from "./pages/Catalog";
 import PeptidesPage from "./pages/Peptides";
+import OurWhy from "./pages/OurWhy";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
