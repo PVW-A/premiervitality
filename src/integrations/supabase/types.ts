@@ -236,9 +236,11 @@ export type Database = {
           created_at: string
           deny_reason: string | null
           id: string
+          payment_url: string | null
           peptide_id: string
           peptide_name: string
           price: number | null
+          square_order_id: string | null
           status: string
           updated_at: string
           user_id: string
@@ -248,9 +250,11 @@ export type Database = {
           created_at?: string
           deny_reason?: string | null
           id?: string
+          payment_url?: string | null
           peptide_id: string
           peptide_name: string
           price?: number | null
+          square_order_id?: string | null
           status?: string
           updated_at?: string
           user_id: string
@@ -260,9 +264,11 @@ export type Database = {
           created_at?: string
           deny_reason?: string | null
           id?: string
+          payment_url?: string | null
           peptide_id?: string
           peptide_name?: string
           price?: number | null
+          square_order_id?: string | null
           status?: string
           updated_at?: string
           user_id?: string
