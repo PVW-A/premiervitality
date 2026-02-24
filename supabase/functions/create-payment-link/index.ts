@@ -6,7 +6,8 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const INJECTION_KIT_PRICE = 2000; // $20.00 in cents
+const INJECTION_KIT_PRICE = 3000; // $30.00 in cents
+const SHIPPING_PRICE = 3500; // $35.00 in cents
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -115,6 +116,10 @@ Deno.serve(async (req) => {
     if (addKit) {
       totalCents += INJECTION_KIT_PRICE;
     }
+    const addShipping = delivery_method === "shipping";
+    if (addShipping) {
+      totalCents += SHIPPING_PRICE;
+    }
 
     const peptideName = requestRow.variation_label
       ? `${requestRow.peptide_name} — ${requestRow.variation_label}`
@@ -122,8 +127,9 @@ Deno.serve(async (req) => {
 
     // Build line item description
     const parts = [peptideName];
-    if (addKit) parts.push("+ Injection Kit ($20)");
-    const deliveryLabel = delivery_method === "shipping" ? "Shipping" : "Pickup";
+    if (addKit) parts.push("+ Injection Kit ($30)");
+    if (addShipping) parts.push("+ Shipping ($35)");
+    const deliveryLabel = addShipping ? "Shipping" : "Pickup";
     parts.push(`[${deliveryLabel}]`);
 
     const payload = {
