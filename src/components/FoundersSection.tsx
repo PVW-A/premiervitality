@@ -47,10 +47,14 @@ const FoundersSection = () => (
             transition={{ duration: 0.6, delay: i * 0.15 }}
             className="flex flex-col items-center"
           >
-            <div className="w-24 h-24 rounded-full border-2 border-primary/40 bg-secondary flex items-center justify-center mb-6">
-              <span className="text-2xl font-heading font-extralight text-primary">
-                {f.initials}
-              </span>
+            <div className="w-24 h-24 rounded-full border-2 border-primary/40 bg-secondary flex items-center justify-center mb-6 overflow-hidden">
+              {f.photo ? (
+                <img src={f.photo} alt={f.name} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-2xl font-heading font-extralight text-primary">
+                  {f.initials}
+                </span>
+              )}
             </div>
             <h3 className="text-xl font-extralight tracking-tight mb-1">{f.name}</h3>
             <p className="text-xs tracking-[0.2em] uppercase text-primary/70 font-body mb-4">
