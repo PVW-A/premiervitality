@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Syringe, SprayCan, Pill, Droplets } from "lucide-react";
 import peptideVial from "@/assets/peptide-vial.png";
+import { openCalendly } from "@/hooks/useCalendly";
 
 interface PeptideVariation {
   id: string;
