@@ -31,9 +31,12 @@ const Auth = () => {
     setLoading(true);
 
     if (isLogin) {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) setError(error.message);
-      else navigate("/portal");
+      else if (data.user) {
+        const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: data.user.id, _role: "admin" });
+        navigate(isAdmin ? "/admin" : "/portal");
+      }
     } else {
       const { error } = await supabase.auth.signUp({
         email,
