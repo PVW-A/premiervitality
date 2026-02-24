@@ -12,8 +12,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import PVMonogram from "@/components/PVMonogram";
 import AdminOverview from "@/components/admin/AdminOverview";
-import { LogOut, Users, Pill, Package, Plus, Trash2, BarChart3 } from "lucide-react";
+import { LogOut, Users, Pill, Package, Plus, Trash2, BarChart3, ClipboardList, CheckCircle, XCircle } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
+import { Textarea } from "@/components/ui/textarea";
 
 type OrderStatus = Database["public"]["Enums"]["order_status"];
 
