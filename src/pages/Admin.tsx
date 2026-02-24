@@ -120,11 +120,12 @@ const Admin = () => {
   const fetchAll = useCallback(async () => {
     if (!user || !isAdmin) return;
 
-    const [profilesRes, peptidesRes, ppRes, ordersRes] = await Promise.all([
+    const [profilesRes, peptidesRes, ppRes, ordersRes, requestsRes] = await Promise.all([
       supabase.from("profiles").select("user_id, first_name, last_name, phone"),
       supabase.from("peptides").select("*").order("name"),
       supabase.from("patient_peptides").select("*, peptides(name)"),
       supabase.from("orders").select("*").order("created_at", { ascending: false }),
+      supabase.from("peptide_requests").select("*").order("created_at", { ascending: false }),
     ]);
 
     if (profilesRes.data) setPatients(profilesRes.data);
