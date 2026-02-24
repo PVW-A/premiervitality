@@ -219,13 +219,12 @@ const Catalog = () => {
                         </div>
                       )}
                       <div className="pt-2">
-                        <a
-                          href="#contact"
-                          onClick={(e) => { e.stopPropagation(); navigate("/#contact"); }}
+                        <button
+                          onClick={(e) => { e.stopPropagation(); openCalendly(); }}
                           className="inline-block px-5 py-2 text-xs font-body font-light tracking-[0.2em] uppercase border border-primary/40 text-primary hover:bg-primary/10 transition-colors"
                         >
                           Request Consultation
-                        </a>
+                        </button>
                       </div>
                     </motion.div>
                   )}

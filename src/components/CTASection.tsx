@@ -19,12 +19,12 @@ const CTASection = () => (
       <p className="text-muted-foreground font-body font-light text-sm leading-relaxed mb-10 max-w-lg mx-auto">
         Book a free consultation to discuss your goals and discover the right peptide protocol for you.
       </p>
-      <a
-        href="mailto:hello@premiervitality.com"
+      <button
+        onClick={openCalendly}
         className="inline-block px-10 py-3 bg-primary text-primary-foreground font-light tracking-widest uppercase text-xs rounded-sm hover:opacity-90 transition-opacity"
       >
         Book Free Consultation
-      </a>
+      </button>
     </motion.div>
   </section>
 );

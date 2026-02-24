@@ -178,7 +178,7 @@ const PeptideCard = ({ group, index, isExpanded, onToggle }: PeptideCardProps) =
                     className="inline-flex items-center gap-2 px-6 py-2.5 text-[10px] font-body font-extralight tracking-[0.3em] uppercase border border-primary/30 text-primary hover:bg-primary/5 transition-all duration-300"
                   >
                     Schedule Consultation
-                  </a>
+                  </button>
                   <p className="text-[10px] text-muted-foreground/40 font-body font-extralight mt-2 tracking-wide">
                     Comprehensive lab work required prior to prescribing this protocol.
                   </p>
