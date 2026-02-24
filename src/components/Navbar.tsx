@@ -26,8 +26,9 @@ const Navbar = () => {
           {links.map((l) => (
             <a
               key={l.label}
-              href={l.href}
-              className="text-xs font-body font-light tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300"
+              href={l.onClick ? undefined : l.href}
+              onClick={l.onClick ? (e) => { e.preventDefault(); l.onClick!(); } : undefined}
+              className="text-xs font-body font-light tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 cursor-pointer"
             >
               {l.label}
             </a>
