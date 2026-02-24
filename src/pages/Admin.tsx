@@ -587,6 +587,109 @@ const Admin = () => {
               )}
             </div>
           </TabsContent>
+
+          {/* REQUESTS TAB */}
+          <TabsContent value="requests" className="space-y-4">
+            <h2 className="text-xl font-heading font-light text-foreground">Peptide Requests</h2>
+
+            {peptideRequests.length === 0 ? (
+              <Card className="border-border bg-card">
+                <CardContent className="py-10 text-center">
+                  <p className="text-sm text-muted-foreground font-body font-light">No peptide requests yet.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-3">
+                {peptideRequests.map(r => (
+                  <Card key={r.id} className="border-border bg-card">
+                    <CardContent className="py-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-sm font-body font-light text-foreground">{r.patient_name}</span>
+                            <Badge variant="outline" className={
+                              r.status === "pending" ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" :
+                              r.status === "approved" ? "bg-green-500/20 text-green-400 border-green-500/30" :
+                              "bg-destructive/20 text-destructive border-destructive/30"
+                            }>{r.status}</Badge>
+                            {r.price != null && (
+                              <span className="text-xs text-primary font-body font-light">${r.price}</span>
+                            )}
+                          </div>
+                          <p className="text-sm text-foreground/80 font-body font-light">
+                            {r.peptide_name}{r.variation_label ? ` — ${r.variation_label}` : ""}
+                          </p>
+                          <p className="text-xs text-muted-foreground font-body font-light">
+                            {new Date(r.created_at).toLocaleDateString()} at {new Date(r.created_at).toLocaleTimeString()}
+                          </p>
+                          {r.status === "denied" && r.deny_reason && (
+                            <p className="text-xs text-destructive font-body font-light mt-1">
+                              Reason: {r.deny_reason}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {r.status === "pending" && (
+                            <>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleApproveRequest(r.id)}
+                                className="text-green-400 hover:text-green-300 hover:bg-green-500/10 h-8 text-xs tracking-wider uppercase font-body font-light"
+                              >
+                                <CheckCircle size={14} className="mr-1" /> Approve
+                              </Button>
+                              <Dialog open={denyDialogOpen === r.id} onOpenChange={(open) => { setDenyDialogOpen(open ? r.id : null); if (!open) setDenyReason(""); }}>
+                                <DialogTrigger asChild>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="text-destructive hover:text-destructive/80 hover:bg-destructive/10 h-8 text-xs tracking-wider uppercase font-body font-light"
+                                  >
+                                    <XCircle size={14} className="mr-1" /> Deny
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="bg-card border-border">
+                                  <DialogHeader>
+                                    <DialogTitle className="font-heading font-light text-foreground">Deny Request</DialogTitle>
+                                  </DialogHeader>
+                                  <div className="space-y-4">
+                                    <p className="text-sm text-muted-foreground font-body font-light">
+                                      Denying <span className="text-foreground">{r.peptide_name}</span> for <span className="text-foreground">{r.patient_name}</span>
+                                    </p>
+                                    <div className="space-y-2">
+                                      <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Reason (optional)</Label>
+                                      <Textarea
+                                        value={denyReason}
+                                        onChange={(e) => setDenyReason(e.target.value)}
+                                        placeholder="e.g. Lab results required before prescribing..."
+                                        className="bg-secondary border-border font-body font-light text-sm"
+                                        rows={3}
+                                      />
+                                    </div>
+                                    <Button
+                                      onClick={() => handleDenyRequest(r.id)}
+                                      variant="destructive"
+                                      className="w-full text-xs tracking-wider uppercase font-body font-light rounded-none"
+                                    >
+                                      Confirm Denial
+                                    </Button>
+                                  </div>
+                                </DialogContent>
+                              </Dialog>
+                            </>
+                          )}
+                          <Button variant="ghost" size="icon" onClick={() => handleDeleteRequest(r.id)} className="text-muted-foreground hover:text-destructive h-8 w-8">
+                            <Trash2 size={14} />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </TabsContent>
         </Tabs>
       </main>
     </div>
