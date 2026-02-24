@@ -73,7 +73,13 @@ export default function MyRequests({
       );
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-      toast.success("Payment link ready!");
+
+      // Immediately redirect to payment
+      if (data?.payment_url) {
+        window.open(data.payment_url, "_blank");
+      }
+
+      toast.success("Redirecting to checkout…");
       onRefresh();
     } catch (e: any) {
       toast.error(e.message || "Failed to generate payment link");
@@ -133,7 +139,7 @@ export default function MyRequests({
                           variant="outline"
                           className={statusBadge[r.status] || ""}
                         >
-                          {r.status === "paid" ? "Confirmed" : r.status}
+                          {r.status === "paid" ? "Order Confirmed · On Its Way" : r.status}
                         </Badge>
                       </div>
                       <p className="text-xs text-muted-foreground font-body font-light">
