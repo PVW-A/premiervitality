@@ -11,7 +11,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import PVMonogram from "@/components/PVMonogram";
-import { LogOut, Users, Pill, Package, Plus, Trash2, Edit } from "lucide-react";
+import AdminOverview from "@/components/admin/AdminOverview";
+import { LogOut, Users, Pill, Package, Plus, Trash2, BarChart3 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 type OrderStatus = Database["public"]["Enums"]["order_status"];
@@ -28,6 +29,8 @@ interface Peptide {
   name: string;
   description: string | null;
   unit: string | null;
+  price: number | null;
+  cost: number | null;
 }
 
 interface PatientPeptide {
@@ -50,6 +53,7 @@ interface Order {
   expected_delivery: string | null;
   notes: string | null;
   created_at: string;
+  total_amount: number;
   patient_name?: string;
 }
 
@@ -78,9 +82,9 @@ const Admin = () => {
   const [orderDialogOpen, setOrderDialogOpen] = useState(false);
 
   // Form states
-  const [newPeptide, setNewPeptide] = useState({ name: "", description: "", unit: "mg" });
+  const [newPeptide, setNewPeptide] = useState({ name: "", description: "", unit: "mg", price: "", cost: "" });
   const [newAssignment, setNewAssignment] = useState({ user_id: "", peptide_id: "", dosage: "", quantity_remaining: "0", usage_per_day: "1", notes: "" });
-  const [newOrder, setNewOrder] = useState({ user_id: "", status: "pending" as OrderStatus, tracking_number: "", expected_delivery: "", notes: "" });
+  const [newOrder, setNewOrder] = useState({ user_id: "", status: "pending" as OrderStatus, tracking_number: "", expected_delivery: "", notes: "", total_amount: "" });
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
@@ -120,7 +124,7 @@ const Admin = () => {
     }
 
     if (ordersRes.data) {
-      setOrders(ordersRes.data.map(o => ({
+      setOrders(ordersRes.data.map((o: any) => ({
         ...o,
         patient_name: patientMap.get(o.user_id) || "Unknown",
       })));
@@ -131,8 +135,14 @@ const Admin = () => {
 
   const handleAddPeptide = async () => {
     if (!newPeptide.name.trim()) return;
-    await supabase.from("peptides").insert({ name: newPeptide.name, description: newPeptide.description || null, unit: newPeptide.unit || "mg" });
-    setNewPeptide({ name: "", description: "", unit: "mg" });
+    await supabase.from("peptides").insert({
+      name: newPeptide.name,
+      description: newPeptide.description || null,
+      unit: newPeptide.unit || "mg",
+      price: newPeptide.price ? parseFloat(newPeptide.price) : null,
+      cost: newPeptide.cost ? parseFloat(newPeptide.cost) : null,
+    });
+    setNewPeptide({ name: "", description: "", unit: "mg", price: "", cost: "" });
     setPeptideDialogOpen(false);
     fetchAll();
   };
@@ -170,8 +180,9 @@ const Admin = () => {
       tracking_number: newOrder.tracking_number || null,
       expected_delivery: newOrder.expected_delivery || null,
       notes: newOrder.notes || null,
+      total_amount: newOrder.total_amount ? parseFloat(newOrder.total_amount) : 0,
     });
-    setNewOrder({ user_id: "", status: "pending", tracking_number: "", expected_delivery: "", notes: "" });
+    setNewOrder({ user_id: "", status: "pending", tracking_number: "", expected_delivery: "", notes: "", total_amount: "" });
     setOrderDialogOpen(false);
     fetchAll();
   };
@@ -211,8 +222,11 @@ const Admin = () => {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-10">
-        <Tabs defaultValue="patients" className="space-y-6">
+        <Tabs defaultValue="overview" className="space-y-6">
           <TabsList className="bg-secondary border border-border">
+            <TabsTrigger value="overview" className="text-xs tracking-wider uppercase font-body font-light data-[state=active]:bg-background">
+              <BarChart3 size={14} className="mr-1.5" /> Overview
+            </TabsTrigger>
             <TabsTrigger value="patients" className="text-xs tracking-wider uppercase font-body font-light data-[state=active]:bg-background">
               <Users size={14} className="mr-1.5" /> Patients
             </TabsTrigger>
@@ -223,6 +237,11 @@ const Admin = () => {
               <Package size={14} className="mr-1.5" /> Orders
             </TabsTrigger>
           </TabsList>
+
+          {/* OVERVIEW TAB */}
+          <TabsContent value="overview">
+            <AdminOverview patients={patients} orders={orders} patientPeptides={patientPeptides} peptides={peptides} />
+          </TabsContent>
 
           {/* PATIENTS TAB */}
           <TabsContent value="patients" className="space-y-4">
@@ -245,9 +264,7 @@ const Admin = () => {
                         <SelectTrigger className="bg-secondary border-border"><SelectValue placeholder="Select patient" /></SelectTrigger>
                         <SelectContent>
                           {patients.map(p => (
-                            <SelectItem key={p.user_id} value={p.user_id}>
-                              {p.first_name} {p.last_name}
-                            </SelectItem>
+                            <SelectItem key={p.user_id} value={p.user_id}>{p.first_name} {p.last_name}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -289,12 +306,19 @@ const Admin = () => {
 
             {patients.map(patient => {
               const pp = patientPeptides.filter(p => p.user_id === patient.user_id);
+              const patientOrders = orders.filter(o => o.user_id === patient.user_id);
+              const totalSpend = patientOrders.filter(o => o.status !== "cancelled").reduce((s, o) => s + (o.total_amount || 0), 0);
               return (
                 <Card key={patient.user_id} className="border-border bg-card">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg font-heading font-light text-foreground flex items-center justify-between">
                       <span>{patient.first_name} {patient.last_name}</span>
-                      {patient.phone && <span className="text-xs text-muted-foreground font-body font-light">{patient.phone}</span>}
+                      <div className="flex items-center gap-3">
+                        {totalSpend > 0 && (
+                          <span className="text-xs text-primary font-body font-light">${totalSpend.toLocaleString()} spent</span>
+                        )}
+                        {patient.phone && <span className="text-xs text-muted-foreground font-body font-light">{patient.phone}</span>}
+                      </div>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -302,21 +326,30 @@ const Admin = () => {
                       <p className="text-xs text-muted-foreground font-body font-light">No peptides assigned</p>
                     ) : (
                       <div className="space-y-2">
-                        {pp.map(p => (
-                          <div key={p.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-                            <div className="space-y-0.5">
-                              <span className="text-sm text-foreground font-body font-light">{p.peptide_name}</span>
-                              <div className="flex gap-3 text-xs text-muted-foreground font-body font-light">
-                                {p.dosage && <span>{p.dosage}</span>}
-                                <span>{p.quantity_remaining} remaining</span>
-                                <span>{p.usage_per_day}/day</span>
+                        {pp.map(p => {
+                          const daysLeft = p.usage_per_day && p.usage_per_day > 0 && p.quantity_remaining
+                            ? Math.floor(p.quantity_remaining / p.usage_per_day) : null;
+                          return (
+                            <div key={p.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                              <div className="space-y-0.5">
+                                <span className="text-sm text-foreground font-body font-light">{p.peptide_name}</span>
+                                <div className="flex gap-3 text-xs text-muted-foreground font-body font-light">
+                                  {p.dosage && <span>{p.dosage}</span>}
+                                  <span>{p.quantity_remaining} remaining</span>
+                                  <span>{p.usage_per_day}/day</span>
+                                  {daysLeft !== null && (
+                                    <span className={daysLeft <= 7 ? "text-destructive" : "text-primary"}>
+                                      ~{daysLeft}d supply
+                                    </span>
+                                  )}
+                                </div>
                               </div>
+                              <Button variant="ghost" size="icon" onClick={() => handleRemoveAssignment(p.id)} className="text-muted-foreground hover:text-destructive h-8 w-8">
+                                <Trash2 size={14} />
+                              </Button>
                             </div>
-                            <Button variant="ghost" size="icon" onClick={() => handleRemoveAssignment(p.id)} className="text-muted-foreground hover:text-destructive h-8 w-8">
-                              <Trash2 size={14} />
-                            </Button>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     )}
                   </CardContent>
@@ -348,9 +381,19 @@ const Admin = () => {
                       <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Description</Label>
                       <Input value={newPeptide.description} onChange={e => setNewPeptide(p => ({ ...p, description: e.target.value }))} className="bg-secondary border-border" />
                     </div>
-                    <div className="space-y-2">
-                      <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Unit</Label>
-                      <Input value={newPeptide.unit} onChange={e => setNewPeptide(p => ({ ...p, unit: e.target.value }))} className="bg-secondary border-border" placeholder="mg" />
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="space-y-2">
+                        <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Unit</Label>
+                        <Input value={newPeptide.unit} onChange={e => setNewPeptide(p => ({ ...p, unit: e.target.value }))} className="bg-secondary border-border" placeholder="mg" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Price ($)</Label>
+                        <Input type="number" value={newPeptide.price} onChange={e => setNewPeptide(p => ({ ...p, price: e.target.value }))} className="bg-secondary border-border" placeholder="0.00" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Cost ($)</Label>
+                        <Input type="number" value={newPeptide.cost} onChange={e => setNewPeptide(p => ({ ...p, cost: e.target.value }))} className="bg-secondary border-border" placeholder="0.00" />
+                      </div>
                     </div>
                     <Button onClick={handleAddPeptide} className="w-full text-xs tracking-wider uppercase font-body font-light rounded-none">Add Peptide</Button>
                   </div>
@@ -359,20 +402,32 @@ const Admin = () => {
             </div>
 
             <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-              {peptides.map(p => (
-                <Card key={p.id} className="border-border bg-card">
-                  <CardContent className="py-4 flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-body font-light text-foreground">{p.name}</p>
-                      {p.description && <p className="text-xs text-muted-foreground font-body font-light mt-0.5">{p.description}</p>}
-                      <p className="text-xs text-muted-foreground font-body font-light">Unit: {p.unit}</p>
-                    </div>
-                    <Button variant="ghost" size="icon" onClick={() => handleDeletePeptide(p.id)} className="text-muted-foreground hover:text-destructive h-8 w-8">
-                      <Trash2 size={14} />
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
+              {peptides.map(p => {
+                const margin = p.price && p.cost && p.cost > 0 ? ((p.price - p.cost) / p.price * 100) : null;
+                return (
+                  <Card key={p.id} className="border-border bg-card">
+                    <CardContent className="py-4 flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-body font-light text-foreground">{p.name}</p>
+                        {p.description && <p className="text-xs text-muted-foreground font-body font-light mt-0.5">{p.description}</p>}
+                        <div className="flex gap-3 text-xs text-muted-foreground font-body font-light mt-1">
+                          <span>Unit: {p.unit}</span>
+                          {p.price && <span className="text-primary">${p.price}</span>}
+                          {p.cost != null && <span>Cost: ${p.cost}</span>}
+                          {margin !== null && (
+                            <Badge variant="outline" className={margin >= 50 ? "bg-green-500/20 text-green-400 border-green-500/30 text-[10px]" : "bg-yellow-500/20 text-yellow-400 border-yellow-500/30 text-[10px]"}>
+                              {margin.toFixed(0)}%
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                      <Button variant="ghost" size="icon" onClick={() => handleDeletePeptide(p.id)} className="text-muted-foreground hover:text-destructive h-8 w-8">
+                        <Trash2 size={14} />
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
               {peptides.length === 0 && (
                 <p className="text-sm text-muted-foreground font-body font-light col-span-full text-center py-10">No peptides in catalog yet.</p>
               )}
@@ -405,14 +460,20 @@ const Admin = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="space-y-2">
-                      <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Status</Label>
-                      <Select value={newOrder.status} onValueChange={(v) => setNewOrder(p => ({ ...p, status: v as OrderStatus }))}>
-                        <SelectTrigger className="bg-secondary border-border"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          {ORDER_STATUSES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                        </SelectContent>
-                      </Select>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-2">
+                        <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Status</Label>
+                        <Select value={newOrder.status} onValueChange={(v) => setNewOrder(p => ({ ...p, status: v as OrderStatus }))}>
+                          <SelectTrigger className="bg-secondary border-border"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {ORDER_STATUSES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Amount ($)</Label>
+                        <Input type="number" value={newOrder.total_amount} onChange={e => setNewOrder(p => ({ ...p, total_amount: e.target.value }))} className="bg-secondary border-border" placeholder="0.00" />
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Tracking Number</Label>
@@ -441,6 +502,9 @@ const Admin = () => {
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-body font-light text-foreground">{o.patient_name}</span>
                           <Badge variant="outline" className={statusColor[o.status] || ""}>{o.status}</Badge>
+                          {o.total_amount > 0 && (
+                            <span className="text-xs text-primary font-body font-light">${o.total_amount}</span>
+                          )}
                         </div>
                         <div className="flex gap-3 text-xs text-muted-foreground font-body font-light">
                           <span>{new Date(o.created_at).toLocaleDateString()}</span>
