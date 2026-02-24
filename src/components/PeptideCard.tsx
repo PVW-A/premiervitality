@@ -41,15 +41,6 @@ const routeIcon = (route: string) => {
   return <Syringe size={12} strokeWidth={1} />;
 };
 
-const priceRange = (variations: PeptideVariation[]): string => {
-  const prices = variations.map(v => v.price).filter((p): p is number => p !== null);
-  if (prices.length === 0) return "";
-  const min = Math.min(...prices);
-  const max = Math.max(...prices);
-  if (min === max) return `$${min}`;
-  return `$${min} – $${max}`;
-};
-
 interface PeptideCardProps {
   group: PeptideGroup;
   index: number;
@@ -58,8 +49,6 @@ interface PeptideCardProps {
 }
 
 const PeptideCard = ({ group, index, isExpanded, onToggle }: PeptideCardProps) => {
-  const range = priceRange(group.variations);
-  const benefitsList = group.benefits?.split(", ").filter(Boolean) || [];
   const candidatesList = group.candidates?.split(", ").filter(Boolean) || [];
 
   return (
@@ -77,7 +66,7 @@ const PeptideCard = ({ group, index, isExpanded, onToggle }: PeptideCardProps) =
             : "border-border/60 hover:border-primary/10 hover:bg-card/80"
         }`}
       >
-        {/* Header */}
+        {/* Header — no price on right */}
         <div className="flex items-center gap-4 p-5 sm:p-6">
           <div className="w-11 h-11 flex-shrink-0 rounded bg-secondary/30 overflow-hidden flex items-center justify-center">
             <img src={peptideVial} alt="" className="w-9 h-9 object-contain opacity-70" />
@@ -102,37 +91,12 @@ const PeptideCard = ({ group, index, isExpanded, onToggle }: PeptideCardProps) =
             </div>
           </div>
 
-          {range && (
-            <div className="flex-shrink-0 text-right hidden sm:block">
-              <p className="text-sm font-heading font-light text-foreground/80 tracking-wide">{range}</p>
-              {group.variations.length > 1 && (
-                <p className="text-[9px] tracking-[0.2em] uppercase text-muted-foreground/50 font-body font-extralight mt-0.5">
-                  {group.variations.length} formulations
-                </p>
-              )}
-            </div>
-          )}
-
           <ChevronDown
             size={14}
             strokeWidth={1}
             className={`flex-shrink-0 text-muted-foreground/40 transition-transform duration-500 ${isExpanded ? "rotate-180" : ""}`}
           />
         </div>
-
-        {/* Mobile price */}
-        {range && (
-          <div className="px-5 pb-3 sm:hidden">
-            <p className="text-sm font-heading font-light text-foreground/80 tracking-wide">
-              {range}
-              {group.variations.length > 1 && (
-                <span className="text-[9px] tracking-[0.2em] uppercase text-muted-foreground/50 font-body font-extralight ml-3">
-                  {group.variations.length} formulations
-                </span>
-              )}
-            </p>
-          </div>
-        )}
 
         {/* Expanded content */}
         <AnimatePresence>
@@ -144,84 +108,70 @@ const PeptideCard = ({ group, index, isExpanded, onToggle }: PeptideCardProps) =
               transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
               className="overflow-hidden"
             >
-              <div className="px-5 sm:px-6 pb-7 pt-3 space-y-6">
+              <div className="px-5 sm:px-6 pb-7 pt-3 space-y-5">
                 {/* Subtle divider */}
                 <div className="w-full h-px bg-gradient-to-r from-transparent via-primary/15 to-transparent" />
 
-                {/* Description */}
-                {group.description && (
-                  <p className="text-sm text-muted-foreground/80 font-body font-extralight leading-[1.8] max-w-3xl italic">
-                    {group.description}
-                  </p>
-                )}
-
-                {/* Benefits & Ideal Candidates in refined columns */}
-                {(benefitsList.length > 0 || candidatesList.length > 0) && (
-                  <div className="grid md:grid-cols-2 gap-8">
-                    {benefitsList.length > 0 && (
-                      <div>
-                        <p className="text-[10px] tracking-[0.3em] uppercase text-primary/70 font-body font-extralight mb-3">
-                          Clinical Benefits
-                        </p>
-                        <ul className="space-y-2">
-                          {benefitsList.map((b, j) => (
-                            <li key={j} className="text-[13px] text-foreground/60 font-body font-extralight flex items-start gap-2.5 leading-relaxed">
-                              <span className="mt-2 w-[3px] h-[3px] rounded-full bg-primary/40 flex-shrink-0" />
-                              {b}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                {/* Description + Candidates side by side */}
+                <div className="grid md:grid-cols-[1fr,auto] gap-6 md:gap-10">
+                  {/* Left: Description */}
+                  <div className="space-y-4">
+                    {group.description && (
+                      <p className="text-sm text-foreground/60 font-body font-extralight leading-[1.8] italic">
+                        {group.description}
+                      </p>
                     )}
-                    {candidatesList.length > 0 && (
+
+                    {/* Formulations stacked vertically */}
+                    {group.variations.length > 0 && (
                       <div>
-                        <p className="text-[10px] tracking-[0.3em] uppercase text-primary/70 font-body font-extralight mb-3">
-                          Ideal Patient Profile
+                        <p className="text-[10px] tracking-[0.3em] uppercase text-primary/70 font-body font-extralight mb-2.5">
+                          Formulations
                         </p>
-                        <ul className="space-y-2">
-                          {candidatesList.map((c, j) => (
-                            <li key={j} className="text-[13px] text-foreground/60 font-body font-extralight flex items-start gap-2.5 leading-relaxed">
-                              <span className="mt-2 w-[3px] h-[3px] rounded-full bg-primary/40 flex-shrink-0" />
-                              {c}
-                            </li>
-                          ))}
-                        </ul>
+                        <div className="flex flex-col gap-1.5">
+                          {group.variations.map(v => {
+                            const label = v.name.replace(group.baseName, "").replace(/^\s*—\s*/, "").trim() || v.name;
+                            return (
+                              <div
+                                key={v.id}
+                                className="flex items-center gap-2 py-1.5 px-3 text-[11px] font-body font-extralight text-foreground/50 border border-border/30 w-fit"
+                              >
+                                {v.administration && routeIcon(v.administration)}
+                                <span>{label}</span>
+                                {v.price != null && (
+                                  <>
+                                    <span className="text-foreground/20">·</span>
+                                    <span className="text-foreground/40 font-heading">${v.price}</span>
+                                  </>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
                     )}
                   </div>
-                )}
 
-                {/* Available formulations — minimal, elegant */}
-                {group.variations.length > 1 && (
-                  <div>
-                    <p className="text-[10px] tracking-[0.3em] uppercase text-primary/70 font-body font-extralight mb-3">
-                      Available Formulations
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {group.variations.map(v => {
-                        const label = v.name.replace(group.baseName, "").replace(/^\s*—\s*/, "").trim() || v.name;
-                        return (
-                          <span
-                            key={v.id}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-body font-extralight text-foreground/60 border border-border/40 tracking-wide"
-                          >
-                            {v.administration && routeIcon(v.administration)}
-                            {label}
-                            {v.price && (
-                              <span className="text-foreground/40 ml-1">·</span>
-                            )}
-                            {v.price && (
-                              <span className="text-foreground/50 font-heading">${v.price}</span>
-                            )}
-                          </span>
-                        );
-                      })}
+                  {/* Right: Ideal Candidates */}
+                  {candidatesList.length > 0 && (
+                    <div className="md:w-56 md:border-l md:border-border/20 md:pl-8">
+                      <p className="text-[10px] tracking-[0.3em] uppercase text-primary/70 font-body font-extralight mb-3">
+                        Ideal For
+                      </p>
+                      <ul className="space-y-2">
+                        {candidatesList.map((c, j) => (
+                          <li key={j} className="text-[12px] text-foreground/50 font-body font-extralight leading-relaxed flex items-start gap-2">
+                            <span className="mt-1.5 w-[3px] h-[3px] rounded-full bg-primary/40 flex-shrink-0" />
+                            {c}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
 
                 {/* CTA */}
-                <div className="pt-2">
+                <div className="pt-1">
                   <a
                     href="/#contact"
                     onClick={(e) => e.stopPropagation()}
