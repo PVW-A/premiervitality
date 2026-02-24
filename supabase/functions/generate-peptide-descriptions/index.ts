@@ -16,9 +16,11 @@ Deno.serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
+    const { offset = 0, limit = 5 } = await req.json().catch(() => ({}));
+
     // Get all unique base peptides
     const { data: peptides } = await supabase.from("peptides").select("id, name, category, description, benefits, candidates");
-    if (!peptides || peptides.length === 0) throw new Error("No peptides found");
+    if (!peptides) throw new Error("No peptides found");
 
     // Group by base name
     const groups = new Map<string, { ids: string[]; category: string | null; name: string }>();
@@ -30,109 +32,113 @@ Deno.serve(async (req) => {
       groups.get(base)!.ids.push(p.id);
     }
 
-    const baseNames = Array.from(groups.values());
-    const results: { name: string; status: string }[] = [];
-
-    // Process in batches of 10
-    for (let i = 0; i < baseNames.length; i += 10) {
-      const batch = baseNames.slice(i, i + 10);
-      const peptideList = batch.map(b => `- ${b.name} (Category: ${b.category || "Unknown"})`).join("\n");
-
-      const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
-          tools: [{
-            type: "function",
-            function: {
-              name: "update_peptides",
-              description: "Update peptide descriptions, benefits, and ideal candidates",
-              parameters: {
-                type: "object",
-                properties: {
-                  peptides: {
-                    type: "array",
-                    items: {
-                      type: "object",
-                      properties: {
-                        name: { type: "string", description: "Exact base peptide name" },
-                        description: { type: "string", description: "1-2 sentence clinical description of what this compound does, its mechanism of action. Written in an elevated, medical-luxury tone." },
-                        benefits: { type: "string", description: "Comma-separated list of 3-5 key clinical benefits. Use refined medical language." },
-                        candidates: { type: "string", description: "Comma-separated list of 2-4 ideal patient profiles. Written elegantly." },
-                      },
-                      required: ["name", "description", "benefits", "candidates"],
-                    },
-                  },
-                },
-                required: ["peptides"],
-              },
-            },
-          }],
-          tool_choice: { type: "function", function: { name: "update_peptides" } },
-          messages: [
-            {
-              role: "system",
-              content: `You are a medical copywriter for an ultra-premium peptide therapy clinic. Write in a refined, elevated tone—think concierge medicine meets luxury wellness. Be clinically accurate but accessible. Never use casual language. Every description should feel exclusive and authoritative.
-
-For descriptions: Write 1-2 elegant sentences about the compound's mechanism and therapeutic purpose.
-For benefits: List 3-5 specific clinical benefits, comma-separated. Use precise medical terminology.
-For candidates: List 2-4 ideal patient profiles, comma-separated. Frame them aspirationally (e.g., "Executives seeking sustained cognitive clarity" not "People with brain fog").`,
-            },
-            {
-              role: "user",
-              content: `Generate clinical descriptions, benefits, and ideal candidate profiles for these peptides:\n\n${peptideList}`,
-            },
-          ],
-        }),
+    const allBases = Array.from(groups.values());
+    const batch = allBases.slice(offset, offset + limit);
+    
+    if (batch.length === 0) {
+      return new Response(JSON.stringify({ success: true, message: "All done", total: allBases.length }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
-
-      if (!response.ok) {
-        console.error("AI error:", response.status, await response.text());
-        results.push(...batch.map(b => ({ name: b.name, status: "ai_error" })));
-        continue;
-      }
-
-      const data = await response.json();
-      const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
-      if (!toolCall) {
-        results.push(...batch.map(b => ({ name: b.name, status: "no_tool_call" })));
-        continue;
-      }
-
-      const parsed = JSON.parse(toolCall.function.arguments);
-      
-      for (const item of parsed.peptides) {
-        const group = groups.get(item.name);
-        if (!group) {
-          results.push({ name: item.name, status: "not_found" });
-          continue;
-        }
-
-        const { error } = await supabase
-          .from("peptides")
-          .update({
-            description: item.description,
-            benefits: item.benefits,
-            candidates: item.candidates,
-          })
-          .in("id", group.ids);
-
-        results.push({ name: item.name, status: error ? `error: ${error.message}` : "updated" });
-      }
     }
 
-    return new Response(JSON.stringify({ success: true, results }), {
+    const peptideList = batch.map(b => `- ${b.name} (Category: ${b.category || "Unknown"})`).join("\n");
+
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-3-flash-preview",
+        tools: [{
+          type: "function",
+          function: {
+            name: "update_peptides",
+            description: "Update peptide descriptions, benefits, and ideal candidates",
+            parameters: {
+              type: "object",
+              properties: {
+                peptides: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      name: { type: "string" },
+                      description: { type: "string", description: "1-2 sentence clinical description. Elevated, medical-luxury tone." },
+                      benefits: { type: "string", description: "Comma-separated 3-5 clinical benefits. Refined medical language." },
+                      candidates: { type: "string", description: "Comma-separated 2-4 ideal patient profiles. Aspirational framing." },
+                    },
+                    required: ["name", "description", "benefits", "candidates"],
+                  },
+                },
+              },
+              required: ["peptides"],
+            },
+          },
+        }],
+        tool_choice: { type: "function", function: { name: "update_peptides" } },
+        messages: [
+          {
+            role: "system",
+            content: `You are a medical copywriter for an ultra-premium peptide therapy clinic. Write in a refined, elevated tone—think concierge medicine meets luxury wellness. Be clinically accurate but accessible. Never use casual language.
+
+For descriptions: Write 1-2 elegant sentences about the compound's mechanism and therapeutic purpose. Do not mention pharmacy compounding or prescription details.
+For benefits: List 3-5 specific clinical benefits, comma-separated.
+For candidates: List 2-4 ideal patient profiles, comma-separated. Frame aspirationally (e.g., "Executives seeking sustained cognitive clarity" not "People with brain fog").`,
+          },
+          {
+            role: "user",
+            content: `Generate clinical descriptions, benefits, and ideal candidate profiles for these peptides:\n\n${peptideList}`,
+          },
+        ],
+      }),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error("AI error:", response.status, errText);
+      return new Response(JSON.stringify({ error: "AI error", status: response.status, detail: errText }), {
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const data = await response.json();
+    const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall) {
+      return new Response(JSON.stringify({ error: "No tool call returned" }), {
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const parsed = JSON.parse(toolCall.function.arguments);
+    const results: { name: string; status: string }[] = [];
+
+    for (const item of parsed.peptides) {
+      const group = groups.get(item.name);
+      if (!group) { results.push({ name: item.name, status: "not_found" }); continue; }
+
+      const { error } = await supabase
+        .from("peptides")
+        .update({ description: item.description, benefits: item.benefits, candidates: item.candidates })
+        .in("id", group.ids);
+
+      results.push({ name: item.name, status: error ? `error: ${error.message}` : "updated" });
+    }
+
+    return new Response(JSON.stringify({
+      success: true,
+      results,
+      next_offset: offset + limit,
+      total: allBases.length,
+      remaining: Math.max(0, allBases.length - offset - limit),
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
     console.error("Error:", e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });
