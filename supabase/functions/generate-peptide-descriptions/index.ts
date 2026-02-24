@@ -64,7 +64,7 @@ Deno.serve(async (req) => {
                   items: {
                     type: "object",
                     properties: {
-                      name: { type: "string" },
+                      name: { type: "string", description: "The EXACT peptide name as provided, without category in parentheses." },
                       description: { type: "string", description: "1-2 sentence clinical description. Elevated, medical-luxury tone." },
                       benefits: { type: "string", description: "Comma-separated 3-5 clinical benefits. Refined medical language." },
                       candidates: { type: "string", description: "Comma-separated 2-4 ideal patient profiles. Aspirational framing." },
