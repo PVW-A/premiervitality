@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { openCalendly } from "@/hooks/useCalendly";
 
 const CTASection = () => (
   <section id="contact" className="py-28 px-6">
