@@ -83,6 +83,14 @@ const Portal = () => {
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
       if (orderData) setOrders(orderData);
+
+      // Fetch peptide requests
+      const { data: reqData } = await supabase
+        .from("peptide_requests")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      if (reqData) setRequests(reqData);
     };
 
     fetchData();
