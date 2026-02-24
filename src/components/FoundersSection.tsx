@@ -65,6 +65,11 @@ const FoundersSection = () => (
             <p className="text-muted-foreground font-body font-light text-sm leading-relaxed max-w-sm">
               {f.bio}
             </p>
+            {f.link && (
+              <Link to={f.link} className="mt-3 text-xs tracking-[0.2em] uppercase text-primary/80 hover:text-primary transition-colors font-body">
+                Read My Story →
+              </Link>
+            )}
           </motion.div>
         ))}
       </div>
