@@ -16,7 +16,7 @@ const Disclaimer = () => (
           <p>The content provided on this website, including all text, graphics, images, and other material, is for informational purposes only and is not intended to be a substitute for professional medical advice, diagnosis, or treatment.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">Not Medical Advice</h2>
-          <p>Nothing on this website should be construed as medical advice. The information provided does not create a physician-patient relationship. Always consult with a qualified, licensed healthcare provider before starting any new treatment, therapy, medication, or supplement — including peptide therapy.</p>
+          <p>Nothing on this website should be construed as medical advice. The information provided does not create a physician-patient relationship. Always consult with a qualified, licensed healthcare provider before starting any new treatment, therapy, medication, or supplement, including peptide therapy.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">No Guaranteed Results</h2>
           <p>Premier Vitality & Wellness makes no claims, promises, or guarantees about the efficacy, safety, or outcomes of any treatments described on this website. Individual results vary and depend on numerous factors including, but not limited to, age, health status, genetics, lifestyle, and adherence to protocols.</p>
