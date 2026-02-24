@@ -119,8 +119,12 @@ Deno.serve(async (req) => {
       },
     };
 
+    const squareBaseUrl = Deno.env.get("SQUARE_ENVIRONMENT") === "production"
+      ? "https://connect.squareup.com"
+      : "https://connect.squareupsandbox.com";
+
     const squareRes = await fetch(
-      "https://connect.squareup.com/v2/online-checkout/payment-links",
+      `${squareBaseUrl}/v2/online-checkout/payment-links`,
       {
         method: "POST",
         headers: {
