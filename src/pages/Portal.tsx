@@ -10,7 +10,8 @@ import PVMonogram from "@/components/PVMonogram";
 import MyRequests from "@/components/portal/MyRequests";
 import PremierMarkers from "@/components/portal/PremierMarkers";
 import PortalNews from "@/components/portal/PortalNews";
-import { LogOut, Pill, Package, Clock, BookOpen, Activity, Newspaper } from "lucide-react";
+import LoyaltyRewards from "@/components/portal/LoyaltyRewards";
+import { LogOut, Pill, Package, Clock, BookOpen, Activity, Newspaper, Star } from "lucide-react";
 
 interface PatientPeptide {
   id: string;
@@ -170,6 +171,12 @@ const Portal = () => {
             >
               <Newspaper size={14} className="mr-2" /> Peptide News
             </TabsTrigger>
+            <TabsTrigger
+              value="rewards"
+              className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
+            >
+              <Star size={14} className="mr-2" /> Rewards
+            </TabsTrigger>
           </TabsList>
 
           {/* Dashboard Tab */}
@@ -299,6 +306,11 @@ const Portal = () => {
           {/* Peptide News Tab */}
           <TabsContent value="news" className="mt-8">
             <PortalNews />
+          </TabsContent>
+
+          {/* Rewards Tab */}
+          <TabsContent value="rewards" className="mt-8">
+            <LoyaltyRewards />
           </TabsContent>
         </Tabs>
       </main>
