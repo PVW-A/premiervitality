@@ -48,6 +48,7 @@ const Portal = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [requests, setRequests] = useState<any[]>([]);
   const [profile, setProfile] = useState<{ first_name: string | null; last_name: string | null } | null>(null);
+  const [activeTab, setActiveTab] = useState("dashboard");
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
@@ -151,31 +152,31 @@ const Portal = () => {
         </div>
 
         {/* Tabs */}
-        <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="bg-card border border-border rounded-none h-auto p-0 w-full justify-start gap-0 overflow-x-auto overflow-y-hidden scrollbar-none flex-nowrap">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="bg-card border border-border rounded-none h-auto p-0 w-full justify-start gap-0 hidden sm:flex">
             <TabsTrigger
               value="dashboard"
-              className="rounded-none px-4 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary whitespace-nowrap shrink-0"
+              className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
             >
-              <Pill size={14} className="mr-1.5" /> Dashboard
+              <Pill size={14} className="mr-2" /> Dashboard
             </TabsTrigger>
             <TabsTrigger
               value="markers"
-              className="rounded-none px-4 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary whitespace-nowrap shrink-0"
+              className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
             >
-              <Activity size={14} className="mr-1.5" /> <span className="hidden sm:inline">Premier </span>Markers
+              <Activity size={14} className="mr-2" /> Premier Markers
             </TabsTrigger>
             <TabsTrigger
               value="news"
-              className="rounded-none px-4 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary whitespace-nowrap shrink-0"
+              className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
             >
-              <Newspaper size={14} className="mr-1.5" /> News
+              <Newspaper size={14} className="mr-2" /> Peptide News
             </TabsTrigger>
             <TabsTrigger
               value="rewards"
-              className="rounded-none px-4 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary whitespace-nowrap shrink-0"
+              className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
             >
-              <Star size={14} className="mr-1.5" /> Rewards
+              <Star size={14} className="mr-2" /> Rewards
             </TabsTrigger>
           </TabsList>
 
@@ -313,7 +314,35 @@ const Portal = () => {
             <LoyaltyRewards />
           </TabsContent>
         </Tabs>
+
+        {/* Bottom spacer for mobile nav */}
+        <div className="h-20 sm:hidden" />
       </main>
+
+      {/* Mobile Bottom Nav */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border sm:hidden">
+        <div className="flex justify-around items-center h-16">
+          {[
+            { value: "dashboard", icon: Pill, label: "Dashboard" },
+            { value: "markers", icon: Activity, label: "Markers" },
+            { value: "news", icon: Newspaper, label: "News" },
+            { value: "rewards", icon: Star, label: "Rewards" },
+          ].map(({ value, icon: Icon, label }) => (
+            <button
+              key={value}
+              onClick={() => setActiveTab(value)}
+              className={`flex flex-col items-center justify-center gap-1 flex-1 h-full transition-colors font-body font-light ${
+                activeTab === value
+                  ? "text-primary"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Icon size={20} />
+              <span className="text-[10px] tracking-[0.1em] uppercase">{label}</span>
+            </button>
+          ))}
+        </div>
+      </nav>
     </div>
   );
 };
