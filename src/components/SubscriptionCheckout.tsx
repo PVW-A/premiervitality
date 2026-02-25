@@ -39,7 +39,7 @@ interface SubscriptionCheckoutProps {
 }
 
 const SQUARE_APP_ID = "sq0idp-kWcPexAAa-82PgTZwZqotA";
-const SQUARE_LOCATION_ID = import.meta.env.VITE_SQUARE_LOCATION_ID || "";
+const SQUARE_LOCATION_ID = "L85CTM0203T96";
 
 const SubscriptionCheckout = ({
   open,
