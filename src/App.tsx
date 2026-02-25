@@ -19,6 +19,7 @@ import Services from "./pages/Services";
 import DrJamesStory from "./pages/DrJamesStory";
 import News from "./pages/News";
 import FAQ from "./pages/FAQ";
+import SmsConsent from "./pages/SmsConsent";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import ChatButton from "./components/chat/ChatButton";
@@ -49,6 +50,7 @@ const App = () => (
             <Route path="/dr-james-story" element={<DrJamesStory />} />
             <Route path="/news" element={<News />} />
             <Route path="/faq" element={<FAQ />} />
+            <Route path="/sms-consent" element={<SmsConsent />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
