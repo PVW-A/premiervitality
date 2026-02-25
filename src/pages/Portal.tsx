@@ -5,9 +5,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import PVMonogram from "@/components/PVMonogram";
 import MyRequests from "@/components/portal/MyRequests";
-import { LogOut, Pill, Package, Clock, BookOpen } from "lucide-react";
+import PremierMarkers from "@/components/portal/PremierMarkers";
+import PortalNews from "@/components/portal/PortalNews";
+import { LogOut, Pill, Package, Clock, BookOpen, Activity, Newspaper } from "lucide-react";
 
 interface PatientPeptide {
   id: string;
@@ -135,132 +138,169 @@ const Portal = () => {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-6 py-10 space-y-10">
+      <main className="max-w-5xl mx-auto px-6 py-10 space-y-8">
         {/* Welcome */}
         <div>
           <h1 className="text-3xl font-heading font-light text-foreground">
             Welcome{profile?.first_name ? `, ${profile.first_name}` : ""}
           </h1>
           <p className="text-sm text-muted-foreground font-body font-light mt-1">
-            Your peptide inventory and order status at a glance.
+            Your peptide inventory, biomarkers, and clinical resources — all in one place.
           </p>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate("/catalog")}
-            className="mt-3 text-xs tracking-wider uppercase font-body font-light rounded-none border-primary/40 text-primary hover:bg-primary/10"
-          >
-            <BookOpen size={14} className="mr-1.5" /> View Full Catalog & Pricing
-          </Button>
         </div>
 
-        {/* Peptide Inventory */}
-        <section>
-          <div className="flex items-center gap-2 mb-4">
-            <Pill size={16} strokeWidth={1.2} className="text-primary" />
-            <h2 className="text-xs tracking-[0.2em] uppercase text-foreground font-body font-light">
-              Your Peptides
-            </h2>
-          </div>
-          {peptides.length === 0 ? (
-            <Card className="border-border bg-card">
-              <CardContent className="py-10 text-center">
-                <p className="text-sm text-muted-foreground font-body font-light">
-                  No peptides assigned yet. Your provider will add them to your account.
-                </p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid gap-4 md:grid-cols-2">
-              {peptides.map((p) => (
-                <Card key={p.id} className="border-border bg-card">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-lg font-heading font-light text-foreground">
-                      {p.peptide_name}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    {p.dosage && (
-                      <div className="flex justify-between text-sm font-body font-light">
-                        <span className="text-muted-foreground">Dosage</span>
-                        <span className="text-foreground">{p.dosage}</span>
-                      </div>
-                    )}
-                    <div className="flex justify-between text-sm font-body font-light">
-                      <span className="text-muted-foreground">Remaining</span>
-                      <span className="text-foreground">{p.quantity_remaining} units</span>
-                    </div>
-                    <div className="flex justify-between text-sm font-body font-light items-center">
-                      <span className="text-muted-foreground flex items-center gap-1">
-                        <Clock size={12} strokeWidth={1.2} /> Supply Duration
-                      </span>
-                      <span className={`text-foreground ${p.quantity_remaining / p.usage_per_day <= 7 ? "text-destructive" : ""}`}>
-                        {getDaysRemaining(p.quantity_remaining, p.usage_per_day)}
-                      </span>
-                    </div>
-                    {p.notes && (
-                      <p className="text-xs text-muted-foreground font-body font-light pt-2 border-t border-border">
-                        {p.notes}
-                      </p>
-                    )}
+        {/* Tabs */}
+        <Tabs defaultValue="dashboard" className="w-full">
+          <TabsList className="bg-card border border-border rounded-none h-auto p-0 w-full justify-start gap-0">
+            <TabsTrigger
+              value="dashboard"
+              className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
+            >
+              <Pill size={14} className="mr-2" /> Dashboard
+            </TabsTrigger>
+            <TabsTrigger
+              value="markers"
+              className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
+            >
+              <Activity size={14} className="mr-2" /> Premier Markers
+            </TabsTrigger>
+            <TabsTrigger
+              value="news"
+              className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
+            >
+              <Newspaper size={14} className="mr-2" /> Peptide News
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Dashboard Tab */}
+          <TabsContent value="dashboard" className="mt-8 space-y-10">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate("/catalog")}
+              className="text-xs tracking-wider uppercase font-body font-light rounded-none border-primary/40 text-primary hover:bg-primary/10"
+            >
+              <BookOpen size={14} className="mr-1.5" /> View Full Catalog & Pricing
+            </Button>
+
+            {/* Peptide Inventory */}
+            <section>
+              <div className="flex items-center gap-2 mb-4">
+                <Pill size={16} strokeWidth={1.2} className="text-primary" />
+                <h2 className="text-xs tracking-[0.2em] uppercase text-foreground font-body font-light">
+                  Your Peptides
+                </h2>
+              </div>
+              {peptides.length === 0 ? (
+                <Card className="border-border bg-card">
+                  <CardContent className="py-10 text-center">
+                    <p className="text-sm text-muted-foreground font-body font-light">
+                      No peptides assigned yet. Your provider will add them to your account.
+                    </p>
                   </CardContent>
                 </Card>
-              ))}
-            </div>
-          )}
-        </section>
+              ) : (
+                <div className="grid gap-4 md:grid-cols-2">
+                  {peptides.map((p) => (
+                    <Card key={p.id} className="border-border bg-card">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-lg font-heading font-light text-foreground">
+                          {p.peptide_name}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        {p.dosage && (
+                          <div className="flex justify-between text-sm font-body font-light">
+                            <span className="text-muted-foreground">Dosage</span>
+                            <span className="text-foreground">{p.dosage}</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between text-sm font-body font-light">
+                          <span className="text-muted-foreground">Remaining</span>
+                          <span className="text-foreground">{p.quantity_remaining} units</span>
+                        </div>
+                        <div className="flex justify-between text-sm font-body font-light items-center">
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <Clock size={12} strokeWidth={1.2} /> Supply Duration
+                          </span>
+                          <span className={`text-foreground ${p.quantity_remaining / p.usage_per_day <= 7 ? "text-destructive" : ""}`}>
+                            {getDaysRemaining(p.quantity_remaining, p.usage_per_day)}
+                          </span>
+                        </div>
+                        {p.notes && (
+                          <p className="text-xs text-muted-foreground font-body font-light pt-2 border-t border-border">
+                            {p.notes}
+                          </p>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </section>
 
+            {/* My Requests */}
+            <MyRequests requests={requests} onRefresh={fetchData} />
 
-        {/* My Requests */}
-        <MyRequests requests={requests} onRefresh={fetchData} />
-
-        {/* Orders */}
-        <section>
-          <div className="flex items-center gap-2 mb-4">
-            <Package size={16} strokeWidth={1.2} className="text-primary" />
-            <h2 className="text-xs tracking-[0.2em] uppercase text-foreground font-body font-light">
-              Orders
-            </h2>
-          </div>
-          {orders.length === 0 ? (
-            <Card className="border-border bg-card">
-              <CardContent className="py-10 text-center">
-                <p className="text-sm text-muted-foreground font-body font-light">
-                  No orders yet.
-                </p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-3">
-              {orders.map((o) => (
-                <Card key={o.id} className="border-border bg-card">
-                  <CardContent className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className={statusColor[o.status] || ""}>
-                          {o.status}
-                        </Badge>
-                        <span className="text-xs text-muted-foreground font-body font-light">
-                          {new Date(o.created_at).toLocaleDateString()}
-                        </span>
-                      </div>
-                      {o.tracking_number && (
-                        <p className="text-xs text-muted-foreground font-body font-light">
-                          Tracking: {o.tracking_number}
-                        </p>
-                      )}
-                    </div>
-                    {o.expected_delivery && (
-                      <p className="text-xs text-muted-foreground font-body font-light">
-                        Expected: {new Date(o.expected_delivery).toLocaleDateString()}
-                      </p>
-                    )}
+            {/* Orders */}
+            <section>
+              <div className="flex items-center gap-2 mb-4">
+                <Package size={16} strokeWidth={1.2} className="text-primary" />
+                <h2 className="text-xs tracking-[0.2em] uppercase text-foreground font-body font-light">
+                  Orders
+                </h2>
+              </div>
+              {orders.length === 0 ? (
+                <Card className="border-border bg-card">
+                  <CardContent className="py-10 text-center">
+                    <p className="text-sm text-muted-foreground font-body font-light">
+                      No orders yet.
+                    </p>
                   </CardContent>
                 </Card>
-              ))}
-            </div>
-          )}
-        </section>
+              ) : (
+                <div className="space-y-3">
+                  {orders.map((o) => (
+                    <Card key={o.id} className="border-border bg-card">
+                      <CardContent className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className={statusColor[o.status] || ""}>
+                              {o.status}
+                            </Badge>
+                            <span className="text-xs text-muted-foreground font-body font-light">
+                              {new Date(o.created_at).toLocaleDateString()}
+                            </span>
+                          </div>
+                          {o.tracking_number && (
+                            <p className="text-xs text-muted-foreground font-body font-light">
+                              Tracking: {o.tracking_number}
+                            </p>
+                          )}
+                        </div>
+                        {o.expected_delivery && (
+                          <p className="text-xs text-muted-foreground font-body font-light">
+                            Expected: {new Date(o.expected_delivery).toLocaleDateString()}
+                          </p>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </section>
+          </TabsContent>
+
+          {/* Premier Markers Tab */}
+          <TabsContent value="markers" className="mt-8">
+            <PremierMarkers />
+          </TabsContent>
+
+          {/* Peptide News Tab */}
+          <TabsContent value="news" className="mt-8">
+            <PortalNews />
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );
