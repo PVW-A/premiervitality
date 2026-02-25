@@ -8,17 +8,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, CalendarIcon, ArrowRight, ArrowLeft } from "lucide-react";
-import { format } from "date-fns";
+import { Loader2, ArrowRight, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 declare global {
@@ -76,12 +68,11 @@ const SubscriptionCheckout = ({
 }: SubscriptionCheckoutProps) => {
   const [step, setStep] = useState<1 | 2>(1);
 
-  // Step 1 fields
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [dob, setDob] = useState<Date | undefined>(undefined);
+  const [dobStr, setDobStr] = useState(""); // MM/DD/YYYY
   const [address, setAddress] = useState({
     line1: "",
     line2: "",
@@ -90,7 +81,6 @@ const SubscriptionCheckout = ({
     zip: "",
   });
 
-  // Step 2
   const [loading, setLoading] = useState(false);
   const [cardReady, setCardReady] = useState(false);
   const cardRef = useRef<SquareCard | null>(null);
@@ -117,11 +107,7 @@ const SubscriptionCheckout = ({
       setCardReady(false);
       initRef.current = false;
       if (cardRef.current) {
-        try {
-          cardRef.current.destroy();
-        } catch {
-          /* ignore */
-        }
+        try { cardRef.current.destroy(); } catch { /* ignore */ }
         cardRef.current = null;
       }
     }
@@ -133,10 +119,7 @@ const SubscriptionCheckout = ({
       return;
     }
     try {
-      const payments = await window.Square.payments(
-        SQUARE_APP_ID,
-        SQUARE_LOCATION_ID
-      );
+      const payments = await window.Square.payments(SQUARE_APP_ID, SQUARE_LOCATION_ID);
       const card = await payments.card();
       await card.attach("#square-card-container");
       cardRef.current = card;
@@ -146,7 +129,6 @@ const SubscriptionCheckout = ({
     }
   }, []);
 
-  // Init card when moving to step 2
   useEffect(() => {
     if (step === 2 && !initRef.current) {
       initRef.current = true;
@@ -155,41 +137,45 @@ const SubscriptionCheckout = ({
     }
   }, [step, initializeCard]);
 
+  // Auto-format DOB as MM/DD/YYYY
+  const handleDobChange = (val: string) => {
+    // Strip non-digits
+    const digits = val.replace(/\D/g, "").slice(0, 8);
+    let formatted = "";
+    if (digits.length <= 2) {
+      formatted = digits;
+    } else if (digits.length <= 4) {
+      formatted = `${digits.slice(0, 2)}/${digits.slice(2)}`;
+    } else {
+      formatted = `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+    }
+    setDobStr(formatted);
+  };
+
+  const parseDob = (): string | null => {
+    const parts = dobStr.split("/");
+    if (parts.length !== 3) return null;
+    const [mm, dd, yyyy] = parts;
+    if (mm.length !== 2 || dd.length !== 2 || yyyy.length !== 4) return null;
+    const m = parseInt(mm), d = parseInt(dd), y = parseInt(yyyy);
+    if (m < 1 || m > 12 || d < 1 || d > 31 || y < 1900 || y > new Date().getFullYear()) return null;
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
   const validateStep1 = () => {
-    if (!firstName.trim()) {
-      toast({ title: "First name is required", variant: "destructive" });
-      return false;
-    }
-    if (!lastName.trim()) {
-      toast({ title: "Last name is required", variant: "destructive" });
-      return false;
-    }
-    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      toast({ title: "Valid email is required", variant: "destructive" });
-      return false;
-    }
-    if (!phone.trim() || phone.replace(/\D/g, "").length < 10) {
-      toast({ title: "Valid phone number is required", variant: "destructive" });
-      return false;
-    }
-    if (!dob) {
-      toast({ title: "Date of birth is required", variant: "destructive" });
-      return false;
-    }
-    if (!address.line1.trim() || !address.city.trim() || !address.state || !address.zip.trim()) {
-      toast({ title: "Please fill in all address fields", variant: "destructive" });
-      return false;
-    }
+    if (!firstName.trim()) { toast({ title: "First name is required", variant: "destructive" }); return false; }
+    if (!lastName.trim()) { toast({ title: "Last name is required", variant: "destructive" }); return false; }
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast({ title: "Valid email is required", variant: "destructive" }); return false; }
+    if (!phone.trim() || phone.replace(/\D/g, "").length < 10) { toast({ title: "Valid phone number is required", variant: "destructive" }); return false; }
+    if (!parseDob()) { toast({ title: "Valid date of birth is required (MM/DD/YYYY)", variant: "destructive" }); return false; }
+    if (!address.line1.trim() || !address.city.trim() || !address.state || !address.zip.trim()) { toast({ title: "Please fill in all address fields", variant: "destructive" }); return false; }
     return true;
   };
 
-  const handleContinue = () => {
-    if (validateStep1()) setStep(2);
-  };
+  const handleContinue = () => { if (validateStep1()) setStep(2); };
 
   const handleSubmit = async () => {
     if (!cardRef.current || !tier) return;
-
     setLoading(true);
     try {
       const result = await cardRef.current.tokenize();
@@ -205,57 +191,33 @@ const SubscriptionCheckout = ({
           tier_id: tier.id,
           billing_cycle: billingCycle,
           card_nonce: result.token,
-          address: {
-            line1: address.line1,
-            line2: address.line2,
-            city: address.city,
-            state: address.state,
-            zip: address.zip,
-          },
+          address: { line1: address.line1, line2: address.line2, city: address.city, state: address.state, zip: address.zip },
           first_name: firstName,
           last_name: lastName,
           phone,
           email,
-          dob: dob ? format(dob, "yyyy-MM-dd") : null,
+          dob: parseDob(),
         },
       });
 
       if (res.error) throw new Error(res.error.message || "Subscription failed");
-
-      const data = res.data as {
-        success?: boolean;
-        error?: string;
-        details?: Array<{ detail?: string }>;
-      };
-
+      const data = res.data as { success?: boolean; error?: string; details?: Array<{ detail?: string }> };
       if (!data?.success) {
-        const detail =
-          data?.details?.[0]?.detail || data?.error || "Subscription creation failed";
-        throw new Error(detail);
+        throw new Error(data?.details?.[0]?.detail || data?.error || "Subscription creation failed");
       }
 
-      toast({
-        title: "Subscription created!",
-        description: "Welcome to Premier Vitality.",
-      });
+      toast({ title: "Subscription created!", description: "Welcome to Premier Vitality." });
       onOpenChange(false);
       onSuccess();
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Something went wrong";
-      toast({ title: msg, variant: "destructive" });
+      toast({ title: e instanceof Error ? e.message : "Something went wrong", variant: "destructive" });
     } finally {
       setLoading(false);
     }
   };
 
-  const price = tier
-    ? billingCycle === "monthly"
-      ? tier.monthly_price
-      : tier.annual_price
-    : 0;
-
-  const inputCls =
-    "bg-secondary border-border text-foreground font-body font-light text-sm";
+  const price = tier ? (billingCycle === "monthly" ? tier.monthly_price : tier.annual_price) : 0;
+  const inputCls = "bg-secondary border-border text-foreground font-body font-light text-sm";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -273,18 +235,8 @@ const SubscriptionCheckout = ({
 
         {/* Step indicator */}
         <div className="flex items-center gap-2 mb-2">
-          <div
-            className={cn(
-              "h-1 flex-1 rounded-full transition-colors",
-              step >= 1 ? "bg-primary" : "bg-secondary"
-            )}
-          />
-          <div
-            className={cn(
-              "h-1 flex-1 rounded-full transition-colors",
-              step >= 2 ? "bg-primary" : "bg-secondary"
-            )}
-          />
+          <div className={cn("h-1 flex-1 rounded-full transition-colors", step >= 1 ? "bg-primary" : "bg-secondary")} />
+          <div className={cn("h-1 flex-1 rounded-full transition-colors", step >= 2 ? "bg-primary" : "bg-secondary")} />
         </div>
 
         {step === 1 && (
@@ -292,173 +244,70 @@ const SubscriptionCheckout = ({
             {/* Name */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-xs text-muted-foreground font-body font-light">
-                  First Name
-                </Label>
-                <Input
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  placeholder="John"
-                  className={cn("mt-1", inputCls)}
-                />
+                <Label className="text-xs text-muted-foreground font-body font-light">First Name</Label>
+                <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="John" className={cn("mt-1", inputCls)} />
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground font-body font-light">
-                  Last Name
-                </Label>
-                <Input
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  placeholder="Doe"
-                  className={cn("mt-1", inputCls)}
-                />
+                <Label className="text-xs text-muted-foreground font-body font-light">Last Name</Label>
+                <Input value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Doe" className={cn("mt-1", inputCls)} />
               </div>
             </div>
 
             {/* Email & Phone */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-xs text-muted-foreground font-body font-light">
-                  Email
-                </Label>
-                <Input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="john@email.com"
-                  className={cn("mt-1", inputCls)}
-                />
+                <Label className="text-xs text-muted-foreground font-body font-light">Email</Label>
+                <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="john@email.com" className={cn("mt-1", inputCls)} />
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground font-body font-light">
-                  Phone
-                </Label>
-                <Input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="(555) 123-4567"
-                  className={cn("mt-1", inputCls)}
-                />
+                <Label className="text-xs text-muted-foreground font-body font-light">Phone</Label>
+                <Input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(555) 123-4567" className={cn("mt-1", inputCls)} />
               </div>
             </div>
 
             {/* Date of Birth */}
             <div>
-              <Label className="text-xs text-muted-foreground font-body font-light">
-                Date of Birth
-              </Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full mt-1 justify-start text-left font-body font-light text-sm",
-                      inputCls,
-                      !dob && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {dob ? format(dob, "PPP") : "Select date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={dob}
-                    onSelect={setDob}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date("1900-01-01")
-                    }
-                    initialFocus
-                    className={cn("p-3 pointer-events-auto")}
-                    captionLayout="dropdown-buttons"
-                    fromYear={1920}
-                    toYear={new Date().getFullYear()}
-                  />
-                </PopoverContent>
-              </Popover>
+              <Label className="text-xs text-muted-foreground font-body font-light">Date of Birth</Label>
+              <Input
+                value={dobStr}
+                onChange={(e) => handleDobChange(e.target.value)}
+                placeholder="MM/DD/YYYY"
+                maxLength={10}
+                className={cn("mt-1", inputCls)}
+              />
             </div>
 
             {/* Address */}
-            <p className="text-xs tracking-[0.2em] uppercase text-primary font-body font-light pt-2">
-              Shipping Address
-            </p>
+            <p className="text-xs tracking-[0.2em] uppercase text-primary font-body font-light pt-2">Shipping Address</p>
             <div>
-              <Label className="text-xs text-muted-foreground font-body font-light">
-                Street Address
-              </Label>
-              <Input
-                value={address.line1}
-                onChange={(e) =>
-                  setAddress((a) => ({ ...a, line1: e.target.value }))
-                }
-                placeholder="123 Main St"
-                className={cn("mt-1", inputCls)}
-              />
+              <Label className="text-xs text-muted-foreground font-body font-light">Street Address</Label>
+              <Input value={address.line1} onChange={(e) => setAddress((a) => ({ ...a, line1: e.target.value }))} placeholder="123 Main St" className={cn("mt-1", inputCls)} />
             </div>
             <div>
-              <Label className="text-xs text-muted-foreground font-body font-light">
-                Apt / Suite (optional)
-              </Label>
-              <Input
-                value={address.line2}
-                onChange={(e) =>
-                  setAddress((a) => ({ ...a, line2: e.target.value }))
-                }
-                placeholder="Apt 4B"
-                className={cn("mt-1", inputCls)}
-              />
+              <Label className="text-xs text-muted-foreground font-body font-light">Apt / Suite (optional)</Label>
+              <Input value={address.line2} onChange={(e) => setAddress((a) => ({ ...a, line2: e.target.value }))} placeholder="Apt 4B" className={cn("mt-1", inputCls)} />
             </div>
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <Label className="text-xs text-muted-foreground font-body font-light">
-                  City
-                </Label>
-                <Input
-                  value={address.city}
-                  onChange={(e) =>
-                    setAddress((a) => ({ ...a, city: e.target.value }))
-                  }
-                  placeholder="Houston"
-                  className={cn("mt-1", inputCls)}
-                />
+                <Label className="text-xs text-muted-foreground font-body font-light">City</Label>
+                <Input value={address.city} onChange={(e) => setAddress((a) => ({ ...a, city: e.target.value }))} placeholder="Houston" className={cn("mt-1", inputCls)} />
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground font-body font-light">
-                  State
-                </Label>
+                <Label className="text-xs text-muted-foreground font-body font-light">State</Label>
                 <select
                   value={address.state}
-                  onChange={(e) =>
-                    setAddress((a) => ({ ...a, state: e.target.value }))
-                  }
-                  className={cn(
-                    "mt-1 flex h-10 w-full rounded-md border px-3 py-2",
-                    inputCls
-                  )}
+                  onChange={(e) => setAddress((a) => ({ ...a, state: e.target.value }))}
+                  className={cn("mt-1 flex h-10 w-full rounded-md border px-3 py-2", inputCls)}
                 >
                   <option value="">—</option>
                   {US_STATES.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
+                    <option key={s} value={s}>{s}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground font-body font-light">
-                  Zip
-                </Label>
-                <Input
-                  value={address.zip}
-                  onChange={(e) =>
-                    setAddress((a) => ({ ...a, zip: e.target.value }))
-                  }
-                  placeholder="77001"
-                  maxLength={10}
-                  className={cn("mt-1", inputCls)}
-                />
+                <Label className="text-xs text-muted-foreground font-body font-light">Zip</Label>
+                <Input value={address.zip} onChange={(e) => setAddress((a) => ({ ...a, zip: e.target.value }))} placeholder="77001" maxLength={10} className={cn("mt-1", inputCls)} />
               </div>
             </div>
 
@@ -466,8 +315,7 @@ const SubscriptionCheckout = ({
               onClick={handleContinue}
               className="w-full py-3 text-xs tracking-[0.2em] uppercase font-body font-light bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 mt-2"
             >
-              Continue to Payment
-              <ArrowRight size={14} />
+              Continue to Payment <ArrowRight size={14} />
             </button>
           </div>
         )}
@@ -476,32 +324,19 @@ const SubscriptionCheckout = ({
           <div className="space-y-5 mt-2">
             {/* Summary */}
             <div className="bg-secondary/50 border border-border p-4 space-y-1">
-              <p className="text-sm text-foreground font-body">
-                {firstName} {lastName}
-              </p>
+              <p className="text-sm text-foreground font-body">{firstName} {lastName}</p>
               <p className="text-xs text-muted-foreground font-body font-light">
-                {address.line1}
-                {address.line2 ? `, ${address.line2}` : ""}, {address.city},{" "}
-                {address.state} {address.zip}
+                {address.line1}{address.line2 ? `, ${address.line2}` : ""}, {address.city}, {address.state} {address.zip}
               </p>
-              <p className="text-xs text-muted-foreground font-body font-light">
-                {email} · {phone}
-              </p>
+              <p className="text-xs text-muted-foreground font-body font-light">{email} · {phone}</p>
             </div>
 
             {/* Card */}
             <div className="space-y-3">
-              <p className="text-xs tracking-[0.2em] uppercase text-primary font-body font-light">
-                Card Details
-              </p>
-              <div
-                id="square-card-container"
-                className="min-h-[90px] rounded border border-border bg-secondary p-3"
-              />
+              <p className="text-xs tracking-[0.2em] uppercase text-primary font-body font-light">Card Details</p>
+              <div id="square-card-container" className="min-h-[90px] rounded border border-border bg-secondary p-3" />
               {!cardReady && (
-                <p className="text-xs text-muted-foreground font-body animate-pulse">
-                  Loading payment form…
-                </p>
+                <p className="text-xs text-muted-foreground font-body animate-pulse">Loading payment form…</p>
               )}
             </div>
 
@@ -510,8 +345,7 @@ const SubscriptionCheckout = ({
                 onClick={() => setStep(1)}
                 className="flex-1 py-3 text-xs tracking-[0.2em] uppercase font-body font-light border border-primary/40 text-primary hover:bg-primary/10 transition-colors flex items-center justify-center gap-2"
               >
-                <ArrowLeft size={14} />
-                Back
+                <ArrowLeft size={14} /> Back
               </button>
               <button
                 onClick={handleSubmit}
@@ -519,10 +353,7 @@ const SubscriptionCheckout = ({
                 className="flex-[2] py-3 text-xs tracking-[0.2em] uppercase font-body font-light bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {loading ? (
-                  <>
-                    <Loader2 size={14} className="animate-spin" />
-                    Processing…
-                  </>
+                  <><Loader2 size={14} className="animate-spin" /> Processing…</>
                 ) : (
                   `Pay Now — $${price}/mo`
                 )}
