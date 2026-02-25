@@ -1,72 +1,82 @@
-## Restructuring Navigation and Access Flow
+
+
+## Vitality Score — Always Visible + Actionable Drill-Down
 
 ### The Problem
+Right now the Vitality Score is buried inside the "Vitality Score" tab. Users only see it when they navigate there. You want it to be persistent and clickable — showing what needs improvement when tapped.
 
-The navbar has 5 links + account icon + Order button, and "Contact" duplicates "Order" (both open Calendly). Adding FAQ makes it worse. The Services/membership page is public but really only matters once someone is considering signing up.
+### Proposed Approach
 
-### Recommended Flow
+**1. Move the Vitality Score into the Portal header area (always visible)**
+
+Place a compact Vitality Score badge in the welcome section at the top of the Portal page — visible on every tab. It would show:
+- The circular score ring (smaller, ~56px) with the number
+- The label (Excellent / Good / Fair / etc.)
+
+This lives above the tabs, so whether you're on Dashboard, Vitality Score, News, or Rewards — you always see your number.
+
+**2. Clicking it opens a full-screen dialog with improvement insights**
+
+When clicked, a dialog/sheet slides up with:
+- The full-size score ring at the top
+- **Category breakdown** — a mini progress bar per category (Hormones: 78, Metabolic: 92, Lipids: 61, etc.) showing which areas drag the score down
+- **Top 3-5 markers that need attention** — the ones graded "low", "high", or "critical" — each with their current value, grade, and the "How to improve" tips already in the data
+- **A CTA button** that navigates to the Vitality Score tab for the full deep-dive
+
+**3. Portal tab rename**
+
+Since the score widget moves to the header, rename the tab from "Vitality Score" to "Biomarkers" or keep "Vitality Score" as the tab name (it now acts as the detailed breakdown view).
+
+### Technical Details
+
+- **New component**: `VitalityScoreBadge` — a compact, clickable version of the score ring rendered in `Portal.tsx` in the welcome header section
+- **New component**: `VitalityScoreDrawer` — a Dialog or Sheet that opens on click, computing per-category scores and surfacing the worst-performing markers with their improvement tips
+- **Data flow**: The `computeVitalityScore` function and `categoryConfig` will be extracted from `PremierMarkers.tsx` into a shared file (e.g., `src/lib/vitality.ts`) so both the badge and the full tab can use the same scoring logic
+- **Portal.tsx changes**: Fetch `biomarker_results` at the Portal level (instead of only inside PremierMarkers) so the score is available across tabs. Pass results down to PremierMarkers.
+- The full `VitalityScoreWidget` inside the Vitality Score tab remains as-is for the detailed view
 
 ```text
-VISITOR JOURNEY:
-Landing → About / Peptides / FAQ / News (public education)
-                    ↓
-            "Get Started" CTA
-                    ↓
-              Auth (sign up)
-                    ↓
-         Portal → Membership Tiers (inside portal)
-                    ↓
-              Subscribe → Catalog access
+┌─────────────────────────────────────┐
+│  PV Logo    Patient Portal    [Out] │
+├─────────────────────────────────────┤
+│  Welcome, Nicolas                   │
+│  Your peptide inventory...          │
+│                         ┌─────────┐ │
+│                         │  (72)   │ │  ← Compact score ring, always visible
+│                         │  Good   │ │
+│                         └─────────┘ │
+├─────────────────────────────────────┤
+│  Dashboard │ Vitality Score │ News  │
+├─────────────────────────────────────┤
+│  ... tab content ...                │
+└─────────────────────────────────────┘
+
+       Click on score → opens drawer:
+
+┌─────────────────────────────────────┐
+│         Vitality Score              │
+│            (72)                     │
+│            Good                     │
+│                                     │
+│  Category Breakdown                 │
+│  ▓▓▓▓▓▓▓░░░ Hormones      78       │
+│  ▓▓▓▓▓▓▓▓▓░ Metabolic     92       │
+│  ▓▓▓▓▓░░░░░ Lipids        52       │
+│                                     │
+│  Top Areas to Improve               │
+│  • LDL Cholesterol — High           │
+│    Reduce saturated fats, fiber...  │
+│  • Triglycerides — High             │
+│    Cut sugar, omega-3...            │
+│                                     │
+│  [View All Biomarkers →]            │
+└─────────────────────────────────────┘
 ```
 
-### What Changes
-
-**1. Navbar simplification (4 links, no crowding)**
-
-
-| Current  | Proposed                              |
-| -------- | ------------------------------------- |
-| About    | About                                 |
-| Services | FAQ (new)                             |
-| Peptides | Peptides                              |
-| News     | News                                  |
-| Contact  | *(removed, redundant with Order CTA)* |
-
-
-The "Order" button stays as the primary CTA. Services/membership pricing moves inside the portal.
-
-**2. New FAQ page (`/faq`)**
-
-- Static page with an accordion layout (already have `@radix-ui/react-accordion`)
-- Topics: How membership works, peptide safety, ordering process, shipping, consultation process
-- Ends with a CTA to sign up or book a consultation
-
-**3. Services page moves inside the Portal**
-
-- When an unauthenticated user hits `/services`, redirect to `/auth?redirect=/services`
-- Inside the portal, add a "Membership" tab or a prominent upsell card on the dashboard for non-subscribers
-- Subscribers see their current plan; non-subscribers see the tier comparison and can subscribe
-- The existing `SubscriptionCheckout` component stays as-is
-
-**4. Portal dashboard update**
-
-- For users without an active membership: show a "Choose Your Plan" section (the current Services tier cards) above the free-portal content
-- For subscribers: show current plan info with a small badge
-
 ### Files to Create/Modify
+- **Create** `src/lib/vitality.ts` — extract scoring logic, `categoryConfig`, grade helpers
+- **Create** `src/components/portal/VitalityScoreBadge.tsx` — compact clickable score ring
+- **Create** `src/components/portal/VitalityScoreDrawer.tsx` — the drill-down sheet with category breakdown and improvement tips
+- **Modify** `src/pages/Portal.tsx` — fetch biomarker data at top level, render badge in header, pass data to PremierMarkers
+- **Modify** `src/components/portal/PremierMarkers.tsx` — import shared config from `vitality.ts` instead of defining locally, remove the `VitalityScoreWidget` from the top (it lives in the header now)
 
-
-| File                        | Change                                                         |
-| --------------------------- | -------------------------------------------------------------- |
-| `src/pages/FAQ.tsx`         | New page with accordion Q&A sections                           |
-| `src/components/Navbar.tsx` | Replace "Services" with "FAQ", remove "Contact"                |
-| `src/App.tsx`               | Add `/faq` route                                               |
-| `src/pages/Services.tsx`    | Add auth redirect for unauthenticated users                    |
-| `src/pages/Portal.tsx`      | Add membership upsell section on dashboard for non-subscribers |
-
-
-### No database changes needed
-
-This is purely a frontend restructuring of navigation and access gating. I like your thought process, but I would also like them to be able to see the peptide still if they aren't paying yet just grab and hold their information once I make the account and continue with how you said.
-
-&nbsp;
