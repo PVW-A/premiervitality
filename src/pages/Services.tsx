@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SubscriptionCheckout from "@/components/SubscriptionCheckout";
 
 const Services = () => {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
@@ -41,27 +42,28 @@ const Services = () => {
     },
   });
 
-  const handleJoin = (tierSlug: string) => {
-    const links = squareLinks[tierSlug];
-    if (links) {
-      const url = billingCycle === "monthly" ? links.monthly : links.annual;
-      window.open(url, "_blank");
-    }
-  };
+  const [checkoutTier, setCheckoutTier] = useState<{
+    id: string;
+    name: string;
+    slug: string;
+    monthly_price: number;
+    annual_price: number;
+  } | null>(null);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
 
-  const squareLinks: Record<string, { monthly: string; annual: string }> = {
-    essential: {
-      monthly: "https://square.link/u/zWb8E2dA",
-      annual: "https://square.link/u/lTAiIdGI",
-    },
-    premium: {
-      monthly: "https://square.link/u/gH4QeARi",
-      annual: "https://square.link/u/HuLd1lAl",
-    },
-    elite: {
-      monthly: "https://square.link/u/Vef3c9jk",
-      annual: "https://square.link/u/K2CBoxiE",
-    },
+  const handleJoin = (tier: NonNullable<typeof tiers>[number]) => {
+    if (!user) {
+      navigate("/auth?redirect=/services");
+      return;
+    }
+    setCheckoutTier({
+      id: tier.id,
+      name: tier.name,
+      slug: tier.slug,
+      monthly_price: tier.monthly_price,
+      annual_price: tier.annual_price,
+    });
+    setCheckoutOpen(true);
   };
 
   const tierAccents: Record<string, string> = {
@@ -214,7 +216,7 @@ const Services = () => {
                   </div>
 
                   <button
-                    onClick={() => handleJoin(tier.slug)}
+                    onClick={() => handleJoin(tier)}
                     disabled={isCurrentTier}
                     className={`w-full py-3 text-xs tracking-[0.2em] uppercase font-body font-light transition-colors duration-200 ${
                       isCurrentTier
@@ -244,6 +246,13 @@ const Services = () => {
           </p>
         </section>
       </main>
+      <SubscriptionCheckout
+        open={checkoutOpen}
+        onOpenChange={setCheckoutOpen}
+        tier={checkoutTier}
+        billingCycle={billingCycle}
+        onSuccess={() => navigate("/portal")}
+      />
       <Footer />
     </div>
   );

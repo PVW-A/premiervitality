@@ -340,6 +340,10 @@ export type Database = {
       }
       profiles: {
         Row: {
+          address_city: string | null
+          address_line1: string | null
+          address_state: string | null
+          address_zip: string | null
           created_at: string
           first_name: string | null
           id: string
@@ -350,6 +354,10 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          address_city?: string | null
+          address_line1?: string | null
+          address_state?: string | null
+          address_zip?: string | null
           created_at?: string
           first_name?: string | null
           id?: string
@@ -360,6 +368,10 @@ export type Database = {
           user_id: string
         }
         Update: {
+          address_city?: string | null
+          address_line1?: string | null
+          address_state?: string | null
+          address_zip?: string | null
           created_at?: string
           first_name?: string | null
           id?: string
