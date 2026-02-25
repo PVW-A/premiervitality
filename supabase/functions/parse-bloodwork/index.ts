@@ -6,27 +6,76 @@ const corsHeaders = {
 };
 
 const KNOWN_MARKERS: Record<string, { category: string; unit: string; low: number; high: number }> = {
+  // ── Hormones ──
   "Testosterone (Total)": { category: "Hormones", unit: "ng/dL", low: 300, high: 1000 },
   "Free Testosterone": { category: "Hormones", unit: "ng/dL", low: 9, high: 30 },
   "Estradiol (E2)": { category: "Hormones", unit: "pg/mL", low: 20, high: 50 },
   "IGF-1": { category: "Hormones", unit: "ng/mL", low: 100, high: 300 },
   "DHEA-S": { category: "Hormones", unit: "µg/dL", low: 100, high: 400 },
+  "SHBG": { category: "Hormones", unit: "nmol/L", low: 10, high: 57 },
+  "Prolactin": { category: "Hormones", unit: "ng/mL", low: 2, high: 18 },
+  "Cortisol (AM)": { category: "Hormones", unit: "µg/dL", low: 6, high: 18 },
+  "LH": { category: "Hormones", unit: "mIU/mL", low: 1.5, high: 9.3 },
+  "FSH": { category: "Hormones", unit: "mIU/mL", low: 1.5, high: 12.4 },
+  "Progesterone": { category: "Hormones", unit: "ng/mL", low: 0.2, high: 1.4 },
+  // ── Metabolic Panel ──
   "Fasting Glucose": { category: "Metabolic Panel", unit: "mg/dL", low: 70, high: 99 },
   "HbA1c": { category: "Metabolic Panel", unit: "%", low: 4.0, high: 5.7 },
   "Insulin (Fasting)": { category: "Metabolic Panel", unit: "µIU/mL", low: 2, high: 25 },
+  "Uric Acid": { category: "Metabolic Panel", unit: "mg/dL", low: 3.5, high: 7.2 },
+  // ── Thyroid ──
   "TSH": { category: "Thyroid", unit: "mIU/L", low: 0.4, high: 4.0 },
   "Free T3": { category: "Thyroid", unit: "pg/mL", low: 2.3, high: 4.2 },
   "Free T4": { category: "Thyroid", unit: "ng/dL", low: 0.8, high: 1.8 },
+  "Reverse T3": { category: "Thyroid", unit: "ng/dL", low: 9.2, high: 24.1 },
+  "Thyroid Peroxidase Ab": { category: "Thyroid", unit: "IU/mL", low: 0, high: 9 },
+  // ── Inflammation ──
   "hs-CRP": { category: "Inflammation", unit: "mg/L", low: 0, high: 1.0 },
   "Homocysteine": { category: "Inflammation", unit: "µmol/L", low: 5, high: 15 },
   "ESR": { category: "Inflammation", unit: "mm/hr", low: 0, high: 20 },
+  // ── Liver & Kidney ──
   "ALT": { category: "Liver & Kidney", unit: "U/L", low: 7, high: 56 },
   "AST": { category: "Liver & Kidney", unit: "U/L", low: 10, high: 40 },
+  "GGT": { category: "Liver & Kidney", unit: "U/L", low: 9, high: 48 },
+  "ALP": { category: "Liver & Kidney", unit: "U/L", low: 44, high: 147 },
+  "Albumin": { category: "Liver & Kidney", unit: "g/dL", low: 3.5, high: 5.5 },
+  "Total Protein": { category: "Liver & Kidney", unit: "g/dL", low: 6.0, high: 8.3 },
+  "Bilirubin (Total)": { category: "Liver & Kidney", unit: "mg/dL", low: 0.1, high: 1.2 },
   "Creatinine": { category: "Liver & Kidney", unit: "mg/dL", low: 0.7, high: 1.3 },
   "BUN": { category: "Liver & Kidney", unit: "mg/dL", low: 7, high: 20 },
+  "eGFR": { category: "Liver & Kidney", unit: "mL/min", low: 90, high: 120 },
+  "LDH": { category: "Liver & Kidney", unit: "U/L", low: 140, high: 280 },
+  // ── Cognitive & Neuro ──
   "Vitamin D (25-OH)": { category: "Cognitive & Neuro", unit: "ng/mL", low: 40, high: 80 },
   "Vitamin B12": { category: "Cognitive & Neuro", unit: "pg/mL", low: 200, high: 900 },
   "Folate": { category: "Cognitive & Neuro", unit: "ng/mL", low: 2.7, high: 17 },
+  // ── Lipid Panel ──
+  "Total Cholesterol": { category: "Lipid Panel", unit: "mg/dL", low: 125, high: 200 },
+  "LDL Cholesterol": { category: "Lipid Panel", unit: "mg/dL", low: 0, high: 100 },
+  "HDL Cholesterol": { category: "Lipid Panel", unit: "mg/dL", low: 40, high: 100 },
+  "Triglycerides": { category: "Lipid Panel", unit: "mg/dL", low: 0, high: 150 },
+  "VLDL": { category: "Lipid Panel", unit: "mg/dL", low: 5, high: 40 },
+  // ── CBC (Complete Blood Count) ──
+  "WBC": { category: "CBC", unit: "K/µL", low: 4.5, high: 11.0 },
+  "RBC": { category: "CBC", unit: "M/µL", low: 4.5, high: 5.5 },
+  "Hemoglobin": { category: "CBC", unit: "g/dL", low: 13.5, high: 17.5 },
+  "Hematocrit": { category: "CBC", unit: "%", low: 38.3, high: 48.6 },
+  "Platelets": { category: "CBC", unit: "K/µL", low: 150, high: 400 },
+  "MCV": { category: "CBC", unit: "fL", low: 80, high: 100 },
+  "MCH": { category: "CBC", unit: "pg", low: 27, high: 33 },
+  "MCHC": { category: "CBC", unit: "g/dL", low: 32, high: 36 },
+  "RDW": { category: "CBC", unit: "%", low: 11.5, high: 14.5 },
+  // ── Electrolytes & Minerals ──
+  "Sodium": { category: "Electrolytes & Minerals", unit: "mEq/L", low: 136, high: 145 },
+  "Potassium": { category: "Electrolytes & Minerals", unit: "mEq/L", low: 3.5, high: 5.0 },
+  "Calcium": { category: "Electrolytes & Minerals", unit: "mg/dL", low: 8.5, high: 10.5 },
+  "Magnesium": { category: "Electrolytes & Minerals", unit: "mg/dL", low: 1.7, high: 2.2 },
+  "Chloride": { category: "Electrolytes & Minerals", unit: "mEq/L", low: 98, high: 106 },
+  "Phosphorus": { category: "Electrolytes & Minerals", unit: "mg/dL", low: 2.5, high: 4.5 },
+  "Iron": { category: "Electrolytes & Minerals", unit: "µg/dL", low: 60, high: 170 },
+  "Ferritin": { category: "Electrolytes & Minerals", unit: "ng/mL", low: 20, high: 250 },
+  "TIBC": { category: "Electrolytes & Minerals", unit: "µg/dL", low: 250, high: 370 },
+  "CO2 (Bicarbonate)": { category: "Electrolytes & Minerals", unit: "mEq/L", low: 23, high: 29 },
 };
 
 Deno.serve(async (req) => {
@@ -121,7 +170,7 @@ Deno.serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are a medical lab result parser. Extract biomarker values from the uploaded bloodwork document. Only extract markers that match these EXACT names: ${markerNames}. Map common lab names to our standard names (e.g. "Total Testosterone" → "Testosterone (Total)", "Glucose" → "Fasting Glucose", "Hemoglobin A1c" → "HbA1c", "C-Reactive Protein" → "hs-CRP", "Vit D" → "Vitamin D (25-OH)", "T3 Free" → "Free T3", "T4 Free" → "Free T4"). Only include markers you can confidently identify with a numeric value. For the lab date, look for "Date Collected", "Specimen Date", or similar.`,
+            content: `You are a medical lab result parser. Extract ALL biomarker values from the uploaded bloodwork document. Only extract markers that match these EXACT names: ${markerNames}. Map common lab names to our standard names (e.g. "Total Testosterone" → "Testosterone (Total)", "Glucose" or "Glucose, Serum" → "Fasting Glucose", "Hemoglobin A1c" or "A1c" → "HbA1c", "C-Reactive Protein" or "CRP" → "hs-CRP", "Vit D" or "25-Hydroxyvitamin D" → "Vitamin D (25-OH)", "T3 Free" → "Free T3", "T4 Free" → "Free T4", "GFR" or "Glomerular Filtration" → "eGFR", "Alk Phos" or "Alkaline Phosphatase" → "ALP", "Gamma GT" → "GGT", "Tot Cholesterol" → "Total Cholesterol", "Trig" → "Triglycerides", "WBC" or "White Blood Cell" → "WBC", "RBC" or "Red Blood Cell" → "RBC", "Hgb" → "Hemoglobin", "Hct" → "Hematocrit", "Plt" → "Platelets", "Na" → "Sodium", "K" → "Potassium", "Ca" → "Calcium", "Mg" → "Magnesium", "Cl" → "Chloride", "Phos" → "Phosphorus", "Fe" → "Iron", "Sex Hormone Binding" or "Sex Hormone-Binding" → "SHBG", "AM Cortisol" → "Cortisol (AM)", "Luteinizing" → "LH", "Follicle Stimulating" → "FSH", "TPO" or "Thyroid Perox" → "Thyroid Peroxidase Ab", "rT3" → "Reverse T3", "Total Bilirubin" or "Bilirubin, Total" → "Bilirubin (Total)", "Bicarb" or "CO2" → "CO2 (Bicarbonate)"). Extract EVERY marker you find — don't skip any. Only include markers you can confidently identify with a numeric value. For the lab date, look for "Date Collected", "Specimen Date", "Date Reported", or similar.`,
           },
           {
             role: "user",
