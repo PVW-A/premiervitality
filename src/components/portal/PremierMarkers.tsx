@@ -600,6 +600,99 @@ function CategorySection({ catName, config, getMarkerResults, openCategory, setO
   );
 }
 
+function computeVitalityScore(results: BiomarkerResult[], allMarkers: MarkerDef[]): number | null {
+  const graded: number[] = [];
+  allMarkers.forEach((m) => {
+    const mr = results.filter((r) => r.marker_name === m.name);
+    if (mr.length === 0) return;
+    const latest = mr.reduce((a, b) => (a.lab_date > b.lab_date ? a : b));
+    const grade = getGrade(latest.value, m);
+    const scoreMap: Record<Grade, number> = {
+      critical: 15, low: 45, normal: 70, optimal: 100, high: 45, critical_high: 15,
+    };
+    graded.push(scoreMap[grade]);
+  });
+  if (graded.length === 0) return null;
+  return Math.round(graded.reduce((a, b) => a + b, 0) / graded.length);
+}
+
+function getScoreColor(score: number): string {
+  if (score >= 85) return "152, 69%, 50%";
+  if (score >= 70) return "168, 85%, 57%";
+  if (score >= 55) return "45, 93%, 47%";
+  if (score >= 40) return "25, 95%, 53%";
+  return "0, 84%, 60%";
+}
+
+function getScoreLabel(score: number): string {
+  if (score >= 85) return "Excellent";
+  if (score >= 70) return "Good";
+  if (score >= 55) return "Fair";
+  if (score >= 40) return "Needs Attention";
+  return "Critical";
+}
+
+function VitalityScoreWidget({ score }: { score: number }) {
+  const color = getScoreColor(score);
+  const label = getScoreLabel(score);
+  const circumference = 2 * Math.PI * 54;
+  const dashOffset = circumference - (score / 100) * circumference;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="flex flex-col items-center gap-3 py-6 px-4 rounded-xl"
+      style={{
+        background: `linear-gradient(135deg, hsl(${color} / 0.04), hsl(0 0% 100% / 0.01))`,
+        border: `1px solid hsl(${color} / 0.1)`,
+      }}
+    >
+      <div className="relative w-32 h-32">
+        <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="54" fill="none" stroke="hsl(0 0% 100% / 0.04)" strokeWidth="6" />
+          <motion.circle
+            cx="60" cy="60" r="54" fill="none"
+            stroke={`hsl(${color})`}
+            strokeWidth="6"
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            initial={{ strokeDashoffset: circumference }}
+            animate={{ strokeDashoffset: dashOffset }}
+            transition={{ duration: 1.2, ease: "easeOut", delay: 0.2 }}
+            style={{ filter: `drop-shadow(0 0 8px hsl(${color} / 0.4))` }}
+          />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <motion.span
+            className="text-3xl font-heading font-light text-foreground tabular-nums"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+          >
+            {score}
+          </motion.span>
+          <span className="text-[9px] tracking-[0.2em] uppercase text-muted-foreground/50 font-body">
+            / 100
+          </span>
+        </div>
+      </div>
+      <div className="text-center">
+        <span
+          className="text-sm font-body font-light"
+          style={{ color: `hsl(${color})` }}
+        >
+          {label}
+        </span>
+        <p className="text-[10px] text-muted-foreground/40 font-body font-light mt-0.5 max-w-[240px]">
+          Aggregated from your latest biomarker results across all categories.
+        </p>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function PremierMarkers() {
   const { user } = useAuth();
   const [results, setResults] = useState<BiomarkerResult[]>([]);
@@ -619,6 +712,9 @@ export default function PremierMarkers() {
 
   const getMarkerResults = (name: string) => results.filter((r) => r.marker_name === name);
 
+  const allMarkers = Object.values(categoryConfig).flatMap((c) => c.markers);
+  const vitalityScore = computeVitalityScore(results, allMarkers);
+
   // Check if secondary categories have any data
   const secondaryHasData = SECONDARY_CATEGORIES.some(catName =>
     categoryConfig[catName].markers.some(m => getMarkerResults(m.name).length > 0)
@@ -627,11 +723,13 @@ export default function PremierMarkers() {
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="text-xl font-heading font-light text-foreground">Premier Markers</h2>
+        <h2 className="text-xl font-heading font-light text-foreground">Vitality Score</h2>
         <p className="text-xs text-muted-foreground/60 font-body font-light mt-0.5">
-          Tap any category to see your results, what they mean, and how to improve.
+          Your overall health at a glance — tap any category to explore.
         </p>
       </div>
+
+      {vitalityScore !== null && <VitalityScoreWidget score={vitalityScore} />}
 
       {/* Primary categories */}
       <div className="space-y-2">
