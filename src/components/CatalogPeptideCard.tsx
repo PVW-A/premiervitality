@@ -37,6 +37,7 @@ interface CatalogPeptideCardProps {
   onSelectVariation: (id: string | null) => void;
   requestedPeptideIds: Set<string>;
   onRequestSubmitted: (peptideId: string) => void;
+  hasActiveMembership: boolean;
 }
 
 const CatalogPeptideCard = ({
@@ -48,6 +49,7 @@ const CatalogPeptideCard = ({
   onSelectVariation,
   requestedPeptideIds,
   onRequestSubmitted,
+  hasActiveMembership,
 }: CatalogPeptideCardProps) => {
   const { user } = useAuth();
   const [submitting, setSubmitting] = useState(false);
@@ -229,7 +231,19 @@ const CatalogPeptideCard = ({
 
                 {/* CTA */}
                 <div className="pt-1">
-                  {selectedVariation ? (
+                  {!hasActiveMembership ? (
+                    <div className="space-y-2">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); window.location.href = "/services"; }}
+                        className="inline-flex items-center gap-2 px-6 py-2.5 text-[10px] font-body font-extralight tracking-[0.3em] uppercase border border-primary/30 text-primary hover:bg-primary/5 transition-all duration-300"
+                      >
+                        Subscribe to Request Peptides
+                      </button>
+                      <p className="text-[10px] text-muted-foreground/40 font-body font-extralight tracking-wide">
+                        An active membership is required to request peptides.
+                      </p>
+                    </div>
+                  ) : selectedVariation ? (
                     isRequested ? (
                       <button
                         disabled

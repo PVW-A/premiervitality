@@ -35,6 +35,7 @@ const Catalog = () => {
   const [expandedName, setExpandedName] = useState<string | null>(null);
   const [selectedVariation, setSelectedVariation] = useState<string | null>(null);
   const [requestedPeptideIds, setRequestedPeptideIds] = useState<Set<string>>(new Set());
+  const [hasActiveMembership, setHasActiveMembership] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
@@ -62,8 +63,18 @@ const Catalog = () => {
         .order("name");
       if (data) setPeptides(data);
     };
+    const fetchMembership = async () => {
+      const { data } = await supabase
+        .from("memberships")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("status", "active")
+        .limit(1);
+      setHasActiveMembership(!!(data && data.length > 0));
+    };
     fetchPeptides();
     fetchRequests();
+    fetchMembership();
   }, [user, fetchRequests]);
 
   const handleRequestSubmitted = useCallback((peptideId: string) => {
@@ -211,6 +222,7 @@ const Catalog = () => {
               onSelectVariation={setSelectedVariation}
               requestedPeptideIds={requestedPeptideIds}
               onRequestSubmitted={handleRequestSubmitted}
+              hasActiveMembership={hasActiveMembership}
             />
           ))}
           {filtered.length === 0 && (
