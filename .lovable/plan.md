@@ -1,37 +1,67 @@
 
 
-## Brand Identity Analysis: Which Option Fits Premier Vitality
+## Plan: In-App Subscription Signup with Square
 
-Based on everything built so far, here's my assessment:
+### Current State
+The "Get Started" buttons on the Services page open static Square checkout links in a new tab. The user has no in-app signup flow -- they just get redirected to Square's hosted page.
 
-### The brand voice established across the site
+### What You Want
+A two-step in-app flow:
+1. **"Get Started"** opens a modal/form collecting the user's **shipping address** and **card info**
+2. **"Pay Now"** submits everything to Square, creating the customer + subscription programmatically
 
-- **Physician-led, not startup-led.** Dr. James Loo's story page reads like a clinician reflecting on his practice, not a founder pitching.
-- **Understated luxury.** Champagne gold used sparingly on deep navy. No gradients, no glow effects on brand elements. Cormorant Garamond at light weights.
-- **"Out of touch" positioning.** The site deliberately avoids looking accessible or mass-market. It reads like a private practice you'd find through referral, not Google.
-- **Current monogram.** The existing PV is italic Cormorant Garamond, thin weight, minimal. It already leans toward Option A territory.
+### Proposed Approach
 
-### My recommendation: **Option A — Monogram Authority**
+**New Edge Function: `create-subscription`**
+- Accepts: `tier_id`, `billing_cycle`, `address` fields, `card_nonce` (from Square Web Payments SDK)
+- Uses Square APIs to:
+  1. Create or update a Square Customer (with address)
+  2. Create a Card on file using the card nonce
+  3. Create a Subscription using the plan variation ID + customer ID + card ID
+- Saves `square_customer_id` to the user's profile
+- The existing webhook handles the rest (membership activation)
 
-Here's why, option by option:
+**Square Web Payments SDK (client-side)**
+- Embed Square's JS SDK to securely tokenize the card — card details never touch our server, only a `card_nonce` token
+- This is Square's required approach for PCI compliance
 
-**Option A (Monogram Authority)** — This is the natural evolution of what you already have. The PV monogram is already established in the navbar, hero, and favicon space. Moving to an interlocked, thin serif version refines it without changing direction. "Gold on navy" and "architectural grid alignment" are literally the design system you're already using. This option doesn't reinvent, it sharpens.
+**UI Changes on Services Page**
+- "Get Started" opens a Dialog/modal with:
+  - Step 1: Address form (street, city, state, zip)
+  - Step 2: Square card input (embedded iframe from their SDK)
+  - "Pay Now" button at the bottom
+- If the user is not logged in, redirect to `/auth` first (with a redirect-back param so they return to Services after login)
+- Loading state while the subscription is being created
+- Success toast + redirect to portal on completion
 
-**Option B (Wordmark Institutional)** — "Applied Performance Biotechnology" as a subtitle is a problem. It sounds like a biotech startup or a research lab, not a clinical practice. The site copy talks about brain rewiring, peptide protocols, and patient journeys. The word "biotechnology" creates distance from the human, physician-patient relationship the brand is built on. A full wordmark also fights against the minimalism. Spelling out PREMIER VITALITY in large serif type would dominate layouts where the monogram currently breathes.
+**Database Changes**
+- Add `address_line1`, `address_city`, `address_state`, `address_zip` columns to `profiles` table so the address is saved for future use
 
-**Option C (Emblem Seal)** — "Feels regulatory but modern" is a red flag. Regulatory reads as institutional, which reads as impersonal. The entire Dr. James Loo narrative is built on personal conviction and clinical intimacy. A crest or seal would feel like a hospital system or a certification body, not a private practice led by one physician with a specific philosophy. It's the right choice for a different brand.
+### Technical Details
 
-### Summary
+```text
+User clicks "Get Started"
+  └─► Not logged in? → Redirect to /auth?redirect=/services
+  └─► Logged in → Open checkout modal
+        ├─ Address form fields
+        ├─ Square Web Payments SDK card input (tokenizes card)
+        └─ "Pay Now" button
+              └─► Calls edge function `create-subscription`
+                    ├─ Square: CreateCustomer (with address)
+                    ├─ Square: CreateCard (with nonce)
+                    ├─ Square: CreateSubscription (plan + customer + card)
+                    └─ Save square_customer_id to profiles
+              └─► Webhook fires → membership row created
+              └─► UI: success toast, redirect to /portal
+```
 
-| Criterion | A: Monogram | B: Wordmark | C: Emblem |
-|---|---|---|---|
-| Matches existing design system | Yes | Partial | No |
-| Supports "out of touch" luxury | Yes | Too corporate | Too institutional |
-| Works at small sizes (navbar, favicon) | Yes | No | Marginal |
-| Reinforces physician-led identity | Neutral | No ("biotechnology") | No (regulatory) |
-| Feels like private practice | Yes | No | No |
+**Files to create/modify:**
+- `supabase/functions/create-subscription/index.ts` — new edge function
+- `src/pages/Services.tsx` — replace static links with modal flow
+- `src/components/SubscriptionCheckout.tsx` — new modal component with address form + Square card embed
+- Database migration — add address columns to profiles
+- `index.html` — add Square Web Payments SDK script tag
 
-**Option A is the only one that doesn't require the brand to pivot.** It's what the site is already saying visually — it just needs a more intentional execution of the monogram itself.
-
-If you want to move forward, I can refine the PV monogram SVG to be a proper interlocked design with tighter kerning and architectural alignment, rather than the current plain text rendering.
+### Important Consideration
+The Square Web Payments SDK requires your **Square Application ID** and **Location ID** to initialize the card payment form on the client side. The Application ID is a *public* key (safe to embed in frontend code). I will need you to provide your **Square Application ID** (found in Square Developer Dashboard → your app → Credentials).
 
