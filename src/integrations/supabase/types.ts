@@ -59,6 +59,39 @@ export type Database = {
         }
         Relationships: []
       }
+      bloodwork_uploads: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          file_name: string
+          file_path: string
+          id: string
+          reviewed_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          file_name: string
+          file_path: string
+          id?: string
+          reviewed_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          file_name?: string
+          file_path?: string
+          id?: string
+          reviewed_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           content: string

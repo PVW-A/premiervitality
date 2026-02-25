@@ -13,7 +13,8 @@ import PremierMarkers from "@/components/portal/PremierMarkers";
 import PortalNews from "@/components/portal/PortalNews";
 import LoyaltyRewards from "@/components/portal/LoyaltyRewards";
 import SubscriptionCheckout from "@/components/SubscriptionCheckout";
-import { LogOut, Pill, Package, Clock, BookOpen, Activity, Newspaper, Star, Check, Sparkles } from "lucide-react";
+import BloodworkUploader from "@/components/portal/BloodworkUploader";
+import { LogOut, Pill, Package, Clock, BookOpen, Activity, Newspaper, Star, Check, Sparkles, Upload } from "lucide-react";
 
 interface PatientPeptide {
   id: string;
@@ -50,6 +51,7 @@ const Portal = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [requests, setRequests] = useState<any[]>([]);
   const [profile, setProfile] = useState<{ first_name: string | null; last_name: string | null } | null>(null);
+  const [bloodworkUploads, setBloodworkUploads] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState("dashboard");
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
   const [checkoutTier, setCheckoutTier] = useState<{
@@ -126,6 +128,13 @@ const Portal = () => {
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
     if (reqData) setRequests(reqData);
+
+    const { data: bwData } = await supabase
+      .from("bloodwork_uploads")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+    if (bwData) setBloodworkUploads(bwData);
   }, [user]);
 
   useEffect(() => {
@@ -433,7 +442,8 @@ const Portal = () => {
           </TabsContent>
 
           {/* Premier Markers Tab */}
-          <TabsContent value="markers" className="mt-8">
+          <TabsContent value="markers" className="mt-8 space-y-10">
+            <BloodworkUploader uploads={bloodworkUploads} onRefresh={fetchData} />
             <PremierMarkers />
           </TabsContent>
 
