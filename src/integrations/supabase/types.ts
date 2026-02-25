@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      biomarker_results: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          lab_date: string
+          marker_name: string
+          notes: string | null
+          reference_high: number | null
+          reference_low: number | null
+          status: string
+          unit: string
+          user_id: string
+          value: number
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          lab_date: string
+          marker_name: string
+          notes?: string | null
+          reference_high?: number | null
+          reference_low?: number | null
+          status?: string
+          unit: string
+          user_id: string
+          value: number
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          lab_date?: string
+          marker_name?: string
+          notes?: string | null
+          reference_high?: number | null
+          reference_low?: number | null
+          status?: string
+          unit?: string
+          user_id?: string
+          value?: number
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           content: string
@@ -170,6 +215,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      news_articles: {
+        Row: {
+          category: string | null
+          created_at: string
+          id: string
+          published_at: string | null
+          source: string
+          summary: string
+          title: string
+          url: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          published_at?: string | null
+          source: string
+          summary: string
+          title: string
+          url: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          published_at?: string | null
+          source?: string
+          summary?: string
+          title?: string
+          url?: string
+        }
+        Relationships: []
       }
       order_items: {
         Row: {
