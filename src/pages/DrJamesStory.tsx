@@ -31,25 +31,25 @@ const DrJamesStory = () => (
 
           <div className="space-y-6 text-muted-foreground font-body font-light text-sm leading-relaxed">
             <p>
-              It started in a lab at UC Davis, over 40 years ago. I was an undergrad doing research on neuroplasticity. Basically, how the brain rewires itself. At the time, most people hadn't even heard that word. But I was hooked. There was something about understanding how the brain adapts, heals, and changes that just made sense to me.
+              It started in a lab at UC Davis, more than 40 years ago. I was an undergraduate researcher studying neuroplasticity, how the brain rewires itself. Most people hadn't heard that word yet. But I was captivated. There was something profound about understanding how the brain adapts, heals, and rebuilds that felt like the most important question in medicine.
             </p>
             <p>
-              That curiosity followed me into medical school, where I kept digging into neuroplasticity research. I wanted to understand what happens when the brain's ability to adapt gets disrupted, and more importantly, what we could do about it. That question drove everything that came next.
+              That fascination carried me through medical school, where I continued digging into neuroplasticity research. I wanted to understand what happens when the brain's capacity to adapt breaks down, and more importantly, what we could do to restore it. That question shaped everything that came next.
             </p>
             <p>
-              It paved the way to my residency at Barrow Neurological Institute in neurology, where I got to work alongside some of the best minds in brain science. Being in that environment, seeing patients with real neurological challenges every day, it sharpened everything I'd been studying and gave it a clinical edge.
+              It led me to a residency at Barrow Neurological Institute, one of the world's foremost centers for brain science. Working alongside exceptional colleagues and caring for patients with complex neurological conditions every day sharpened my thinking and gave my research a clinical edge it had been missing.
             </p>
             <p>
-              From there, the path led naturally into addiction medicine. When you spend years studying how the brain rewires itself, you start to see addiction differently. It's not a character flaw. It's a brain that got stuck in a loop. The neurology background gave me real tools to help people find their way out. Over 30 years of working in addiction medicine, I've seen what's possible when you treat the brain with the respect it deserves.
+              From there, the path led naturally to addiction medicine. When you spend years studying how the brain rewires itself, you begin to see addiction differently. Not as a moral failing, but as a brain caught in a destructive loop. My neurology background gave me real, evidence-based tools to help people find their way out. Over more than 30 years in addiction medicine, I've witnessed what becomes possible when you treat the brain with the respect and precision it deserves.
             </p>
             <p>
-              I also became board-certified in family practice because I've always wanted to take care of the whole person, not just one piece of the puzzle. Families, kids, grandparents, the full picture. That's always been important to me.
+              I also pursued board certification in family practice, because I've always believed in treating the whole person. Families, children, grandparents, the full picture has always mattered to me, not just one piece of the puzzle.
             </p>
             <p>
-              After decades of practicing medicine, I've learned that the best care doesn't come from textbooks alone. It comes from listening, staying curious, and being willing to look at things from a different angle. Peptide therapy is a natural extension of everything I've studied. It's about giving the body the right signals to heal and optimize at the cellular level.
+              After decades in clinical medicine, I've learned that the best care rarely comes from textbooks alone. It comes from listening carefully, staying relentlessly curious, and being willing to look at old problems from new angles. Peptide therapy is a natural extension of that philosophy, giving the body the precise signals it needs to heal and optimize at the cellular level.
             </p>
             <p>
-              I didn't start this company to chase a trend. I started it because after 40 years of research and clinical work, I know what's possible when you combine real science with genuine care. That's what we're building here.
+              I didn't start this company to chase a trend. I started it because after 40 years of research and clinical practice, I know what's possible when rigorous science meets genuine human care. That's what we're building here, and I'm proud to be building it with you.
             </p>
           </div>
         </motion.div>
