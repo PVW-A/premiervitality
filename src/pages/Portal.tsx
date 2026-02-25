@@ -208,7 +208,7 @@ const Portal = () => {
               value="markers"
               className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
             >
-              <Activity size={14} className="mr-2" /> Premier Markers
+              <Activity size={14} className="mr-2" /> Vitality Score
             </TabsTrigger>
             <TabsTrigger
               value="news"
