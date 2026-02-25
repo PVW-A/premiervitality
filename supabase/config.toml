@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.pv-concierge]
 verify_jwt = false
+
+[functions.square-loyalty]
+verify_jwt = false
