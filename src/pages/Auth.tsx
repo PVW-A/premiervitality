@@ -122,7 +122,24 @@ const Auth = () => {
           </Button>
         </form>
 
-        <div className="mt-6 text-center">
+        <div className="mt-6 text-center space-y-3">
+          {isLogin && (
+            <button
+              onClick={async () => {
+                if (!email) { setError("Enter your email first."); return; }
+                setError(""); setMessage(""); setLoading(true);
+                const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                  redirectTo: `${window.location.origin}/reset-password`,
+                });
+                if (error) setError(error.message);
+                else setMessage("Check your email for a password reset link.");
+                setLoading(false);
+              }}
+              className="text-xs tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors font-body font-light block mx-auto"
+            >
+              Forgot password?
+            </button>
+          )}
           <button
             onClick={() => { setIsLogin(!isLogin); setError(""); setMessage(""); }}
             className="text-xs tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors font-body font-light"
