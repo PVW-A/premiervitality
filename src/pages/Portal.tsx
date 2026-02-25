@@ -2,6 +2,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +12,8 @@ import MyRequests from "@/components/portal/MyRequests";
 import PremierMarkers from "@/components/portal/PremierMarkers";
 import PortalNews from "@/components/portal/PortalNews";
 import LoyaltyRewards from "@/components/portal/LoyaltyRewards";
-import { LogOut, Pill, Package, Clock, BookOpen, Activity, Newspaper, Star } from "lucide-react";
+import SubscriptionCheckout from "@/components/SubscriptionCheckout";
+import { LogOut, Pill, Package, Clock, BookOpen, Activity, Newspaper, Star, Check, Sparkles } from "lucide-react";
 
 interface PatientPeptide {
   id: string;
@@ -49,6 +51,39 @@ const Portal = () => {
   const [requests, setRequests] = useState<any[]>([]);
   const [profile, setProfile] = useState<{ first_name: string | null; last_name: string | null } | null>(null);
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
+  const [checkoutTier, setCheckoutTier] = useState<{
+    id: string; name: string; slug: string; monthly_price: number; annual_price: number;
+  } | null>(null);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+
+  const { data: membership } = useQuery({
+    queryKey: ["my-membership", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("memberships")
+        .select("*, membership_tiers(*)")
+        .eq("user_id", user!.id)
+        .eq("status", "active")
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: tiers } = useQuery({
+    queryKey: ["membership-tiers"],
+    enabled: !!user && !membership,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("membership_tiers")
+        .select("*")
+        .order("sort_order");
+      if (error) throw error;
+      return data;
+    },
+  });
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
@@ -182,6 +217,105 @@ const Portal = () => {
 
           {/* Dashboard Tab */}
           <TabsContent value="dashboard" className="mt-8 space-y-10">
+            {/* Membership Upsell for non-subscribers */}
+            {!membership && tiers && tiers.length > 0 && (
+              <section className="space-y-6">
+                <div>
+                  <h2 className="text-xs tracking-[0.3em] uppercase text-primary font-body font-light mb-2">
+                    Choose Your Plan
+                  </h2>
+                  <p className="text-sm text-muted-foreground font-body font-light">
+                    Subscribe to unlock member pricing, lab work, and the ability to request peptides.
+                  </p>
+                </div>
+                <div className="flex justify-start mb-2">
+                  <div className="inline-flex items-center bg-secondary rounded-full p-1 gap-1">
+                    <button
+                      onClick={() => setBillingCycle("monthly")}
+                      className={`px-4 py-1.5 text-[10px] tracking-[0.15em] uppercase font-body font-light rounded-full transition-colors ${
+                        billingCycle === "monthly" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >Monthly</button>
+                    <button
+                      onClick={() => setBillingCycle("annual")}
+                      className={`px-4 py-1.5 text-[10px] tracking-[0.15em] uppercase font-body font-light rounded-full transition-colors ${
+                        billingCycle === "annual" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >Annual</button>
+                  </div>
+                </div>
+                <div className="grid gap-6 md:grid-cols-3">
+                  {tiers.map((tier) => {
+                    const price = billingCycle === "monthly" ? tier.monthly_price : tier.annual_price;
+                    const isPopular = tier.slug === "premium";
+                    const features = (tier.features as string[]) || [];
+                    return (
+                      <Card key={tier.id} className={`relative border ${isPopular ? "border-primary/60" : "border-border"} bg-card`}>
+                        {isPopular && (
+                          <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                            <span className="inline-flex items-center gap-1 bg-primary text-primary-foreground text-[9px] tracking-[0.2em] uppercase font-body px-3 py-1">
+                              <Sparkles size={10} /> Most Popular
+                            </span>
+                          </div>
+                        )}
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-xs tracking-[0.3em] uppercase text-primary font-body font-light">
+                            {tier.name}
+                          </CardTitle>
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-3xl font-heading font-light text-foreground">${price}</span>
+                            <span className="text-muted-foreground text-xs font-body">/mo</span>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                          <div className="flex items-start gap-2 text-xs text-muted-foreground font-body font-light">
+                            <Check size={13} className="text-primary mt-0.5 shrink-0" />
+                            <span>{tier.discount_pct}% peptide discount</span>
+                          </div>
+                          <div className="flex items-start gap-2 text-xs text-muted-foreground font-body font-light">
+                            <Check size={13} className="text-primary mt-0.5 shrink-0" />
+                            <span>{tier.blood_work_frequency} blood work</span>
+                          </div>
+                          <div className="flex items-start gap-2 text-xs text-muted-foreground font-body font-light">
+                            <Check size={13} className="text-primary mt-0.5 shrink-0" />
+                            <span>{tier.consultation_frequency}</span>
+                          </div>
+                          {features.slice(0, 2).map((f, fi) => (
+                            <div key={fi} className="flex items-start gap-2 text-xs text-muted-foreground font-body font-light">
+                              <Check size={13} className="text-primary mt-0.5 shrink-0" />
+                              <span>{f}</span>
+                            </div>
+                          ))}
+                          <button
+                            onClick={() => {
+                              setCheckoutTier({ id: tier.id, name: tier.name, slug: tier.slug, monthly_price: tier.monthly_price, annual_price: tier.annual_price });
+                              setCheckoutOpen(true);
+                            }}
+                            className={`w-full mt-4 py-2.5 text-[10px] tracking-[0.2em] uppercase font-body font-light transition-colors ${
+                              isPopular
+                                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                                : "border border-primary/40 text-primary hover:bg-primary/10"
+                            }`}
+                          >
+                            Get Started
+                          </button>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
+
+            {/* Active membership badge */}
+            {membership && (
+              <div className="flex items-center gap-3">
+                <Badge variant="outline" className="border-primary/40 text-primary text-xs tracking-wider uppercase font-body font-light px-3 py-1">
+                  {(membership as any).membership_tiers?.name ?? "Active"} Member
+                </Badge>
+              </div>
+            )}
+
             <Button
               variant="outline"
               size="sm"
@@ -190,7 +324,6 @@ const Portal = () => {
             >
               <BookOpen size={14} className="mr-1.5" /> View Full Catalog & Pricing
             </Button>
-
             {/* Peptide Inventory */}
             <section>
               <div className="flex items-center gap-2 mb-4">
@@ -343,6 +476,13 @@ const Portal = () => {
           ))}
         </div>
       </nav>
+      <SubscriptionCheckout
+        open={checkoutOpen}
+        onOpenChange={setCheckoutOpen}
+        tier={checkoutTier}
+        billingCycle={billingCycle}
+        onSuccess={() => { setCheckoutOpen(false); fetchData(); }}
+      />
     </div>
   );
 };

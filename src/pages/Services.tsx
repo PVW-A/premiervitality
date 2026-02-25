@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { openCalendly } from "@/hooks/useCalendly";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -13,7 +13,12 @@ import SubscriptionCheckout from "@/components/SubscriptionCheckout";
 const Services = () => {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  // Gate: redirect unauthenticated users to auth
+  useEffect(() => {
+    if (!loading && !user) navigate("/auth?redirect=/services");
+  }, [user, loading, navigate]);
 
   const { data: tiers, isLoading } = useQuery({
     queryKey: ["membership-tiers"],
