@@ -1,109 +1,72 @@
+## Restructuring Navigation and Access Flow
 
+### The Problem
 
-## AI Patient Assistant — Strategic Analysis & Implementation Plan
+The navbar has 5 links + account icon + Order button, and "Contact" duplicates "Order" (both open Calendly). Adding FAQ makes it worse. The Services/membership page is public but really only matters once someone is considering signing up.
 
-### Should you add it? Yes, absolutely.
-
-Here's why it makes strategic sense for Premier Vitality specifically:
-
-1. **Peptide education is complex.** Your catalog has ~150 variations across multiple categories, routes, and candidates. Most visitors won't read every card. A chatbot that can answer "what peptide helps with sleep?" or "what's the difference between BPC-157 nasal vs injectable?" converts confused browsers into booked consultations.
-
-2. **It reduces friction before the Calendly call.** Patients who arrive at a consultation already educated on what they want are higher-value leads. The chatbot pre-qualifies them.
-
-3. **It reinforces the premium brand.** A well-designed AI concierge (not a generic chatbot widget) signals sophistication.
-
----
-
-### What should it look like?
-
-**Not a floating bubble widget.** That reads as customer support for a SaaS product. For Premier Vitality, the chatbot should feel like a **private concierge interaction**, consistent with the medical-luxury aesthetic.
-
-Proposed design:
-- **Trigger:** A subtle, fixed-bottom-right button styled as a thin champagne-gold outlined pill with a minimal icon (not a cartoon chat bubble). Think: a small PV monogram or a simple message icon at 18px.
-- **Panel:** A slide-up drawer (mobile) or slide-in side panel (desktop) with the deep navy background, champagne gold accents on the input field border, and Cormorant Garamond for headings. Messages rendered in the body font (Inter/system) for readability.
-- **No aggressive animations.** Smooth fade-in, no bouncing icons, no notification badges on first load.
-
----
-
-### What should its name be?
-
-Options ranked by brand fit:
-
-| Name | Rationale | Risk |
-|---|---|---|
-| **PV Concierge** | Matches "premier" positioning, implies service | None |
-| **Premier Guide** | Descriptive, professional | Slightly generic |
-| **Dr. PV** | Personality, memorable | Could imply medical advice (compliance risk) |
-| **Vita** | Short, elegant, derived from "Vitality" | Might feel too casual |
-
-**Recommendation: "PV Concierge"** — it sets the right expectation (guidance, not diagnosis) and aligns with the luxury medical brand. The welcome message could read: *"Welcome to Premier Vitality. I can help you explore our peptide protocols, understand formulations, or connect you with our clinical team."*
-
----
-
-### When should it escalate to a human?
-
-The chatbot should refer to booking a call or texting when:
-
-1. **Dosage or medical questions** — "What dose should I take?" → *"Dosing is personalized to your labs and health profile. Let me connect you with our clinical team."* → Calendly link or phone number.
-2. **After 3+ exchanges on the same topic** — If the patient is going deep, they're ready for a real conversation.
-3. **Pricing or ordering questions** — *"I'd love to walk you through our membership options. Would you like to schedule a quick call?"*
-4. **Adverse effects or safety concerns** — Immediate escalation, no AI response on safety.
-5. **Explicit request** — "Can I talk to someone?" → Instant handoff.
-
----
-
-### Free or portal-gated?
-
-**Hybrid approach — and here's the strategic reasoning:**
-
-| Access Level | What they get | Why |
-|---|---|---|
-| **Public (unauthenticated)** | General peptide education, "what is BPC-157?", category browsing, benefits overview. Limited to ~10 messages per session. Always ends with a CTA to book a consultation or create an account. | This is a **lead generation tool**. Gating it completely means losing the conversion opportunity. |
-| **Portal (authenticated, free tier)** | Same as above but with session history persistence, slightly higher message limit. | Incentivizes account creation. |
-| **Portal (subscriber)** | Full access, unlimited messages, can ask about specific formulations and pricing, can initiate a peptide request directly from chat. | Rewards paying members with a premium experience. |
-
-**Recommendation: Public with limits.** The chatbot's primary job on the public site is to convert visitors into consultations or signups. Behind the portal, it becomes a richer tool. This matches your existing tiered access model.
-
----
-
-### Technical implementation
+### Recommended Flow
 
 ```text
-┌─────────────────────────────────────────┐
-│  Frontend                               │
-│  ├─ ChatButton (fixed bottom-right)     │
-│  ├─ ChatPanel (drawer/sheet)            │
-│  │   ├─ Message list (markdown render)  │
-│  │   ├─ Input bar                       │
-│  │   └─ Escalation CTAs (inline)        │
-│  └─ Rate limit / session tracking       │
-├─────────────────────────────────────────┤
-│  Backend Edge Function: pv-concierge    │
-│  ├─ System prompt with peptide context  │
-│  ├─ Queries peptide table for grounding │
-│  ├─ Lovable AI (gemini-3-flash-preview) │
-│  ├─ Escalation detection logic          │
-│  └─ Message count enforcement           │
-├─────────────────────────────────────────┤
-│  Database                               │
-│  ├─ chat_sessions table                 │
-│  └─ chat_messages table (portal only)   │
-└─────────────────────────────────────────┘
+VISITOR JOURNEY:
+Landing → About / Peptides / FAQ / News (public education)
+                    ↓
+            "Get Started" CTA
+                    ↓
+              Auth (sign up)
+                    ↓
+         Portal → Membership Tiers (inside portal)
+                    ↓
+              Subscribe → Catalog access
 ```
 
-Key technical decisions:
-- **AI model:** Lovable AI with `google/gemini-3-flash-preview` — fast, capable, no API key needed
-- **Grounding:** The edge function queries the `peptide` table and injects relevant peptide data into the system prompt so the AI gives accurate, catalog-aware answers
-- **Streaming:** SSE streaming for token-by-token rendering (feels responsive and premium)
-- **Compliance:** System prompt includes strict guardrails — no dosing advice, no diagnosis, always defer to clinical team for medical questions
-- **Persistence:** Anonymous sessions stored in-memory only (no DB writes). Authenticated sessions persisted to `chat_messages` table with RLS
+### What Changes
 
-### Files to create/modify
+**1. Navbar simplification (4 links, no crowding)**
 
-1. **New:** `supabase/functions/pv-concierge/index.ts` — Edge function with system prompt, peptide context injection, streaming
-2. **New:** `src/components/chat/ChatButton.tsx` — Floating trigger button
-3. **New:** `src/components/chat/ChatPanel.tsx` — Slide-up chat interface with message rendering
-4. **New:** `src/components/chat/ChatMessage.tsx` — Individual message component with markdown support
-5. **Modify:** `src/App.tsx` — Add ChatButton to the global layout
-6. **Database migration:** `chat_sessions` and `chat_messages` tables with RLS policies for authenticated users
 
+| Current  | Proposed                              |
+| -------- | ------------------------------------- |
+| About    | About                                 |
+| Services | FAQ (new)                             |
+| Peptides | Peptides                              |
+| News     | News                                  |
+| Contact  | *(removed, redundant with Order CTA)* |
+
+
+The "Order" button stays as the primary CTA. Services/membership pricing moves inside the portal.
+
+**2. New FAQ page (`/faq`)**
+
+- Static page with an accordion layout (already have `@radix-ui/react-accordion`)
+- Topics: How membership works, peptide safety, ordering process, shipping, consultation process
+- Ends with a CTA to sign up or book a consultation
+
+**3. Services page moves inside the Portal**
+
+- When an unauthenticated user hits `/services`, redirect to `/auth?redirect=/services`
+- Inside the portal, add a "Membership" tab or a prominent upsell card on the dashboard for non-subscribers
+- Subscribers see their current plan; non-subscribers see the tier comparison and can subscribe
+- The existing `SubscriptionCheckout` component stays as-is
+
+**4. Portal dashboard update**
+
+- For users without an active membership: show a "Choose Your Plan" section (the current Services tier cards) above the free-portal content
+- For subscribers: show current plan info with a small badge
+
+### Files to Create/Modify
+
+
+| File                        | Change                                                         |
+| --------------------------- | -------------------------------------------------------------- |
+| `src/pages/FAQ.tsx`         | New page with accordion Q&A sections                           |
+| `src/components/Navbar.tsx` | Replace "Services" with "FAQ", remove "Contact"                |
+| `src/App.tsx`               | Add `/faq` route                                               |
+| `src/pages/Services.tsx`    | Add auth redirect for unauthenticated users                    |
+| `src/pages/Portal.tsx`      | Add membership upsell section on dashboard for non-subscribers |
+
+
+### No database changes needed
+
+This is purely a frontend restructuring of navigation and access gating. I like your thought process, but I would also like them to be able to see the peptide still if they aren't paying yet just grab and hold their information once I make the account and continue with how you said.
+
+&nbsp;
