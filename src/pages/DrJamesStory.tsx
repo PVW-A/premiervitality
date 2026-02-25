@@ -40,7 +40,7 @@ const DrJamesStory = () => (
               It paved the way to my residency at Barrow Neurological Institute in neurology, where I got to work alongside some of the best minds in brain science. Being in that environment, seeing patients with real neurological challenges every day, it sharpened everything I'd been studying and gave it a clinical edge.
             </p>
             <p>
-              From there, the path led naturally into addiction medicine. When you spend years studying how the brain rewires itself, you start to see addiction differently. It's not a character flaw — it's a brain that got stuck in a loop. The neurology background gave me real tools to help people find their way out, and I got board-certified in addiction medicine because the patients needed someone who understood the why behind it.
+              From there, the path led naturally into addiction medicine. When you spend years studying how the brain rewires itself, you start to see addiction differently. It's not a character flaw — it's a brain that got stuck in a loop. The neurology background gave me real tools to help people find their way out. Over 30 years of working in addiction medicine, I've seen what's possible when you treat the brain with the respect it deserves.
             </p>
             <p>
               I also became board-certified in family practice because I've always wanted to take care of the whole person, not just one piece of the puzzle. Families, kids, grandparents — the full picture. That's always been important to me.
