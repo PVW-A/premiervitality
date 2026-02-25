@@ -152,30 +152,30 @@ const Portal = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="bg-card border border-border rounded-none h-auto p-0 w-full justify-start gap-0">
+          <TabsList className="bg-card border border-border rounded-none h-auto p-0 w-full justify-start gap-0 overflow-x-auto overflow-y-hidden scrollbar-none flex-nowrap">
             <TabsTrigger
               value="dashboard"
-              className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
+              className="rounded-none px-4 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary whitespace-nowrap shrink-0"
             >
-              <Pill size={14} className="mr-2" /> Dashboard
+              <Pill size={14} className="mr-1.5" /> Dashboard
             </TabsTrigger>
             <TabsTrigger
               value="markers"
-              className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
+              className="rounded-none px-4 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary whitespace-nowrap shrink-0"
             >
-              <Activity size={14} className="mr-2" /> Premier Markers
+              <Activity size={14} className="mr-1.5" /> <span className="hidden sm:inline">Premier </span>Markers
             </TabsTrigger>
             <TabsTrigger
               value="news"
-              className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
+              className="rounded-none px-4 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary whitespace-nowrap shrink-0"
             >
-              <Newspaper size={14} className="mr-2" /> Peptide News
+              <Newspaper size={14} className="mr-1.5" /> News
             </TabsTrigger>
             <TabsTrigger
               value="rewards"
-              className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
+              className="rounded-none px-4 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary whitespace-nowrap shrink-0"
             >
-              <Star size={14} className="mr-2" /> Rewards
+              <Star size={14} className="mr-1.5" /> Rewards
             </TabsTrigger>
           </TabsList>
 
