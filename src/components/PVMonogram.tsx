@@ -7,7 +7,7 @@ const PVMonogram = ({ className = "w-16 h-16" }: { className?: string }) => (
       fontSize="60"
       fontWeight="300"
       fontStyle="italic"
-      fill="hsl(40, 45%, 58%)"
+      fill="hsl(39, 38%, 60%)"
       letterSpacing="-4"
     >
       PV
