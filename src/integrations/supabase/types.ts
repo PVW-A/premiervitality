@@ -519,6 +519,8 @@ export type Database = {
           id: string
           last_name: string | null
           phone: string | null
+          sms_2fa_enabled: boolean
+          sms_consent: boolean
           square_customer_id: string | null
           updated_at: string
           user_id: string
@@ -533,6 +535,8 @@ export type Database = {
           id?: string
           last_name?: string | null
           phone?: string | null
+          sms_2fa_enabled?: boolean
+          sms_consent?: boolean
           square_customer_id?: string | null
           updated_at?: string
           user_id: string
@@ -547,8 +551,37 @@ export type Database = {
           id?: string
           last_name?: string | null
           phone?: string | null
+          sms_2fa_enabled?: boolean
+          sms_consent?: boolean
           square_customer_id?: string | null
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      trusted_devices: {
+        Row: {
+          created_at: string
+          device_fingerprint: string
+          device_name: string | null
+          id: string
+          last_used_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_fingerprint: string
+          device_name?: string | null
+          id?: string
+          last_used_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          device_fingerprint?: string
+          device_name?: string | null
+          id?: string
+          last_used_at?: string
           user_id?: string
         }
         Relationships: []
@@ -568,6 +601,36 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      verification_codes: {
+        Row: {
+          code: string
+          created_at: string
+          expires_at: string
+          id: string
+          phone: string
+          user_id: string
+          verified: boolean
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          phone: string
+          user_id: string
+          verified?: boolean
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          phone?: string
+          user_id?: string
+          verified?: boolean
         }
         Relationships: []
       }
