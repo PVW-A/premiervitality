@@ -14,7 +14,10 @@ import PortalNews from "@/components/portal/PortalNews";
 import LoyaltyRewards from "@/components/portal/LoyaltyRewards";
 import SubscriptionCheckout from "@/components/SubscriptionCheckout";
 import BloodworkUploader from "@/components/portal/BloodworkUploader";
-import { LogOut, Pill, Package, Clock, BookOpen, Activity, Newspaper, Star, Check, Sparkles, Upload } from "lucide-react";
+import VitalityScoreBadge from "@/components/portal/VitalityScoreBadge";
+import VitalityScoreDrawer from "@/components/portal/VitalityScoreDrawer";
+import { LogOut, Pill, Package, Clock, BookOpen, Activity, Newspaper, Star, Check, Sparkles } from "lucide-react";
+import { type BiomarkerResult, getAllMarkers, computeVitalityScore } from "@/lib/vitality";
 
 interface PatientPeptide {
   id: string;
@@ -58,6 +61,8 @@ const Portal = () => {
     id: string; name: string; slug: string; monthly_price: number; annual_price: number;
   } | null>(null);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [biomarkerResults, setBiomarkerResults] = useState<BiomarkerResult[]>([]);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const { data: membership } = useQuery({
     queryKey: ["my-membership", user?.id],
@@ -135,6 +140,14 @@ const Portal = () => {
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
     if (bwData) setBloodworkUploads(bwData);
+
+    // Fetch biomarker results for the vitality badge
+    const { data: bioData } = await supabase
+      .from("biomarker_results")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("lab_date", { ascending: false });
+    if (bioData) setBiomarkerResults(bioData as BiomarkerResult[]);
   }, [user]);
 
   useEffect(() => {
@@ -146,6 +159,8 @@ const Portal = () => {
     const days = Math.floor(qty / perDay);
     return days <= 0 ? "Reorder needed" : `~${days} days`;
   };
+
+  const vitalityScore = computeVitalityScore(biomarkerResults, getAllMarkers());
 
   if (loading) {
     return (
@@ -185,15 +200,26 @@ const Portal = () => {
       </header>
 
       <main className="max-w-5xl mx-auto px-6 py-10 space-y-8">
-        {/* Welcome */}
-        <div>
-          <h1 className="text-3xl font-heading font-light text-foreground">
-            Welcome{profile?.first_name ? `, ${profile.first_name}` : ""}
-          </h1>
-          <p className="text-sm text-muted-foreground font-body font-light mt-1">
-            Your peptide inventory, biomarkers, and clinical resources — all in one place.
-          </p>
+        {/* Welcome + Vitality Badge */}
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-heading font-light text-foreground">
+              Welcome{profile?.first_name ? `, ${profile.first_name}` : ""}
+            </h1>
+            <p className="text-sm text-muted-foreground font-body font-light mt-1">
+              Your peptide inventory, biomarkers, and clinical resources — all in one place.
+            </p>
+          </div>
+          <VitalityScoreBadge score={vitalityScore} onClick={() => setDrawerOpen(true)} />
         </div>
+
+        {/* Vitality Score Drawer */}
+        <VitalityScoreDrawer
+          open={drawerOpen}
+          onOpenChange={setDrawerOpen}
+          results={biomarkerResults}
+          onViewAll={() => setActiveTab("markers")}
+        />
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
