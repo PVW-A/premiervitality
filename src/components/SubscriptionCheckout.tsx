@@ -38,7 +38,7 @@ interface SubscriptionCheckoutProps {
   onSuccess: () => void;
 }
 
-const SQUARE_APP_ID = import.meta.env.VITE_SQUARE_APP_ID || "";
+const SQUARE_APP_ID = "sq0idp-kWcPexAAa-82PgTZwZqotA";
 const SQUARE_LOCATION_ID = import.meta.env.VITE_SQUARE_LOCATION_ID || "";
 
 const SubscriptionCheckout = ({
