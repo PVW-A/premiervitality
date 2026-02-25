@@ -72,7 +72,9 @@ const SubscriptionCheckout = ({
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [dobStr, setDobStr] = useState(""); // MM/DD/YYYY
+  const [dobMonth, setDobMonth] = useState("");
+  const [dobDay, setDobDay] = useState("");
+  const [dobYear, setDobYear] = useState("");
   const [address, setAddress] = useState({
     line1: "",
     line2: "",
@@ -137,29 +139,21 @@ const SubscriptionCheckout = ({
     }
   }, [step, initializeCard]);
 
-  // Auto-format DOB as MM/DD/YYYY
-  const handleDobChange = (val: string) => {
-    // Strip non-digits
-    const digits = val.replace(/\D/g, "").slice(0, 8);
-    let formatted = "";
-    if (digits.length <= 2) {
-      formatted = digits;
-    } else if (digits.length <= 4) {
-      formatted = `${digits.slice(0, 2)}/${digits.slice(2)}`;
-    } else {
-      formatted = `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
-    }
-    setDobStr(formatted);
-  };
+  const DOB_MONTHS = [
+    { value: "01", label: "January" }, { value: "02", label: "February" },
+    { value: "03", label: "March" }, { value: "04", label: "April" },
+    { value: "05", label: "May" }, { value: "06", label: "June" },
+    { value: "07", label: "July" }, { value: "08", label: "August" },
+    { value: "09", label: "September" }, { value: "10", label: "October" },
+    { value: "11", label: "November" }, { value: "12", label: "December" },
+  ];
+  const DOB_DAYS = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, "0"));
+  const currentYear = new Date().getFullYear();
+  const DOB_YEARS = Array.from({ length: 100 }, (_, i) => String(currentYear - i));
 
   const parseDob = (): string | null => {
-    const parts = dobStr.split("/");
-    if (parts.length !== 3) return null;
-    const [mm, dd, yyyy] = parts;
-    if (mm.length !== 2 || dd.length !== 2 || yyyy.length !== 4) return null;
-    const m = parseInt(mm), d = parseInt(dd), y = parseInt(yyyy);
-    if (m < 1 || m > 12 || d < 1 || d > 31 || y < 1900 || y > new Date().getFullYear()) return null;
-    return `${yyyy}-${mm}-${dd}`;
+    if (!dobMonth || !dobDay || !dobYear) return null;
+    return `${dobYear}-${dobMonth}-${dobDay}`;
   };
 
   const validateStep1 = () => {
@@ -244,11 +238,11 @@ const SubscriptionCheckout = ({
             {/* Name */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-xs text-muted-foreground font-body font-light">First Name</Label>
+                <Label className="text-xs text-muted-foreground font-body font-light">First Name <span className="text-primary">*</span></Label>
                 <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="John" className={cn("mt-1", inputCls)} />
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground font-body font-light">Last Name</Label>
+                <Label className="text-xs text-muted-foreground font-body font-light">Last Name <span className="text-primary">*</span></Label>
                 <Input value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Doe" className={cn("mt-1", inputCls)} />
               </div>
             </div>
@@ -256,44 +250,51 @@ const SubscriptionCheckout = ({
             {/* Email & Phone */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-xs text-muted-foreground font-body font-light">Email</Label>
+                <Label className="text-xs text-muted-foreground font-body font-light">Email <span className="text-primary">*</span></Label>
                 <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="john@email.com" className={cn("mt-1", inputCls)} />
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground font-body font-light">Phone</Label>
+                <Label className="text-xs text-muted-foreground font-body font-light">Phone <span className="text-primary">*</span></Label>
                 <Input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(555) 123-4567" className={cn("mt-1", inputCls)} />
               </div>
             </div>
 
-            {/* Date of Birth */}
+            {/* Date of Birth – dropdown pickers */}
             <div>
-              <Label className="text-xs text-muted-foreground font-body font-light">Date of Birth</Label>
-              <Input
-                value={dobStr}
-                onChange={(e) => handleDobChange(e.target.value)}
-                placeholder="MM/DD/YYYY"
-                maxLength={10}
-                className={cn("mt-1", inputCls)}
-              />
+              <Label className="text-xs text-muted-foreground font-body font-light">Date of Birth <span className="text-primary">*</span></Label>
+              <div className="grid grid-cols-3 gap-2 mt-1">
+                <select value={dobMonth} onChange={(e) => setDobMonth(e.target.value)} className={cn("flex h-10 w-full rounded-md border px-3 py-2", inputCls)}>
+                  <option value="">Month</option>
+                  {DOB_MONTHS.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
+                </select>
+                <select value={dobDay} onChange={(e) => setDobDay(e.target.value)} className={cn("flex h-10 w-full rounded-md border px-3 py-2", inputCls)}>
+                  <option value="">Day</option>
+                  {DOB_DAYS.map((d) => <option key={d} value={d}>{d}</option>)}
+                </select>
+                <select value={dobYear} onChange={(e) => setDobYear(e.target.value)} className={cn("flex h-10 w-full rounded-md border px-3 py-2", inputCls)}>
+                  <option value="">Year</option>
+                  {DOB_YEARS.map((y) => <option key={y} value={y}>{y}</option>)}
+                </select>
+              </div>
             </div>
 
             {/* Address */}
             <p className="text-xs tracking-[0.2em] uppercase text-primary font-body font-light pt-2">Shipping Address</p>
             <div>
-              <Label className="text-xs text-muted-foreground font-body font-light">Street Address</Label>
+              <Label className="text-xs text-muted-foreground font-body font-light">Street Address <span className="text-primary">*</span></Label>
               <Input value={address.line1} onChange={(e) => setAddress((a) => ({ ...a, line1: e.target.value }))} placeholder="123 Main St" className={cn("mt-1", inputCls)} />
             </div>
             <div>
-              <Label className="text-xs text-muted-foreground font-body font-light">Apt / Suite (optional)</Label>
+              <Label className="text-xs text-muted-foreground font-body font-light">Apt / Suite</Label>
               <Input value={address.line2} onChange={(e) => setAddress((a) => ({ ...a, line2: e.target.value }))} placeholder="Apt 4B" className={cn("mt-1", inputCls)} />
             </div>
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <Label className="text-xs text-muted-foreground font-body font-light">City</Label>
+                <Label className="text-xs text-muted-foreground font-body font-light">City <span className="text-primary">*</span></Label>
                 <Input value={address.city} onChange={(e) => setAddress((a) => ({ ...a, city: e.target.value }))} placeholder="Houston" className={cn("mt-1", inputCls)} />
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground font-body font-light">State</Label>
+                <Label className="text-xs text-muted-foreground font-body font-light">State <span className="text-primary">*</span></Label>
                 <select
                   value={address.state}
                   onChange={(e) => setAddress((a) => ({ ...a, state: e.target.value }))}
@@ -306,7 +307,7 @@ const SubscriptionCheckout = ({
                 </select>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground font-body font-light">Zip</Label>
+                <Label className="text-xs text-muted-foreground font-body font-light">Zip <span className="text-primary">*</span></Label>
                 <Input value={address.zip} onChange={(e) => setAddress((a) => ({ ...a, zip: e.target.value }))} placeholder="77001" maxLength={10} className={cn("mt-1", inputCls)} />
               </div>
             </div>
