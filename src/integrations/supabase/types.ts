@@ -29,6 +29,7 @@ export type Database = {
           slug: string
           sort_order: number
           square_plan_id: string | null
+          square_plan_id_annual: string | null
         }
         Insert: {
           annual_price: number
@@ -44,6 +45,7 @@ export type Database = {
           slug: string
           sort_order?: number
           square_plan_id?: string | null
+          square_plan_id_annual?: string | null
         }
         Update: {
           annual_price?: number
@@ -59,6 +61,7 @@ export type Database = {
           slug?: string
           sort_order?: number
           square_plan_id?: string | null
+          square_plan_id_annual?: string | null
         }
         Relationships: []
       }
