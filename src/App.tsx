@@ -19,6 +19,7 @@ import Services from "./pages/Services";
 import DrJamesStory from "./pages/DrJamesStory";
 import News from "./pages/News";
 import NotFound from "./pages/NotFound";
+import ChatButton from "./components/chat/ChatButton";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <ChatButton />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />

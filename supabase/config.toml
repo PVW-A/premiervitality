@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.square-webhook]
 verify_jwt = false
+
+[functions.pv-concierge]
+verify_jwt = false
