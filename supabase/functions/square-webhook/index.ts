@@ -112,12 +112,22 @@ Deno.serve(async (req) => {
 
       const userId = profile.user_id;
 
-      // Look up the tier by square_plan_id
-      const { data: tier } = await adminClient
+      // Look up the tier by square_plan_id (monthly) or square_plan_id_annual
+      let { data: tier } = await adminClient
         .from("membership_tiers")
         .select("id")
         .eq("square_plan_id", planVariationId)
         .single();
+
+      if (!tier) {
+        // Check annual column
+        const { data: annualTier } = await adminClient
+          .from("membership_tiers")
+          .select("id")
+          .eq("square_plan_id_annual", planVariationId)
+          .single();
+        tier = annualTier;
+      }
 
       if (!tier) {
         console.error(`No tier found for plan variation ${planVariationId}`);
