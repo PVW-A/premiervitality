@@ -82,6 +82,31 @@ const faqSections = [
       },
     ],
   },
+  {
+    title: "Vitality Score & Bloodwork",
+    items: [
+      {
+        q: "What is the Vitality Score?",
+        a: "The Vitality Score is your unified health metric — a single number from 0 to 100 that aggregates over 65 biomarkers across hormones, metabolic health, lipids, thyroid, inflammation, liver & kidney function, and more. It gives you an instant snapshot of your overall wellness and shows exactly which areas need attention.",
+      },
+      {
+        q: "Is it free to get my Vitality Score?",
+        a: "Yes! Simply create a free account, upload your existing bloodwork (a photo or PDF), and our AI will read it automatically. Within seconds you'll have your Vitality Score along with a full category breakdown and personalized improvement tips — no appointment or membership required.",
+      },
+      {
+        q: "What bloodwork do I need to upload?",
+        a: "Any standard blood panel works — a comprehensive metabolic panel, CBC, lipid panel, or hormone panel. The more markers your labs include, the more comprehensive your Vitality Score will be. We support results from any lab provider (Quest, LabCorp, etc.).",
+      },
+      {
+        q: "How is the Vitality Score calculated?",
+        a: "Each biomarker is graded against optimal ranges (not just normal reference ranges) and assigned a score. Markers in the optimal zone score 100, normal scores 70, and out-of-range markers score lower depending on severity. Your overall Vitality Score is the weighted average across all tested markers.",
+      },
+      {
+        q: "Will the Vitality Score tell me how to improve?",
+        a: "Absolutely. Every marker that's outside the optimal range comes with specific, actionable tips — from diet and supplement recommendations to lifestyle changes. You'll see your top areas to improve at a glance and can drill into each category for detailed guidance.",
+      },
+    ],
+  },
 ];
 
 const FAQ = () => {
