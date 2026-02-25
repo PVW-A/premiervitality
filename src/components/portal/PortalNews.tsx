@@ -25,6 +25,20 @@ const fallbackArticles: Omit<NewsArticle, "id" | "published_at">[] = [
     category: "Regulatory",
   },
   {
+    title: "Eli Lilly's GLP-1 Pipeline Expands",
+    summary: "Eli Lilly continues to advance its portfolio of GLP-1 receptor agonists, with tirzepatide leading clinical outcomes in weight management and type 2 diabetes.",
+    url: "https://investor.lilly.com/news-releases",
+    source: "Eli Lilly",
+    category: "Pharma",
+  },
+  {
+    title: "Novo Nordisk: Semaglutide Long-Term Outcomes",
+    summary: "Novo Nordisk publishes new data on long-term cardiovascular and metabolic benefits of semaglutide across multiple patient populations.",
+    url: "https://www.novonordisk.com/science-and-technology.html",
+    source: "Novo Nordisk",
+    category: "Pharma",
+  },
+  {
     title: "BPC-157: Mechanisms of Action & Clinical Review",
     summary: "A comprehensive review of BPC-157's gastroprotective and wound-healing properties across multiple organ systems.",
     url: "https://pubmed.ncbi.nlm.nih.gov/?term=BPC-157+review",
@@ -32,11 +46,11 @@ const fallbackArticles: Omit<NewsArticle, "id" | "published_at">[] = [
     category: "Research",
   },
   {
-    title: "Peptide Therapy Research & Advances",
-    summary: "Explore the latest peer-reviewed research on therapeutic peptides including GHRPs, Semaglutide, and more.",
-    url: "https://pubmed.ncbi.nlm.nih.gov/?term=therapeutic+peptides",
-    source: "PubMed",
-    category: "Research",
+    title: "Eli Lilly Invests in Peptide Manufacturing",
+    summary: "Lilly announces multi-billion dollar expansion of peptide and injectable drug manufacturing capacity to meet surging global demand.",
+    url: "https://investor.lilly.com/news-releases",
+    source: "Eli Lilly",
+    category: "Pharma",
   },
   {
     title: "Growth Hormone Secretagogues Overview",
@@ -44,6 +58,13 @@ const fallbackArticles: Omit<NewsArticle, "id" | "published_at">[] = [
     url: "https://pubmed.ncbi.nlm.nih.gov/?term=growth+hormone+secretagogue",
     source: "PubMed",
     category: "Clinical",
+  },
+  {
+    title: "Novo Nordisk & Obesity Treatment Revolution",
+    summary: "How Novo Nordisk's peptide-based therapies are reshaping the obesity treatment landscape and driving a new era of metabolic medicine.",
+    url: "https://www.novonordisk.com/sustainable-business/zero-environmental-impact.html",
+    source: "Novo Nordisk",
+    category: "Pharma",
   },
   {
     title: "International Peptide Society Resources",
@@ -73,6 +94,20 @@ const fallbackArticles: Omit<NewsArticle, "id" | "published_at">[] = [
     source: "PubMed",
     category: "Research",
   },
+  {
+    title: "Eli Lilly: Retatrutide Triple-Agonist Progress",
+    summary: "Lilly's investigational triple hormone receptor agonist retatrutide shows promising results in Phase 3 obesity and metabolic trials.",
+    url: "https://investor.lilly.com/news-releases",
+    source: "Eli Lilly",
+    category: "Pharma",
+  },
+  {
+    title: "Peptide Therapy Research & Advances",
+    summary: "Explore the latest peer-reviewed research on therapeutic peptides including GHRPs, Semaglutide, and more.",
+    url: "https://pubmed.ncbi.nlm.nih.gov/?term=therapeutic+peptides",
+    source: "PubMed",
+    category: "Research",
+  },
 ];
 
 const categoryColors: Record<string, string> = {
@@ -80,6 +115,7 @@ const categoryColors: Record<string, string> = {
   Research: "border-blue-400/30 text-blue-400",
   Clinical: "border-green-400/30 text-green-400",
   Education: "border-purple-400/30 text-purple-400",
+  Pharma: "border-primary/30 text-primary",
 };
 
 export default function PortalNews() {

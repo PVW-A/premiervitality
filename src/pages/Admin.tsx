@@ -12,7 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import PVMonogram from "@/components/PVMonogram";
 import AdminOverview from "@/components/admin/AdminOverview";
-import { LogOut, Users, Pill, Package, Plus, Trash2, BarChart3, ClipboardList, CheckCircle, XCircle } from "lucide-react";
+import AdminBiomarkers from "@/components/admin/AdminBiomarkers";
+import { LogOut, Users, Pill, Package, Plus, Trash2, BarChart3, ClipboardList, CheckCircle, XCircle, Activity } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -297,6 +298,9 @@ const Admin = () => {
                   {peptideRequests.filter(r => r.status === "pending").length}
                 </Badge>
               )}
+            </TabsTrigger>
+            <TabsTrigger value="biomarkers" className="text-xs tracking-wider uppercase font-body font-light data-[state=active]:bg-background">
+              <Activity size={14} className="mr-1.5" /> Biomarkers
             </TabsTrigger>
           </TabsList>
 
@@ -707,6 +711,11 @@ const Admin = () => {
                 ))}
               </div>
             )}
+          </TabsContent>
+
+          {/* BIOMARKERS TAB */}
+          <TabsContent value="biomarkers" className="space-y-4">
+            <AdminBiomarkers patients={patients} />
           </TabsContent>
         </Tabs>
       </main>
