@@ -14,3 +14,9 @@ verify_jwt = false
 
 [functions.square-loyalty]
 verify_jwt = false
+
+[functions.parse-bloodwork]
+verify_jwt = false
+
+[functions.generate-peptide-descriptions]
+verify_jwt = false
