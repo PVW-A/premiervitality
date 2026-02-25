@@ -191,24 +191,6 @@ const Services = () => {
                   {billingCycle === "monthly" && <div className="mb-6" />}
 
                   <div className="flex-1 flex flex-col gap-3 mb-8">
-                    <div className="flex items-start gap-2.5 text-sm text-muted-foreground font-body font-light">
-                      <Check size={15} className="text-primary mt-0.5 shrink-0" />
-                      <span>{tier.discount_pct}% peptide discount</span>
-                    </div>
-                    <div className="flex items-start gap-2.5 text-sm text-muted-foreground font-body font-light">
-                      <Check size={15} className="text-primary mt-0.5 shrink-0" />
-                      <span>{tier.blood_work_frequency} blood work</span>
-                    </div>
-                    <div className="flex items-start gap-2.5 text-sm text-muted-foreground font-body font-light">
-                      <Check size={15} className="text-primary mt-0.5 shrink-0" />
-                      <span>{tier.consultation_frequency}</span>
-                    </div>
-                    {tier.priority_support && (
-                      <div className="flex items-start gap-2.5 text-sm text-muted-foreground font-body font-light">
-                        <Check size={15} className="text-primary mt-0.5 shrink-0" />
-                        <span>Priority support</span>
-                      </div>
-                    )}
                     {features.map((f, fi) => (
                       <div
                         key={fi}

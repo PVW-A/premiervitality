@@ -23,7 +23,11 @@ const faqSections = [
       },
       {
         q: "What's included with each membership tier?",
-        a: "Every tier includes access to the full peptide catalog with tiered discounts (5–25%), scheduled blood work, and physician consultations. Higher tiers add priority support, more frequent labs, and greater discounts. You can compare tiers in detail after signing up.",
+        a: "Every tier includes access to the full peptide catalog, scheduled comprehensive blood panels (65+ biomarkers), and physician consultations. The Essential tier provides full-price peptide access and 1 panel per year. Premium adds a 15% peptide discount with 2 panels per year, and Elite offers 25% off with 4 panels per year plus dedicated support. You can compare tiers in detail on the Services page.",
+      },
+      {
+        q: "What does the included bloodwork cover?",
+        a: "Each membership includes comprehensive blood panels covering 65+ biomarkers across hormones, metabolic health, lipids, thyroid, inflammation, liver & kidney function, and more. Essential includes 1 panel per year, Premium includes 2, and Elite includes 4. These panels retail at several hundred dollars each, so your membership covers significant value in lab work alone.",
       },
       {
         q: "Can I cancel my membership?",
