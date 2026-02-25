@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
     const userEmail = claimsData.claims.email as string;
 
     // Parse request body
-    const { tier_id, billing_cycle, card_nonce, address } = await req.json();
+    const { tier_id, billing_cycle, card_nonce, address, first_name, last_name, phone, email: contactEmail, dob } = await req.json();
 
     if (!tier_id || !billing_cycle || !card_nonce) {
       return new Response(
@@ -96,9 +96,10 @@ Deno.serve(async (req) => {
     let squareCustomerId = profile?.square_customer_id;
 
     const customerBody: Record<string, unknown> = {
-      given_name: profile?.first_name || "",
-      family_name: profile?.last_name || "",
-      email_address: userEmail,
+      given_name: first_name || profile?.first_name || "",
+      family_name: last_name || profile?.last_name || "",
+      email_address: contactEmail || userEmail,
+      phone_number: phone || profile?.phone || "",
       idempotency_key: `cust-${userId}`,
     };
 
@@ -137,10 +138,13 @@ Deno.serve(async (req) => {
       squareCustomerId = custData.customer.id;
     }
 
-    // Save square_customer_id and address to profile
+    // Save square_customer_id, address, and personal info to profile
     const profileUpdate: Record<string, unknown> = {
       square_customer_id: squareCustomerId,
     };
+    if (first_name) profileUpdate.first_name = first_name;
+    if (last_name) profileUpdate.last_name = last_name;
+    if (phone) profileUpdate.phone = phone;
     if (address) {
       profileUpdate.address_line1 = address.line1 || null;
       profileUpdate.address_city = address.city || null;
