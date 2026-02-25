@@ -8,10 +8,9 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const links = [
     { label: "About", href: "/about" },
-    { label: "Services", href: "/services" },
+    { label: "FAQ", href: "/faq" },
     { label: "Peptides", href: "/peptides" },
     { label: "News", href: "/news" },
-    { label: "Contact", href: "#", onClick: openCalendly },
   ];
 
   return (
@@ -27,8 +26,7 @@ const Navbar = () => {
           {links.map((l) => (
             <a
               key={l.label}
-              href={l.onClick ? undefined : l.href}
-              onClick={l.onClick ? (e) => { e.preventDefault(); l.onClick!(); } : undefined}
+              href={l.href}
               className="text-xs font-body font-light tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 cursor-pointer"
             >
               {l.label}
@@ -65,8 +63,8 @@ const Navbar = () => {
               {links.map((l) => (
                 <a
                   key={l.label}
-                  href={l.onClick ? undefined : l.href}
-                  onClick={(e) => { if (l.onClick) { e.preventDefault(); l.onClick(); } setOpen(false); }}
+                  href={l.href}
+                  onClick={() => setOpen(false)}
                   className="text-xs tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors font-body font-light cursor-pointer"
                 >
                   {l.label}
