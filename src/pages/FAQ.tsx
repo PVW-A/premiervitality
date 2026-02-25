@@ -19,7 +19,7 @@ const faqSections = [
       },
       {
         q: "Can I see the peptide catalog before subscribing?",
-        a: "Absolutely. Our peptide education pages are fully public so you can explore what we offer. Once you create a free account and choose a membership, you'll unlock pricing, ordering, and personalized recommendations.",
+        a: "Absolutely. Our peptide education pages are fully public so you can explore what we offer. Once you create an account, you'll be able to view membership tiers, pricing, and choose the plan that's right for you.",
       },
       {
         q: "What's included with each membership tier?",
