@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
+import jamesPhoto from "@/assets/dr-james-loo.jpg";
 
 const DrJamesStory = () => (
   <div className="min-h-screen bg-background">
