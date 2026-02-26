@@ -20,8 +20,7 @@ import VitalityScoreDrawer from "@/components/portal/VitalityScoreDrawer";
 import MembershipUpgradeDialog from "@/components/portal/MembershipUpgradeDialog";
 import ForcePasswordChangeDialog from "@/components/portal/ForcePasswordChangeDialog";
 import UserSettingsMenu from "@/components/portal/UserSettingsMenu";
-import BirthdaySettings from "@/components/portal/BirthdaySettings";
-import { LogOut, Pill, Package, Clock, BookOpen, Activity, Newspaper, Star, Check, Sparkles, ArrowUp, Cake } from "lucide-react";
+import { LogOut, Pill, Package, Clock, BookOpen, Activity, Newspaper, Star, Check, Sparkles, ArrowUp } from "lucide-react";
 import { type BiomarkerResult, getAllMarkers, computeVitalityScore } from "@/lib/vitality";
 
 interface PatientPeptide {
@@ -197,7 +196,9 @@ const Portal = () => {
             <UserSettingsMenu
               firstName={profile?.first_name ?? null}
               lastName={profile?.last_name ?? null}
+              userId={user?.id ?? ""}
               onSignOut={signOut}
+              onProfileUpdated={fetchData}
             />
           </div>
         </div>
@@ -260,12 +261,6 @@ const Portal = () => {
               className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
             >
               <Star size={14} className="mr-2" /> Rewards
-            </TabsTrigger>
-            <TabsTrigger
-              value="birthday"
-              className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
-            >
-              <Cake size={14} className="mr-2" /> Birthday
             </TabsTrigger>
           </TabsList>
 
@@ -525,10 +520,6 @@ const Portal = () => {
             <LoyaltyRewards />
           </TabsContent>
 
-          {/* Birthday Tab */}
-          <TabsContent value="birthday" className="mt-8">
-            {user && <BirthdaySettings userId={user.id} />}
-          </TabsContent>
         </Tabs>
 
         {/* Bottom spacer for mobile nav */}
