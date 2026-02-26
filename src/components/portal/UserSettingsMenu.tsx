@@ -325,6 +325,37 @@ const UserSettingsMenu = ({ firstName, lastName, userId, onSignOut, onProfileUpd
               <Button onClick={handleSaveProfile} className="w-full text-xs tracking-wider uppercase font-body font-light rounded-none" disabled={saving}>
                 {saving ? "Saving…" : "Save Changes"}
               </Button>
+
+              {/* Change Password — inline */}
+              <div className="border-t border-border/30 pt-4 space-y-3">
+                <Label className="font-body text-[10px] uppercase tracking-[0.15em] text-muted-foreground">Change Password</Label>
+                <form onSubmit={handleChangePassword} className="space-y-3">
+                  <Input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="New password (min. 8 characters)"
+                    className="font-body font-light"
+                    minLength={8}
+                  />
+                  <Input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Confirm new password"
+                    className="font-body font-light"
+                  />
+                  <Button
+                    type="submit"
+                    variant="outline"
+                    className="w-full text-xs tracking-wider uppercase font-body font-light rounded-none"
+                    disabled={loading || (!newPassword && !confirmPassword)}
+                  >
+                    <Key size={12} className="mr-2" />
+                    {loading ? "Updating…" : "Update Password"}
+                  </Button>
+                </form>
+              </div>
             </div>
           )}
         </DialogContent>
