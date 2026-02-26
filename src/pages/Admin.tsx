@@ -1,4 +1,5 @@
 import { useAuth } from "@/hooks/useAuth";
+import { logAdminAction } from "@/lib/auditLog";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -161,13 +162,14 @@ const Admin = () => {
 
   const handleAddPeptide = async () => {
     if (!newPeptide.name.trim()) return;
-    await supabase.from("peptides").insert({
+    const { data } = await supabase.from("peptides").insert({
       name: newPeptide.name,
       description: newPeptide.description || null,
       unit: newPeptide.unit || "mg",
       price: newPeptide.price ? parseFloat(newPeptide.price) : null,
       cost: newPeptide.cost ? parseFloat(newPeptide.cost) : null,
-    });
+    }).select("id").single();
+    if (data) logAdminAction({ action: "create", resource_type: "peptide", resource_id: data.id });
     setNewPeptide({ name: "", description: "", unit: "mg", price: "", cost: "" });
     setPeptideDialogOpen(false);
     fetchAll();
@@ -203,7 +205,9 @@ const Admin = () => {
   const handleApproveRequest = async (id: string) => {
     setApprovingId(id);
     try {
+      const req = peptideRequests.find(r => r.id === id);
       await supabase.from("peptide_requests").update({ status: "approved" }).eq("id", id);
+      logAdminAction({ action: "approve_request", resource_type: "peptide_request", resource_id: id, patient_user_id: req?.user_id });
       const { toast } = await import("sonner");
       toast.success("Request approved — patient can now configure & pay");
     } catch (e: any) {
@@ -216,7 +220,9 @@ const Admin = () => {
   };
 
   const handleDenyRequest = async (id: string) => {
+    const req = peptideRequests.find(r => r.id === id);
     await supabase.from("peptide_requests").update({ status: "denied", deny_reason: denyReason || null }).eq("id", id);
+    logAdminAction({ action: "deny_request", resource_type: "peptide_request", resource_id: id, patient_user_id: req?.user_id, metadata: { reason: denyReason } });
     setDenyDialogOpen(null);
     setDenyReason("");
     fetchAll();
@@ -243,7 +249,9 @@ const Admin = () => {
   };
 
   const handleUpdateOrderStatus = async (orderId: string, status: OrderStatus) => {
+    const order = orders.find(o => o.id === orderId);
     await supabase.from("orders").update({ status }).eq("id", orderId);
+    logAdminAction({ action: "update_order_status", resource_type: "order", resource_id: orderId, patient_user_id: order?.user_id, metadata: { new_status: status } });
     fetchAll();
   };
 

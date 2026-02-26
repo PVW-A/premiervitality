@@ -23,8 +23,15 @@ import SmsConsent from "./pages/SmsConsent";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import ChatButton from "./components/chat/ChatButton";
+import SessionTimeoutDialog from "./components/SessionTimeoutDialog";
+import { useSessionTimeout } from "./hooks/useSessionTimeout";
 
 const queryClient = new QueryClient();
+
+const SessionTimeoutWrapper = () => {
+  const { showWarning, stayLoggedIn } = useSessionTimeout();
+  return <SessionTimeoutDialog open={showWarning} onStay={stayLoggedIn} />;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -33,6 +40,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <SessionTimeoutWrapper />
           <ChatButton />
           <Routes>
             <Route path="/" element={<Index />} />
