@@ -129,7 +129,7 @@ const HeroSection = () => (
         className="flex flex-col sm:flex-row gap-6 items-center justify-center"
       >
         <motion.a
-          href="/peptides"
+          href="/auth"
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
           className="px-10 py-3 text-xs font-body font-light tracking-[0.25em] uppercase text-foreground transition-all"
@@ -138,14 +138,14 @@ const HeroSection = () => (
             boxShadow: "0 0 20px -6px hsl(var(--primary) / 0.1)",
           }}
         >
-          Explore Protocols
+          Create Your Account
         </motion.a>
-        <button
-          onClick={openCalendly}
+        <a
+          href="/peptides"
           className="text-xs font-body font-light tracking-[0.25em] uppercase text-muted-foreground hover:text-foreground transition-colors"
         >
-          Request Consultation
-        </button>
+          Explore Protocols
+        </a>
       </motion.div>
     </div>
   </section>
