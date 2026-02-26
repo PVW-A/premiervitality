@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, User, ShoppingCart } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import PVMonogram from "./PVMonogram";
 import { openCalendly } from "@/hooks/useCalendly";
