@@ -193,10 +193,7 @@ const UserSettingsMenu = ({ firstName, lastName, userId, onSignOut, onProfileUpd
             <UserCircle size={14} className="mr-2" />
             My Info
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setPasswordDialogOpen(true)} className="cursor-pointer">
-            <Key size={14} className="mr-2" />
-            Change Password
-          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() => setTheme(isDark ? "light" : "dark")}
             className="cursor-pointer"
