@@ -15,13 +15,17 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
-        <a href="/" className="flex items-center gap-3">
-          <PVMonogram className="w-8 h-8" />
-          <span className="text-xs tracking-[0.35em] uppercase text-foreground font-body font-light hidden sm:inline">
-            Premier Vitality
-          </span>
-        </a>
+      <div className="max-w-7xl mx-auto px-6 flex items-center h-16">
+        {/* Left — fixed width */}
+        <div className="flex-1 flex items-center">
+          <a href="/" className="flex items-center gap-3">
+            <PVMonogram className="w-8 h-8" />
+            <span className="text-xs tracking-[0.35em] uppercase text-foreground font-body font-light hidden sm:inline">
+              Premier Vitality
+            </span>
+          </a>
+        </div>
+        {/* Center — nav links */}
         <div className="hidden md:flex items-center gap-10">
           {links.map((l) => (
             <a
@@ -33,7 +37,8 @@ const Navbar = () => {
             </a>
           ))}
         </div>
-        <div className="hidden md:flex items-center gap-5">
+        {/* Right — fixed width, mirroring left */}
+        <div className="flex-1 hidden md:flex items-center justify-end gap-5">
           <a href="/auth" className="text-muted-foreground hover:text-foreground transition-colors">
             <User size={18} strokeWidth={1.2} />
           </a>
