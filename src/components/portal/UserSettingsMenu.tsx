@@ -32,7 +32,6 @@ interface UserSettingsMenuProps {
 }
 
 const UserSettingsMenu = ({ firstName, lastName, userId, onSignOut, onProfileUpdated }: UserSettingsMenuProps) => {
-  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
