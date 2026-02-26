@@ -28,13 +28,19 @@ interface Patient {
   square_customer_id: string | null;
 }
 
-interface SquareCustomerInfo {
+interface MergedCustomer {
+  square_id: string;
+  given_name: string | null;
+  family_name: string | null;
   email: string | null;
   phone: string | null;
   birthday: string | null;
-  given_name: string | null;
-  family_name: string | null;
-  created_at: string | null;
+  square_created_at: string | null;
+  note: string | null;
+  company_name: string | null;
+  address: any | null;
+  has_account: boolean;
+  app_user_id: string | null;
 }
 
 interface Peptide {
@@ -104,7 +110,7 @@ const Admin = () => {
   const [peptideRequests, setPeptideRequests] = useState<PeptideRequest[]>([]);
   const [denyDialogOpen, setDenyDialogOpen] = useState<string | null>(null);
   const [denyReason, setDenyReason] = useState("");
-  const [squareCustomers, setSquareCustomers] = useState<Record<string, SquareCustomerInfo>>({});
+  const [allCustomers, setAllCustomers] = useState<MergedCustomer[]>([]);
 
   // Dialog states
   const [peptideDialogOpen, setPeptideDialogOpen] = useState(false);
@@ -143,18 +149,37 @@ const Admin = () => {
 
     if (profilesRes.data) {
       setPatients(profilesRes.data);
-      // Fetch Square customer details for patients with square_customer_id
-      const customerIds = profilesRes.data
-        .filter(p => p.square_customer_id)
-        .map(p => p.square_customer_id as string);
-      if (customerIds.length > 0) {
-        supabase.functions.invoke("square-customer-details", {
-          body: { customer_ids: customerIds },
-        }).then(({ data }) => {
-          if (data?.customers) setSquareCustomers(data.customers);
-        }).catch(() => {});
-      }
     }
+
+    // Fetch ALL Square customers
+    supabase.functions.invoke("square-list-customers").then(({ data }) => {
+      if (data?.customers) {
+        const profileMap = new Map((profilesRes.data || []).map(p => [p.square_customer_id, p.user_id]));
+        const merged: MergedCustomer[] = data.customers.map((c: any) => ({
+          square_id: c.id,
+          given_name: c.given_name,
+          family_name: c.family_name,
+          email: c.email,
+          phone: c.phone,
+          birthday: c.birthday,
+          square_created_at: c.created_at,
+          note: c.note,
+          company_name: c.company_name,
+          address: c.address,
+          has_account: profileMap.has(c.id),
+          app_user_id: profileMap.get(c.id) || null,
+        }));
+        // Sort: accounts first, then alphabetical
+        merged.sort((a, b) => {
+          if (a.has_account !== b.has_account) return a.has_account ? -1 : 1;
+          const nameA = `${a.given_name || ""} ${a.family_name || ""}`.trim().toLowerCase();
+          const nameB = `${b.given_name || ""} ${b.family_name || ""}`.trim().toLowerCase();
+          return nameA.localeCompare(nameB);
+        });
+        setAllCustomers(merged);
+      }
+    }).catch(() => {});
+
     if (peptidesRes.data) setPeptides(peptidesRes.data);
 
     const patientMap = new Map((profilesRes.data || []).map(p => [p.user_id, `${p.first_name || ""} ${p.last_name || ""}`.trim() || "Unknown"]));
@@ -402,82 +427,106 @@ const Admin = () => {
               </Dialog>
             </div>
 
-            {patients.map(patient => {
-              const pp = patientPeptides.filter(p => p.user_id === patient.user_id);
-              const patientOrders = orders.filter(o => o.user_id === patient.user_id);
-              const totalSpend = patientOrders.filter(o => o.status !== "cancelled").reduce((s, o) => s + (o.total_amount || 0), 0);
-              const sqInfo = patient.square_customer_id ? squareCustomers[patient.square_customer_id] : null;
-              return (
-                <Card key={patient.user_id} className="border-border bg-card">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-lg font-heading font-light text-foreground flex items-center justify-between">
-                      <span>{patient.first_name} {patient.last_name}</span>
-                      <div className="flex items-center gap-3">
-                        {totalSpend > 0 && (
-                          <span className="text-xs text-primary font-body font-light">${totalSpend.toLocaleString()} spent</span>
-                        )}
-                        {patient.phone && <span className="text-xs text-muted-foreground font-body font-light">{patient.phone}</span>}
-                      </div>
-                    </CardTitle>
-                    {/* Square customer details */}
-                    {sqInfo && (
+            {allCustomers.length === 0 ? (
+              <p className="text-xs text-muted-foreground font-body font-light animate-pulse">Loading Square customers…</p>
+            ) : (
+              allCustomers.map(customer => {
+                const pp = customer.app_user_id ? patientPeptides.filter(p => p.user_id === customer.app_user_id) : [];
+                const customerOrders = customer.app_user_id ? orders.filter(o => o.user_id === customer.app_user_id) : [];
+                const totalSpend = customerOrders.filter(o => o.status !== "cancelled").reduce((s, o) => s + (o.total_amount || 0), 0);
+                return (
+                  <Card key={customer.square_id} className="border-border bg-card">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-lg font-heading font-light text-foreground flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span>{customer.given_name} {customer.family_name}</span>
+                          {customer.has_account ? (
+                            <Badge variant="outline" className="text-[9px] px-1.5 py-0 bg-primary/20 text-primary border-primary/30">
+                              App Account
+                            </Badge>
+                          ) : (
+                            <Badge variant="outline" className="text-[9px] px-1.5 py-0 bg-muted text-muted-foreground border-border">
+                              Square Only
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-3">
+                          {totalSpend > 0 && (
+                            <span className="text-xs text-primary font-body font-light">${totalSpend.toLocaleString()} spent</span>
+                          )}
+                        </div>
+                      </CardTitle>
                       <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1">
-                        {sqInfo.email && (
+                        {customer.email && (
                           <span className="text-[11px] text-muted-foreground font-body font-light">
-                            ✉ {sqInfo.email}
+                            ✉ {customer.email}
                           </span>
                         )}
-                        {sqInfo.phone && (
+                        {customer.phone && (
                           <span className="text-[11px] text-muted-foreground font-body font-light">
-                            ☎ {sqInfo.phone}
+                            ☎ {customer.phone}
                           </span>
                         )}
-                        {sqInfo.birthday && (
+                        {customer.birthday && (
                           <span className="text-[11px] text-muted-foreground font-body font-light">
-                            🎂 {sqInfo.birthday}
+                            🎂 {customer.birthday}
+                          </span>
+                        )}
+                        {customer.company_name && (
+                          <span className="text-[11px] text-muted-foreground font-body font-light">
+                            🏢 {customer.company_name}
+                          </span>
+                        )}
+                        {customer.square_created_at && (
+                          <span className="text-[11px] text-muted-foreground/60 font-body font-light">
+                            Since {new Date(customer.square_created_at).toLocaleDateString()}
                           </span>
                         )}
                       </div>
-                    )}
-                    {patient.square_customer_id && !sqInfo && (
-                      <span className="text-[10px] text-muted-foreground/50 font-body font-light italic mt-1">Loading Square data…</span>
-                    )}
-                  </CardHeader>
-                  <CardContent>
-                    {pp.length === 0 ? (
-                      <p className="text-xs text-muted-foreground font-body font-light">No peptides assigned</p>
-                    ) : (
-                      <div className="space-y-2">
-                        {pp.map(p => {
-                          const daysLeft = p.usage_per_day && p.usage_per_day > 0 && p.quantity_remaining
-                            ? Math.floor(p.quantity_remaining / p.usage_per_day) : null;
-                          return (
-                            <div key={p.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-                              <div className="space-y-0.5">
-                                <span className="text-sm text-foreground font-body font-light">{p.peptide_name}</span>
-                                <div className="flex gap-3 text-xs text-muted-foreground font-body font-light">
-                                  {p.dosage && <span>{p.dosage}</span>}
-                                  <span>{p.quantity_remaining} remaining</span>
-                                  <span>{p.usage_per_day}/day</span>
-                                  {daysLeft !== null && (
-                                    <span className={daysLeft <= 7 ? "text-destructive" : "text-primary"}>
-                                      ~{daysLeft}d supply
-                                    </span>
-                                  )}
+                      {customer.note && (
+                        <p className="text-[11px] text-muted-foreground/70 font-body font-light italic mt-1">
+                          {customer.note}
+                        </p>
+                      )}
+                    </CardHeader>
+                    <CardContent>
+                      {pp.length === 0 ? (
+                        <p className="text-xs text-muted-foreground font-body font-light">
+                          {customer.has_account ? "No peptides assigned" : "—"}
+                        </p>
+                      ) : (
+                        <div className="space-y-2">
+                          {pp.map(p => {
+                            const daysLeft = p.usage_per_day && p.usage_per_day > 0 && p.quantity_remaining
+                              ? Math.floor(p.quantity_remaining / p.usage_per_day) : null;
+                            return (
+                              <div key={p.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                                <div className="space-y-0.5">
+                                  <span className="text-sm text-foreground font-body font-light">{p.peptide_name}</span>
+                                  <div className="flex gap-3 text-xs text-muted-foreground font-body font-light">
+                                    {p.dosage && <span>{p.dosage}</span>}
+                                    <span>{p.quantity_remaining} remaining</span>
+                                    <span>{p.usage_per_day}/day</span>
+                                    {daysLeft !== null && (
+                                      <span className={daysLeft <= 7 ? "text-destructive" : "text-primary"}>
+                                        ~{daysLeft}d supply
+                                      </span>
+                                    )}
+                                  </div>
                                 </div>
+                                <Button variant="ghost" size="icon" onClick={() => handleRemoveAssignment(p.id)} className="text-muted-foreground hover:text-destructive h-8 w-8">
+                                  <Trash2 size={14} />
+                                </Button>
                               </div>
-                              <Button variant="ghost" size="icon" onClick={() => handleRemoveAssignment(p.id)} className="text-muted-foreground hover:text-destructive h-8 w-8">
-                                <Trash2 size={14} />
-                              </Button>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              );
-            })}
+                            );
+                          })}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })
+            )}
           </TabsContent>
 
           {/* PEPTIDES TAB */}
