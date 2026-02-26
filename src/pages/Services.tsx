@@ -178,7 +178,7 @@ const Services = () => {
 
                   <div className="flex items-baseline gap-1 mb-1">
                     <span className="text-4xl font-heading font-light text-foreground">
-                      ${price}
+                      ${price.toFixed(2)}
                     </span>
                     <span className="text-muted-foreground text-xs font-body">/mo</span>
                   </div>

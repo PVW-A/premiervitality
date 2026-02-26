@@ -53,9 +53,13 @@ export default function MembershipUpgradeDialog({
     },
   });
 
+  // For Legacy users, treat their baseline as Essential's price for upgrade pricing
+  const isLegacy = currentMembership.tier_slug === "legacy";
+  const essentialTier = tiers?.find((t) => t.slug === "essential");
+  const baselinePrice = isLegacy && essentialTier ? essentialTier.monthly_price : currentMembership.monthly_price;
+
   // Calculate prorated amount for upgrade
   const getProratedAmount = (newMonthlyPrice: number) => {
-    const currentPrice = currentMembership.monthly_price;
     const startDate = new Date(currentMembership.started_at);
     const now = new Date();
 
@@ -65,10 +69,15 @@ export default function MembershipUpgradeDialog({
     );
     const daysInMonth = 30;
     const daysRemaining = Math.max(0, daysInMonth - (daysSinceStart % daysInMonth));
-    const dailyDifference = (newMonthlyPrice - currentPrice) / daysInMonth;
+    const dailyDifference = (newMonthlyPrice - baselinePrice) / daysInMonth;
     const prorated = Math.max(0, Math.round(dailyDifference * daysRemaining * 100) / 100);
 
     return { prorated, daysRemaining, dailyDifference: Math.round(dailyDifference * 100) / 100 };
+  };
+
+  // Get the ongoing monthly extra cost for display
+  const getMonthlyExtra = (newMonthlyPrice: number) => {
+    return Math.max(0, newMonthlyPrice - baselinePrice);
   };
 
   const handleUpgrade = async (tierId: string, tierName: string) => {
@@ -111,13 +120,14 @@ export default function MembershipUpgradeDialog({
           <DialogDescription className="text-sm font-body font-light text-muted-foreground">
             You're currently on the{" "}
             <span className="text-primary">{currentMembership.tier_name}</span>{" "}
-            plan at ${currentMembership.monthly_price}/mo. Upgrade to unlock more benefits — you'll only pay the prorated difference for this billing period.
+            plan{isLegacy ? " (equivalent to Essential)" : ` at $${currentMembership.monthly_price}/mo`}. Upgrade to unlock more benefits — {isLegacy ? "you'll only pay the difference from Essential pricing" : "you'll only pay the prorated difference for this billing period"}.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 mt-2">
           {upgradeTiers?.map((tier) => {
             const { prorated, daysRemaining } = getProratedAmount(tier.monthly_price);
+            const monthlyExtra = getMonthlyExtra(tier.monthly_price);
             const features = (tier.features as string[]) || [];
             const isPopular = tier.slug === "premium";
 
@@ -139,10 +149,24 @@ export default function MembershipUpgradeDialog({
                       {tier.name}
                     </CardTitle>
                     <div className="text-right">
-                      <span className="text-xl font-heading font-light text-foreground">
-                        ${tier.monthly_price}
-                      </span>
-                      <span className="text-muted-foreground text-xs font-body">/mo</span>
+                      {isLegacy ? (
+                        <>
+                          <span className="text-xs text-muted-foreground font-body line-through mr-1.5">
+                            ${tier.monthly_price.toFixed(2)}
+                          </span>
+                          <span className="text-xl font-heading font-light text-foreground">
+                            +${monthlyExtra.toFixed(2)}
+                          </span>
+                          <span className="text-muted-foreground text-xs font-body">/mo extra</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-xl font-heading font-light text-foreground">
+                            ${tier.monthly_price.toFixed(2)}
+                          </span>
+                          <span className="text-muted-foreground text-xs font-body">/mo</span>
+                        </>
+                      )}
                     </div>
                   </div>
                 </CardHeader>
