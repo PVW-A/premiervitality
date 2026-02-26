@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, TrendingDown, ChevronRight, ChevronDown, Info, Activity, AlertTriangle } from "lucide-react";
+import { TrendingUp, TrendingDown, ChevronRight, ChevronDown, Info, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { motion, AnimatePresence } from "framer-motion";
