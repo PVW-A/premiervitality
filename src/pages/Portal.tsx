@@ -21,7 +21,7 @@ import MembershipUpgradeDialog from "@/components/portal/MembershipUpgradeDialog
 import ForcePasswordChangeDialog from "@/components/portal/ForcePasswordChangeDialog";
 import UserSettingsMenu from "@/components/portal/UserSettingsMenu";
 import NotificationCenter from "@/components/portal/NotificationCenter";
-import { LogOut, Pill, Package, Clock, BookOpen, Activity, Newspaper, Star, Check, Sparkles, ArrowUp } from "lucide-react";
+import { LogOut, Pill, Package, Clock, BookOpen, Activity, Newspaper, Star, Check, Sparkles, ArrowUp, ShoppingBag } from "lucide-react";
 import { type BiomarkerResult, getAllMarkers, computeVitalityScore } from "@/lib/vitality";
 
 interface PatientPeptide {
