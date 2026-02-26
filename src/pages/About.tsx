@@ -2,7 +2,9 @@ import SEO from "@/components/SEO";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
-
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
+import nicolasPhoto from "@/assets/nicolas-loo.jpg";
 const values = [
   {
     title: "Evidence-Based Protocols",
