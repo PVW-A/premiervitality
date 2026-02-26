@@ -407,6 +407,62 @@ export type Database = {
           },
         ]
       }
+      peptide_reminders: {
+        Row: {
+          active: boolean
+          created_at: string
+          dosage: string | null
+          duration_days: number | null
+          id: string
+          low_vial_alert_sent: boolean
+          patient_peptide_id: string
+          peptide_name: string
+          reminder_times: Json
+          started_at: string
+          times_per_day: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          dosage?: string | null
+          duration_days?: number | null
+          id?: string
+          low_vial_alert_sent?: boolean
+          patient_peptide_id: string
+          peptide_name: string
+          reminder_times?: Json
+          started_at?: string
+          times_per_day?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          dosage?: string | null
+          duration_days?: number | null
+          id?: string
+          low_vial_alert_sent?: boolean
+          patient_peptide_id?: string
+          peptide_name?: string
+          reminder_times?: Json
+          started_at?: string
+          times_per_day?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "peptide_reminders_patient_peptide_id_fkey"
+            columns: ["patient_peptide_id"]
+            isOneToOne: false
+            referencedRelation: "patient_peptides"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       peptide_requests: {
         Row: {
           created_at: string
