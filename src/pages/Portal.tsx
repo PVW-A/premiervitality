@@ -21,7 +21,7 @@ import MembershipUpgradeDialog from "@/components/portal/MembershipUpgradeDialog
 import ForcePasswordChangeDialog from "@/components/portal/ForcePasswordChangeDialog";
 import UserSettingsMenu from "@/components/portal/UserSettingsMenu";
 import NotificationCenter from "@/components/portal/NotificationCenter";
-import { LogOut, Pill, Package, Clock, BookOpen, Activity, Newspaper, Star, Check, Sparkles, ArrowUp } from "lucide-react";
+import { LogOut, Pill, Package, Clock, BookOpen, Activity, Newspaper, Star, Check, Sparkles, ArrowUp, ShoppingBag } from "lucide-react";
 import { type BiomarkerResult, getAllMarkers, computeVitalityScore } from "@/lib/vitality";
 
 interface PatientPeptide {
@@ -188,10 +188,12 @@ const Portal = () => {
       <header className="border-b border-border bg-background/90 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-6 flex items-center justify-between h-16">
           <div className="flex items-center gap-3">
-            <PVMonogram className="w-8 h-8" />
-            <span className="text-xs tracking-[0.25em] uppercase text-foreground font-body font-light hidden sm:inline">
-              Patient Portal
-            </span>
+            <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+              <PVMonogram className="w-8 h-8" />
+              <span className="text-xs tracking-[0.25em] uppercase text-foreground font-body font-light hidden sm:inline">
+                Premier Vitality
+              </span>
+            </a>
           </div>
           <div className="flex items-center gap-4">
             <NotificationCenter onNavigate={(tab) => setActiveTab(tab)} />
@@ -238,8 +240,17 @@ const Portal = () => {
         />
 
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <Tabs value={activeTab} onValueChange={(v) => {
+          if (v === "catalog") { navigate("/catalog"); return; }
+          setActiveTab(v);
+        }} className="w-full">
           <TabsList className="bg-card border border-border rounded-none h-auto p-0 w-full justify-start gap-0 hidden sm:flex">
+            <TabsTrigger
+              value="catalog"
+              className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
+            >
+              <ShoppingBag size={14} className="mr-2" /> Catalog
+            </TabsTrigger>
             <TabsTrigger
               value="dashboard"
               className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
