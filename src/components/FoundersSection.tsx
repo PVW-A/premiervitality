@@ -56,7 +56,7 @@ const FoundersSection = () => (
           >
             <div className="w-24 h-24 rounded-full border-2 border-primary/40 bg-secondary flex items-center justify-center mb-6 overflow-hidden">
               {f.photo ? (
-                <img src={f.photo} alt={f.name} className="w-full h-full object-cover object-[center_30%]" />
+                <img src={f.photo} alt={f.name} className={f.photoClass || "w-full h-full object-cover object-[center_30%]"} />
               ) : (
                 <span className="text-2xl font-heading font-extralight text-primary">
                   {f.initials}
