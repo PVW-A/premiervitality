@@ -128,7 +128,7 @@ const About = () => (
             >
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-14 h-14 rounded-full border-2 border-primary/40 overflow-hidden shrink-0">
-                  <img src={jamesPhoto} alt="Dr. James Loo" className="w-full h-full object-cover scale-[1.35]" style={{ objectPosition: "72% 25%" }} />
+                  <img src={jamesPhoto} alt="Dr. James Loo" className="w-full h-full object-cover scale-[1.35]" style={{ objectPosition: "80% 20%" }} />
                 </div>
                 <div>
                   <p className="font-extralight text-lg text-foreground">Dr. James Loo</p>
