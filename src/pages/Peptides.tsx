@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import { useState, useEffect, useMemo } from "react";
 import { ArrowLeft, Search } from "lucide-react";
 import { Link } from "react-router-dom";
