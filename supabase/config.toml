@@ -32,3 +32,6 @@ verify_jwt = false
 
 [functions.twilio-webhook]
 verify_jwt = false
+
+[functions.import-vpi-pricing]
+verify_jwt = false
