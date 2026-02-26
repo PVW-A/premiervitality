@@ -25,6 +25,16 @@ interface Patient {
   first_name: string | null;
   last_name: string | null;
   phone: string | null;
+  square_customer_id: string | null;
+}
+
+interface SquareCustomerInfo {
+  email: string | null;
+  phone: string | null;
+  birthday: string | null;
+  given_name: string | null;
+  family_name: string | null;
+  created_at: string | null;
 }
 
 interface Peptide {
@@ -94,6 +104,7 @@ const Admin = () => {
   const [peptideRequests, setPeptideRequests] = useState<PeptideRequest[]>([]);
   const [denyDialogOpen, setDenyDialogOpen] = useState<string | null>(null);
   const [denyReason, setDenyReason] = useState("");
+  const [squareCustomers, setSquareCustomers] = useState<Record<string, SquareCustomerInfo>>({});
 
   // Dialog states
   const [peptideDialogOpen, setPeptideDialogOpen] = useState(false);
@@ -123,14 +134,27 @@ const Admin = () => {
     if (!user || !isAdmin) return;
 
     const [profilesRes, peptidesRes, ppRes, ordersRes, requestsRes] = await Promise.all([
-      supabase.from("profiles").select("user_id, first_name, last_name, phone"),
+      supabase.from("profiles").select("user_id, first_name, last_name, phone, square_customer_id"),
       supabase.from("peptides").select("*").order("name"),
       supabase.from("patient_peptides").select("*, peptides(name)"),
       supabase.from("orders").select("*").order("created_at", { ascending: false }),
       supabase.from("peptide_requests").select("*").order("created_at", { ascending: false }),
     ]);
 
-    if (profilesRes.data) setPatients(profilesRes.data);
+    if (profilesRes.data) {
+      setPatients(profilesRes.data);
+      // Fetch Square customer details for patients with square_customer_id
+      const customerIds = profilesRes.data
+        .filter(p => p.square_customer_id)
+        .map(p => p.square_customer_id as string);
+      if (customerIds.length > 0) {
+        supabase.functions.invoke("square-customer-details", {
+          body: { customer_ids: customerIds },
+        }).then(({ data }) => {
+          if (data?.customers) setSquareCustomers(data.customers);
+        }).catch(() => {});
+      }
+    }
     if (peptidesRes.data) setPeptides(peptidesRes.data);
 
     const patientMap = new Map((profilesRes.data || []).map(p => [p.user_id, `${p.first_name || ""} ${p.last_name || ""}`.trim() || "Unknown"]));
@@ -382,6 +406,7 @@ const Admin = () => {
               const pp = patientPeptides.filter(p => p.user_id === patient.user_id);
               const patientOrders = orders.filter(o => o.user_id === patient.user_id);
               const totalSpend = patientOrders.filter(o => o.status !== "cancelled").reduce((s, o) => s + (o.total_amount || 0), 0);
+              const sqInfo = patient.square_customer_id ? squareCustomers[patient.square_customer_id] : null;
               return (
                 <Card key={patient.user_id} className="border-border bg-card">
                   <CardHeader className="pb-2">
@@ -394,6 +419,29 @@ const Admin = () => {
                         {patient.phone && <span className="text-xs text-muted-foreground font-body font-light">{patient.phone}</span>}
                       </div>
                     </CardTitle>
+                    {/* Square customer details */}
+                    {sqInfo && (
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1">
+                        {sqInfo.email && (
+                          <span className="text-[11px] text-muted-foreground font-body font-light">
+                            ✉ {sqInfo.email}
+                          </span>
+                        )}
+                        {sqInfo.phone && (
+                          <span className="text-[11px] text-muted-foreground font-body font-light">
+                            ☎ {sqInfo.phone}
+                          </span>
+                        )}
+                        {sqInfo.birthday && (
+                          <span className="text-[11px] text-muted-foreground font-body font-light">
+                            🎂 {sqInfo.birthday}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    {patient.square_customer_id && !sqInfo && (
+                      <span className="text-[10px] text-muted-foreground/50 font-body font-light italic mt-1">Loading Square data…</span>
+                    )}
                   </CardHeader>
                   <CardContent>
                     {pp.length === 0 ? (
