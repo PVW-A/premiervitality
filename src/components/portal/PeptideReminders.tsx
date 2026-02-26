@@ -205,10 +205,10 @@ export default function PeptideReminders({ peptide, userId }: Props) {
               <SelectTrigger className="h-8 text-xs font-body font-light">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">1× per day</SelectItem>
-                <SelectItem value="2">2× per day</SelectItem>
-                <SelectItem value="3">3× per day</SelectItem>
+              <SelectContent className="bg-popover border-border z-[100]">
+                <SelectItem value="1" className="text-xs font-body font-light">1× per day</SelectItem>
+                <SelectItem value="2" className="text-xs font-body font-light">2× per day</SelectItem>
+                <SelectItem value="3" className="text-xs font-body font-light">3× per day</SelectItem>
               </SelectContent>
             </Select>
           </div>
