@@ -48,12 +48,19 @@ Deno.serve(async (req) => {
 
     if (reminders) {
       for (const r of reminders) {
-        // Check if reminder has expired
-        if (r.duration_days) {
-          const startedAt = new Date(r.started_at);
-          const expiresAt = new Date(startedAt.getTime() + r.duration_days * 86400000);
-          if (now > expiresAt) {
-            // Deactivate expired reminder
+        // Check if linked patient_peptide supply has run out
+        const { data: pp } = await admin
+          .from("patient_peptides")
+          .select("quantity_remaining, usage_per_day")
+          .eq("id", r.patient_peptide_id)
+          .maybeSingle();
+
+        if (pp) {
+          const daysLeft = (pp.usage_per_day && pp.usage_per_day > 0)
+            ? pp.quantity_remaining / pp.usage_per_day
+            : Infinity;
+          if (daysLeft <= 0) {
+            // Supply exhausted — deactivate reminder
             await admin
               .from("peptide_reminders")
               .update({ active: false })
