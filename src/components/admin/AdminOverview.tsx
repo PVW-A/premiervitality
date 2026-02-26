@@ -213,7 +213,7 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides }: Props) =
                         ${p.cost} → ${p.price}
                       </p>
                     </div>
-                    <Badge variant="outline" className={p.margin >= 50 ? "bg-green-500/20 text-green-400 border-green-500/30" : p.margin >= 25 ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" : "bg-destructive/20 text-destructive border-destructive/30"}>
+                    <Badge variant="outline" className={p.margin >= 40 ? "bg-green-500/20 text-green-400 border-green-500/30" : p.margin >= 20 ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" : "bg-destructive/20 text-destructive border-destructive/30"}>
                       {p.margin.toFixed(1)}%
                     </Badge>
                   </div>
