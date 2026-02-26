@@ -391,42 +391,6 @@ const UserSettingsMenu = ({ firstName, lastName, userId, onSignOut, onProfileUpd
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Password Dialog */}
-      <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="font-heading text-xl">Change Password</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleChangePassword} className="space-y-4 mt-2">
-            <div className="space-y-2">
-              <Label htmlFor="settings-new-pw" className="font-body text-xs uppercase tracking-wider">New Password</Label>
-              <Input
-                id="settings-new-pw"
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Min. 8 characters"
-                required
-                minLength={8}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="settings-confirm-pw" className="font-body text-xs uppercase tracking-wider">Confirm Password</Label>
-              <Input
-                id="settings-confirm-pw"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Re-enter password"
-                required
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Updating..." : "Update Password"}
-            </Button>
-          </form>
-        </DialogContent>
-      </Dialog>
     </>
   );
 };
