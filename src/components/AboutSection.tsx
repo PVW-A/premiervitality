@@ -45,10 +45,10 @@ const AboutSection = () => (
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.15 }}
-          className="grid grid-cols-3 gap-4"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-4"
         >
           {stats.map((s) => (
-            <div key={s.label} className="text-center p-6 bg-secondary rounded-lg">
+            <div key={s.label} className="text-center p-5 sm:p-6 bg-secondary rounded-lg">
               <p className="text-2xl font-extralight text-foreground mb-1">{s.value}</p>
               <p className="text-xs tracking-widest uppercase text-muted-foreground font-body">
                 {s.label}
