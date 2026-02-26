@@ -194,6 +194,7 @@ const Portal = () => {
             </span>
           </div>
           <div className="flex items-center gap-4">
+            <NotificationCenter onNavigate={(tab) => setActiveTab(tab)} />
             <UserSettingsMenu
               firstName={profile?.first_name ?? null}
               lastName={profile?.last_name ?? null}
