@@ -354,3 +354,40 @@ export function getWorstMarkers(results: BiomarkerResult[], limit = 5) {
 export function getAllMarkers(): MarkerDef[] {
   return Object.values(categoryConfig).flatMap((c) => c.markers);
 }
+
+/** Returns unique lab dates sorted ascending */
+export function getUniqueDates(results: BiomarkerResult[]): string[] {
+  return [...new Set(results.map(r => r.lab_date))].sort();
+}
+
+/** Compute vitality score at each lab date — returns series for trending */
+export function computeScoreHistory(results: BiomarkerResult[]): { date: string; score: number }[] {
+  const allMarkers = getAllMarkers();
+  const dates = getUniqueDates(results);
+  const history: { date: string; score: number }[] = [];
+
+  for (const date of dates) {
+    // Use all results up to and including this date
+    const available = results.filter(r => r.lab_date <= date);
+    const score = computeVitalityScore(available, allMarkers);
+    if (score !== null) history.push({ date, score });
+  }
+  return history;
+}
+
+/** Simple linear regression — returns slope per data point and projected next value */
+export function linearTrend(values: number[]): { slope: number; projected: number } {
+  const n = values.length;
+  if (n < 2) return { slope: 0, projected: values[0] ?? 0 };
+  let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
+  for (let i = 0; i < n; i++) {
+    sumX += i; sumY += values[i]; sumXY += i * values[i]; sumXX += i * i;
+  }
+  const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+  const intercept = (sumY - slope * sumX) / n;
+  const projected = Math.round(Math.max(0, Math.min(100, intercept + slope * n)));
+  return { slope, projected };
+}
+
+/** Minimum blood tests required before showing trend projections */
+export const MIN_TESTS_FOR_TREND = 3;
