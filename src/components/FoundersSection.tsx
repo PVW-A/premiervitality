@@ -10,7 +10,7 @@ const founders = [
     title: "Physician & Co-Founder",
     photo: jamesPhoto,
     photoClass: "w-full h-full object-cover object-[center_30%]",
-    photoStyle: { transform: "scale(1.15) translateX(-8%) translateY(-5%)" },
+    photoStyle: { transform: "scale(1.15) translateX(-15%) translateY(-8%)" },
     bio: "A board-certified physician with decades of clinical experience, Dr. James Loo brings deep medical expertise and an unwavering commitment to evidence-based peptide therapy.",
     link: "/dr-james-story",
   },

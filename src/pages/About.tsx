@@ -128,7 +128,7 @@ const About = () => (
             >
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-14 h-14 rounded-full border-2 border-primary/40 overflow-hidden shrink-0">
-                  <img src={jamesPhoto} alt="Dr. James Loo" className="w-full h-full object-cover object-[center_30%]" style={{ transform: "scale(1.15) translateX(-8%) translateY(-5%)" }} />
+                  <img src={jamesPhoto} alt="Dr. James Loo" className="w-full h-full object-cover object-[center_30%]" style={{ transform: "scale(1.15) translateX(-15%) translateY(-8%)" }} />
                 </div>
                 <div>
                   <p className="font-extralight text-lg text-foreground">Dr. James Loo</p>
