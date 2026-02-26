@@ -469,7 +469,13 @@ const Admin = () => {
                         )}
                         {customer.birthday && (
                           <span className="text-[11px] text-muted-foreground font-body font-light">
-                            🎂 {customer.birthday}
+                            🎂 {customer.birthday.startsWith("0000") 
+                              ? (() => { const [, m, d] = customer.birthday.split("-"); return `${m}/${d}`; })()
+                              : (() => { const [y, m, d] = customer.birthday.split("-"); return `${m}/${d}/${y}`; })()
+                            }
+                            {customer.birthday.startsWith("0000") && (
+                              <span className="text-destructive ml-1">(year missing)</span>
+                            )}
                           </span>
                         )}
                         {customer.company_name && (
@@ -487,6 +493,19 @@ const Admin = () => {
                         <p className="text-[11px] text-muted-foreground/70 font-body font-light italic mt-1">
                           {customer.note}
                         </p>
+                      )}
+                      {customer.address && (
+                        <div className="flex items-start gap-1.5 mt-1">
+                          <span className="text-[11px] text-muted-foreground font-body font-light">
+                            📍 {[
+                              customer.address.address_line_1,
+                              customer.address.address_line_2,
+                              customer.address.locality,
+                              customer.address.administrative_district_level_1,
+                              customer.address.postal_code
+                            ].filter(Boolean).join(", ")}
+                          </span>
+                        </div>
                       )}
                     </CardHeader>
                     <CardContent>
