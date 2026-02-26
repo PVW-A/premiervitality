@@ -119,7 +119,7 @@ const CatalogPeptideCard = ({
           </div>
 
           {!isExpanded && selectedVariation && selectedVariation.price != null && (
-            <span className="text-lg font-heading font-light text-primary">${selectedVariation.price}</span>
+            <span className="text-lg font-heading font-light text-primary">${selectedVariation.price.toFixed(2)}</span>
           )}
 
           <ChevronDown
@@ -188,7 +188,7 @@ const CatalogPeptideCard = ({
                                 )}
                                 {v.price != null && (
                                   <span className={`font-heading transition-colors ${isSelected ? "text-primary text-sm" : "text-foreground/40"}`}>
-                                    ${v.price}
+                                    ${v.price.toFixed(2)}
                                   </span>
                                 )}
                               </button>
@@ -206,7 +206,7 @@ const CatalogPeptideCard = ({
                             {selectedVariation.name.replace(group.baseName, "").replace(/^\s*—\s*/, "").trim() || selectedVariation.name}
                           </p>
                         </div>
-                        <p className="text-2xl font-heading font-light text-primary">${selectedVariation.price}</p>
+                        <p className="text-2xl font-heading font-light text-primary">${selectedVariation.price.toFixed(2)}</p>
                       </div>
                     )}
                   </div>
