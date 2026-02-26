@@ -20,6 +20,7 @@ import VitalityScoreDrawer from "@/components/portal/VitalityScoreDrawer";
 import MembershipUpgradeDialog from "@/components/portal/MembershipUpgradeDialog";
 import ForcePasswordChangeDialog from "@/components/portal/ForcePasswordChangeDialog";
 import UserSettingsMenu from "@/components/portal/UserSettingsMenu";
+import NotificationCenter from "@/components/portal/NotificationCenter";
 import { LogOut, Pill, Package, Clock, BookOpen, Activity, Newspaper, Star, Check, Sparkles, ArrowUp } from "lucide-react";
 import { type BiomarkerResult, getAllMarkers, computeVitalityScore } from "@/lib/vitality";
 
@@ -193,6 +194,7 @@ const Portal = () => {
             </span>
           </div>
           <div className="flex items-center gap-4">
+            <NotificationCenter onNavigate={(tab) => setActiveTab(tab)} />
             <UserSettingsMenu
               firstName={profile?.first_name ?? null}
               lastName={profile?.last_name ?? null}
