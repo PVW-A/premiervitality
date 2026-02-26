@@ -3,7 +3,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Bell, BellOff, AlertTriangle, Clock } from "lucide-react";
 import { toast } from "sonner";
 
@@ -218,17 +217,79 @@ export default function PeptideReminders({ peptide, userId }: Props) {
             <Label className="text-xs font-body font-light text-muted-foreground flex items-center gap-1">
               <Clock size={12} /> Reminder Times ({tzAbbr})
             </Label>
-            <div className="flex flex-wrap gap-2">
-              {config.reminder_times.map((time, i) => (
-                <Input
-                  key={i}
-                  type="time"
-                  value={time}
-                  onChange={(e) => handleTimeChange(i, e.target.value)}
-                  disabled={saving}
-                  className="h-8 w-28 text-xs font-body font-light"
-                />
-              ))}
+            <div className="flex flex-wrap gap-3">
+              {config.reminder_times.map((time, i) => {
+                const [hour, minute] = time.split(":");
+                const hourNum = parseInt(hour);
+                const isPM = hourNum >= 12;
+                const display12 = hourNum === 0 ? 12 : hourNum > 12 ? hourNum - 12 : hourNum;
+
+                return (
+                  <div key={i} className="flex items-center gap-1">
+                    {/* Hour select */}
+                    <Select
+                      value={hour}
+                      onValueChange={(val) => handleTimeChange(i, `${val}:${minute}`)}
+                      disabled={saving}
+                    >
+                      <SelectTrigger className="h-8 w-[4.5rem] text-xs font-body font-light">
+                        <SelectValue>{display12}</SelectValue>
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover border-border z-[100] max-h-48">
+                        {Array.from({ length: 12 }, (_, h) => {
+                          const actualHour = isPM ? (h === 0 ? 12 : h + 12) : h;
+                          const padded = String(actualHour).padStart(2, "0");
+                          const label = h === 0 ? "12" : String(h);
+                          return (
+                            <SelectItem key={padded} value={padded} className="text-xs font-body font-light">
+                              {label}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
+
+                    <span className="text-xs text-muted-foreground">:</span>
+
+                    {/* Minute select */}
+                    <Select
+                      value={minute}
+                      onValueChange={(val) => handleTimeChange(i, `${hour}:${val}`)}
+                      disabled={saving}
+                    >
+                      <SelectTrigger className="h-8 w-[4.5rem] text-xs font-body font-light">
+                        <SelectValue>{minute}</SelectValue>
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover border-border z-[100] max-h-48">
+                        {["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"].map((m) => (
+                          <SelectItem key={m} value={m} className="text-xs font-body font-light">
+                            {m}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    {/* AM/PM toggle */}
+                    <Select
+                      value={isPM ? "PM" : "AM"}
+                      onValueChange={(val) => {
+                        const h12 = hourNum % 12;
+                        const newHour = val === "PM" ? (h12 === 0 ? 12 : h12 + 12) : h12;
+                        handleTimeChange(i, `${String(newHour).padStart(2, "0")}:${minute}`);
+                      }}
+                      disabled={saving}
+                    >
+                      <SelectTrigger className="h-8 w-[4.5rem] text-xs font-body font-light">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover border-border z-[100]">
+                        <SelectItem value="AM" className="text-xs font-body font-light">AM</SelectItem>
+                        <SelectItem value="PM" className="text-xs font-body font-light">PM</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
