@@ -88,7 +88,8 @@ export const categoryConfig: Record<string, CatConfig> = {
     markers: [
       { name: "Fasting Glucose", unit: "mg/dL", low: 70, high: 99, optimalLow: 75, optimalHigh: 90,
         what: "Your blood sugar after fasting — a snapshot of metabolic health.",
-        tips: ["Reduce refined carbs & sugar", "Walk after meals", "Maintain consistent meal timing"] },
+        tips: ["Reduce refined carbs & sugar", "Walk after meals", "Maintain consistent meal timing"],
+        drawCondition: { type: "fasting", label: "Fasting Required", warning: "This marker requires 8–12 hours of fasting. Eating or drinking anything other than water before the draw will elevate results and give an inaccurate reading." } },
       { name: "HbA1c", unit: "%", low: 4.0, high: 5.7, optimalLow: 4.5, optimalHigh: 5.2,
         what: "Your 3-month blood sugar average — the most reliable metabolic marker.",
         tips: ["Prioritize fiber-rich foods", "Regular exercise", "Limit processed foods"] },
