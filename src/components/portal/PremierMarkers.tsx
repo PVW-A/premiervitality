@@ -258,6 +258,21 @@ function CategorySection({ catName, config, getMarkerResults, openCategory, setO
                               </div>
                             </div>
 
+                            {/* Draw condition warning */}
+                            {marker.drawCondition && grade && grade !== "optimal" && grade !== "normal" && (
+                              <div className="flex gap-2 items-start p-3 rounded-md border border-amber-500/20" style={{ background: "hsl(45 93% 47% / 0.06)" }}>
+                                <AlertTriangle size={13} className="text-amber-400/80 mt-0.5 flex-shrink-0" />
+                                <div>
+                                  <p className="text-[10px] font-body font-medium text-amber-400/90 tracking-wide uppercase mb-1">
+                                    ⏰ {marker.drawCondition.label}
+                                  </p>
+                                  <p className="text-[11px] text-foreground/50 font-body font-light leading-relaxed">
+                                    {marker.drawCondition.warning}
+                                  </p>
+                                </div>
+                              </div>
+                            )}
+
                             {grade && grade !== "optimal" && (
                               <div className="p-3 rounded-md" style={{ background: "hsl(0 0% 100% / 0.015)" }}>
                                 <p className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground/50 font-body mb-2">
