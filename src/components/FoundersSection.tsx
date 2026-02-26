@@ -9,6 +9,7 @@ const founders = [
     name: "Dr. James Loo",
     title: "Physician & Co-Founder",
     photo: jamesPhoto,
+    photoClass: "w-full h-full object-cover object-[center_20%] scale-150",
     bio: "A board-certified physician with decades of clinical experience, Dr. James Loo brings deep medical expertise and an unwavering commitment to evidence-based peptide therapy.",
     link: "/dr-james-story",
   },
@@ -17,6 +18,7 @@ const founders = [
     name: "Nicolas Loo",
     title: "Co-Founder",
     photo: nicolasPhoto,
+    photoClass: "w-full h-full object-cover object-[center_30%]",
     bio: "Driven by a passion for innovation and patient experience, Nicolas bridges cutting-edge science with modern wellness, ensuring every protocol is as seamless as it is effective.",
     link: "/our-why",
   },
@@ -54,7 +56,7 @@ const FoundersSection = () => (
           >
             <div className="w-24 h-24 rounded-full border-2 border-primary/40 bg-secondary flex items-center justify-center mb-6 overflow-hidden">
               {f.photo ? (
-                <img src={f.photo} alt={f.name} className="w-full h-full object-cover object-[center_30%]" />
+                <img src={f.photo} alt={f.name} className={f.photoClass || "w-full h-full object-cover object-[center_30%]"} />
               ) : (
                 <span className="text-2xl font-heading font-extralight text-primary">
                   {f.initials}
