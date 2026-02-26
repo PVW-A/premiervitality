@@ -2,7 +2,9 @@ import SEO from "@/components/SEO";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
-
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
+import nicolasPhoto from "@/assets/nicolas-loo.jpg";
 const values = [
   {
     title: "Evidence-Based Protocols",
@@ -100,6 +102,71 @@ const About = () => (
             <p className="text-muted-foreground font-body font-light text-sm leading-relaxed">
               Our team stays at the forefront of peptide research, continuously refining our protocols based on the latest clinical evidence. We partner with compounding pharmacies that meet the highest standards of quality and purity, ensuring every treatment we provide is safe, effective, and tailored to you.
             </p>
+          </div>
+        </motion.div>
+
+        {/* Meet the Founders */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="mb-24"
+        >
+          <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-3 font-body font-light">
+            Leadership
+          </p>
+          <h2 className="text-2xl md:text-4xl font-extralight mb-10 tracking-tight">
+            Meet the Founders
+          </h2>
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Dr. James Loo */}
+            <Link
+              to="/dr-james-story"
+              className="group p-6 bg-secondary/50 rounded-lg border border-border hover:border-primary/30 transition-colors"
+            >
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-14 h-14 rounded-full border-2 border-primary/40 bg-secondary flex items-center justify-center shrink-0">
+                  <span className="text-lg font-heading font-extralight text-primary">JL</span>
+                </div>
+                <div>
+                  <p className="font-extralight text-lg text-foreground">Dr. James Loo</p>
+                  <p className="text-[10px] tracking-[0.2em] uppercase text-primary/70 font-body">
+                    Medical Director & Co-Founder
+                  </p>
+                </div>
+              </div>
+              <p className="text-muted-foreground font-body font-light text-sm leading-relaxed mb-4">
+                With over 40 years of clinical experience spanning neuroplasticity research at UC Davis, training at Barrow Neurological Institute, and decades in addiction medicine, Dr. James Loo brings a rare depth of knowledge to peptide therapy and regenerative medicine.
+              </p>
+              <span className="inline-flex items-center gap-1.5 text-xs text-primary font-body font-light tracking-wider uppercase group-hover:gap-2.5 transition-all">
+                Read His Story <ArrowRight size={12} />
+              </span>
+            </Link>
+
+            {/* Nicolas Loo */}
+            <Link
+              to="/our-why"
+              className="group p-6 bg-secondary/50 rounded-lg border border-border hover:border-primary/30 transition-colors"
+            >
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-14 h-14 rounded-full border-2 border-primary/40 overflow-hidden shrink-0">
+                  <img src={nicolasPhoto} alt="Nicolas Loo" className="w-full h-full object-cover object-[center_30%]" />
+                </div>
+                <div>
+                  <p className="font-extralight text-lg text-foreground">Nicolas Loo</p>
+                  <p className="text-[10px] tracking-[0.2em] uppercase text-primary/70 font-body">
+                    Co-Founder & Innovation
+                  </p>
+                </div>
+              </div>
+              <p className="text-muted-foreground font-body font-light text-sm leading-relaxed mb-4">
+                Driven by watching family members battle degenerative brain disease, Nicolas turned grief into purpose. His relentless pursuit of cutting-edge science and refusal to accept the status quo is the foundation of Premier Vitality's mission.
+              </p>
+              <span className="inline-flex items-center gap-1.5 text-xs text-primary font-body font-light tracking-wider uppercase group-hover:gap-2.5 transition-all">
+                Read His Story <ArrowRight size={12} />
+              </span>
+            </Link>
           </div>
         </motion.div>
 
