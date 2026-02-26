@@ -127,8 +127,8 @@ const About = () => (
               className="group p-6 bg-secondary/50 rounded-lg border border-border hover:border-primary/30 transition-colors"
             >
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-14 h-14 rounded-full border-2 border-primary/40 bg-secondary flex items-center justify-center shrink-0">
-                  <span className="text-lg font-heading font-extralight text-primary">JL</span>
+                <div className="w-14 h-14 rounded-full border-2 border-primary/40 overflow-hidden shrink-0">
+                  <img src={jamesPhoto} alt="Dr. James Loo" className="w-full h-full object-cover object-[center_30%]" />
                 </div>
                 <div>
                   <p className="font-extralight text-lg text-foreground">Dr. James Loo</p>
