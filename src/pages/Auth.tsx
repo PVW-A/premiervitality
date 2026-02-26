@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import PVMonogram from "@/components/PVMonogram";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
+import { getDeviceFingerprint, getDeviceName } from "@/lib/deviceFingerprint";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -14,15 +16,81 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [smsConsent, setSmsConsent] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // 2FA state
+  const [needs2FA, setNeeds2FA] = useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
+  const [maskedPhone, setMaskedPhone] = useState("");
+  const [pendingSession, setPendingSession] = useState<any>(null);
+
   const navigate = useNavigate();
   const { user } = useAuth();
 
   useEffect(() => {
-    if (user) navigate("/portal");
-  }, [user, navigate]);
+    if (user && !needs2FA) navigate("/portal");
+  }, [user, navigate, needs2FA]);
+
+  const check2FA = async (userId: string, session: any) => {
+    const fingerprint = getDeviceFingerprint();
+    try {
+      const res = await supabase.functions.invoke("send-2fa-code", {
+        body: { userId, deviceFingerprint: fingerprint },
+      });
+
+      if (res.error) throw res.error;
+      const data = res.data;
+
+      if (data.trusted) {
+        // Device is trusted or 2FA not applicable, proceed
+        return false;
+      }
+
+      // Need 2FA
+      setMaskedPhone(data.maskedPhone);
+      setPendingSession(session);
+      setNeeds2FA(true);
+      return true;
+    } catch (err: any) {
+      console.error("2FA check failed, allowing login:", err);
+      return false;
+    }
+  };
+
+  const handleVerify2FA = async () => {
+    setError("");
+    setLoading(true);
+    try {
+      const res = await supabase.functions.invoke("verify-2fa-code", {
+        body: {
+          code: verificationCode,
+          deviceFingerprint: getDeviceFingerprint(),
+          deviceName: getDeviceName(),
+        },
+      });
+
+      if (res.error) throw res.error;
+
+      if (res.data.valid) {
+        setNeeds2FA(false);
+        // Check admin role
+        const { data: isAdmin } = await supabase.rpc("has_role", {
+          _user_id: pendingSession.user.id,
+          _role: "admin",
+        });
+        navigate(isAdmin ? "/admin" : "/portal");
+      } else {
+        setError("Invalid or expired code. Please try again.");
+      }
+    } catch (err: any) {
+      setError(err.message || "Verification failed");
+    }
+    setLoading(false);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,17 +100,27 @@ const Auth = () => {
 
     if (isLogin) {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) setError(error.message);
-      else if (data.user) {
-        const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: data.user.id, _role: "admin" });
-        navigate(isAdmin ? "/admin" : "/portal");
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+        return;
+      }
+      if (data.user && data.session) {
+        const needs = await check2FA(data.user.id, data.session);
+        if (!needs) {
+          const { data: isAdmin } = await supabase.rpc("has_role", {
+            _user_id: data.user.id,
+            _role: "admin",
+          });
+          navigate(isAdmin ? "/admin" : "/portal");
+        }
       }
     } else {
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          data: { first_name: firstName, last_name: lastName },
+          data: { first_name: firstName, last_name: lastName, phone, sms_consent: smsConsent },
           emailRedirectTo: window.location.origin,
         },
       });
@@ -51,6 +129,63 @@ const Auth = () => {
     }
     setLoading(false);
   };
+
+  // 2FA verification screen
+  if (needs2FA) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-6">
+        <div className="w-full max-w-sm">
+          <div className="flex flex-col items-center mb-10">
+            <PVMonogram className="w-12 h-12 mb-4" />
+            <h1 className="text-2xl font-heading font-light tracking-wide text-foreground">
+              Verify Your Identity
+            </h1>
+            <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mt-2 font-body font-light text-center">
+              We sent a code to {maskedPhone}
+            </p>
+          </div>
+
+          <div className="space-y-5">
+            <div className="space-y-2">
+              <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">
+                Verification Code
+              </Label>
+              <Input
+                type="text"
+                inputMode="numeric"
+                maxLength={6}
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, ""))}
+                placeholder="000000"
+                className="bg-secondary border-border text-foreground font-body font-light text-center text-lg tracking-[0.5em]"
+              />
+            </div>
+
+            {error && <p className="text-destructive text-sm font-body">{error}</p>}
+
+            <Button
+              onClick={handleVerify2FA}
+              disabled={loading || verificationCode.length !== 6}
+              className="w-full text-xs tracking-[0.2em] uppercase font-body font-light rounded-none h-11"
+            >
+              {loading ? "Verifying..." : "Verify"}
+            </Button>
+
+            <button
+              onClick={() => {
+                setNeeds2FA(false);
+                setPendingSession(null);
+                supabase.auth.signOut();
+              }}
+              className="text-xs tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors font-body font-light block mx-auto"
+            >
+              Cancel &amp; sign out
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-6">
@@ -67,26 +202,42 @@ const Auth = () => {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {!isLogin && (
-            <div className="grid grid-cols-2 gap-3">
+            <>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">First Name</Label>
+                  <Input
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required={!isLogin}
+                    className="bg-secondary border-border text-foreground font-body font-light"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Last Name</Label>
+                  <Input
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    required={!isLogin}
+                    className="bg-secondary border-border text-foreground font-body font-light"
+                  />
+                </div>
+              </div>
               <div className="space-y-2">
-                <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">First Name</Label>
+                <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Phone Number</Label>
                 <Input
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+1 (555) 123-4567"
                   required={!isLogin}
                   className="bg-secondary border-border text-foreground font-body font-light"
                 />
+                <p className="text-[10px] text-muted-foreground font-body font-light">
+                  Required for two-factor authentication &amp; account security.
+                </p>
               </div>
-              <div className="space-y-2">
-                <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Last Name</Label>
-                <Input
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  required={!isLogin}
-                  className="bg-secondary border-border text-foreground font-body font-light"
-                />
-              </div>
-            </div>
+            </>
           )}
           <div className="space-y-2">
             <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Email</Label>
@@ -110,12 +261,29 @@ const Auth = () => {
             />
           </div>
 
+          {!isLogin && (
+            <div className="flex items-start space-x-3">
+              <Checkbox
+                id="sms-consent"
+                checked={smsConsent}
+                onCheckedChange={(checked) => setSmsConsent(checked === true)}
+                className="mt-0.5"
+              />
+              <label htmlFor="sms-consent" className="text-[11px] text-muted-foreground font-body font-light leading-relaxed cursor-pointer">
+                I consent to receive SMS messages from Premier Vitality &amp; Wellness including 2FA codes, account notifications, and promotional messages. Msg &amp; data rates may apply. Reply STOP to opt out.{" "}
+                <a href="/sms-consent" target="_blank" className="underline text-foreground hover:text-primary transition-colors">
+                  View full SMS policy
+                </a>
+              </label>
+            </div>
+          )}
+
           {error && <p className="text-destructive text-sm font-body">{error}</p>}
           {message && <p className="text-primary text-sm font-body">{message}</p>}
 
           <Button
             type="submit"
-            disabled={loading}
+            disabled={loading || (!isLogin && !smsConsent)}
             className="w-full text-xs tracking-[0.2em] uppercase font-body font-light rounded-none h-11"
           >
             {loading ? "Please wait..." : isLogin ? "Sign In" : "Create Account"}
