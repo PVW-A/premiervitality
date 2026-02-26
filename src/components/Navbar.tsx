@@ -37,15 +37,12 @@ const Navbar = () => {
           <a href="/auth" className="text-muted-foreground hover:text-foreground transition-colors">
             <User size={18} strokeWidth={1.2} />
           </a>
-          <button className="text-muted-foreground hover:text-foreground transition-colors">
-            <ShoppingCart size={18} strokeWidth={1.2} />
-          </button>
-          <button
-            onClick={openCalendly}
+          <a
+            href="/auth"
             className="ml-2 px-5 py-2 text-xs font-body font-light tracking-[0.2em] uppercase border border-primary/40 text-primary hover:bg-primary/10 transition-colors rounded-none"
           >
-            Order
-          </button>
+            Create Account
+          </a>
         </div>
         <button className="md:hidden text-foreground" onClick={() => setOpen(!open)}>
           {open ? <X size={22} strokeWidth={1.2} /> : <Menu size={22} strokeWidth={1.2} />}
