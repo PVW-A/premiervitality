@@ -143,15 +143,15 @@ const Catalog = () => {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-background/90 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-6 flex items-center justify-between h-16">
-          <div className="flex items-center gap-3">
+          <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <PVMonogram className="w-8 h-8" />
             <span className="text-xs tracking-[0.25em] uppercase text-foreground font-body font-light hidden sm:inline">
-              Peptide Catalog
+              Premier Vitality
             </span>
-          </div>
+          </a>
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={() => navigate("/portal")} className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">
-              <ArrowLeft size={14} className="mr-1" /> Portal
+            <Button variant="outline" size="sm" onClick={() => navigate("/portal")} className="text-xs tracking-wider uppercase font-body font-light rounded-none border-primary/30 text-primary hover:bg-primary/10">
+              <ArrowLeft size={14} className="mr-1" /> My Portal
             </Button>
             <Button variant="ghost" size="icon" onClick={() => { signOut(); navigate("/auth"); }} className="text-muted-foreground hover:text-foreground">
               <LogOut size={16} strokeWidth={1.2} />
