@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Auth from "./pages/Auth";
@@ -34,39 +35,41 @@ const SessionTimeoutWrapper = () => {
 };
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <AuthProvider>
-          <SessionTimeoutWrapper />
-          <ChatButton />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/portal" element={<Portal />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/catalog" element={<Catalog />} />
-            <Route path="/peptides" element={<PeptidesPage />} />
-            <Route path="/our-why" element={<OurWhy />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/disclaimer" element={<Disclaimer />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/dr-james-story" element={<DrJamesStory />} />
-            <Route path="/news" element={<News />} />
-            <Route path="/faq" element={<FAQ />} />
-            <Route path="/sms-consent" element={<SmsConsent />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AuthProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <AuthProvider>
+            <SessionTimeoutWrapper />
+            <ChatButton />
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/portal" element={<Portal />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/catalog" element={<Catalog />} />
+              <Route path="/peptides" element={<PeptidesPage />} />
+              <Route path="/our-why" element={<OurWhy />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/disclaimer" element={<Disclaimer />} />
+              <Route path="/services" element={<Services />} />
+              <Route path="/dr-james-story" element={<DrJamesStory />} />
+              <Route path="/news" element={<News />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/sms-consent" element={<SmsConsent />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AuthProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </ThemeProvider>
 );
 
 export default App;
