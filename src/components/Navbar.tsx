@@ -46,7 +46,7 @@ const Navbar = () => {
             href="/auth"
             className="ml-2 px-5 py-2 text-xs font-body font-light tracking-[0.2em] uppercase border border-primary/40 text-primary hover:bg-primary/10 transition-colors rounded-none"
           >
-            Create Account
+            Sign In
           </a>
         </div>
         <button className="md:hidden text-foreground" onClick={() => setOpen(!open)}>
