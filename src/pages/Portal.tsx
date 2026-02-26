@@ -17,7 +17,8 @@ import BloodworkUploader from "@/components/portal/BloodworkUploader";
 import PeptideReminders from "@/components/portal/PeptideReminders";
 import VitalityScoreBadge from "@/components/portal/VitalityScoreBadge";
 import VitalityScoreDrawer from "@/components/portal/VitalityScoreDrawer";
-import { LogOut, Pill, Package, Clock, BookOpen, Activity, Newspaper, Star, Check, Sparkles } from "lucide-react";
+import MembershipUpgradeDialog from "@/components/portal/MembershipUpgradeDialog";
+import { LogOut, Pill, Package, Clock, BookOpen, Activity, Newspaper, Star, Check, Sparkles, ArrowUp } from "lucide-react";
 import { type BiomarkerResult, getAllMarkers, computeVitalityScore } from "@/lib/vitality";
 
 interface PatientPeptide {
@@ -64,6 +65,7 @@ const Portal = () => {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [biomarkerResults, setBiomarkerResults] = useState<BiomarkerResult[]>([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
 
   const { data: membership } = useQuery({
     queryKey: ["my-membership", user?.id],
@@ -355,12 +357,20 @@ const Portal = () => {
               </section>
             )}
 
-            {/* Active membership badge */}
+            {/* Active membership badge — clickable to upgrade */}
             {membership && (
               <div className="flex items-center gap-3">
-                <Badge variant="outline" className="border-primary/40 text-primary text-xs tracking-wider uppercase font-body font-light px-3 py-1">
-                  {(membership as any).membership_tiers?.name ?? "Active"} Member
-                </Badge>
+                <button
+                  onClick={() => setUpgradeOpen(true)}
+                  className="group flex items-center gap-2 transition-colors"
+                >
+                  <Badge variant="outline" className="border-primary/40 text-primary text-xs tracking-wider uppercase font-body font-light px-3 py-1 group-hover:bg-primary/10 transition-colors cursor-pointer">
+                    {(membership as any).membership_tiers?.name ?? "Active"} Member
+                  </Badge>
+                  <span className="text-[10px] text-muted-foreground font-body font-light group-hover:text-primary transition-colors flex items-center gap-1">
+                    <ArrowUp size={10} /> Upgrade
+                  </span>
+                </button>
               </div>
             )}
 
@@ -535,6 +545,23 @@ const Portal = () => {
         billingCycle={billingCycle}
         onSuccess={() => { setCheckoutOpen(false); fetchData(); }}
       />
+      {membership && user && (
+        <MembershipUpgradeDialog
+          open={upgradeOpen}
+          onOpenChange={setUpgradeOpen}
+          currentMembership={{
+            id: membership.id,
+            tier_id: membership.tier_id,
+            billing_cycle: membership.billing_cycle,
+            started_at: membership.started_at,
+            tier_name: (membership as any).membership_tiers?.name ?? "Active",
+            tier_slug: (membership as any).membership_tiers?.slug ?? "",
+            monthly_price: (membership as any).membership_tiers?.monthly_price ?? 0,
+          }}
+          userId={user.id}
+          onUpgraded={fetchData}
+        />
+      )}
     </div>
   );
 };
