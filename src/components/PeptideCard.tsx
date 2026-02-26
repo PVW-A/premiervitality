@@ -142,7 +142,7 @@ const PeptideCard = ({ group, index, isExpanded, onToggle }: PeptideCardProps) =
                                 {v.price != null && (
                                   <>
                                     <span className="text-foreground/20">·</span>
-                                    <span className="text-foreground/40 font-heading">${v.price}</span>
+                                    <span className="text-foreground/40 font-heading">${v.price.toFixed(2)}</span>
                                   </>
                                 )}
                               </div>
