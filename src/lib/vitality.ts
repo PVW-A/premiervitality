@@ -12,6 +12,12 @@ export interface BiomarkerResult {
   lab_date: string;
 }
 
+export interface DrawCondition {
+  type: "fasting" | "morning" | "timed";
+  label: string;
+  warning: string;
+}
+
 export interface MarkerDef {
   name: string;
   unit: string;
@@ -21,6 +27,7 @@ export interface MarkerDef {
   optimalHigh: number;
   what: string;
   tips: string[];
+  drawCondition?: DrawCondition;
 }
 
 export interface CatConfig {
@@ -40,7 +47,8 @@ export const categoryConfig: Record<string, CatConfig> = {
     markers: [
       { name: "Testosterone (Total)", unit: "ng/dL", low: 300, high: 1000, optimalLow: 500, optimalHigh: 800,
         what: "Your primary anabolic hormone — drives energy, muscle mass, mood, and libido.",
-        tips: ["Strength training 3–4x/week", "Sleep 7–9 hours", "Reduce excess body fat", "Manage chronic stress"] },
+        tips: ["Strength training 3–4x/week", "Sleep 7–9 hours", "Reduce excess body fat", "Manage chronic stress"],
+        drawCondition: { type: "morning", label: "AM Draw", warning: "Testosterone peaks in the early morning (7–10 AM). Afternoon draws may show significantly lower values that don't reflect your true baseline." } },
       { name: "Free Testosterone", unit: "ng/dL", low: 9, high: 30, optimalLow: 15, optimalHigh: 25,
         what: "The unbound, active form of testosterone your body can actually use.",
         tips: ["Optimize total testosterone first", "Reduce SHBG with zinc & magnesium", "Avoid excess alcohol"] },
@@ -58,7 +66,8 @@ export const categoryConfig: Record<string, CatConfig> = {
         tips: ["Lose excess body fat if high", "Reduce sugar intake", "Zinc & magnesium supplementation"] },
       { name: "Cortisol (AM)", unit: "µg/dL", low: 6, high: 18, optimalLow: 10, optimalHigh: 15,
         what: "Morning stress hormone — too high or low signals adrenal imbalance.",
-        tips: ["Morning sunlight exposure", "Adaptogenic herbs (ashwagandha)", "Consistent sleep schedule"] },
+        tips: ["Morning sunlight exposure", "Adaptogenic herbs (ashwagandha)", "Consistent sleep schedule"],
+        drawCondition: { type: "morning", label: "AM Draw Required", warning: "Cortisol follows a strict circadian rhythm — it peaks between 6–8 AM and drops dramatically throughout the day. Results drawn after 10 AM may appear falsely low or high and should not be used for clinical assessment." } },
       { name: "Prolactin", unit: "ng/mL", low: 2, high: 18, optimalLow: 4, optimalHigh: 12,
         what: "Pituitary hormone — elevated levels can suppress testosterone and libido.",
         tips: ["Vitamin B6 (P5P form)", "Manage dopamine levels", "Check pituitary if very elevated"] },
@@ -79,13 +88,15 @@ export const categoryConfig: Record<string, CatConfig> = {
     markers: [
       { name: "Fasting Glucose", unit: "mg/dL", low: 70, high: 99, optimalLow: 75, optimalHigh: 90,
         what: "Your blood sugar after fasting — a snapshot of metabolic health.",
-        tips: ["Reduce refined carbs & sugar", "Walk after meals", "Maintain consistent meal timing"] },
+        tips: ["Reduce refined carbs & sugar", "Walk after meals", "Maintain consistent meal timing"],
+        drawCondition: { type: "fasting", label: "Fasting Required", warning: "This marker requires 8–12 hours of fasting. Eating or drinking anything other than water before the draw will elevate results and give an inaccurate reading." } },
       { name: "HbA1c", unit: "%", low: 4.0, high: 5.7, optimalLow: 4.5, optimalHigh: 5.2,
         what: "Your 3-month blood sugar average — the most reliable metabolic marker.",
         tips: ["Prioritize fiber-rich foods", "Regular exercise", "Limit processed foods"] },
       { name: "Insulin (Fasting)", unit: "µIU/mL", low: 2, high: 25, optimalLow: 3, optimalHigh: 10,
         what: "How hard your body works to manage blood sugar — lower is generally better.",
-        tips: ["Intermittent fasting", "Reduce sugar intake", "Build lean muscle mass"] },
+        tips: ["Intermittent fasting", "Reduce sugar intake", "Build lean muscle mass"],
+        drawCondition: { type: "fasting", label: "Fasting Required", warning: "Insulin levels are highly sensitive to recent food intake. Non-fasted results will appear elevated and may falsely suggest insulin resistance." } },
       { name: "Uric Acid", unit: "mg/dL", low: 3.5, high: 7.2, optimalLow: 4.0, optimalHigh: 6.0,
         what: "Elevated levels are linked to gout, kidney stones, and metabolic syndrome.",
         tips: ["Reduce purine-rich foods", "Stay well hydrated", "Limit fructose and alcohol"] },
@@ -343,3 +354,40 @@ export function getWorstMarkers(results: BiomarkerResult[], limit = 5) {
 export function getAllMarkers(): MarkerDef[] {
   return Object.values(categoryConfig).flatMap((c) => c.markers);
 }
+
+/** Returns unique lab dates sorted ascending */
+export function getUniqueDates(results: BiomarkerResult[]): string[] {
+  return [...new Set(results.map(r => r.lab_date))].sort();
+}
+
+/** Compute vitality score at each lab date — returns series for trending */
+export function computeScoreHistory(results: BiomarkerResult[]): { date: string; score: number }[] {
+  const allMarkers = getAllMarkers();
+  const dates = getUniqueDates(results);
+  const history: { date: string; score: number }[] = [];
+
+  for (const date of dates) {
+    // Use all results up to and including this date
+    const available = results.filter(r => r.lab_date <= date);
+    const score = computeVitalityScore(available, allMarkers);
+    if (score !== null) history.push({ date, score });
+  }
+  return history;
+}
+
+/** Simple linear regression — returns slope per data point and projected next value */
+export function linearTrend(values: number[]): { slope: number; projected: number } {
+  const n = values.length;
+  if (n < 2) return { slope: 0, projected: values[0] ?? 0 };
+  let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
+  for (let i = 0; i < n; i++) {
+    sumX += i; sumY += values[i]; sumXY += i * values[i]; sumXX += i * i;
+  }
+  const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+  const intercept = (sumY - slope * sumX) / n;
+  const projected = Math.round(Math.max(0, Math.min(100, intercept + slope * n)));
+  return { slope, projected };
+}
+
+/** Minimum blood tests required before showing trend projections */
+export const MIN_TESTS_FOR_TREND = 3;

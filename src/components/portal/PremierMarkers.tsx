@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, TrendingDown, ChevronRight, ChevronDown, Info, Activity } from "lucide-react";
+import { TrendingUp, TrendingDown, ChevronRight, ChevronDown, Info, Activity, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,6 +14,9 @@ import {
   SECONDARY_CATEGORIES,
   getGrade,
   gradeInfo,
+  computeScoreHistory,
+  linearTrend,
+  MIN_TESTS_FOR_TREND,
 } from "@/lib/vitality";
 
 function TrendBadge({ results }: { results: BiomarkerResult[] }) {
@@ -255,6 +258,21 @@ function CategorySection({ catName, config, getMarkerResults, openCategory, setO
                               </div>
                             </div>
 
+                            {/* Draw condition warning */}
+                            {marker.drawCondition && grade && grade !== "optimal" && grade !== "normal" && (
+                              <div className="flex gap-2 items-start p-3 rounded-md border border-amber-500/20" style={{ background: "hsl(45 93% 47% / 0.06)" }}>
+                                <AlertTriangle size={13} className="text-amber-400/80 mt-0.5 flex-shrink-0" />
+                                <div>
+                                  <p className="text-[10px] font-body font-medium text-amber-400/90 tracking-wide uppercase mb-1">
+                                    ⏰ {marker.drawCondition.label}
+                                  </p>
+                                  <p className="text-[11px] text-foreground/50 font-body font-light leading-relaxed">
+                                    {marker.drawCondition.warning}
+                                  </p>
+                                </div>
+                              </div>
+                            )}
+
                             {grade && grade !== "optimal" && (
                               <div className="p-3 rounded-md" style={{ background: "hsl(0 0% 100% / 0.015)" }}>
                                 <p className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground/50 font-body mb-2">
@@ -335,6 +353,11 @@ export default function PremierMarkers() {
 
   const getMarkerResults = (name: string) => results.filter((r) => r.marker_name === name);
 
+  // Score trend data
+  const scoreHistory = computeScoreHistory(results);
+  const hasEnoughForTrend = scoreHistory.length >= MIN_TESTS_FOR_TREND;
+  const trend = hasEnoughForTrend ? linearTrend(scoreHistory.map(h => h.score)) : null;
+
   // Check if secondary categories have any data
   const secondaryHasData = SECONDARY_CATEGORIES.some(catName =>
     categoryConfig[catName].markers.some(m => getMarkerResults(m.name).length > 0)
@@ -348,6 +371,81 @@ export default function PremierMarkers() {
           Your overall health at a glance — tap any category to explore.
         </p>
       </div>
+
+      {/* Score trend projection — only after MIN_TESTS_FOR_TREND blood tests */}
+      {hasEnoughForTrend && trend && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-lg p-4 space-y-3"
+          style={{ background: "hsl(0 0% 100% / 0.02)", border: "1px solid hsl(0 0% 100% / 0.05)" }}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Activity size={14} className="text-primary/60" />
+              <span className="text-xs font-body font-light text-foreground/70">Score Trend</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              {trend.slope > 0.5 ? (
+                <TrendingUp size={12} className="text-emerald-400" />
+              ) : trend.slope < -0.5 ? (
+                <TrendingDown size={12} className="text-orange-400" />
+              ) : null}
+              <span className="text-[10px] font-body text-muted-foreground/50">
+                Projected: <span className="text-foreground/70 font-medium">{trend.projected}</span>
+              </span>
+            </div>
+          </div>
+          <div className="h-20">
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart
+                data={[
+                  ...scoreHistory.map(h => ({
+                    date: new Date(h.date).toLocaleDateString("en-US", { month: "short", year: "2-digit" }),
+                    score: h.score,
+                  })),
+                  { date: "Projected", score: trend.projected },
+                ]}
+                margin={{ top: 5, right: 5, left: -20, bottom: 0 }}
+              >
+                <XAxis dataKey="date" tick={{ fontSize: 8, fill: "hsl(0 0% 100% / 0.25)" }} axisLine={false} tickLine={false} />
+                <YAxis domain={[0, 100]} tick={{ fontSize: 8, fill: "hsl(0 0% 100% / 0.25)" }} axisLine={false} tickLine={false} width={30} />
+                <Tooltip contentStyle={{ background: "hsl(0 0% 6%)", border: "1px solid hsl(0 0% 100% / 0.08)", borderRadius: 6, fontSize: 11 }} />
+                <Line
+                  type="monotone" dataKey="score"
+                  stroke="hsl(var(--primary))" strokeWidth={2}
+                  dot={(props: any) => {
+                    const isLast = props.index === scoreHistory.length;
+                    return (
+                      <circle
+                        cx={props.cx} cy={props.cy} r={isLast ? 4 : 3}
+                        fill={isLast ? "hsl(0 0% 100% / 0.15)" : "hsl(var(--primary))"}
+                        stroke={isLast ? "hsl(var(--primary))" : "hsl(0 0% 6%)"}
+                        strokeWidth={2}
+                        strokeDasharray={isLast ? "3 2" : "none"}
+                      />
+                    );
+                  }}
+                  animationDuration={800}
+                />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+          <p className="text-[10px] text-muted-foreground/35 font-body font-light text-center">
+            Based on {scoreHistory.length} blood tests • Dashed point = estimated trajectory
+          </p>
+        </motion.div>
+      )}
+
+      {/* Not enough tests message */}
+      {results.length > 0 && !hasEnoughForTrend && (
+        <div className="rounded-lg p-3 flex items-center gap-2" style={{ background: "hsl(0 0% 100% / 0.015)", border: "1px solid hsl(0 0% 100% / 0.04)" }}>
+          <Activity size={13} className="text-muted-foreground/30" />
+          <p className="text-[10px] text-muted-foreground/40 font-body font-light">
+            {MIN_TESTS_FOR_TREND - scoreHistory.length} more blood test{MIN_TESTS_FOR_TREND - scoreHistory.length !== 1 ? "s" : ""} needed to unlock score trend projections.
+          </p>
+        </div>
+      )}
 
       {/* Primary categories */}
       <div className="space-y-2">
