@@ -1,13 +1,27 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Bell, BellOff, AlertTriangle, Clock } from "lucide-react";
 import { toast } from "sonner";
+
+// Convert local HH:MM to UTC HH:MM
+const localToUtc = (localTime: string): string => {
+  const [h, m] = localTime.split(":").map(Number);
+  const d = new Date();
+  d.setHours(h, m, 0, 0);
+  return `${String(d.getUTCHours()).padStart(2, "0")}:${String(d.getUTCMinutes()).padStart(2, "0")}`;
+};
+
+// Convert UTC HH:MM to local HH:MM
+const utcToLocal = (utcTime: string): string => {
+  const [h, m] = utcTime.split(":").map(Number);
+  const d = new Date();
+  d.setUTCHours(h, m, 0, 0);
+  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+};
 
 interface PatientPeptide {
   id: string;
@@ -23,7 +37,6 @@ interface ReminderConfig {
   active: boolean;
   times_per_day: number;
   reminder_times: string[];
-  duration_days: number | null;
   low_vial_alert_sent: boolean;
 }
 
@@ -43,7 +56,6 @@ export default function PeptideReminders({ peptide, userId }: Props) {
     active: false,
     times_per_day: 1,
     reminder_times: ["08:00"],
-    duration_days: null,
     low_vial_alert_sent: false,
   });
   const [loaded, setLoaded] = useState(false);
@@ -67,15 +79,16 @@ export default function PeptideReminders({ peptide, userId }: Props) {
       .maybeSingle();
 
     if (data && !error) {
-      const times = Array.isArray(data.reminder_times)
+      const utcTimes = Array.isArray(data.reminder_times)
         ? data.reminder_times as string[]
         : ["08:00"];
+      // Convert stored UTC times to local for display
+      const localTimes = utcTimes.map(utcToLocal);
       setConfig({
         id: data.id,
         active: data.active,
         times_per_day: data.times_per_day,
-        reminder_times: times,
-        duration_days: data.duration_days,
+        reminder_times: localTimes,
         low_vial_alert_sent: data.low_vial_alert_sent,
       });
     }
@@ -86,6 +99,9 @@ export default function PeptideReminders({ peptide, userId }: Props) {
     setSaving(true);
     const merged = { ...config, ...updates };
 
+    // Convert local times to UTC for storage
+    const utcTimes = merged.reminder_times.map(localToUtc);
+
     const payload = {
       user_id: userId,
       patient_peptide_id: peptide.id,
@@ -93,8 +109,7 @@ export default function PeptideReminders({ peptide, userId }: Props) {
       dosage: peptide.dosage,
       active: merged.active,
       times_per_day: merged.times_per_day,
-      reminder_times: merged.reminder_times,
-      duration_days: merged.duration_days,
+      reminder_times: utcTimes,
     };
 
     let error;
@@ -143,12 +158,9 @@ export default function PeptideReminders({ peptide, userId }: Props) {
     saveReminder({ reminder_times: newTimes });
   };
 
-  const handleDurationChange = (val: string) => {
-    const days = val === "ongoing" ? null : parseInt(val);
-    saveReminder({ duration_days: days });
-  };
-
   if (!loaded) return null;
+
+  const tzAbbr = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   return (
     <div className="pt-3 border-t border-border space-y-3">
@@ -204,7 +216,7 @@ export default function PeptideReminders({ peptide, userId }: Props) {
           {/* Time pickers */}
           <div className="space-y-1">
             <Label className="text-xs font-body font-light text-muted-foreground flex items-center gap-1">
-              <Clock size={12} /> Reminder Times (UTC)
+              <Clock size={12} /> Reminder Times ({tzAbbr})
             </Label>
             <div className="flex flex-wrap gap-2">
               {config.reminder_times.map((time, i) => (
@@ -218,28 +230,6 @@ export default function PeptideReminders({ peptide, userId }: Props) {
                 />
               ))}
             </div>
-          </div>
-
-          {/* Duration */}
-          <div className="space-y-1">
-            <Label className="text-xs font-body font-light text-muted-foreground">
-              Duration
-            </Label>
-            <Select
-              value={config.duration_days === null ? "ongoing" : String(config.duration_days)}
-              onValueChange={handleDurationChange}
-              disabled={saving}
-            >
-              <SelectTrigger className="h-8 text-xs font-body font-light">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="30">30 days</SelectItem>
-                <SelectItem value="60">60 days</SelectItem>
-                <SelectItem value="90">90 days</SelectItem>
-                <SelectItem value="ongoing">Ongoing</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
         </div>
       )}
