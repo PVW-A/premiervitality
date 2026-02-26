@@ -1,12 +1,14 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import nicolasPhoto from "@/assets/nicolas-loo.jpg";
+import jamesPhoto from "@/assets/dr-james-loo.jpg";
 
 const founders = [
   {
     initials: "JL",
     name: "Dr. James Loo",
     title: "Physician & Co-Founder",
+    photo: jamesPhoto,
     bio: "A board-certified physician with decades of clinical experience, Dr. James Loo brings deep medical expertise and an unwavering commitment to evidence-based peptide therapy.",
     link: "/dr-james-story",
   },
