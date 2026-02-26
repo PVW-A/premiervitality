@@ -47,7 +47,8 @@ export const categoryConfig: Record<string, CatConfig> = {
     markers: [
       { name: "Testosterone (Total)", unit: "ng/dL", low: 300, high: 1000, optimalLow: 500, optimalHigh: 800,
         what: "Your primary anabolic hormone — drives energy, muscle mass, mood, and libido.",
-        tips: ["Strength training 3–4x/week", "Sleep 7–9 hours", "Reduce excess body fat", "Manage chronic stress"] },
+        tips: ["Strength training 3–4x/week", "Sleep 7–9 hours", "Reduce excess body fat", "Manage chronic stress"],
+        drawCondition: { type: "morning", label: "AM Draw", warning: "Testosterone peaks in the early morning (7–10 AM). Afternoon draws may show significantly lower values that don't reflect your true baseline." } },
       { name: "Free Testosterone", unit: "ng/dL", low: 9, high: 30, optimalLow: 15, optimalHigh: 25,
         what: "The unbound, active form of testosterone your body can actually use.",
         tips: ["Optimize total testosterone first", "Reduce SHBG with zinc & magnesium", "Avoid excess alcohol"] },
