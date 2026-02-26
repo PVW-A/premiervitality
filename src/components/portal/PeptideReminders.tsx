@@ -1,0 +1,248 @@
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Bell, BellOff, AlertTriangle, Clock } from "lucide-react";
+import { toast } from "sonner";
+
+interface PatientPeptide {
+  id: string;
+  peptide_id: string;
+  peptide_name?: string;
+  dosage: string | null;
+  quantity_remaining: number;
+  usage_per_day: number;
+}
+
+interface ReminderConfig {
+  id?: string;
+  active: boolean;
+  times_per_day: number;
+  reminder_times: string[];
+  duration_days: number | null;
+  low_vial_alert_sent: boolean;
+}
+
+interface Props {
+  peptide: PatientPeptide;
+  userId: string;
+}
+
+const DEFAULT_TIMES: Record<number, string[]> = {
+  1: ["08:00"],
+  2: ["08:00", "20:00"],
+  3: ["08:00", "14:00", "20:00"],
+};
+
+export default function PeptideReminders({ peptide, userId }: Props) {
+  const [config, setConfig] = useState<ReminderConfig>({
+    active: false,
+    times_per_day: 1,
+    reminder_times: ["08:00"],
+    duration_days: null,
+    low_vial_alert_sent: false,
+  });
+  const [loaded, setLoaded] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  const daysRemaining =
+    peptide.usage_per_day > 0
+      ? Math.floor(peptide.quantity_remaining / peptide.usage_per_day)
+      : null;
+
+  useEffect(() => {
+    loadReminder();
+  }, [peptide.id]);
+
+  const loadReminder = async () => {
+    const { data, error } = await supabase
+      .from("peptide_reminders")
+      .select("*")
+      .eq("patient_peptide_id", peptide.id)
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (data && !error) {
+      const times = Array.isArray(data.reminder_times)
+        ? data.reminder_times as string[]
+        : ["08:00"];
+      setConfig({
+        id: data.id,
+        active: data.active,
+        times_per_day: data.times_per_day,
+        reminder_times: times,
+        duration_days: data.duration_days,
+        low_vial_alert_sent: data.low_vial_alert_sent,
+      });
+    }
+    setLoaded(true);
+  };
+
+  const saveReminder = async (updates: Partial<ReminderConfig>) => {
+    setSaving(true);
+    const merged = { ...config, ...updates };
+
+    const payload = {
+      user_id: userId,
+      patient_peptide_id: peptide.id,
+      peptide_name: peptide.peptide_name || "Unknown",
+      dosage: peptide.dosage,
+      active: merged.active,
+      times_per_day: merged.times_per_day,
+      reminder_times: merged.reminder_times,
+      duration_days: merged.duration_days,
+    };
+
+    let error;
+    if (config.id) {
+      ({ error } = await supabase
+        .from("peptide_reminders")
+        .update(payload)
+        .eq("id", config.id));
+    } else {
+      const { data, error: insertErr } = await supabase
+        .from("peptide_reminders")
+        .insert(payload)
+        .select("id")
+        .single();
+      error = insertErr;
+      if (data) {
+        setConfig((prev) => ({ ...prev, ...updates, id: data.id }));
+        setSaving(false);
+        return;
+      }
+    }
+
+    if (error) {
+      console.error("Save reminder error:", error);
+      toast.error("Failed to save reminder settings");
+    } else {
+      setConfig((prev) => ({ ...prev, ...updates }));
+      toast.success("Reminder settings saved");
+    }
+    setSaving(false);
+  };
+
+  const handleToggle = (checked: boolean) => {
+    saveReminder({ active: checked });
+  };
+
+  const handleFrequencyChange = (val: string) => {
+    const freq = parseInt(val);
+    const times = DEFAULT_TIMES[freq] || ["08:00"];
+    saveReminder({ times_per_day: freq, reminder_times: times });
+  };
+
+  const handleTimeChange = (index: number, value: string) => {
+    const newTimes = [...config.reminder_times];
+    newTimes[index] = value;
+    saveReminder({ reminder_times: newTimes });
+  };
+
+  const handleDurationChange = (val: string) => {
+    const days = val === "ongoing" ? null : parseInt(val);
+    saveReminder({ duration_days: days });
+  };
+
+  if (!loaded) return null;
+
+  return (
+    <div className="pt-3 border-t border-border space-y-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          {config.active ? (
+            <Bell size={14} className="text-primary" />
+          ) : (
+            <BellOff size={14} className="text-muted-foreground" />
+          )}
+          <span className="text-xs tracking-[0.15em] uppercase font-body font-light text-muted-foreground">
+            SMS Reminders
+          </span>
+        </div>
+        <Switch
+          checked={config.active}
+          onCheckedChange={handleToggle}
+          disabled={saving}
+        />
+      </div>
+
+      {/* Low vial warning */}
+      {daysRemaining !== null && daysRemaining <= 10 && (
+        <div className="flex items-center gap-2 text-xs text-destructive font-body font-light bg-destructive/10 border border-destructive/20 px-3 py-2 rounded">
+          <AlertTriangle size={13} />
+          <span>~{daysRemaining} days remaining — low supply alert active</span>
+        </div>
+      )}
+
+      {config.active && (
+        <div className="space-y-3 pl-1">
+          {/* Frequency */}
+          <div className="space-y-1">
+            <Label className="text-xs font-body font-light text-muted-foreground">
+              Frequency
+            </Label>
+            <Select
+              value={String(config.times_per_day)}
+              onValueChange={handleFrequencyChange}
+              disabled={saving}
+            >
+              <SelectTrigger className="h-8 text-xs font-body font-light">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">1× per day</SelectItem>
+                <SelectItem value="2">2× per day</SelectItem>
+                <SelectItem value="3">3× per day</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Time pickers */}
+          <div className="space-y-1">
+            <Label className="text-xs font-body font-light text-muted-foreground flex items-center gap-1">
+              <Clock size={12} /> Reminder Times (UTC)
+            </Label>
+            <div className="flex flex-wrap gap-2">
+              {config.reminder_times.map((time, i) => (
+                <Input
+                  key={i}
+                  type="time"
+                  value={time}
+                  onChange={(e) => handleTimeChange(i, e.target.value)}
+                  disabled={saving}
+                  className="h-8 w-28 text-xs font-body font-light"
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Duration */}
+          <div className="space-y-1">
+            <Label className="text-xs font-body font-light text-muted-foreground">
+              Duration
+            </Label>
+            <Select
+              value={config.duration_days === null ? "ongoing" : String(config.duration_days)}
+              onValueChange={handleDurationChange}
+              disabled={saving}
+            >
+              <SelectTrigger className="h-8 text-xs font-body font-light">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="30">30 days</SelectItem>
+                <SelectItem value="60">60 days</SelectItem>
+                <SelectItem value="90">90 days</SelectItem>
+                <SelectItem value="ongoing">Ongoing</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -14,6 +14,7 @@ import PortalNews from "@/components/portal/PortalNews";
 import LoyaltyRewards from "@/components/portal/LoyaltyRewards";
 import SubscriptionCheckout from "@/components/SubscriptionCheckout";
 import BloodworkUploader from "@/components/portal/BloodworkUploader";
+import PeptideReminders from "@/components/portal/PeptideReminders";
 import VitalityScoreBadge from "@/components/portal/VitalityScoreBadge";
 import VitalityScoreDrawer from "@/components/portal/VitalityScoreDrawer";
 import { LogOut, Pill, Package, Clock, BookOpen, Activity, Newspaper, Star, Check, Sparkles } from "lucide-react";
@@ -407,6 +408,9 @@ const Portal = () => {
                           <p className="text-xs text-muted-foreground font-body font-light pt-2 border-t border-border">
                             {p.notes}
                           </p>
+                        )}
+                        {user && (
+                          <PeptideReminders peptide={p} userId={user.id} />
                         )}
                       </CardContent>
                     </Card>
