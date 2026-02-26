@@ -4,9 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { ClipboardList, ExternalLink, MapPin, Truck, Loader2, RotateCcw } from "lucide-react";
+import { ClipboardList, MapPin, Truck, CreditCard } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import PeptideCheckout from "./PeptideCheckout";
 
 interface PeptideRequest {
   id: string;
@@ -45,9 +45,8 @@ export default function MyRequests({
   const [options, setOptions] = useState<
     Record<string, { kit: boolean; delivery: "pickup" | "shipping" }>
   >({});
-  const [generatingId, setGeneratingId] = useState<string | null>(null);
-  const [resettingId, setResettingId] = useState<string | null>(null);
   const [adminRoutes, setAdminRoutes] = useState<Record<string, string>>({});
+  const [checkoutRequest, setCheckoutRequest] = useState<PeptideRequest | null>(null);
 
   // Fetch administration routes for all peptides in requests
   useEffect(() => {
@@ -82,37 +81,6 @@ export default function MyRequests({
     }));
   };
 
-  const handleConfirmAndPay = async (r: PeptideRequest) => {
-    const opts = getOptions(r.id);
-    setGeneratingId(r.id);
-    try {
-      const { data, error } = await supabase.functions.invoke(
-        "create-payment-link",
-        {
-          body: {
-            request_id: r.id,
-            include_injection_kit: opts.kit,
-            delivery_method: opts.delivery,
-          },
-        }
-      );
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-
-      // Immediately redirect to payment
-      if (data?.payment_url) {
-        window.open(data.payment_url, "_blank");
-      }
-
-      toast.success("Redirecting to checkout…");
-      onRefresh();
-    } catch (e: any) {
-      toast.error(e.message || "Failed to generate payment link");
-    } finally {
-      setGeneratingId(null);
-    }
-  };
-
   const calcTotal = (r: PeptideRequest) => {
     const opts = getOptions(r.id);
     let total = r.price ?? 0;
@@ -120,6 +88,12 @@ export default function MyRequests({
     if (opts.delivery === "shipping") total += SHIPPING_PRICE;
     return total;
   };
+
+  const openCheckout = (r: PeptideRequest) => {
+    setCheckoutRequest(r);
+  };
+
+  const checkoutOpts = checkoutRequest ? getOptions(checkoutRequest.id) : { kit: false, delivery: "pickup" as const };
 
   return (
     <section>
@@ -142,8 +116,7 @@ export default function MyRequests({
         <div className="space-y-3">
           {requests.map((r) => {
             const opts = getOptions(r.id);
-            const needsOptions =
-              r.status === "approved" && !r.payment_url;
+            const needsOptions = r.status === "approved";
 
             return (
               <Card key={r.id} className="border-border bg-card">
@@ -172,14 +145,12 @@ export default function MyRequests({
                         {new Date(r.created_at).toLocaleDateString()}
                         {r.price != null && (
                           <span className="ml-2 text-foreground">
-                            {r.payment_url ? (
-                              <>
-                                ${(
-                                  r.price +
-                                  (r.include_injection_kit ? INJECTION_KIT_PRICE : 0) +
-                                  (r.delivery_method === "shipping" ? SHIPPING_PRICE : 0)
-                                ).toFixed(2)}
-                              </>
+                            {r.status === "paid" ? (
+                              <>${(
+                                r.price +
+                                (r.include_injection_kit ? INJECTION_KIT_PRICE : 0) +
+                                (r.delivery_method === "shipping" ? SHIPPING_PRICE : 0)
+                              ).toFixed(2)}</>
                             ) : (
                               <>${r.price.toFixed(2)}</>
                             )}
@@ -191,64 +162,16 @@ export default function MyRequests({
                           Reason: {r.deny_reason}
                         </p>
                       )}
+                      {r.status === "paid" && r.delivery_method && (
+                        <p className="text-[10px] text-muted-foreground/60 font-body font-light mt-1">
+                          {r.delivery_method === "shipping" ? "📦 Shipping overnight" : `📍 Pickup at ${PICKUP_ADDRESS}`}
+                          {r.include_injection_kit && " · Injection kit included"}
+                        </p>
+                      )}
                     </div>
-
-                    {/* Already has payment link - show Pay Now + Edit (not if already paid) */}
-                    {r.status === "approved" && r.payment_url && (
-                      <div className="flex items-center gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          disabled={resettingId === r.id}
-                          onClick={async () => {
-                            setResettingId(r.id);
-                            try {
-                              const { error } = await supabase
-                                .from("peptide_requests")
-                                .update({
-                                  payment_url: null,
-                                  square_order_id: null,
-                                  include_injection_kit: false,
-                                  delivery_method: null,
-                                })
-                                .eq("id", r.id);
-                              if (error) throw error;
-                              // Pre-fill options from what they had
-                              setOption(r.id, {
-                                kit: r.include_injection_kit,
-                                delivery: (r.delivery_method as "pickup" | "shipping") || "pickup",
-                              });
-                              toast.success("Order reset — reconfigure below");
-                              onRefresh();
-                            } catch (e: any) {
-                              toast.error(e.message || "Failed to reset order");
-                            } finally {
-                              setResettingId(null);
-                            }
-                          }}
-                          className="text-xs tracking-wider uppercase font-body font-light rounded-none gap-1.5"
-                        >
-                          {resettingId === r.id ? (
-                            <Loader2 size={14} className="animate-spin" />
-                          ) : (
-                            <RotateCcw size={14} />
-                          )}
-                          Edit Order
-                        </Button>
-                        <Button
-                          size="sm"
-                          onClick={() =>
-                            window.open(r.payment_url!, "_blank")
-                          }
-                          className="text-xs tracking-wider uppercase font-body font-light rounded-none gap-1.5"
-                        >
-                          <ExternalLink size={14} /> Pay Now
-                        </Button>
-                      </div>
-                    )}
                   </div>
 
-                  {/* Options picker for approved without payment link */}
+                  {/* Options picker for approved requests */}
                   {needsOptions && (
                     <div className="border-t border-border pt-4 space-y-4">
                       <p className="text-xs tracking-[0.15em] uppercase text-primary font-body font-light">
@@ -257,22 +180,20 @@ export default function MyRequests({
 
                       {/* Injection Kit — only for injectables */}
                       {isInjectable(r.peptide_id) && (
-                      <div className="flex items-center justify-between">
-                        <div className="space-y-0.5">
-                          <Label className="text-sm font-body font-light text-foreground">
-                            Injection Kit — $30.00
-                          </Label>
-                          <p className="text-xs text-muted-foreground font-body font-light">
-                            Includes 35 needles &amp; 35 alcohol swabs
-                          </p>
+                        <div className="flex items-center justify-between">
+                          <div className="space-y-0.5">
+                            <Label className="text-sm font-body font-light text-foreground">
+                              Injection Kit — $30.00
+                            </Label>
+                            <p className="text-xs text-muted-foreground font-body font-light">
+                              Includes 35 needles &amp; 35 alcohol swabs
+                            </p>
+                          </div>
+                          <Switch
+                            checked={opts.kit}
+                            onCheckedChange={(v) => setOption(r.id, { kit: v })}
+                          />
                         </div>
-                        <Switch
-                          checked={opts.kit}
-                          onCheckedChange={(v) =>
-                            setOption(r.id, { kit: v })
-                          }
-                        />
-                      </div>
                       )}
 
                       {/* Delivery method */}
@@ -283,91 +204,48 @@ export default function MyRequests({
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           <button
                             type="button"
-                            onClick={() =>
-                              setOption(r.id, { delivery: "pickup" })
-                            }
+                            onClick={() => setOption(r.id, { delivery: "pickup" })}
                             className={`flex items-start gap-3 p-3 rounded border transition-colors text-left ${
                               opts.delivery === "pickup"
                                 ? "border-primary bg-primary/5"
                                 : "border-border bg-secondary/50 hover:border-muted-foreground/30"
                             }`}
                           >
-                            <MapPin
-                              size={16}
-                              strokeWidth={1.2}
-                              className={
-                                opts.delivery === "pickup"
-                                  ? "text-primary mt-0.5"
-                                  : "text-muted-foreground mt-0.5"
-                              }
-                            />
+                            <MapPin size={16} strokeWidth={1.2} className={opts.delivery === "pickup" ? "text-primary mt-0.5" : "text-muted-foreground mt-0.5"} />
                             <div>
-                              <p className="text-sm font-body font-light text-foreground">
-                                Pickup
-                              </p>
-                              <p className="text-xs text-muted-foreground font-body font-light mt-0.5">
-                                {PICKUP_ADDRESS}
-                              </p>
+                              <p className="text-sm font-body font-light text-foreground">Pickup</p>
+                              <p className="text-xs text-muted-foreground font-body font-light mt-0.5">{PICKUP_ADDRESS}</p>
                             </div>
                           </button>
                           <button
                             type="button"
-                            onClick={() =>
-                              setOption(r.id, { delivery: "shipping" })
-                            }
+                            onClick={() => setOption(r.id, { delivery: "shipping" })}
                             className={`flex items-start gap-3 p-3 rounded border transition-colors text-left ${
                               opts.delivery === "shipping"
                                 ? "border-primary bg-primary/5"
                                 : "border-border bg-secondary/50 hover:border-muted-foreground/30"
                             }`}
                           >
-                            <Truck
-                              size={16}
-                              strokeWidth={1.2}
-                              className={
-                                opts.delivery === "shipping"
-                                  ? "text-primary mt-0.5"
-                                  : "text-muted-foreground mt-0.5"
-                              }
-                            />
+                            <Truck size={16} strokeWidth={1.2} className={opts.delivery === "shipping" ? "text-primary mt-0.5" : "text-muted-foreground mt-0.5"} />
                             <div>
-                              <p className="text-sm font-body font-light text-foreground">
-                                Ship to my address — $35.00
-                              </p>
-                              <p className="text-xs text-muted-foreground font-body font-light mt-0.5">
-                                Overnight priority · address collected at checkout
-                              </p>
+                              <p className="text-sm font-body font-light text-foreground">Ship to my address — $35.00</p>
+                              <p className="text-xs text-muted-foreground font-body font-light mt-0.5">Overnight priority</p>
                             </div>
                           </button>
                         </div>
                       </div>
 
-                      {/* Total + Confirm */}
+                      {/* Total + Pay */}
                       <div className="flex items-center justify-between pt-2 border-t border-border">
                         <div>
-                          <p className="text-xs text-muted-foreground font-body font-light">
-                            Order Total
-                          </p>
-                          <p className="text-lg font-heading font-light text-foreground">
-                            ${calcTotal(r).toFixed(2)}
-                          </p>
+                          <p className="text-xs text-muted-foreground font-body font-light">Order Total</p>
+                          <p className="text-lg font-heading font-light text-foreground">${calcTotal(r).toFixed(2)}</p>
                         </div>
                         <Button
-                          onClick={() => handleConfirmAndPay(r)}
-                          disabled={generatingId === r.id}
+                          onClick={() => openCheckout(r)}
                           className="text-xs tracking-wider uppercase font-body font-light rounded-none gap-1.5"
                         >
-                          {generatingId === r.id ? (
-                            <>
-                              <Loader2
-                                size={14}
-                                className="animate-spin"
-                              />{" "}
-                              Generating...
-                            </>
-                          ) : (
-                            "Confirm & Pay"
-                          )}
+                          <CreditCard size={14} /> Pay Now
                         </Button>
                       </div>
                     </div>
@@ -378,6 +256,23 @@ export default function MyRequests({
           })}
         </div>
       )}
+
+      {/* In-app checkout dialog */}
+      <PeptideCheckout
+        open={!!checkoutRequest}
+        onOpenChange={(v) => { if (!v) setCheckoutRequest(null); }}
+        request={checkoutRequest ? {
+          id: checkoutRequest.id,
+          peptide_name: checkoutRequest.peptide_name,
+          variation_label: checkoutRequest.variation_label,
+          price: checkoutRequest.price ?? 0,
+          peptide_id: checkoutRequest.peptide_id,
+        } : null}
+        includeKit={checkoutOpts.kit}
+        deliveryMethod={checkoutOpts.delivery}
+        isInjectable={checkoutRequest ? isInjectable(checkoutRequest.peptide_id) : false}
+        onSuccess={onRefresh}
+      />
     </section>
   );
 }
