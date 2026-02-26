@@ -12,6 +12,12 @@ export interface BiomarkerResult {
   lab_date: string;
 }
 
+export interface DrawCondition {
+  type: "fasting" | "morning" | "timed";
+  label: string;
+  warning: string;
+}
+
 export interface MarkerDef {
   name: string;
   unit: string;
@@ -21,6 +27,7 @@ export interface MarkerDef {
   optimalHigh: number;
   what: string;
   tips: string[];
+  drawCondition?: DrawCondition;
 }
 
 export interface CatConfig {
