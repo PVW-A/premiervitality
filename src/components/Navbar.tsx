@@ -67,12 +67,13 @@ const Navbar = () => {
                   {l.label}
                 </a>
               ))}
-              <button
-                onClick={() => { openCalendly(); setOpen(false); }}
+              <a
+                href="/auth"
+                onClick={() => setOpen(false)}
                 className="px-5 py-2 text-xs font-body font-light tracking-[0.2em] uppercase border border-primary/40 text-primary text-center"
               >
-                Order
-              </button>
+                Create Account
+              </a>
             </div>
           </motion.div>
         )}
