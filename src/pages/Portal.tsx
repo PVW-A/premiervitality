@@ -240,8 +240,17 @@ const Portal = () => {
         />
 
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <Tabs value={activeTab} onValueChange={(v) => {
+          if (v === "catalog") { navigate("/catalog"); return; }
+          setActiveTab(v);
+        }} className="w-full">
           <TabsList className="bg-card border border-border rounded-none h-auto p-0 w-full justify-start gap-0 hidden sm:flex">
+            <TabsTrigger
+              value="catalog"
+              className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
+            >
+              <ShoppingBag size={14} className="mr-2" /> Catalog
+            </TabsTrigger>
             <TabsTrigger
               value="dashboard"
               className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
