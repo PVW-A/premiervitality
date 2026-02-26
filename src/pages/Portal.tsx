@@ -277,9 +277,14 @@ const Portal = () => {
                       className={`px-4 py-1.5 text-[10px] tracking-[0.15em] uppercase font-body font-light rounded-full transition-colors ${
                         billingCycle === "annual" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                       }`}
-                    >Annual</button>
-                  </div>
-                </div>
+                     >Annual</button>
+                   </div>
+                   {billingCycle === "monthly" && (
+                     <p className="text-[10px] text-primary font-body font-light ml-2 animate-pulse">
+                       💰 Save up to 17% with an annual plan
+                     </p>
+                   )}
+                 </div>
                 <div className="grid gap-6 md:grid-cols-3">
                   {tiers.map((tier) => {
                     const price = billingCycle === "monthly" ? tier.monthly_price : tier.annual_price;
@@ -304,10 +309,12 @@ const Portal = () => {
                           </div>
                         </CardHeader>
                         <CardContent className="space-y-2">
+                          {tier.discount_pct > 0 && (
                           <div className="flex items-start gap-2 text-xs text-muted-foreground font-body font-light">
                             <Check size={13} className="text-primary mt-0.5 shrink-0" />
                             <span>{tier.discount_pct}% peptide discount</span>
                           </div>
+                          )}
                           <div className="flex items-start gap-2 text-xs text-muted-foreground font-body font-light">
                             <Check size={13} className="text-primary mt-0.5 shrink-0" />
                             <span>{tier.blood_work_frequency} blood work</span>
