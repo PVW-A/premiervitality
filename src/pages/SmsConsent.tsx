@@ -22,7 +22,7 @@ const SmsConsent = () => (
           </ul>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">2. Message Frequency</h2>
-          <p>Message frequency varies based on your account activity, security events, and promotional campaigns. You may receive up to approximately 10 messages per month, though this number may vary. 2FA verification codes are sent only when triggered by a login from an unrecognized device.</p>
+          <p>Message frequency varies based on your account activity, preferences, and security events. If you opt in to wellness reminders (e.g., peptide dosing schedules, supplement timing, hydration prompts), you may receive up to 3 messages per day depending on the reminder frequency you choose. Additional messages may include order updates, bloodwork alerts, promotional offers, and 2FA verification codes. Total monthly volume may exceed 90 messages for users with daily reminders enabled.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">3. Opt-In Method</h2>
           <p>You opt in to receive SMS messages by entering your phone number during account registration on our website. By clicking "Create Account" or "Sign Up," you confirm that you have read and agree to this SMS Consent Policy and authorize Premier Vitality &amp; Wellness to send you text messages as described herein.</p>
