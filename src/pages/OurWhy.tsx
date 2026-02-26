@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
@@ -5,6 +6,11 @@ import nicolasPhoto from "@/assets/nicolas-loo.jpg";
 
 const OurWhy = () => (
   <div className="min-h-screen bg-background">
+    <SEO
+      title="Our Why"
+      description="The personal story behind Premier Vitality & Wellness. Born from a family's battle with degenerative brain disease and a refusal to accept the status quo."
+      canonical="/our-why"
+    />
     <Navbar />
     <main className="pt-32 pb-20 px-6">
       <div className="max-w-3xl mx-auto">

@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
@@ -116,6 +117,19 @@ const faqSections = [
 const FAQ = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Frequently Asked Questions"
+        description="Common questions about peptide therapy, membership plans, bloodwork analysis, ordering, and our Vitality Score. Get answers from Premier Vitality & Wellness."
+        canonical="/faq"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            { "@type": "Question", "name": "What is peptide therapy?", "acceptedAnswer": { "@type": "Answer", "text": "Peptide therapy uses short chains of amino acids to support cellular repair, hormone optimization, recovery, and longevity through physician-directed protocols." }},
+            { "@type": "Question", "name": "Is peptide therapy safe?", "acceptedAnswer": { "@type": "Answer", "text": "When prescribed and monitored by a licensed physician, peptide therapy has a strong safety profile backed by clinical research." }}
+          ]
+        }}
+      />
       <Navbar />
       <main className="pt-24 pb-20">
         <section className="max-w-3xl mx-auto px-6 mb-16 text-center">

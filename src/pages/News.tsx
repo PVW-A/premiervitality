@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ExternalLink, Newspaper } from "lucide-react";
@@ -28,6 +29,11 @@ const News = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <SEO
+        title="Peptide Therapy News & Research"
+        description="Latest news, FDA updates, and clinical research on peptide therapy, longevity medicine, and regenerative health from Premier Vitality & Wellness."
+        canonical="/news"
+      />
       <Navbar />
       <main className="flex-1 max-w-4xl mx-auto px-6 py-20 w-full">
         <div className="flex items-center gap-3 mb-8">

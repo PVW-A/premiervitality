@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import { useState, useEffect } from "react";
 import { openCalendly } from "@/hooks/useCalendly";
 import { useNavigate } from "react-router-dom";
@@ -82,6 +83,11 @@ const Services = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Membership Plans & Pricing"
+        description="Join Premier Vitality & Wellness. Choose a membership plan for physician-directed peptide therapy, bloodwork analysis, and personalized longevity protocols."
+        canonical="/services"
+      />
       <Navbar />
       <main className="pt-24 pb-20">
         {/* Header */}

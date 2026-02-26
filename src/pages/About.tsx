@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
@@ -34,6 +35,11 @@ const stats = [
 
 const About = () => (
   <div className="min-h-screen bg-background">
+    <SEO
+      title="About Us"
+      description="Learn about Premier Vitality & Wellness, our mission to advance peptide therapy and longevity medicine with physician-directed, evidence-based protocols."
+      canonical="/about"
+    />
     <Navbar />
     <main className="pt-32 pb-20 px-6">
       <div className="max-w-5xl mx-auto">
