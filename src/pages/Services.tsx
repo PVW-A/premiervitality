@@ -26,7 +26,8 @@ const Services = () => {
       const { data, error } = await supabase
         .from("membership_tiers")
         .select("*")
-        .order("sort_order");
+        .order("sort_order")
+        .neq("slug", "legacy");
       if (error) throw error;
       return data;
     },
