@@ -18,6 +18,8 @@ import PeptideReminders from "@/components/portal/PeptideReminders";
 import VitalityScoreBadge from "@/components/portal/VitalityScoreBadge";
 import VitalityScoreDrawer from "@/components/portal/VitalityScoreDrawer";
 import MembershipUpgradeDialog from "@/components/portal/MembershipUpgradeDialog";
+import ForcePasswordChangeDialog from "@/components/portal/ForcePasswordChangeDialog";
+import UserSettingsMenu from "@/components/portal/UserSettingsMenu";
 import { LogOut, Pill, Package, Clock, BookOpen, Activity, Newspaper, Star, Check, Sparkles, ArrowUp } from "lucide-react";
 import { type BiomarkerResult, getAllMarkers, computeVitalityScore } from "@/lib/vitality";
 
@@ -55,7 +57,8 @@ const Portal = () => {
   const [peptides, setPeptides] = useState<PatientPeptide[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [requests, setRequests] = useState<any[]>([]);
-  const [profile, setProfile] = useState<{ first_name: string | null; last_name: string | null } | null>(null);
+  const [profile, setProfile] = useState<{ first_name: string | null; last_name: string | null; force_password_change?: boolean } | null>(null);
+  const [forcePasswordChange, setForcePasswordChange] = useState(false);
   const [bloodworkUploads, setBloodworkUploads] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState("dashboard");
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
@@ -104,10 +107,13 @@ const Portal = () => {
 
     const { data: profileData } = await supabase
       .from("profiles")
-      .select("first_name, last_name")
+      .select("first_name, last_name, force_password_change")
       .eq("user_id", user.id)
       .single();
-    setProfile(profileData);
+    setProfile(profileData as any);
+    if (profileData?.force_password_change) {
+      setForcePasswordChange(true);
+    }
 
     const { data: ppData } = await supabase
       .from("patient_peptides")
@@ -187,20 +193,23 @@ const Portal = () => {
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-xs text-muted-foreground font-body font-light">
-              {profile?.first_name} {profile?.last_name}
-            </span>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => { signOut(); navigate("/auth"); }}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <LogOut size={16} strokeWidth={1.2} />
-            </Button>
+            <UserSettingsMenu
+              firstName={profile?.first_name ?? null}
+              lastName={profile?.last_name ?? null}
+              onSignOut={signOut}
+            />
           </div>
         </div>
       </header>
+
+      {/* Force password change for legacy accounts */}
+      {user && forcePasswordChange && (
+        <ForcePasswordChangeDialog
+          open={forcePasswordChange}
+          userId={user.id}
+          onComplete={() => setForcePasswordChange(false)}
+        />
+      )}
 
       <main className="max-w-5xl mx-auto px-6 py-10 space-y-8">
         {/* Welcome + Vitality Badge */}

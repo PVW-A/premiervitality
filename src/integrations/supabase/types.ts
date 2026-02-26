@@ -608,6 +608,7 @@ export type Database = {
           address_zip: string | null
           created_at: string
           first_name: string | null
+          force_password_change: boolean
           id: string
           last_name: string | null
           phone: string | null
@@ -624,6 +625,7 @@ export type Database = {
           address_zip?: string | null
           created_at?: string
           first_name?: string | null
+          force_password_change?: boolean
           id?: string
           last_name?: string | null
           phone?: string | null
@@ -640,6 +642,7 @@ export type Database = {
           address_zip?: string | null
           created_at?: string
           first_name?: string | null
+          force_password_change?: boolean
           id?: string
           last_name?: string | null
           phone?: string | null
