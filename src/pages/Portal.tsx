@@ -306,6 +306,11 @@ const Portal = () => {
                           <div className="flex items-baseline gap-1">
                             <span className="text-3xl font-heading font-light text-foreground">${price}</span>
                             <span className="text-muted-foreground text-xs font-body">/mo</span>
+                            {billingCycle === "annual" && tier.monthly_price > price && (
+                              <span className="ml-1.5 text-[10px] font-body font-light text-primary bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded-full">
+                                Save ${tier.monthly_price - price}/mo
+                              </span>
+                            )}
                           </div>
                         </CardHeader>
                         <CardContent className="space-y-2">
