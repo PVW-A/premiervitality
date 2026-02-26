@@ -38,7 +38,7 @@ const HeroSection = () => (
     />
 
 
-    <div className="relative z-10 max-w-3xl mx-auto px-6 text-center flex flex-col items-center">
+    <div className="relative z-10 max-w-3xl mx-auto px-6 pt-20 sm:pt-0 text-center flex flex-col items-center">
       {/* Monogram with ring */}
       <motion.div
         initial={{ opacity: 0, scale: 0.85 }}
