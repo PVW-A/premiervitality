@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { toast } from "sonner";
 
 interface PeptideRequest {
   id: string;
+  peptide_id: string;
   peptide_name: string;
   variation_label: string | null;
   price: number | null;
@@ -20,6 +21,8 @@ interface PeptideRequest {
   delivery_method: string | null;
   created_at: string;
 }
+
+const INJECTABLE_ROUTES = ["Subcutaneous Injectable", "Lyophilized Powder"];
 
 const statusBadge: Record<string, string> = {
   pending: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
@@ -44,6 +47,27 @@ export default function MyRequests({
   >({});
   const [generatingId, setGeneratingId] = useState<string | null>(null);
   const [resettingId, setResettingId] = useState<string | null>(null);
+  const [adminRoutes, setAdminRoutes] = useState<Record<string, string>>({});
+
+  // Fetch administration routes for all peptides in requests
+  useEffect(() => {
+    const peptideIds = [...new Set(requests.map((r) => r.peptide_id).filter(Boolean))];
+    if (peptideIds.length === 0) return;
+    supabase
+      .from("peptides")
+      .select("id, administration")
+      .in("id", peptideIds)
+      .then(({ data }) => {
+        if (data) {
+          const map: Record<string, string> = {};
+          data.forEach((p) => { if (p.administration) map[p.id] = p.administration; });
+          setAdminRoutes(map);
+        }
+      });
+  }, [requests]);
+
+  const isInjectable = (peptideId: string) =>
+    INJECTABLE_ROUTES.includes(adminRoutes[peptideId] || "");
 
   const getOptions = (id: string) =>
     options[id] ?? { kit: false, delivery: "pickup" as const };
@@ -92,7 +116,7 @@ export default function MyRequests({
   const calcTotal = (r: PeptideRequest) => {
     const opts = getOptions(r.id);
     let total = r.price ?? 0;
-    if (opts.kit) total += INJECTION_KIT_PRICE;
+    if (opts.kit && isInjectable(r.peptide_id)) total += INJECTION_KIT_PRICE;
     if (opts.delivery === "shipping") total += SHIPPING_PRICE;
     return total;
   };
@@ -231,7 +255,8 @@ export default function MyRequests({
                         Configure your order
                       </p>
 
-                      {/* Injection Kit */}
+                      {/* Injection Kit — only for injectables */}
+                      {isInjectable(r.peptide_id) && (
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
                           <Label className="text-sm font-body font-light text-foreground">
@@ -248,6 +273,7 @@ export default function MyRequests({
                           }
                         />
                       </div>
+                      )}
 
                       {/* Delivery method */}
                       <div className="space-y-2">
