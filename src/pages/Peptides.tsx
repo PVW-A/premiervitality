@@ -99,6 +99,11 @@ const Peptides = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Peptide Therapy Protocols"
+        description="Explore our full catalog of peptide therapy protocols including BPC-157, CJC-1295, Ipamorelin, and more. Evidence-based treatments for longevity, recovery, and performance."
+        canonical="/peptides"
+      />
       <Navbar />
       <main className="pt-24 pb-20 px-6">
         <div className="max-w-5xl mx-auto">
