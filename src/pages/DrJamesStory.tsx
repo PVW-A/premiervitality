@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
+import jamesPhoto from "@/assets/dr-james-loo.jpg";
 
 const DrJamesStory = () => (
   <div className="min-h-screen bg-background">
@@ -20,8 +21,8 @@ const DrJamesStory = () => (
           </h1>
 
           <div className="flex items-center gap-4 mb-10">
-            <div className="w-16 h-16 rounded-full border-2 border-primary/40 bg-secondary flex items-center justify-center shrink-0">
-              <span className="text-xl font-heading font-extralight text-primary">JL</span>
+            <div className="w-16 h-16 rounded-full border-2 border-primary/40 overflow-hidden shrink-0">
+              <img src={jamesPhoto} alt="Dr. James Loo" className="w-full h-full object-cover object-[center_30%]" />
             </div>
             <div>
               <p className="font-extralight text-lg">Dr. James Loo</p>
