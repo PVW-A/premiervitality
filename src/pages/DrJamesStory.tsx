@@ -34,16 +34,13 @@ const DrJamesStory = () => (
               It started in a lab at UC Davis, more than 40 years ago. I was an undergraduate researcher studying neuroplasticity, how the brain rewires itself. Most people hadn't heard that word yet. But I was captivated. There was something profound about understanding how the brain adapts, heals, and rebuilds that felt like the most important question in medicine.
             </p>
             <p>
-              That fascination carried me through medical school, where I continued digging into neuroplasticity research. I wanted to understand what happens when the brain's capacity to adapt breaks down, and more importantly, what we could do to restore it. That question shaped everything that came next.
+              That fascination carried me through medical school, where I continued digging into neuroplasticity research. I wanted to understand what happens when the brain's capacity to adapt breaks down, and, more importantly, what we could do to restore it. That question shaped everything that came next.
             </p>
             <p>
-              It led me to a residency at Barrow Neurological Institute, one of the world's foremost centers for brain science. Working alongside exceptional colleagues and caring for patients with complex neurological conditions every day sharpened my thinking and gave my research a clinical edge it had been missing.
+              It led me to a residency at Barrow Neurological Institute, one of the world's foremost centers for brain science. But after two years, I made a deliberate choice to shift into family practice. I realized I didn't just want to understand the brain. I wanted to treat the whole person. Families, children, grandparents, the full picture. Board certification in family practice gave me that foundation, and it's shaped the way I've practiced ever since.
             </p>
             <p>
-              From there, the path led naturally to addiction medicine. When you spend years studying how the brain rewires itself, you begin to see addiction differently. Not as a moral failing, but as a brain caught in a destructive loop. My neurology background gave me real, evidence-based tools to help people find their way out. Over more than 30 years in addiction medicine, I've witnessed what becomes possible when you treat the brain with the respect and precision it deserves.
-            </p>
-            <p>
-              I also pursued board certification in family practice, because I've always believed in treating the whole person. Families, children, grandparents, the full picture has always mattered to me, not just one piece of the puzzle.
+              That broader perspective is what led me, naturally, to addiction medicine. When you spend years studying how the brain rewires itself, and then years more understanding how the whole body works together, you begin to see addiction differently. Not as a moral failing, but as a brain caught in a destructive loop, in a body that's paying the price. My background gave me real, evidence-based tools to help people find their way out. Over more than 30 years in addiction medicine, I've witnessed what becomes possible when you treat the brain and body with the respect and precision they deserve.
             </p>
             <p>
               After decades in clinical medicine, I've learned that the best care rarely comes from textbooks alone. It comes from listening carefully, staying relentlessly curious, and being willing to look at old problems from new angles. Peptide therapy is a natural extension of that philosophy, giving the body the precise signals it needs to heal and optimize at the cellular level.
