@@ -37,22 +37,6 @@ const HeroSection = () => (
       }}
     />
 
-    {/* Scan line accent */}
-    <motion.div
-      className="absolute left-0 right-0 h-px pointer-events-none"
-      style={{
-        background:
-          "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.12), transparent)",
-      }}
-      initial={{ top: "20%" }}
-      animate={{ top: "80%" }}
-      transition={{
-        duration: 6,
-        repeat: Infinity,
-        repeatType: "reverse",
-        ease: "easeInOut",
-      }}
-    />
 
     <div className="relative z-10 max-w-3xl mx-auto px-6 text-center flex flex-col items-center">
       {/* Monogram with ring */}
