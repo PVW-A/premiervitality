@@ -166,7 +166,7 @@ const UserSettingsMenu = ({ firstName, lastName, userId, onSignOut, onProfileUpd
       const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) throw error;
       toast.success("Password updated successfully");
-      setPasswordDialogOpen(false);
+      setNewPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (err: any) {
