@@ -22,7 +22,7 @@ const DrJamesStory = () => (
 
           <div className="flex items-center gap-4 mb-10">
             <div className="w-16 h-16 rounded-full border-2 border-primary/40 overflow-hidden shrink-0">
-              <img src={jamesPhoto} alt="Dr. James Loo" className="w-full h-full object-cover scale-[1.35]" style={{ objectPosition: "72% 25%" }} />
+              <img src={jamesPhoto} alt="Dr. James Loo" className="w-full h-full object-cover scale-[1.35]" style={{ objectPosition: "80% 20%" }} />
             </div>
             <div>
               <p className="font-extralight text-lg">Dr. James Loo</p>
