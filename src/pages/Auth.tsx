@@ -117,7 +117,7 @@ const Auth = () => {
         }
       }
     } else {
-      const { error } = await supabase.auth.signUp({
+      const { data: signUpData, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -125,8 +125,15 @@ const Auth = () => {
           emailRedirectTo: window.location.origin,
         },
       });
-      if (error) setError(error.message);
-      else setMessage("Check your email to confirm your account.");
+      if (error) {
+        setError(error.message);
+      } else {
+        // Record terms acceptance timestamp
+        if (signUpData?.user?.id) {
+          await supabase.from("profiles").update({ terms_accepted_at: new Date().toISOString() }).eq("user_id", signUpData.user.id);
+        }
+        setMessage("Check your email to confirm your account.");
+      }
     }
     setLoading(false);
   };
