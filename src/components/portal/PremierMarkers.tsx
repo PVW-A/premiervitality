@@ -206,7 +206,7 @@ function CategorySection({ catName, config, getMarkerResults, openCategory, setO
                     >
                       <div
                         className="w-2 h-2 rounded-full flex-shrink-0"
-                        style={{ backgroundColor: gi ? gi.dotColor : "hsl(0 0% 100% / 0.08)" }}
+                        style={{ backgroundColor: gi ? gi.dotColor : "hsl(var(--muted-foreground) / 0.2)" }}
                       />
                       <span className="flex-1 text-[13px] font-body font-light text-foreground/75">
                         {marker.name}
