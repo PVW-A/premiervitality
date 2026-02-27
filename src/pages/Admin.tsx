@@ -111,6 +111,7 @@ const Admin = () => {
   const [denyDialogOpen, setDenyDialogOpen] = useState<string | null>(null);
   const [denyReason, setDenyReason] = useState("");
   const [allCustomers, setAllCustomers] = useState<MergedCustomer[]>([]);
+  const [recentActivity, setRecentActivity] = useState<any[]>([]);
 
   // Dialog states
   const [peptideDialogOpen, setPeptideDialogOpen] = useState(false);
