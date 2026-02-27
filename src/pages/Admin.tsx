@@ -86,6 +86,8 @@ interface PeptideRequest {
   status: string;
   deny_reason: string | null;
   created_at: string;
+  include_injection_kit: boolean;
+  delivery_method: string | null;
   patient_name?: string;
 }
 
@@ -398,7 +400,7 @@ const Admin = () => {
 
           {/* OVERVIEW TAB */}
           <TabsContent value="overview">
-            <AdminOverview patients={patients} orders={orders} patientPeptides={patientPeptides} peptides={peptides} recentActivity={recentActivity} />
+            <AdminOverview patients={patients} orders={orders} patientPeptides={patientPeptides} peptides={peptides} recentActivity={recentActivity} peptideRequests={peptideRequests} />
           </TabsContent>
 
           {/* PATIENTS TAB */}

@@ -36,6 +36,15 @@ interface Peptide {
   cost: number | null;
 }
 
+interface PeptideRequestItem {
+  id: string;
+  peptide_id: string;
+  price: number | null;
+  status: string;
+  include_injection_kit: boolean;
+  delivery_method: string | null;
+}
+
 interface ActivityItem {
   type: string;
   label: string;
@@ -51,27 +60,48 @@ interface Props {
   patientPeptides: PatientPeptide[];
   peptides: Peptide[];
   recentActivity: ActivityItem[];
+  peptideRequests: PeptideRequestItem[];
 }
 
-const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActivity }: Props) => {
-  const activeOrders = orders.filter(o => ["pending", "processing", "shipped"].includes(o.status));
-  const deliveredOrders = orders.filter(o => o.status === "delivered");
-  const totalRevenue = orders
-    .filter(o => o.status !== "cancelled")
-    .reduce((sum, o) => sum + (o.total_amount || 0), 0);
+const KIT_PRICE = 30;
+const KIT_COST = 12;
+const SHIPPING_PRICE = 35;
+const SHIPPING_COST = 35;
 
-  // Profit margin calculation
-  const peptidesWithMargin = peptides
-    .filter(p => p.price && p.cost && p.cost > 0)
-    .map(p => ({
-      name: p.name,
-      price: p.price!,
-      cost: p.cost!,
-      margin: ((p.price! - p.cost!) / p.price!) * 100,
-    }));
-  const avgMargin = peptidesWithMargin.length > 0
-    ? peptidesWithMargin.reduce((sum, p) => sum + p.margin, 0) / peptidesWithMargin.length
-    : 0;
+const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActivity, peptideRequests }: Props) => {
+  const activeOrders = orders.filter(o => ["pending", "processing", "shipped"].includes(o.status));
+
+  // Build a cost lookup from peptides
+  const costMap = new Map(peptides.filter(p => p.cost != null).map(p => [p.id, p.cost!]));
+
+  // Calculate financials from paid requests
+  const paidRequests = peptideRequests.filter(r => r.status === "paid");
+  
+  let peptideRevenue = 0;
+  let peptideCost = 0;
+  let kitRevenue = 0;
+  let kitCost = 0;
+  let shippingRevenue = 0;
+  let shippingCost = 0;
+  
+
+  paidRequests.forEach(r => {
+    peptideRevenue += r.price || 0;
+    peptideCost += costMap.get(r.peptide_id) || 0;
+    if (r.include_injection_kit) {
+      
+      kitRevenue += KIT_PRICE;
+      kitCost += KIT_COST;
+    }
+    if (r.delivery_method === "ship") {
+      shippingRevenue += SHIPPING_PRICE;
+      shippingCost += SHIPPING_COST;
+    }
+  });
+
+  const totalRevenue = peptideRevenue + kitRevenue + shippingRevenue;
+  const totalCost = peptideCost + kitCost + shippingCost;
+  
 
   // Spend per patient
   const spendByPatient = new Map<string, { name: string; total: number; orderCount: number }>();
@@ -136,9 +166,9 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
           <CardContent className="py-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground font-body font-light tracking-wider uppercase">Avg Margin</p>
+                <p className="text-xs text-muted-foreground font-body font-light tracking-wider uppercase">Profit</p>
                 <p className="text-2xl font-heading font-light text-foreground mt-1">
-                  {avgMargin > 0 ? `${avgMargin.toFixed(1)}%` : "—"}
+                  ${(totalRevenue - totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
               </div>
               <TrendingUp size={20} className="text-primary" strokeWidth={1.2} />
@@ -202,33 +232,46 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
           </CardContent>
         </Card>
 
-        {/* Profit Margins */}
+        {/* Revenue Breakdown */}
         <Card className="border-border bg-card lg:col-span-2">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-heading font-light text-foreground flex items-center gap-2">
-              <TrendingUp size={14} className="text-primary" /> Peptide Profit Margins
+              <TrendingUp size={14} className="text-primary" /> Revenue Breakdown
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {peptidesWithMargin.length === 0 ? (
-              <p className="text-xs text-muted-foreground font-body font-light">
-                Set cost prices in the Peptides tab to see margin data.
-              </p>
+            {paidRequests.length === 0 ? (
+              <p className="text-xs text-muted-foreground font-body font-light">No paid orders yet.</p>
             ) : (
-              <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
-                {peptidesWithMargin.map((p, i) => (
-                  <div key={i} className="flex items-center justify-between py-2 px-3 bg-secondary/50 rounded border border-border">
-                    <div>
-                      <p className="text-sm font-body font-light text-foreground">{p.name}</p>
-                      <p className="text-xs text-muted-foreground font-body font-light">
-                        ${p.cost} → ${p.price}
-                      </p>
-                    </div>
-                    <Badge variant="outline" className={p.margin >= 40 ? "bg-green-500/20 text-green-400 border-green-500/30" : p.margin >= 20 ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" : "bg-destructive/20 text-destructive border-destructive/30"}>
-                      {p.margin.toFixed(1)}%
-                    </Badge>
+              <div className="space-y-3">
+                <div className="grid gap-3 md:grid-cols-3">
+                  <div className="py-3 px-4 bg-secondary/50 rounded border border-border">
+                    <p className="text-[10px] text-muted-foreground font-body font-light tracking-wider uppercase mb-1">Peptide Sales</p>
+                    <p className="text-lg font-heading font-light text-foreground">${peptideRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                    <p className="text-[10px] text-muted-foreground font-body font-light mt-0.5">Cost: ${peptideCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                   </div>
-                ))}
+                  <div className="py-3 px-4 bg-secondary/50 rounded border border-border">
+                    <p className="text-[10px] text-muted-foreground font-body font-light tracking-wider uppercase mb-1">Injection Kits</p>
+                    <p className="text-lg font-heading font-light text-foreground">${kitRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                    <p className="text-[10px] text-muted-foreground font-body font-light mt-0.5">Cost: ${kitCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} · Profit: ${(kitRevenue - kitCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                  </div>
+                  <div className="py-3 px-4 bg-secondary/50 rounded border border-border">
+                    <p className="text-[10px] text-muted-foreground font-body font-light tracking-wider uppercase mb-1">Shipping</p>
+                    <p className="text-lg font-heading font-light text-foreground">${shippingRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                    <p className="text-[10px] text-muted-foreground font-body font-light mt-0.5">Cost: ${shippingCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} · Net: $0.00</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between py-3 px-4 bg-primary/10 rounded border border-primary/20">
+                  <div>
+                    <p className="text-[10px] text-muted-foreground font-body font-light tracking-wider uppercase">Total Revenue → Profit</p>
+                    <p className="text-xs text-muted-foreground font-body font-light mt-0.5">{paidRequests.length} paid order{paidRequests.length !== 1 ? "s" : ""}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-heading font-light text-foreground">
+                      ${totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} → <span className="text-primary">${(totalRevenue - totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
           </CardContent>
