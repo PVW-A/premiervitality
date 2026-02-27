@@ -36,11 +36,21 @@ interface Peptide {
   cost: number | null;
 }
 
+interface ActivityItem {
+  type: string;
+  label: string;
+  detail: string;
+  resource?: string;
+  status?: string;
+  timestamp: string;
+}
+
 interface Props {
   patients: Patient[];
   orders: Order[];
   patientPeptides: PatientPeptide[];
   peptides: Peptide[];
+  recentActivity: ActivityItem[];
 }
 
 const AdminOverview = ({ patients, orders, patientPeptides, peptides }: Props) => {
