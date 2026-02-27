@@ -46,7 +46,7 @@ function RangeBar({ value, marker }: { value: number; marker: MarkerDef }) {
   const grade = getGrade(value, marker);
 
   return (
-    <div className="relative h-2 w-full rounded-full overflow-hidden mt-2" style={{ background: "hsl(0 0% 100% / 0.04)" }}>
+    <div className="relative h-2 w-full rounded-full overflow-hidden mt-2 bg-muted/40 dark:bg-[hsl(0_0%_100%/0.04)]">
       <div
         className="absolute h-full"
         style={{
