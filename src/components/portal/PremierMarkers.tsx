@@ -393,9 +393,9 @@ export default function PremierMarkers() {
         >
           {/* Dark-only background layers */}
           <div className="absolute inset-0 hidden dark:block rounded-lg" style={{ background: "linear-gradient(135deg, hsl(0 0% 3%), hsl(0 0% 5%))" }} />
-          {/* Scan line animation */}
+          {/* Scan line animation - dark only */}
           <motion.div
-            className="absolute inset-0 pointer-events-none"
+            className="absolute inset-0 pointer-events-none hidden dark:block"
             style={{
               background: `linear-gradient(180deg, transparent 0%, ${trendColor}06 50%, transparent 100%)`,
               height: "40%",
@@ -405,7 +405,7 @@ export default function PremierMarkers() {
           />
           {/* Grid overlay */}
           <div
-            className="absolute inset-0 pointer-events-none opacity-[0.03]"
+            className="absolute inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.03]"
             style={{
               backgroundImage: `linear-gradient(${trendColor}40 1px, transparent 1px), linear-gradient(90deg, ${trendColor}40 1px, transparent 1px)`,
               backgroundSize: "20px 20px",
