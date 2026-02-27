@@ -111,6 +111,7 @@ const Admin = () => {
   const [denyDialogOpen, setDenyDialogOpen] = useState<string | null>(null);
   const [denyReason, setDenyReason] = useState("");
   const [allCustomers, setAllCustomers] = useState<MergedCustomer[]>([]);
+  const [recentActivity, setRecentActivity] = useState<any[]>([]);
 
   // Dialog states
   const [peptideDialogOpen, setPeptideDialogOpen] = useState(false);
@@ -139,12 +140,13 @@ const Admin = () => {
   const fetchAll = useCallback(async () => {
     if (!user || !isAdmin) return;
 
-    const [profilesRes, peptidesRes, ppRes, ordersRes, requestsRes] = await Promise.all([
-      supabase.from("profiles").select("user_id, first_name, last_name, phone, square_customer_id"),
+    const [profilesRes, peptidesRes, ppRes, ordersRes, requestsRes, auditRes] = await Promise.all([
+      supabase.from("profiles").select("user_id, first_name, last_name, phone, square_customer_id, created_at"),
       supabase.from("peptides").select("*").order("name"),
       supabase.from("patient_peptides").select("*, peptides(name)"),
       supabase.from("orders").select("*").order("created_at", { ascending: false }),
       supabase.from("peptide_requests").select("*").order("created_at", { ascending: false }),
+      supabase.from("audit_logs").select("*").order("created_at", { ascending: false }).limit(20),
     ]);
 
     if (profilesRes.data) {
@@ -205,6 +207,39 @@ const Admin = () => {
         patient_name: patientMap.get(r.user_id) || "Unknown",
       })));
     }
+
+    // Build activity feed from signups + audit logs
+    const activities: any[] = [];
+    (profilesRes.data || []).forEach(p => {
+      activities.push({
+        type: "signup",
+        label: `${p.first_name || ""} ${p.last_name || ""}`.trim() || "Unknown",
+        detail: "created an account",
+        timestamp: p.created_at,
+      });
+    });
+    (auditRes.data || []).forEach((a: any) => {
+      const patientName = a.patient_user_id ? patientMap.get(a.patient_user_id) || "Unknown" : null;
+      activities.push({
+        type: "audit",
+        label: patientName ? `${patientName}` : "Admin",
+        detail: a.action.replace(/_/g, " "),
+        resource: a.resource_type?.replace(/_/g, " "),
+        timestamp: a.created_at,
+      });
+    });
+    // Also add peptide requests as activity
+    (requestsRes.data || []).forEach((r: any) => {
+      activities.push({
+        type: "request",
+        label: patientMap.get(r.user_id) || "Unknown",
+        detail: `requested ${r.peptide_name}`,
+        status: r.status,
+        timestamp: r.created_at,
+      });
+    });
+    activities.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    setRecentActivity(activities.slice(0, 15));
   }, [user, isAdmin]);
 
   useEffect(() => { fetchAll(); }, [fetchAll]);
@@ -363,7 +398,7 @@ const Admin = () => {
 
           {/* OVERVIEW TAB */}
           <TabsContent value="overview">
-            <AdminOverview patients={patients} orders={orders} patientPeptides={patientPeptides} peptides={peptides} />
+            <AdminOverview patients={patients} orders={orders} patientPeptides={patientPeptides} peptides={peptides} recentActivity={recentActivity} />
           </TabsContent>
 
           {/* PATIENTS TAB */}
