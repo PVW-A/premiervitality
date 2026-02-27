@@ -103,10 +103,10 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
           <CardContent className="py-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground font-body font-light tracking-wider uppercase">Total Revenue</p>
-                <p className="text-2xl font-heading font-light text-foreground mt-1">${totalRevenue.toLocaleString()}</p>
+                <p className="text-xs text-muted-foreground font-body font-light tracking-wider uppercase">Patients</p>
+                <p className="text-2xl font-heading font-light text-foreground mt-1">{patients.length}</p>
               </div>
-              <DollarSign size={20} className="text-primary" strokeWidth={1.2} />
+              <Users size={20} className="text-primary" strokeWidth={1.2} />
             </div>
           </CardContent>
         </Card>
@@ -114,10 +114,10 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
           <CardContent className="py-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground font-body font-light tracking-wider uppercase">Patients</p>
-                <p className="text-2xl font-heading font-light text-foreground mt-1">{patients.length}</p>
+                <p className="text-xs text-muted-foreground font-body font-light tracking-wider uppercase">Total Revenue</p>
+                <p className="text-2xl font-heading font-light text-foreground mt-1">${totalRevenue.toLocaleString()}</p>
               </div>
-              <Users size={20} className="text-primary" strokeWidth={1.2} />
+              <DollarSign size={20} className="text-primary" strokeWidth={1.2} />
             </div>
           </CardContent>
         </Card>
