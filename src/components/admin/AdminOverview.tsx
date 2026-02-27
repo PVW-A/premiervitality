@@ -53,7 +53,7 @@ interface Props {
   recentActivity: ActivityItem[];
 }
 
-const AdminOverview = ({ patients, orders, patientPeptides, peptides }: Props) => {
+const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActivity }: Props) => {
   const activeOrders = orders.filter(o => ["pending", "processing", "shipped"].includes(o.status));
   const deliveredOrders = orders.filter(o => o.status === "delivered");
   const totalRevenue = orders
