@@ -384,26 +384,60 @@ export default function PremierMarkers() {
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-lg p-4 space-y-3"
-          style={{ background: `${trendColor}08`, border: `1px solid ${trendColor}15` }}
+          className="relative rounded-lg p-4 space-y-3 overflow-hidden"
+          style={{
+            background: `linear-gradient(135deg, hsl(0 0% 3%), hsl(0 0% 5%))`,
+            border: `1px solid ${trendColor}20`,
+            boxShadow: `0 0 30px ${trendColor}08, inset 0 1px 0 hsl(0 0% 100% / 0.03)`,
+          }}
         >
-          <div className="flex items-center justify-between">
+          {/* Scan line animation */}
+          <motion.div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: `linear-gradient(180deg, transparent 0%, ${trendColor}06 50%, transparent 100%)`,
+              height: "40%",
+            }}
+            animate={{ y: ["-40%", "280%"] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+          />
+          {/* Grid overlay */}
+          <div
+            className="absolute inset-0 pointer-events-none opacity-[0.03]"
+            style={{
+              backgroundImage: `linear-gradient(${trendColor}40 1px, transparent 1px), linear-gradient(90deg, ${trendColor}40 1px, transparent 1px)`,
+              backgroundSize: "20px 20px",
+            }}
+          />
+
+          <div className="relative flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Activity size={14} style={{ color: trendColor, opacity: 0.7 }} />
-              <span className="text-xs font-body font-light text-foreground/70">Score Trend</span>
+              <motion.div
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <Activity size={14} style={{ color: trendColor, filter: `drop-shadow(0 0 6px ${trendColor})` }} />
+              </motion.div>
+              <span className="text-[10px] tracking-[0.2em] uppercase font-body text-foreground/50">Biometric Trend</span>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2">
               {trend.slope > 0.5 ? (
-                <TrendingUp size={12} className="text-emerald-400" />
+                <TrendingUp size={12} style={{ color: trendColor, filter: `drop-shadow(0 0 4px ${trendColor})` }} />
               ) : trend.slope < -0.5 ? (
-                <TrendingDown size={12} className="text-orange-400" />
+                <TrendingDown size={12} className="text-orange-400" style={{ filter: "drop-shadow(0 0 4px hsl(25 95% 53%))" }} />
               ) : null}
-              <span className="text-[10px] font-body text-muted-foreground/50">
-                Projected: <span className="text-foreground/70 font-medium">{trend.projected}</span>
+              <span className="text-[10px] font-mono text-muted-foreground/40">
+                PROJ: <motion.span
+                  className="font-medium"
+                  style={{ color: trendColor, textShadow: `0 0 8px ${trendColor}60` }}
+                  animate={{ opacity: [0.7, 1, 0.7] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                >{trend.projected}</motion.span>
               </span>
             </div>
           </div>
-          <div className="h-20">
+
+          <div className="relative h-24">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart
                 data={[
@@ -411,34 +445,85 @@ export default function PremierMarkers() {
                     date: new Date(h.date).toLocaleDateString("en-US", { month: "short", year: "2-digit" }),
                     score: h.score,
                   })),
-                  { date: "Projected", score: trend.projected },
+                  { date: "PROJ", score: trend.projected },
                 ]}
                 margin={{ top: 5, right: 5, left: -20, bottom: 0 }}
               >
                 <defs>
                   <linearGradient id="scoreTrendGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={trendColor} stopOpacity={0.15} />
+                    <stop offset="0%" stopColor={trendColor} stopOpacity={0.25} />
+                    <stop offset="40%" stopColor={trendColor} stopOpacity={0.08} />
                     <stop offset="100%" stopColor={trendColor} stopOpacity={0} />
                   </linearGradient>
+                  <filter id="glow">
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                    <feMerge>
+                      <feMergeNode in="coloredBlur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
                 </defs>
-                <XAxis dataKey="date" tick={{ fontSize: 8, fill: "hsl(0 0% 100% / 0.25)" }} axisLine={false} tickLine={false} />
-                <YAxis domain={[0, 100]} tick={{ fontSize: 8, fill: "hsl(0 0% 100% / 0.25)" }} axisLine={false} tickLine={false} width={30} />
-                <Tooltip contentStyle={{ background: "hsl(0 0% 6%)", border: "1px solid hsl(0 0% 100% / 0.08)", borderRadius: 6, fontSize: 11 }} />
+                <XAxis dataKey="date" tick={{ fontSize: 8, fill: "hsl(0 0% 100% / 0.2)", fontFamily: "monospace" }} axisLine={false} tickLine={false} />
+                <YAxis domain={[0, 100]} tick={{ fontSize: 8, fill: "hsl(0 0% 100% / 0.15)", fontFamily: "monospace" }} axisLine={false} tickLine={false} width={30} />
+                <Tooltip
+                  contentStyle={{
+                    background: "hsl(0 0% 4%)",
+                    border: `1px solid ${trendColor}30`,
+                    borderRadius: 4,
+                    fontSize: 11,
+                    fontFamily: "monospace",
+                    boxShadow: `0 0 15px ${trendColor}15`,
+                  }}
+                />
                 <Area type="monotone" dataKey="score" fill="url(#scoreTrendGrad)" stroke="none" />
+                {/* Glow line behind main line */}
+                <Line
+                  type="monotone" dataKey="score"
+                  stroke={trendColor} strokeWidth={6}
+                  dot={false}
+                  style={{ filter: "url(#glow)", opacity: 0.3 }}
+                  animationDuration={800}
+                />
                 <Line
                   type="monotone" dataKey="score"
                   stroke={trendColor} strokeWidth={2}
                   dot={(props: any) => {
                     const isLast = props.index === scoreHistory.length;
+                    const size = isLast ? 5 : 4;
                     return (
-                      <circle
-                        cx={props.cx} cy={props.cy} r={isLast ? 4 : 3}
-                        fill={isLast ? "hsl(0 0% 100% / 0.15)" : trendColor}
-                        stroke={isLast ? trendColor : "hsl(0 0% 6%)"}
-                        strokeWidth={2}
-                        strokeDasharray={isLast ? "3 2" : "none"}
-                        style={isLast ? {} : { filter: `drop-shadow(0 0 4px ${trendColor}40)` }}
-                      />
+                      <g>
+                        {/* Outer pulse ring */}
+                        <circle
+                          cx={props.cx} cy={props.cy} r={size + 4}
+                          fill="none"
+                          stroke={trendColor}
+                          strokeWidth={0.5}
+                          opacity={isLast ? 0.4 : 0.15}
+                        />
+                        {/* Glow */}
+                        <circle
+                          cx={props.cx} cy={props.cy} r={size + 2}
+                          fill={`${trendColor}`}
+                          opacity={0.1}
+                        />
+                        {/* Core dot */}
+                        <circle
+                          cx={props.cx} cy={props.cy} r={size}
+                          fill={isLast ? "hsl(0 0% 6%)" : trendColor}
+                          stroke={trendColor}
+                          strokeWidth={isLast ? 1.5 : 2}
+                          strokeDasharray={isLast ? "2 2" : "none"}
+                          style={{ filter: `drop-shadow(0 0 6px ${trendColor})` }}
+                        />
+                        {/* Center bright point */}
+                        {!isLast && (
+                          <circle
+                            cx={props.cx} cy={props.cy} r={1.5}
+                            fill="white"
+                            opacity={0.8}
+                          />
+                        )}
+                      </g>
                     );
                   }}
                   animationDuration={800}
@@ -446,9 +531,18 @@ export default function PremierMarkers() {
               </ComposedChart>
             </ResponsiveContainer>
           </div>
-          <p className="text-[10px] text-muted-foreground/35 font-body font-light text-center">
-            Based on {scoreHistory.length} blood tests • Dashed point = estimated trajectory
-          </p>
+
+          <div className="relative flex items-center justify-between">
+            <p className="text-[9px] font-mono text-muted-foreground/25 tracking-wider">
+              {scoreHistory.length} SAMPLES ANALYZED
+            </p>
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-[1px]" style={{ background: trendColor }} />
+              <span className="text-[8px] font-mono text-muted-foreground/30">ACTUAL</span>
+              <div className="w-3 h-[1px] ml-2" style={{ background: trendColor, opacity: 0.4 }} />
+              <span className="text-[8px] font-mono text-muted-foreground/30">PROJECTED</span>
+            </div>
+          </div>
         </motion.div>
       )}
 
