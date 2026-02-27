@@ -50,9 +50,9 @@ Deno.serve(async (req) => {
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
     // Parse body
-    const { request_id, card_nonce, include_injection_kit, delivery_method } = await req.json();
-    if (!request_id || !card_nonce) {
-      return new Response(JSON.stringify({ error: "Missing request_id or card_nonce" }), {
+    const { request_id, card_nonce, use_saved_card, include_injection_kit, delivery_method } = await req.json();
+    if (!request_id || (!card_nonce && !use_saved_card)) {
+      return new Response(JSON.stringify({ error: "Missing request_id or payment method" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
