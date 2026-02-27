@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DollarSign, Users, Package, TrendingUp, Clock, AlertTriangle, UserPlus, ClipboardList, Shield } from "lucide-react";
+import { DollarSign, Users, Package, TrendingUp, AlertTriangle, UserPlus, ClipboardList, Shield } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
 
