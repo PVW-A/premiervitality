@@ -391,3 +391,46 @@ export function linearTrend(values: number[]): { slope: number; projected: numbe
 
 /** Minimum blood tests required before showing trend projections */
 export const MIN_TESTS_FOR_TREND = 3;
+
+/**
+ * Age-based benchmark scores for the "average" American and "optimal" wellness range.
+ * Based on population health data adjusted by decade — older adults typically have
+ * more markers drifting out of range due to hormonal decline, metabolic changes, etc.
+ */
+export function getAgeBenchmarks(age: number | null): { average: number; optimal: number; label: string } {
+  if (age === null) return { average: 52, optimal: 78, label: "All Ages" };
+  if (age < 30) return { average: 62, optimal: 85, label: `Age ${age}` };
+  if (age < 40) return { average: 57, optimal: 82, label: `Age ${age}` };
+  if (age < 50) return { average: 52, optimal: 78, label: `Age ${age}` };
+  if (age < 60) return { average: 46, optimal: 74, label: `Age ${age}` };
+  if (age < 70) return { average: 41, optimal: 70, label: `Age ${age}` };
+  return { average: 36, optimal: 66, label: `Age ${age}` };
+}
+
+/**
+ * For a given set of results at a specific date, returns markers that are NOT optimal/normal.
+ * Useful for tooltip drill-down on the trend chart.
+ */
+export function getOutOfRangeMarkersForDate(
+  allResults: BiomarkerResult[],
+  date: string
+): { name: string; grade: Grade; value: number; unit: string; category: string }[] {
+  const available = allResults.filter(r => r.lab_date <= date);
+  const items: { name: string; grade: Grade; value: number; unit: string; category: string }[] = [];
+
+  Object.entries(categoryConfig).forEach(([catName, config]) => {
+    config.markers.forEach((m) => {
+      const mr = available.filter((r) => r.marker_name === m.name);
+      if (mr.length === 0) return;
+      const latest = mr.reduce((a, b) => (a.lab_date > b.lab_date ? a : b));
+      const grade = getGrade(latest.value, m);
+      if (grade !== "optimal" && grade !== "normal") {
+        items.push({ name: m.name, grade, value: latest.value, unit: m.unit, category: catName });
+      }
+    });
+  });
+
+  const severityOrder: Record<Grade, number> = { critical: 0, critical_high: 1, low: 2, high: 3, normal: 4, optimal: 5 };
+  items.sort((a, b) => severityOrder[a.grade] - severityOrder[b.grade]);
+  return items.slice(0, 5);
+}
