@@ -221,7 +221,7 @@ function CategorySection({ catName, config, getMarkerResults, openCategory, setO
                           <Badge
                             variant="outline"
                             className={`text-[8px] tracking-wider uppercase border-0 px-1.5 py-0 ${gi!.color}`}
-                            style={{ background: "hsl(0 0% 100% / 0.03)" }}
+                            style={{ background: "hsl(var(--muted) / 0.5)" }}
                           >
                             {gi!.label}
                           </Badge>
