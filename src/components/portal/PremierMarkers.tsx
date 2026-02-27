@@ -385,7 +385,7 @@ export default function PremierMarkers() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           className="rounded-lg p-4 space-y-3"
-          style={{ background: "hsl(0 0% 100% / 0.02)", border: "1px solid hsl(0 0% 100% / 0.05)" }}
+          style={{ background: `${trendColor}08`, border: `1px solid ${trendColor}15` }}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
