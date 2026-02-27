@@ -29,7 +29,7 @@ export default function VitalityScoreBadge({ score, onClick }: VitalityScoreBadg
     >
       <div className="relative w-12 h-12 flex-shrink-0">
         <svg className="w-full h-full -rotate-90" viewBox="0 0 52 52">
-          <circle cx="26" cy="26" r="22" fill="none" stroke="hsl(0 0% 100% / 0.04)" strokeWidth="3" />
+          <circle cx="26" cy="26" r="22" fill="none" stroke="hsl(var(--muted-foreground) / 0.1)" strokeWidth="3" />
           <motion.circle
             cx="26" cy="26" r="22" fill="none"
             stroke={`hsl(${color})`}
