@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DollarSign, Users, Package, TrendingUp, AlertTriangle, UserPlus, ClipboardList, Shield, CalendarIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { format, formatDistanceToNow, startOfDay, subDays, startOfMonth, startOfYear, isWithinInterval, endOfDay, subMonths } from "date-fns";
+import { format, formatDistanceToNow, startOfDay, subDays, startOfYear, isWithinInterval, endOfDay } from "date-fns";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
