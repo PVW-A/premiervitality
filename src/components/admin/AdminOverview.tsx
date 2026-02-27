@@ -83,7 +83,7 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
   let kitCost = 0;
   let shippingRevenue = 0;
   let shippingCost = 0;
-  let kitCount = 0;
+  
 
   paidRequests.forEach(r => {
     peptideRevenue += r.price || 0;
