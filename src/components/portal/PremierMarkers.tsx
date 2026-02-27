@@ -110,8 +110,8 @@ function TrendChart({ results, marker, catColor }: { results: BiomarkerResult[];
           <Line
             type="monotone" dataKey="value"
             stroke={col} strokeWidth={2}
-            dot={{ r: 4, fill: col, strokeWidth: 2, stroke: "hsl(0 0% 6%)" }}
-            activeDot={{ r: 6, fill: col, strokeWidth: 2, stroke: "hsl(0 0% 6%)" }}
+            dot={{ r: 4, fill: col, strokeWidth: 2, stroke: "hsl(var(--background))" }}
+            activeDot={{ r: 6, fill: col, strokeWidth: 2, stroke: "hsl(var(--background))" }}
             animationDuration={800}
           />
         </ComposedChart>
