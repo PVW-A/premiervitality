@@ -555,7 +555,7 @@ export default function PremierMarkers() {
 
       {/* Not enough tests message */}
       {results.length > 0 && !hasEnoughForTrend && (
-        <div className="rounded-lg p-3 flex items-center gap-2" style={{ background: "hsl(0 0% 100% / 0.015)", border: "1px solid hsl(0 0% 100% / 0.04)" }}>
+        <div className="rounded-lg p-3 flex items-center gap-2 bg-muted/30 border border-border/50">
           <Activity size={13} className="text-muted-foreground/30" />
           <p className="text-[10px] text-muted-foreground/40 font-body font-light">
             {MIN_TESTS_FOR_TREND - scoreHistory.length} more blood test{MIN_TESTS_FOR_TREND - scoreHistory.length !== 1 ? "s" : ""} needed to unlock score trend projections.
