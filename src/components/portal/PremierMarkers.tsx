@@ -141,8 +141,8 @@ function CategorySection({ catName, config, getMarkerResults, openCategory, setO
         onClick={() => { setOpenCategory(isOpen ? null : catName); setOpenMarker(null); }}
         className="w-full flex items-center gap-3 px-4 py-3.5 rounded-lg transition-all duration-200"
         style={{
-          background: isOpen ? `hsl(${config.color} / 0.06)` : "hsl(0 0% 100% / 0.02)",
-          border: `1px solid ${isOpen ? `hsl(${config.color} / 0.2)` : "hsl(0 0% 100% / 0.04)"}`,
+          background: isOpen ? `hsl(${config.color} / 0.06)` : "hsl(var(--muted) / 0.4)",
+          border: `1px solid ${isOpen ? `hsl(${config.color} / 0.2)` : "hsl(var(--border))"}`,
         }}
       >
         <div className="p-1.5 rounded-md" style={{ background: `hsl(${config.color} / 0.1)` }}>
