@@ -389,7 +389,7 @@ export default function PremierMarkers() {
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Activity size={14} className="text-primary/60" />
+              <Activity size={14} style={{ color: trendColor, opacity: 0.7 }} />
               <span className="text-xs font-body font-light text-foreground/70">Score Trend</span>
             </div>
             <div className="flex items-center gap-1.5">
