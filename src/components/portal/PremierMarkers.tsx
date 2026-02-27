@@ -18,6 +18,8 @@ import {
   computeVitalityScore,
   getAllMarkers,
   getScoreColor,
+  getAgeBenchmarks,
+  getOutOfRangeMarkersForDate,
   linearTrend,
   MIN_TESTS_FOR_TREND,
 } from "@/lib/vitality";
