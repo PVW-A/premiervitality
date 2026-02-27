@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const stats = [
   { value: "500+", label: "Patients Treated" },
   { value: "98%", label: "Satisfaction Rate" },
-  { value: "15+", label: "Peptide Protocols" },
+  { value: "80+", label: "Precision Protocols" },
 ];
 
 const AboutSection = () => (
