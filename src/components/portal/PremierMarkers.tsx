@@ -447,7 +447,7 @@ export default function PremierMarkers() {
                   })),
                   { date: "PROJ", score: trend.projected },
                 ]}
-                margin={{ top: 5, right: 5, left: -20, bottom: 0 }}
+                margin={{ top: 5, right: 10, left: 10, bottom: 0 }}
               >
                 <defs>
                   <linearGradient id="scoreTrendGrad" x1="0" y1="0" x2="0" y2="1">
@@ -464,7 +464,7 @@ export default function PremierMarkers() {
                   </filter>
                 </defs>
                 <XAxis dataKey="date" tick={{ fontSize: 8, fill: "hsl(0 0% 100% / 0.2)", fontFamily: "monospace" }} axisLine={false} tickLine={false} />
-                <YAxis domain={[0, 100]} tick={{ fontSize: 8, fill: "hsl(0 0% 100% / 0.15)", fontFamily: "monospace" }} axisLine={false} tickLine={false} width={30} />
+                <YAxis domain={[0, 100]} hide width={0} />
                 <Tooltip
                   contentStyle={{
                     background: "hsl(0 0% 4%)",
