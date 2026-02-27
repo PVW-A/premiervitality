@@ -631,7 +631,7 @@ export default function PremierMarkers() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="rounded-lg border border-border/20 p-10 text-center"
-          style={{ background: "hsl(0 0% 100% / 0.015)" }}
+          style={{ background: "hsl(var(--muted) / 0.3)" }}
         >
           <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 3, repeat: Infinity }}>
             <Activity size={24} strokeWidth={1} className="text-primary/25 mx-auto mb-3" />
