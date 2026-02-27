@@ -101,7 +101,7 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
 
   const totalRevenue = peptideRevenue + kitRevenue + shippingRevenue;
   const totalCost = peptideCost + kitCost + shippingCost;
-  const totalProfit = totalRevenue - totalCost;
+  
 
   // Spend per patient
   const spendByPatient = new Map<string, { name: string; total: number; orderCount: number }>();
