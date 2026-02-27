@@ -234,6 +234,59 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
           </CardContent>
         </Card>
       </div>
+
+      {/* Recent Activity Feed */}
+      <Card className="border-border bg-card">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm font-heading font-light text-foreground flex items-center gap-2">
+            <ClipboardList size={14} className="text-primary" /> Recent Activity
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {recentActivity.length === 0 ? (
+            <p className="text-xs text-muted-foreground font-body font-light">No recent activity.</p>
+          ) : (
+            <div className="space-y-1">
+              {recentActivity.map((a, i) => (
+                <div key={i} className="flex items-start gap-3 py-2.5 border-b border-border last:border-0">
+                  <div className="mt-0.5 shrink-0">
+                    {a.type === "signup" ? (
+                      <UserPlus size={14} className="text-green-400" />
+                    ) : a.type === "request" ? (
+                      <ClipboardList size={14} className="text-primary" />
+                    ) : (
+                      <Shield size={14} className="text-muted-foreground" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-body font-light text-foreground">
+                      <span className="font-medium">{a.label}</span>{" "}
+                      <span className="text-muted-foreground">{a.detail}</span>
+                      {a.resource && (
+                        <span className="text-muted-foreground"> · {a.resource}</span>
+                      )}
+                    </p>
+                    <p className="text-[10px] text-muted-foreground font-body font-light mt-0.5">
+                      {formatDistanceToNow(new Date(a.timestamp), { addSuffix: true })}
+                    </p>
+                  </div>
+                  {a.status && (
+                    <Badge variant="outline" className={
+                      a.status === "pending" ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" :
+                      a.status === "approved" ? "bg-green-500/20 text-green-400 border-green-500/30" :
+                      a.status === "denied" ? "bg-destructive/20 text-destructive border-destructive/30" :
+                      a.status === "paid" ? "bg-primary/20 text-primary border-primary/30" :
+                      "bg-secondary text-muted-foreground border-border"
+                    }>
+                      {a.status}
+                    </Badge>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };
