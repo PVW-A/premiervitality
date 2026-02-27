@@ -586,7 +586,7 @@ export default function PremierMarkers() {
           <button
             onClick={() => setShowSecondary(!showSecondary)}
             className="w-full flex items-center justify-center gap-2 py-3 rounded-lg text-xs font-body text-muted-foreground/50 transition-colors hover:text-muted-foreground/70"
-            style={{ background: "hsl(0 0% 100% / 0.015)", border: "1px solid hsl(0 0% 100% / 0.03)" }}
+            style={{ background: "hsl(var(--muted) / 0.3)", border: "1px solid hsl(var(--border))" }}
           >
             <span>{showSecondary ? "Hide" : "Show"} Additional Panels</span>
             {secondaryHasData && !showSecondary && (
