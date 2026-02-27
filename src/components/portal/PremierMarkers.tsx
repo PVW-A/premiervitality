@@ -516,7 +516,7 @@ export default function PremierMarkers() {
                         {/* Core dot */}
                         <circle
                           cx={props.cx} cy={props.cy} r={size}
-                          fill={isLast ? "hsl(0 0% 6%)" : trendColor}
+                          fill={isLast ? "hsl(var(--background))" : trendColor}
                           stroke={trendColor}
                           strokeWidth={isLast ? 1.5 : 2}
                           strokeDasharray={isLast ? "2 2" : "none"}
