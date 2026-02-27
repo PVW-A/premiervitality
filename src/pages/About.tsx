@@ -33,7 +33,7 @@ const pillars = [
 const stats = [
   { value: "500+", label: "Patients Optimized" },
   { value: "98%", label: "Satisfaction Rate" },
-  { value: "15+", label: "Precision Protocols" },
+  { value: "80+", label: "Precision Protocols" },
   { value: "24/7", label: "Concierge Support" },
 ];
 
