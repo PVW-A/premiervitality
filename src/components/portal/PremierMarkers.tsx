@@ -465,11 +465,11 @@ export default function PremierMarkers() {
                     </feMerge>
                   </filter>
                 </defs>
-                <XAxis dataKey="date" tick={{ fontSize: 8, fill: "hsl(0 0% 100% / 0.2)", fontFamily: "monospace" }} axisLine={false} tickLine={false} />
+                <XAxis dataKey="date" tick={{ fontSize: 8, fill: "hsl(var(--muted-foreground))", fontFamily: "monospace" }} axisLine={false} tickLine={false} />
                 <YAxis domain={[0, 100]} hide width={0} />
                 <Tooltip
                   contentStyle={{
-                    background: "hsl(0 0% 4%)",
+                    background: "hsl(var(--card))",
                     border: `1px solid ${trendColor}30`,
                     borderRadius: 4,
                     fontSize: 11,
