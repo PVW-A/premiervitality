@@ -28,13 +28,13 @@ const AboutSection = () => (
             About Us
           </p>
           <h2 className="text-3xl md:text-5xl font-extralight mb-6 tracking-tight">
-            Science Meets Vitality
+            Performance Infrastructure
           </h2>
           <p className="text-muted-foreground font-body font-light text-sm leading-relaxed mb-4">
-            We are a physician-led vitality clinic specializing in peptide therapy. Our evidence-based approach combines cutting-edge research with personalized treatment plans.
+            A physician-led health optimization and longevity practice built for people who operate at the highest levels and demand their biology keep up.
           </p>
           <p className="text-muted-foreground font-body font-light text-sm leading-relaxed">
-            Every protocol is designed around your labs, lifestyle, and goals because optimal health isn't one-size-fits-all.
+            We bridge the precision of modern clinical medicine with the cutting edge of performance science to deliver a measurable, sustainable edge.
           </p>
           <Link to="/about" className="mt-4 inline-block text-xs tracking-[0.2em] uppercase text-primary/80 hover:text-primary transition-colors font-body">
             Learn More About Us →
