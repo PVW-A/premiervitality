@@ -60,7 +60,7 @@ function RangeBar({ value, marker }: { value: number; marker: MarkerDef }) {
         className="absolute top-1/2 w-3 h-3 rounded-full border-2"
         style={{
           backgroundColor: gradeInfo[grade].dotColor,
-          borderColor: "hsl(0 0% 8%)",
+          borderColor: "hsl(var(--background))",
           boxShadow: `0 0 8px ${gradeInfo[grade].dotColor}60`,
           transform: "translate(-50%, -50%)",
         }}
