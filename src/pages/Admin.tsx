@@ -86,6 +86,8 @@ interface PeptideRequest {
   status: string;
   deny_reason: string | null;
   created_at: string;
+  include_injection_kit: boolean;
+  delivery_method: string | null;
   patient_name?: string;
 }
 
