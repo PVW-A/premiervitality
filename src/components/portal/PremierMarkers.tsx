@@ -464,7 +464,7 @@ export default function PremierMarkers() {
                   </filter>
                 </defs>
                 <XAxis dataKey="date" tick={{ fontSize: 8, fill: "hsl(0 0% 100% / 0.2)", fontFamily: "monospace" }} axisLine={false} tickLine={false} />
-                <YAxis domain={[0, 100]} tick={{ fontSize: 8, fill: "hsl(0 0% 100% / 0.15)", fontFamily: "monospace" }} axisLine={false} tickLine={false} width={30} />
+                <YAxis domain={[0, 100]} hide width={0} />
                 <Tooltip
                   contentStyle={{
                     background: "hsl(0 0% 4%)",
