@@ -18,8 +18,8 @@ interface BloodworkUpload {
 }
 
 const statusStyles: Record<string, string> = {
-  pending_review: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-  reviewed: "bg-green-500/20 text-green-400 border-green-500/30",
+  pending_review: "bg-yellow-600/15 text-yellow-700 dark:text-yellow-400 border-yellow-600/30",
+  reviewed: "bg-emerald-700/15 text-emerald-700 dark:text-emerald-400 border-emerald-700/30",
   needs_resubmit: "bg-destructive/20 text-destructive border-destructive/30",
   parsing: "bg-primary/20 text-primary border-primary/30",
 };

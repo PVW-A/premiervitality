@@ -46,7 +46,7 @@ function RangeBar({ value, marker }: { value: number; marker: MarkerDef }) {
   const grade = getGrade(value, marker);
 
   return (
-    <div className="relative h-2 w-full rounded-full overflow-hidden mt-2" style={{ background: "hsl(0 0% 100% / 0.04)" }}>
+    <div className="relative h-2 w-full rounded-full overflow-hidden mt-2 bg-muted/40 dark:bg-[hsl(0_0%_100%/0.04)]">
       <div
         className="absolute h-full"
         style={{
@@ -60,7 +60,7 @@ function RangeBar({ value, marker }: { value: number; marker: MarkerDef }) {
         className="absolute top-1/2 w-3 h-3 rounded-full border-2"
         style={{
           backgroundColor: gradeInfo[grade].dotColor,
-          borderColor: "hsl(0 0% 8%)",
+          borderColor: "hsl(var(--background))",
           boxShadow: `0 0 8px ${gradeInfo[grade].dotColor}60`,
           transform: "translate(-50%, -50%)",
         }}
@@ -98,10 +98,10 @@ function TrendChart({ results, marker, catColor }: { results: BiomarkerResult[];
               <stop offset="100%" stopColor={col} stopOpacity={0} />
             </linearGradient>
           </defs>
-          <XAxis dataKey="date" tick={{ fontSize: 9, fill: "hsl(0 0% 100% / 0.25)" }} axisLine={false} tickLine={false} />
-          <YAxis domain={[yMin, yMax]} tick={{ fontSize: 9, fill: "hsl(0 0% 100% / 0.25)" }} axisLine={false} tickLine={false} width={35} />
+          <XAxis dataKey="date" tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} />
+          <YAxis domain={[yMin, yMax]} tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} width={35} />
           <Tooltip
-            contentStyle={{ background: "hsl(0 0% 6%)", border: "1px solid hsl(0 0% 100% / 0.08)", borderRadius: 6, fontSize: 11 }}
+            contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 6, fontSize: 11 }}
             formatter={(val: number) => [`${val} ${marker.unit}`, ""]}
           />
           <ReferenceLine y={marker.optimalHigh} stroke="hsl(152 69% 50% / 0.15)" strokeDasharray="2 4" />
@@ -110,8 +110,8 @@ function TrendChart({ results, marker, catColor }: { results: BiomarkerResult[];
           <Line
             type="monotone" dataKey="value"
             stroke={col} strokeWidth={2}
-            dot={{ r: 4, fill: col, strokeWidth: 2, stroke: "hsl(0 0% 6%)" }}
-            activeDot={{ r: 6, fill: col, strokeWidth: 2, stroke: "hsl(0 0% 6%)" }}
+            dot={{ r: 4, fill: col, strokeWidth: 2, stroke: "hsl(var(--background))" }}
+            activeDot={{ r: 6, fill: col, strokeWidth: 2, stroke: "hsl(var(--background))" }}
             animationDuration={800}
           />
         </ComposedChart>
@@ -141,8 +141,8 @@ function CategorySection({ catName, config, getMarkerResults, openCategory, setO
         onClick={() => { setOpenCategory(isOpen ? null : catName); setOpenMarker(null); }}
         className="w-full flex items-center gap-3 px-4 py-3.5 rounded-lg transition-all duration-200"
         style={{
-          background: isOpen ? `hsl(${config.color} / 0.06)` : "hsl(0 0% 100% / 0.02)",
-          border: `1px solid ${isOpen ? `hsl(${config.color} / 0.2)` : "hsl(0 0% 100% / 0.04)"}`,
+          background: isOpen ? `hsl(${config.color} / 0.06)` : "hsl(var(--muted) / 0.4)",
+          border: `1px solid ${isOpen ? `hsl(${config.color} / 0.2)` : "hsl(var(--border))"}`,
         }}
       >
         <div className="p-1.5 rounded-md" style={{ background: `hsl(${config.color} / 0.1)` }}>
@@ -206,7 +206,7 @@ function CategorySection({ catName, config, getMarkerResults, openCategory, setO
                     >
                       <div
                         className="w-2 h-2 rounded-full flex-shrink-0"
-                        style={{ backgroundColor: gi ? gi.dotColor : "hsl(0 0% 100% / 0.08)" }}
+                        style={{ backgroundColor: gi ? gi.dotColor : "hsl(var(--muted-foreground) / 0.2)" }}
                       />
                       <span className="flex-1 text-[13px] font-body font-light text-foreground/75">
                         {marker.name}
@@ -221,7 +221,7 @@ function CategorySection({ catName, config, getMarkerResults, openCategory, setO
                           <Badge
                             variant="outline"
                             className={`text-[8px] tracking-wider uppercase border-0 px-1.5 py-0 ${gi!.color}`}
-                            style={{ background: "hsl(0 0% 100% / 0.03)" }}
+                            style={{ background: "hsl(var(--muted) / 0.5)" }}
                           >
                             {gi!.label}
                           </Badge>
@@ -247,7 +247,7 @@ function CategorySection({ catName, config, getMarkerResults, openCategory, setO
                           className="overflow-hidden"
                         >
                           <div className="px-4 pb-4 space-y-3">
-                            <div className="flex gap-2 items-start p-3 rounded-md" style={{ background: "hsl(0 0% 100% / 0.02)" }}>
+                            <div className="flex gap-2 items-start p-3 rounded-md bg-muted/30">
                               <Info size={13} className="text-muted-foreground/40 mt-0.5 flex-shrink-0" />
                               <div>
                                 <p className="text-[11px] text-foreground/60 font-body font-light leading-relaxed">
@@ -277,7 +277,7 @@ function CategorySection({ catName, config, getMarkerResults, openCategory, setO
                             )}
 
                             {grade && grade !== "optimal" && (
-                              <div className="p-3 rounded-md" style={{ background: "hsl(0 0% 100% / 0.015)" }}>
+                              <div className="p-3 rounded-md bg-muted/20">
                                 <p className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground/50 font-body mb-2">
                                   How to improve
                                 </p>
@@ -384,16 +384,18 @@ export default function PremierMarkers() {
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative rounded-lg p-4 space-y-3 overflow-hidden"
+          className="relative rounded-lg p-4 space-y-3 overflow-hidden bg-card dark:bg-transparent"
           style={{
-            background: `linear-gradient(135deg, hsl(0 0% 3%), hsl(0 0% 5%))`,
+            background: undefined,
             border: `1px solid ${trendColor}20`,
-            boxShadow: `0 0 30px ${trendColor}08, inset 0 1px 0 hsl(0 0% 100% / 0.03)`,
+            boxShadow: `0 0 30px ${trendColor}08, inset 0 1px 0 hsl(var(--border))`,
           }}
         >
-          {/* Scan line animation */}
+          {/* Dark-only background layers */}
+          <div className="absolute inset-0 hidden dark:block rounded-lg" style={{ background: "linear-gradient(135deg, hsl(0 0% 3%), hsl(0 0% 5%))" }} />
+          {/* Scan line animation - dark only */}
           <motion.div
-            className="absolute inset-0 pointer-events-none"
+            className="absolute inset-0 pointer-events-none hidden dark:block"
             style={{
               background: `linear-gradient(180deg, transparent 0%, ${trendColor}06 50%, transparent 100%)`,
               height: "40%",
@@ -403,7 +405,7 @@ export default function PremierMarkers() {
           />
           {/* Grid overlay */}
           <div
-            className="absolute inset-0 pointer-events-none opacity-[0.03]"
+            className="absolute inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.03]"
             style={{
               backgroundImage: `linear-gradient(${trendColor}40 1px, transparent 1px), linear-gradient(90deg, ${trendColor}40 1px, transparent 1px)`,
               backgroundSize: "20px 20px",
@@ -463,11 +465,11 @@ export default function PremierMarkers() {
                     </feMerge>
                   </filter>
                 </defs>
-                <XAxis dataKey="date" tick={{ fontSize: 8, fill: "hsl(0 0% 100% / 0.2)", fontFamily: "monospace" }} axisLine={false} tickLine={false} />
+                <XAxis dataKey="date" tick={{ fontSize: 8, fill: "hsl(var(--muted-foreground))", fontFamily: "monospace" }} axisLine={false} tickLine={false} />
                 <YAxis domain={[0, 100]} hide width={0} />
                 <Tooltip
                   contentStyle={{
-                    background: "hsl(0 0% 4%)",
+                    background: "hsl(var(--card))",
                     border: `1px solid ${trendColor}30`,
                     borderRadius: 4,
                     fontSize: 11,
@@ -514,7 +516,7 @@ export default function PremierMarkers() {
                         {/* Core dot */}
                         <circle
                           cx={props.cx} cy={props.cy} r={size}
-                          fill={isLast ? "hsl(0 0% 6%)" : trendColor}
+                          fill={isLast ? "hsl(var(--background))" : trendColor}
                           stroke={trendColor}
                           strokeWidth={isLast ? 1.5 : 2}
                           strokeDasharray={isLast ? "2 2" : "none"}
@@ -553,7 +555,7 @@ export default function PremierMarkers() {
 
       {/* Not enough tests message */}
       {results.length > 0 && !hasEnoughForTrend && (
-        <div className="rounded-lg p-3 flex items-center gap-2" style={{ background: "hsl(0 0% 100% / 0.015)", border: "1px solid hsl(0 0% 100% / 0.04)" }}>
+        <div className="rounded-lg p-3 flex items-center gap-2 bg-muted/30 border border-border/50">
           <Activity size={13} className="text-muted-foreground/30" />
           <p className="text-[10px] text-muted-foreground/40 font-body font-light">
             {MIN_TESTS_FOR_TREND - scoreHistory.length} more blood test{MIN_TESTS_FOR_TREND - scoreHistory.length !== 1 ? "s" : ""} needed to unlock score trend projections.
@@ -584,7 +586,7 @@ export default function PremierMarkers() {
           <button
             onClick={() => setShowSecondary(!showSecondary)}
             className="w-full flex items-center justify-center gap-2 py-3 rounded-lg text-xs font-body text-muted-foreground/50 transition-colors hover:text-muted-foreground/70"
-            style={{ background: "hsl(0 0% 100% / 0.015)", border: "1px solid hsl(0 0% 100% / 0.03)" }}
+            style={{ background: "hsl(var(--muted) / 0.3)", border: "1px solid hsl(var(--border))" }}
           >
             <span>{showSecondary ? "Hide" : "Show"} Additional Panels</span>
             {secondaryHasData && !showSecondary && (
@@ -629,7 +631,7 @@ export default function PremierMarkers() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="rounded-lg border border-border/20 p-10 text-center"
-          style={{ background: "hsl(0 0% 100% / 0.015)" }}
+          style={{ background: "hsl(var(--muted) / 0.3)" }}
         >
           <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 3, repeat: Infinity }}>
             <Activity size={24} strokeWidth={1} className="text-primary/25 mx-auto mb-3" />
