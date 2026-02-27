@@ -277,7 +277,7 @@ function CategorySection({ catName, config, getMarkerResults, openCategory, setO
                             )}
 
                             {grade && grade !== "optimal" && (
-                              <div className="p-3 rounded-md" style={{ background: "hsl(0 0% 100% / 0.015)" }}>
+                              <div className="p-3 rounded-md bg-muted/20">
                                 <p className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground/50 font-body mb-2">
                                   How to improve
                                 </p>
