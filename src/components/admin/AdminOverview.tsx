@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DollarSign, Users, Package, TrendingUp, AlertTriangle, UserPlus, ClipboardList, Shield } from "lucide-react";
+import { DollarSign, Users, Package, TrendingUp, AlertTriangle, UserPlus, ClipboardList, Shield, Syringe } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
 
@@ -36,6 +36,15 @@ interface Peptide {
   cost: number | null;
 }
 
+interface PeptideRequestItem {
+  id: string;
+  peptide_id: string;
+  price: number | null;
+  status: string;
+  include_injection_kit: boolean;
+  delivery_method: string | null;
+}
+
 interface ActivityItem {
   type: string;
   label: string;
@@ -51,27 +60,48 @@ interface Props {
   patientPeptides: PatientPeptide[];
   peptides: Peptide[];
   recentActivity: ActivityItem[];
+  peptideRequests: PeptideRequestItem[];
 }
 
-const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActivity }: Props) => {
-  const activeOrders = orders.filter(o => ["pending", "processing", "shipped"].includes(o.status));
-  const deliveredOrders = orders.filter(o => o.status === "delivered");
-  const totalRevenue = orders
-    .filter(o => o.status !== "cancelled")
-    .reduce((sum, o) => sum + (o.total_amount || 0), 0);
+const KIT_PRICE = 30;
+const KIT_COST = 12;
+const SHIPPING_PRICE = 35;
+const SHIPPING_COST = 35;
 
-  // Profit margin calculation
-  const peptidesWithMargin = peptides
-    .filter(p => p.price && p.cost && p.cost > 0)
-    .map(p => ({
-      name: p.name,
-      price: p.price!,
-      cost: p.cost!,
-      margin: ((p.price! - p.cost!) / p.price!) * 100,
-    }));
-  const avgMargin = peptidesWithMargin.length > 0
-    ? peptidesWithMargin.reduce((sum, p) => sum + p.margin, 0) / peptidesWithMargin.length
-    : 0;
+const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActivity, peptideRequests }: Props) => {
+  const activeOrders = orders.filter(o => ["pending", "processing", "shipped"].includes(o.status));
+
+  // Build a cost lookup from peptides
+  const costMap = new Map(peptides.filter(p => p.cost != null).map(p => [p.id, p.cost!]));
+
+  // Calculate financials from paid requests
+  const paidRequests = peptideRequests.filter(r => r.status === "paid");
+  
+  let peptideRevenue = 0;
+  let peptideCost = 0;
+  let kitRevenue = 0;
+  let kitCost = 0;
+  let shippingRevenue = 0;
+  let shippingCost = 0;
+  let kitCount = 0;
+
+  paidRequests.forEach(r => {
+    peptideRevenue += r.price || 0;
+    peptideCost += costMap.get(r.peptide_id) || 0;
+    if (r.include_injection_kit) {
+      kitCount++;
+      kitRevenue += KIT_PRICE;
+      kitCost += KIT_COST;
+    }
+    if (r.delivery_method === "ship") {
+      shippingRevenue += SHIPPING_PRICE;
+      shippingCost += SHIPPING_COST;
+    }
+  });
+
+  const totalRevenue = peptideRevenue + kitRevenue + shippingRevenue;
+  const totalCost = peptideCost + kitCost + shippingCost;
+  const totalProfit = totalRevenue - totalCost;
 
   // Spend per patient
   const spendByPatient = new Map<string, { name: string; total: number; orderCount: number }>();
