@@ -89,7 +89,7 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
     peptideRevenue += r.price || 0;
     peptideCost += costMap.get(r.peptide_id) || 0;
     if (r.include_injection_kit) {
-      kitCount++;
+      
       kitRevenue += KIT_PRICE;
       kitCost += KIT_COST;
     }
