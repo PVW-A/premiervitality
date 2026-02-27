@@ -360,6 +360,10 @@ export default function PremierMarkers() {
   const scoreHistory = computeScoreHistory(results);
   const hasEnoughForTrend = scoreHistory.length >= MIN_TESTS_FOR_TREND;
   const trend = hasEnoughForTrend ? linearTrend(scoreHistory.map(h => h.score)) : null;
+  const latestScore = hasEnoughForTrend && scoreHistory.length > 0
+    ? computeVitalityScore(results.filter(r => r.lab_date === scoreHistory[scoreHistory.length - 1].date), getAllMarkers())
+    : null;
+  const trendColor = latestScore !== null ? `hsl(${getScoreColor(latestScore)})` : "hsl(152 69% 50%)";
 
   // Check if secondary categories have any data
   const secondaryHasData = SECONDARY_CATEGORIES.some(catName =>
