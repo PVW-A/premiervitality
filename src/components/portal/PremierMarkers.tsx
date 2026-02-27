@@ -415,21 +415,29 @@ export default function PremierMarkers() {
                 ]}
                 margin={{ top: 5, right: 5, left: -20, bottom: 0 }}
               >
+                <defs>
+                  <linearGradient id="scoreTrendGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={trendColor} stopOpacity={0.15} />
+                    <stop offset="100%" stopColor={trendColor} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
                 <XAxis dataKey="date" tick={{ fontSize: 8, fill: "hsl(0 0% 100% / 0.25)" }} axisLine={false} tickLine={false} />
                 <YAxis domain={[0, 100]} tick={{ fontSize: 8, fill: "hsl(0 0% 100% / 0.25)" }} axisLine={false} tickLine={false} width={30} />
                 <Tooltip contentStyle={{ background: "hsl(0 0% 6%)", border: "1px solid hsl(0 0% 100% / 0.08)", borderRadius: 6, fontSize: 11 }} />
+                <Area type="monotone" dataKey="score" fill="url(#scoreTrendGrad)" stroke="none" />
                 <Line
                   type="monotone" dataKey="score"
-                  stroke="hsl(var(--primary))" strokeWidth={2}
+                  stroke={trendColor} strokeWidth={2}
                   dot={(props: any) => {
                     const isLast = props.index === scoreHistory.length;
                     return (
                       <circle
                         cx={props.cx} cy={props.cy} r={isLast ? 4 : 3}
-                        fill={isLast ? "hsl(0 0% 100% / 0.15)" : "hsl(var(--primary))"}
-                        stroke={isLast ? "hsl(var(--primary))" : "hsl(0 0% 6%)"}
+                        fill={isLast ? "hsl(0 0% 100% / 0.15)" : trendColor}
+                        stroke={isLast ? trendColor : "hsl(0 0% 6%)"}
                         strokeWidth={2}
                         strokeDasharray={isLast ? "3 2" : "none"}
+                        style={isLast ? {} : { filter: `drop-shadow(0 0 4px ${trendColor}40)` }}
                       />
                     );
                   }}
