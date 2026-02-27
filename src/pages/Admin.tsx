@@ -398,7 +398,7 @@ const Admin = () => {
 
           {/* OVERVIEW TAB */}
           <TabsContent value="overview">
-            <AdminOverview patients={patients} orders={orders} patientPeptides={patientPeptides} peptides={peptides} />
+            <AdminOverview patients={patients} orders={orders} patientPeptides={patientPeptides} peptides={peptides} recentActivity={recentActivity} />
           </TabsContent>
 
           {/* PATIENTS TAB */}
