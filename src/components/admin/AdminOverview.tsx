@@ -1,7 +1,13 @@
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DollarSign, Users, Package, TrendingUp, AlertTriangle, UserPlus, ClipboardList, Shield } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { DollarSign, Users, Package, TrendingUp, AlertTriangle, UserPlus, ClipboardList, Shield, CalendarIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow, startOfDay, subDays, startOfMonth, startOfYear, isWithinInterval, endOfDay, subMonths } from "date-fns";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
 interface Patient {
   user_id: string;
@@ -39,10 +45,13 @@ interface Peptide {
 interface PeptideRequestItem {
   id: string;
   peptide_id: string;
+  peptide_name: string;
   price: number | null;
   status: string;
   include_injection_kit: boolean;
   delivery_method: string | null;
+  created_at: string;
+  patient_name?: string;
 }
 
 interface ActivityItem {
@@ -68,42 +77,117 @@ const KIT_COST = 12;
 const SHIPPING_PRICE = 35;
 const SHIPPING_COST = 35;
 
+type PresetKey = "today" | "7d" | "30d" | "90d" | "ytd" | "all";
+
+const PRESETS: { key: PresetKey; label: string }[] = [
+  { key: "today", label: "Today" },
+  { key: "7d", label: "7D" },
+  { key: "30d", label: "30D" },
+  { key: "90d", label: "90D" },
+  { key: "ytd", label: "YTD" },
+  { key: "all", label: "All Time" },
+];
+
+function getPresetRange(key: PresetKey): { from: Date; to: Date } {
+  const now = new Date();
+  const to = endOfDay(now);
+  switch (key) {
+    case "today": return { from: startOfDay(now), to };
+    case "7d": return { from: startOfDay(subDays(now, 6)), to };
+    case "30d": return { from: startOfDay(subDays(now, 29)), to };
+    case "90d": return { from: startOfDay(subDays(now, 89)), to };
+    case "ytd": return { from: startOfYear(now), to };
+    case "all": return { from: new Date("2020-01-01"), to };
+  }
+}
+
+const fmt = (n: number) => n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
 const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActivity, peptideRequests }: Props) => {
-  const activeOrders = orders.filter(o => ["pending", "processing", "shipped"].includes(o.status));
+  const [activePreset, setActivePreset] = useState<PresetKey>("30d");
+  const [customFrom, setCustomFrom] = useState<Date | undefined>();
+  const [customTo, setCustomTo] = useState<Date | undefined>();
+
+  const dateRange = useMemo(() => {
+    if (customFrom && customTo) return { from: startOfDay(customFrom), to: endOfDay(customTo) };
+    return getPresetRange(activePreset);
+  }, [activePreset, customFrom, customTo]);
+
+  const handlePreset = (key: PresetKey) => {
+    setActivePreset(key);
+    setCustomFrom(undefined);
+    setCustomTo(undefined);
+  };
+
+  const handleCustomDate = (type: "from" | "to", date: Date | undefined) => {
+    if (type === "from") setCustomFrom(date);
+    else setCustomTo(date);
+    setActivePreset("all"); // deselect presets visually
+  };
+
+  const isCustom = !!(customFrom && customTo);
 
   // Build a cost lookup from peptides
   const costMap = new Map(peptides.filter(p => p.cost != null).map(p => [p.id, p.cost!]));
 
-  // Calculate financials from paid requests
-  const paidRequests = peptideRequests.filter(r => r.status === "paid");
-  
-  let peptideRevenue = 0;
-  let peptideCost = 0;
-  let kitRevenue = 0;
-  let kitCost = 0;
-  let shippingRevenue = 0;
-  let shippingCost = 0;
-  
+  // Filter paid requests by date range
+  const allPaidRequests = peptideRequests.filter(r => r.status === "paid");
+  const filteredRequests = useMemo(() => {
+    return allPaidRequests.filter(r => {
+      const d = new Date(r.created_at);
+      return isWithinInterval(d, { start: dateRange.from, end: dateRange.to });
+    });
+  }, [allPaidRequests, dateRange]);
 
-  paidRequests.forEach(r => {
-    peptideRevenue += r.price || 0;
-    peptideCost += costMap.get(r.peptide_id) || 0;
-    if (r.include_injection_kit) {
-      
-      kitRevenue += KIT_PRICE;
-      kitCost += KIT_COST;
-    }
-    if (r.delivery_method === "ship") {
-      shippingRevenue += SHIPPING_PRICE;
-      shippingCost += SHIPPING_COST;
-    }
-  });
+  // Calculate financials
+  const financials = useMemo(() => {
+    let peptideRevenue = 0, peptideCost = 0, kitRevenue = 0, kitCost = 0, shippingRevenue = 0, shippingCost = 0, kitCount = 0, shipCount = 0;
+    filteredRequests.forEach(r => {
+      peptideRevenue += r.price || 0;
+      peptideCost += costMap.get(r.peptide_id) || 0;
+      if (r.include_injection_kit) { kitCount++; kitRevenue += KIT_PRICE; kitCost += KIT_COST; }
+      if (r.delivery_method === "ship") { shipCount++; shippingRevenue += SHIPPING_PRICE; shippingCost += SHIPPING_COST; }
+    });
+    const totalRevenue = peptideRevenue + kitRevenue + shippingRevenue;
+    const totalCost = peptideCost + kitCost + shippingCost;
+    return { peptideRevenue, peptideCost, kitRevenue, kitCost, kitCount, shippingRevenue, shippingCost, shipCount, totalRevenue, totalCost, profit: totalRevenue - totalCost };
+  }, [filteredRequests, costMap]);
 
-  const totalRevenue = peptideRevenue + kitRevenue + shippingRevenue;
-  const totalCost = peptideCost + kitCost + shippingCost;
-  
+  // Build daily chart data
+  const chartData = useMemo(() => {
+    const buckets = new Map<string, { revenue: number; profit: number; orders: number }>();
+    filteredRequests.forEach(r => {
+      const day = format(new Date(r.created_at), "MMM d");
+      const existing = buckets.get(day) || { revenue: 0, profit: 0, orders: 0 };
+      const rev = (r.price || 0) + (r.include_injection_kit ? KIT_PRICE : 0) + (r.delivery_method === "ship" ? SHIPPING_PRICE : 0);
+      const cost = (costMap.get(r.peptide_id) || 0) + (r.include_injection_kit ? KIT_COST : 0) + (r.delivery_method === "ship" ? SHIPPING_COST : 0);
+      existing.revenue += rev;
+      existing.profit += rev - cost;
+      existing.orders += 1;
+      buckets.set(day, existing);
+    });
+    return Array.from(buckets.entries()).map(([date, data]) => ({ date, ...data }));
+  }, [filteredRequests, costMap]);
 
-  // Spend per patient
+  // Paid transactions list for the period
+  const recentTransactions = useMemo(() => {
+    return filteredRequests
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      .slice(0, 10);
+  }, [filteredRequests]);
+
+  const activeOrders = orders.filter(o => ["pending", "processing", "shipped"].includes(o.status));
+
+  // Low supply alerts
+  const lowSupply = patientPeptides
+    .filter(pp => {
+      if (!pp.quantity_remaining || !pp.usage_per_day || pp.usage_per_day <= 0) return false;
+      return pp.quantity_remaining / pp.usage_per_day <= 7;
+    })
+    .map(pp => ({ ...pp, daysLeft: Math.floor((pp.quantity_remaining || 0) / (pp.usage_per_day || 1)) }))
+    .sort((a, b) => a.daysLeft - b.daysLeft);
+
+  // Top spenders
   const spendByPatient = new Map<string, { name: string; total: number; orderCount: number }>();
   orders.filter(o => o.status !== "cancelled").forEach(o => {
     const existing = spendByPatient.get(o.user_id) || { name: o.patient_name || "Unknown", total: 0, orderCount: 0 };
@@ -113,20 +197,44 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
   });
   const topSpenders = Array.from(spendByPatient.values()).sort((a, b) => b.total - a.total).slice(0, 5);
 
-  // Low supply alerts
-  const lowSupply = patientPeptides
-    .filter(pp => {
-      if (!pp.quantity_remaining || !pp.usage_per_day || pp.usage_per_day <= 0) return false;
-      return pp.quantity_remaining / pp.usage_per_day <= 7;
-    })
-    .map(pp => ({
-      ...pp,
-      daysLeft: Math.floor((pp.quantity_remaining || 0) / (pp.usage_per_day || 1)),
-    }))
-    .sort((a, b) => a.daysLeft - b.daysLeft);
-
   return (
     <div className="space-y-6">
+      {/* Date Range Bar — Square-style */}
+      <div className="flex flex-wrap items-center gap-2">
+        {PRESETS.map(p => (
+          <Button
+            key={p.key}
+            variant={activePreset === p.key && !isCustom ? "default" : "outline"}
+            size="sm"
+            onClick={() => handlePreset(p.key)}
+            className="text-[10px] tracking-wider uppercase font-body font-light rounded-none h-8 px-3"
+          >
+            {p.label}
+          </Button>
+        ))}
+        <div className="h-5 w-px bg-border mx-1" />
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant={isCustom ? "default" : "outline"} size="sm" className="text-[10px] tracking-wider uppercase font-body font-light rounded-none h-8 px-3 gap-1.5">
+              <CalendarIcon size={12} />
+              {isCustom ? `${format(customFrom!, "MMM d")} – ${format(customTo!, "MMM d")}` : "Custom"}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-4 space-y-3" align="end">
+            <div className="flex gap-4">
+              <div className="space-y-1.5">
+                <p className="text-[10px] text-muted-foreground font-body font-light tracking-wider uppercase">From</p>
+                <Calendar mode="single" selected={customFrom} onSelect={(d) => handleCustomDate("from", d)} className={cn("p-2 pointer-events-auto")} disabled={(d) => d > new Date()} />
+              </div>
+              <div className="space-y-1.5">
+                <p className="text-[10px] text-muted-foreground font-body font-light tracking-wider uppercase">To</p>
+                <Calendar mode="single" selected={customTo} onSelect={(d) => handleCustomDate("to", d)} className={cn("p-2 pointer-events-auto")} disabled={(d) => d > new Date() || (customFrom ? d < customFrom : false)} />
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
+      </div>
+
       {/* Summary Cards */}
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         <Card className="border-border bg-card">
@@ -144,8 +252,8 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
           <CardContent className="py-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground font-body font-light tracking-wider uppercase">Total Revenue</p>
-                <p className="text-2xl font-heading font-light text-foreground mt-1">${totalRevenue.toLocaleString()}</p>
+                <p className="text-xs text-muted-foreground font-body font-light tracking-wider uppercase">Revenue</p>
+                <p className="text-2xl font-heading font-light text-foreground mt-1">${fmt(financials.totalRevenue)}</p>
               </div>
               <DollarSign size={20} className="text-primary" strokeWidth={1.2} />
             </div>
@@ -155,8 +263,8 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
           <CardContent className="py-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground font-body font-light tracking-wider uppercase">Active Orders</p>
-                <p className="text-2xl font-heading font-light text-foreground mt-1">{activeOrders.length}</p>
+                <p className="text-xs text-muted-foreground font-body font-light tracking-wider uppercase">Orders</p>
+                <p className="text-2xl font-heading font-light text-foreground mt-1">{filteredRequests.length}</p>
               </div>
               <Package size={20} className="text-primary" strokeWidth={1.2} />
             </div>
@@ -167,12 +275,112 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground font-body font-light tracking-wider uppercase">Profit</p>
-                <p className="text-2xl font-heading font-light text-foreground mt-1">
-                  ${(totalRevenue - totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </p>
+                <p className="text-2xl font-heading font-light text-foreground mt-1">${fmt(financials.profit)}</p>
               </div>
               <TrendingUp size={20} className="text-primary" strokeWidth={1.2} />
             </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Revenue Chart */}
+      {chartData.length > 0 && (
+        <Card className="border-border bg-card">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-heading font-light text-foreground flex items-center gap-2">
+              <TrendingUp size={14} className="text-primary" /> Revenue & Profit
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-56">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData} barGap={2}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                  <XAxis dataKey="date" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 4, fontSize: 12 }}
+                    labelStyle={{ color: "hsl(var(--foreground))", fontWeight: 500 }}
+                    formatter={(value: number, name: string) => [`$${fmt(value)}`, name === "revenue" ? "Revenue" : "Profit"]}
+                  />
+                  <Bar dataKey="revenue" fill="hsl(var(--primary))" radius={[3, 3, 0, 0]} />
+                  <Bar dataKey="profit" fill="hsl(var(--primary) / 0.4)" radius={[3, 3, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Revenue Breakdown + Transactions */}
+      <div className="grid gap-6 lg:grid-cols-5">
+        {/* Revenue Breakdown */}
+        <Card className="border-border bg-card lg:col-span-3">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-heading font-light text-foreground">Revenue Breakdown</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {filteredRequests.length === 0 ? (
+              <p className="text-xs text-muted-foreground font-body font-light">No paid orders in this period.</p>
+            ) : (
+              <div className="space-y-3">
+                <div className="grid gap-3 md:grid-cols-3">
+                  <div className="py-3 px-4 bg-secondary/50 rounded border border-border">
+                    <p className="text-[10px] text-muted-foreground font-body font-light tracking-wider uppercase mb-1">Peptide Sales</p>
+                    <p className="text-lg font-heading font-light text-foreground">${fmt(financials.peptideRevenue)}</p>
+                    <p className="text-[10px] text-muted-foreground font-body font-light mt-0.5">Cost: ${fmt(financials.peptideCost)}</p>
+                  </div>
+                  <div className="py-3 px-4 bg-secondary/50 rounded border border-border">
+                    <p className="text-[10px] text-muted-foreground font-body font-light tracking-wider uppercase mb-1">Injection Kits ({financials.kitCount})</p>
+                    <p className="text-lg font-heading font-light text-foreground">${fmt(financials.kitRevenue)}</p>
+                    <p className="text-[10px] text-muted-foreground font-body font-light mt-0.5">Cost: ${fmt(financials.kitCost)} · Profit: ${fmt(financials.kitRevenue - financials.kitCost)}</p>
+                  </div>
+                  <div className="py-3 px-4 bg-secondary/50 rounded border border-border">
+                    <p className="text-[10px] text-muted-foreground font-body font-light tracking-wider uppercase mb-1">Shipping ({financials.shipCount})</p>
+                    <p className="text-lg font-heading font-light text-foreground">${fmt(financials.shippingRevenue)}</p>
+                    <p className="text-[10px] text-muted-foreground font-body font-light mt-0.5">Cost: ${fmt(financials.shippingCost)} · Net: $0.00</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between py-3 px-4 bg-primary/10 rounded border border-primary/20">
+                  <div>
+                    <p className="text-[10px] text-muted-foreground font-body font-light tracking-wider uppercase">Total Revenue → Profit</p>
+                    <p className="text-xs text-muted-foreground font-body font-light mt-0.5">{filteredRequests.length} paid order{filteredRequests.length !== 1 ? "s" : ""}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-heading font-light text-foreground">
+                      ${fmt(financials.totalRevenue)} → <span className="text-primary">${fmt(financials.profit)}</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Recent Transactions */}
+        <Card className="border-border bg-card lg:col-span-2">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-heading font-light text-foreground">Transactions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {recentTransactions.length === 0 ? (
+              <p className="text-xs text-muted-foreground font-body font-light">No transactions in this period.</p>
+            ) : (
+              <div className="space-y-1">
+                {recentTransactions.map(t => {
+                  const total = (t.price || 0) + (t.include_injection_kit ? KIT_PRICE : 0) + (t.delivery_method === "ship" ? SHIPPING_PRICE : 0);
+                  return (
+                    <div key={t.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                      <div className="min-w-0">
+                        <p className="text-sm font-body font-light text-foreground truncate">{t.patient_name || "Patient"}</p>
+                        <p className="text-[10px] text-muted-foreground font-body font-light">{t.peptide_name} · {format(new Date(t.created_at), "MMM d")}</p>
+                      </div>
+                      <span className="text-sm font-body font-light text-foreground shrink-0 ml-2">${fmt(total)}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -227,51 +435,6 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
                     <span className="text-sm font-body font-light text-foreground">${s.total.toLocaleString()}</span>
                   </div>
                 ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Revenue Breakdown */}
-        <Card className="border-border bg-card lg:col-span-2">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-heading font-light text-foreground flex items-center gap-2">
-              <TrendingUp size={14} className="text-primary" /> Revenue Breakdown
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {paidRequests.length === 0 ? (
-              <p className="text-xs text-muted-foreground font-body font-light">No paid orders yet.</p>
-            ) : (
-              <div className="space-y-3">
-                <div className="grid gap-3 md:grid-cols-3">
-                  <div className="py-3 px-4 bg-secondary/50 rounded border border-border">
-                    <p className="text-[10px] text-muted-foreground font-body font-light tracking-wider uppercase mb-1">Peptide Sales</p>
-                    <p className="text-lg font-heading font-light text-foreground">${peptideRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                    <p className="text-[10px] text-muted-foreground font-body font-light mt-0.5">Cost: ${peptideCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                  </div>
-                  <div className="py-3 px-4 bg-secondary/50 rounded border border-border">
-                    <p className="text-[10px] text-muted-foreground font-body font-light tracking-wider uppercase mb-1">Injection Kits</p>
-                    <p className="text-lg font-heading font-light text-foreground">${kitRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                    <p className="text-[10px] text-muted-foreground font-body font-light mt-0.5">Cost: ${kitCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} · Profit: ${(kitRevenue - kitCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                  </div>
-                  <div className="py-3 px-4 bg-secondary/50 rounded border border-border">
-                    <p className="text-[10px] text-muted-foreground font-body font-light tracking-wider uppercase mb-1">Shipping</p>
-                    <p className="text-lg font-heading font-light text-foreground">${shippingRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                    <p className="text-[10px] text-muted-foreground font-body font-light mt-0.5">Cost: ${shippingCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} · Net: $0.00</p>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between py-3 px-4 bg-primary/10 rounded border border-primary/20">
-                  <div>
-                    <p className="text-[10px] text-muted-foreground font-body font-light tracking-wider uppercase">Total Revenue → Profit</p>
-                    <p className="text-xs text-muted-foreground font-body font-light mt-0.5">{paidRequests.length} paid order{paidRequests.length !== 1 ? "s" : ""}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-lg font-heading font-light text-foreground">
-                      ${totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} → <span className="text-primary">${(totalRevenue - totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                    </p>
-                  </div>
-                </div>
               </div>
             )}
           </CardContent>
