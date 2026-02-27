@@ -384,13 +384,15 @@ export default function PremierMarkers() {
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative rounded-lg p-4 space-y-3 overflow-hidden"
+          className="relative rounded-lg p-4 space-y-3 overflow-hidden bg-card dark:bg-transparent"
           style={{
-            background: `linear-gradient(135deg, hsl(0 0% 3%), hsl(0 0% 5%))`,
+            background: undefined,
             border: `1px solid ${trendColor}20`,
-            boxShadow: `0 0 30px ${trendColor}08, inset 0 1px 0 hsl(0 0% 100% / 0.03)`,
+            boxShadow: `0 0 30px ${trendColor}08, inset 0 1px 0 hsl(var(--border))`,
           }}
         >
+          {/* Dark-only background layers */}
+          <div className="absolute inset-0 hidden dark:block rounded-lg" style={{ background: "linear-gradient(135deg, hsl(0 0% 3%), hsl(0 0% 5%))" }} />
           {/* Scan line animation */}
           <motion.div
             className="absolute inset-0 pointer-events-none"
