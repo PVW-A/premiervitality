@@ -630,7 +630,6 @@ const Admin = () => {
 
             <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
               {peptides.map(p => {
-                const margin = p.price && p.cost && p.cost > 0 ? ((p.price - p.cost) / p.price * 100) : null;
                 return (
                   <Card key={p.id} className="border-border bg-card">
                     <CardContent className="py-4 flex items-center justify-between">
@@ -641,11 +640,6 @@ const Admin = () => {
                           <span>Unit: {p.unit}</span>
                           {p.price && <span className="text-primary">${p.price}</span>}
                           {p.cost != null && <span>Cost: ${p.cost}</span>}
-                          {margin !== null && (
-                            <Badge variant="outline" className={margin >= 50 ? "bg-green-500/20 text-green-400 border-green-500/30 text-[10px]" : "bg-yellow-500/20 text-yellow-400 border-yellow-500/30 text-[10px]"}>
-                              {margin.toFixed(0)}%
-                            </Badge>
-                          )}
                         </div>
                       </div>
                       <Button variant="ghost" size="icon" onClick={() => handleDeletePeptide(p.id)} className="text-muted-foreground hover:text-destructive h-8 w-8">
