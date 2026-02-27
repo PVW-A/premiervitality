@@ -15,6 +15,9 @@ import {
   getGrade,
   gradeInfo,
   computeScoreHistory,
+  computeVitalityScore,
+  getAllMarkers,
+  getScoreColor,
   linearTrend,
   MIN_TESTS_FOR_TREND,
 } from "@/lib/vitality";
@@ -357,6 +360,10 @@ export default function PremierMarkers() {
   const scoreHistory = computeScoreHistory(results);
   const hasEnoughForTrend = scoreHistory.length >= MIN_TESTS_FOR_TREND;
   const trend = hasEnoughForTrend ? linearTrend(scoreHistory.map(h => h.score)) : null;
+  const latestScore = hasEnoughForTrend && scoreHistory.length > 0
+    ? computeVitalityScore(results.filter(r => r.lab_date === scoreHistory[scoreHistory.length - 1].date), getAllMarkers())
+    : null;
+  const trendColor = latestScore !== null ? `hsl(${getScoreColor(latestScore)})` : "hsl(152 69% 50%)";
 
   // Check if secondary categories have any data
   const secondaryHasData = SECONDARY_CATEGORIES.some(catName =>
@@ -378,11 +385,11 @@ export default function PremierMarkers() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           className="rounded-lg p-4 space-y-3"
-          style={{ background: "hsl(0 0% 100% / 0.02)", border: "1px solid hsl(0 0% 100% / 0.05)" }}
+          style={{ background: `${trendColor}08`, border: `1px solid ${trendColor}15` }}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Activity size={14} className="text-primary/60" />
+              <Activity size={14} style={{ color: trendColor, opacity: 0.7 }} />
               <span className="text-xs font-body font-light text-foreground/70">Score Trend</span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -408,21 +415,29 @@ export default function PremierMarkers() {
                 ]}
                 margin={{ top: 5, right: 5, left: -20, bottom: 0 }}
               >
+                <defs>
+                  <linearGradient id="scoreTrendGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={trendColor} stopOpacity={0.15} />
+                    <stop offset="100%" stopColor={trendColor} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
                 <XAxis dataKey="date" tick={{ fontSize: 8, fill: "hsl(0 0% 100% / 0.25)" }} axisLine={false} tickLine={false} />
                 <YAxis domain={[0, 100]} tick={{ fontSize: 8, fill: "hsl(0 0% 100% / 0.25)" }} axisLine={false} tickLine={false} width={30} />
                 <Tooltip contentStyle={{ background: "hsl(0 0% 6%)", border: "1px solid hsl(0 0% 100% / 0.08)", borderRadius: 6, fontSize: 11 }} />
+                <Area type="monotone" dataKey="score" fill="url(#scoreTrendGrad)" stroke="none" />
                 <Line
                   type="monotone" dataKey="score"
-                  stroke="hsl(var(--primary))" strokeWidth={2}
+                  stroke={trendColor} strokeWidth={2}
                   dot={(props: any) => {
                     const isLast = props.index === scoreHistory.length;
                     return (
                       <circle
                         cx={props.cx} cy={props.cy} r={isLast ? 4 : 3}
-                        fill={isLast ? "hsl(0 0% 100% / 0.15)" : "hsl(var(--primary))"}
-                        stroke={isLast ? "hsl(var(--primary))" : "hsl(0 0% 6%)"}
+                        fill={isLast ? "hsl(0 0% 100% / 0.15)" : trendColor}
+                        stroke={isLast ? trendColor : "hsl(0 0% 6%)"}
                         strokeWidth={2}
                         strokeDasharray={isLast ? "3 2" : "none"}
+                        style={isLast ? {} : { filter: `drop-shadow(0 0 4px ${trendColor}40)` }}
                       />
                     );
                   }}
