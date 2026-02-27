@@ -98,10 +98,10 @@ function TrendChart({ results, marker, catColor }: { results: BiomarkerResult[];
               <stop offset="100%" stopColor={col} stopOpacity={0} />
             </linearGradient>
           </defs>
-          <XAxis dataKey="date" tick={{ fontSize: 9, fill: "hsl(0 0% 100% / 0.25)" }} axisLine={false} tickLine={false} />
-          <YAxis domain={[yMin, yMax]} tick={{ fontSize: 9, fill: "hsl(0 0% 100% / 0.25)" }} axisLine={false} tickLine={false} width={35} />
+          <XAxis dataKey="date" tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} />
+          <YAxis domain={[yMin, yMax]} tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} width={35} />
           <Tooltip
-            contentStyle={{ background: "hsl(0 0% 6%)", border: "1px solid hsl(0 0% 100% / 0.08)", borderRadius: 6, fontSize: 11 }}
+            contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 6, fontSize: 11 }}
             formatter={(val: number) => [`${val} ${marker.unit}`, ""]}
           />
           <ReferenceLine y={marker.optimalHigh} stroke="hsl(152 69% 50% / 0.15)" strokeDasharray="2 4" />
