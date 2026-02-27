@@ -4,7 +4,7 @@ import { TrendingUp, TrendingDown, ChevronRight, ChevronDown, Info, Activity, Al
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { motion, AnimatePresence } from "framer-motion";
-import { Line, XAxis, YAxis, ResponsiveContainer, Tooltip, ComposedChart, ReferenceLine, Area } from "recharts";
+import { Line, XAxis, YAxis, ResponsiveContainer, Tooltip, ComposedChart, ReferenceLine, Area, ReferenceArea } from "recharts";
 import {
   type BiomarkerResult,
   type MarkerDef,
