@@ -474,6 +474,11 @@ export default function PremierMarkers() {
                     fontFamily: "monospace",
                     boxShadow: `0 0 15px ${trendColor}15`,
                   }}
+                  formatter={(val: number, _name: string, _props: any, index: number) => {
+                    if (index > 0) return [null, null];
+                    return [val, "score"];
+                  }}
+                  itemStyle={{ color: trendColor }}
                 />
                 <Area type="monotone" dataKey="score" fill="url(#scoreTrendGrad)" stroke="none" />
                 {/* Glow line behind main line */}
