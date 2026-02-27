@@ -15,6 +15,9 @@ import {
   getGrade,
   gradeInfo,
   computeScoreHistory,
+  computeVitalityScore,
+  getAllMarkers,
+  getScoreColor,
   linearTrend,
   MIN_TESTS_FOR_TREND,
 } from "@/lib/vitality";
