@@ -176,7 +176,7 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
       .slice(0, 10);
   }, [filteredRequests]);
 
-  const activeOrders = orders.filter(o => ["pending", "processing", "shipped"].includes(o.status));
+  
 
   // Low supply alerts
   const lowSupply = patientPeptides
