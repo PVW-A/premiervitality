@@ -45,10 +45,10 @@ interface Order {
 }
 
 const statusColor: Record<string, string> = {
-  pending: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-  processing: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  shipped: "bg-purple-500/20 text-purple-400 border-purple-500/30",
-  delivered: "bg-green-500/20 text-green-400 border-green-500/30",
+  pending: "bg-yellow-600/15 text-yellow-700 dark:text-yellow-400 border-yellow-600/30",
+  processing: "bg-blue-600/15 text-blue-700 dark:text-blue-400 border-blue-600/30",
+  shipped: "bg-purple-600/15 text-purple-700 dark:text-purple-400 border-purple-600/30",
+  delivered: "bg-emerald-700/15 text-emerald-700 dark:text-emerald-400 border-emerald-700/30",
   cancelled: "bg-destructive/20 text-destructive border-destructive/30",
 };
 
