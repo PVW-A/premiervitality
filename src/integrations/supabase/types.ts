@@ -649,6 +649,9 @@ export type Database = {
           phone: string | null
           sms_2fa_enabled: boolean
           sms_consent: boolean
+          square_card_brand: string | null
+          square_card_id: string | null
+          square_card_last4: string | null
           square_customer_id: string | null
           terms_accepted_at: string | null
           updated_at: string
@@ -669,6 +672,9 @@ export type Database = {
           phone?: string | null
           sms_2fa_enabled?: boolean
           sms_consent?: boolean
+          square_card_brand?: string | null
+          square_card_id?: string | null
+          square_card_last4?: string | null
           square_customer_id?: string | null
           terms_accepted_at?: string | null
           updated_at?: string
@@ -689,6 +695,9 @@ export type Database = {
           phone?: string | null
           sms_2fa_enabled?: boolean
           sms_consent?: boolean
+          square_card_brand?: string | null
+          square_card_id?: string | null
+          square_card_last4?: string | null
           square_customer_id?: string | null
           terms_accepted_at?: string | null
           updated_at?: string
