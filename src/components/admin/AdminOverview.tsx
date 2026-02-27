@@ -166,9 +166,9 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
           <CardContent className="py-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground font-body font-light tracking-wider uppercase">Avg Margin</p>
+                <p className="text-xs text-muted-foreground font-body font-light tracking-wider uppercase">Profit</p>
                 <p className="text-2xl font-heading font-light text-foreground mt-1">
-                  {avgMargin > 0 ? `${avgMargin.toFixed(1)}%` : "—"}
+                  ${(totalRevenue - totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
               </div>
               <TrendingUp size={20} className="text-primary" strokeWidth={1.2} />
