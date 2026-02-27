@@ -345,6 +345,7 @@ export default function PremierMarkers() {
   const [openCategory, setOpenCategory] = useState<string | null>(null);
   const [openMarker, setOpenMarker] = useState<string | null>(null);
   const [showSecondary, setShowSecondary] = useState(false);
+  const [birthday, setBirthday] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -354,9 +355,22 @@ export default function PremierMarkers() {
       .eq("user_id", user.id)
       .order("lab_date", { ascending: false })
       .then(({ data }) => { if (data) setResults(data as BiomarkerResult[]); });
+
+    supabase
+      .from("profiles")
+      .select("birthday")
+      .eq("user_id", user.id)
+      .single()
+      .then(({ data }) => { if (data?.birthday) setBirthday(data.birthday); });
   }, [user]);
 
   const getMarkerResults = (name: string) => results.filter((r) => r.marker_name === name);
+
+  // Age calculation
+  const age = birthday
+    ? Math.floor((Date.now() - new Date(birthday).getTime()) / (365.25 * 24 * 60 * 60 * 1000))
+    : null;
+  const benchmarks = getAgeBenchmarks(age);
 
   // Score trend data
   const scoreHistory = computeScoreHistory(results);
