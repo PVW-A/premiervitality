@@ -247,7 +247,7 @@ function CategorySection({ catName, config, getMarkerResults, openCategory, setO
                           className="overflow-hidden"
                         >
                           <div className="px-4 pb-4 space-y-3">
-                            <div className="flex gap-2 items-start p-3 rounded-md" style={{ background: "hsl(0 0% 100% / 0.02)" }}>
+                            <div className="flex gap-2 items-start p-3 rounded-md bg-muted/30">
                               <Info size={13} className="text-muted-foreground/40 mt-0.5 flex-shrink-0" />
                               <div>
                                 <p className="text-[11px] text-foreground/60 font-body font-light leading-relaxed">
