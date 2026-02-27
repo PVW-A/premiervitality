@@ -455,15 +455,18 @@ export default function PremierMarkers() {
             </div>
           </div>
 
-          <div className="relative h-24">
+          <div className="relative h-36">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart
                 data={[
                   ...scoreHistory.map(h => ({
                     date: new Date(h.date).toLocaleDateString("en-US", { month: "short", year: "2-digit" }),
+                    rawDate: h.date,
                     score: h.score,
+                    average: benchmarks.average,
+                    optimal: benchmarks.optimal,
                   })),
-                  { date: "PROJ", score: trend.projected },
+                  { date: "PROJ", rawDate: null, score: trend.projected, average: benchmarks.average, optimal: benchmarks.optimal },
                 ]}
                 margin={{ top: 5, right: 10, left: 10, bottom: 0 }}
               >
@@ -484,20 +487,64 @@ export default function PremierMarkers() {
                 <XAxis dataKey="date" tick={{ fontSize: 8, fill: "hsl(var(--muted-foreground))", fontFamily: "monospace" }} axisLine={false} tickLine={false} />
                 <YAxis domain={[0, 100]} hide width={0} />
                 <Tooltip
-                  contentStyle={{
-                    background: "hsl(var(--card))",
-                    border: `1px solid ${trendColor}30`,
-                    borderRadius: 4,
-                    fontSize: 11,
-                    fontFamily: "monospace",
-                    boxShadow: `0 0 15px ${trendColor}15`,
+                  content={({ active, payload }) => {
+                    if (!active || !payload?.length) return null;
+                    const d = payload[0]?.payload;
+                    if (!d) return null;
+                    const score = d.score as number;
+                    const isProj = d.rawDate === null;
+                    const outOfRange = !isProj && d.rawDate ? getOutOfRangeMarkersForDate(results, d.rawDate) : [];
+
+                    return (
+                      <div
+                        className="rounded-md px-3 py-2.5 text-xs font-mono max-w-[220px]"
+                        style={{
+                          background: "hsl(var(--card))",
+                          border: `1px solid ${trendColor}30`,
+                          boxShadow: `0 0 20px ${trendColor}15`,
+                        }}
+                      >
+                        <div className="flex items-center justify-between gap-3 mb-1">
+                          <span className="text-muted-foreground text-[10px]">{d.date}</span>
+                          <span className="font-medium" style={{ color: trendColor }}>{score}{isProj ? " (proj)" : ""}</span>
+                        </div>
+                        {score < benchmarks.optimal && !isProj && (
+                          <div className="border-t border-border/50 pt-1.5 mt-1">
+                            <div className="flex items-center gap-1 mb-1">
+                              <span className="text-[9px] text-muted-foreground/60">
+                                {score >= benchmarks.average ? "Above avg" : "Below avg"} for {benchmarks.label}
+                              </span>
+                            </div>
+                            {outOfRange.length > 0 && (
+                              <div className="space-y-0.5 mt-1">
+                                <span className="text-[8px] tracking-wider uppercase text-muted-foreground/40">Out of range:</span>
+                                {outOfRange.map((m) => (
+                                  <div key={m.name} className="flex items-center gap-1.5">
+                                    <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: gradeInfo[m.grade].dotColor }} />
+                                    <span className="text-[10px] text-foreground/70">{m.name}</span>
+                                    <span className="text-[9px] text-muted-foreground/40 ml-auto">{m.value} {m.unit}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        {score >= benchmarks.optimal && !isProj && (
+                          <div className="border-t border-border/50 pt-1 mt-1">
+                            <span className="text-[9px] text-emerald-500 dark:text-emerald-400">✓ Optimal range</span>
+                          </div>
+                        )}
+                      </div>
+                    );
                   }}
-                  formatter={(val: number, _name: string, _props: any, index: number) => {
-                    if (index > 0) return [null, null];
-                    return [val, "score"];
-                  }}
-                  itemStyle={{ color: trendColor }}
                 />
+                {/* Benchmark zones */}
+                <ReferenceArea y1={0} y2={benchmarks.average} fill="hsl(0 84% 60%)" fillOpacity={0.03} />
+                <ReferenceArea y1={benchmarks.average} y2={benchmarks.optimal} fill="hsl(45 93% 47%)" fillOpacity={0.03} />
+                <ReferenceArea y1={benchmarks.optimal} y2={100} fill="hsl(152 69% 50%)" fillOpacity={0.04} />
+                {/* Benchmark lines */}
+                <ReferenceLine y={benchmarks.average} stroke="hsl(45 93% 47% / 0.3)" strokeDasharray="4 4" strokeWidth={1} />
+                <ReferenceLine y={benchmarks.optimal} stroke="hsl(152 69% 50% / 0.3)" strokeDasharray="4 4" strokeWidth={1} />
                 <Area type="monotone" dataKey="score" fill="url(#scoreTrendGrad)" stroke="none" />
                 {/* Glow line behind main line */}
                 <Line
@@ -515,21 +562,8 @@ export default function PremierMarkers() {
                     const size = isLast ? 5 : 4;
                     return (
                       <g>
-                        {/* Outer pulse ring */}
-                        <circle
-                          cx={props.cx} cy={props.cy} r={size + 4}
-                          fill="none"
-                          stroke={trendColor}
-                          strokeWidth={0.5}
-                          opacity={isLast ? 0.4 : 0.15}
-                        />
-                        {/* Glow */}
-                        <circle
-                          cx={props.cx} cy={props.cy} r={size + 2}
-                          fill={`${trendColor}`}
-                          opacity={0.1}
-                        />
-                        {/* Core dot */}
+                        <circle cx={props.cx} cy={props.cy} r={size + 4} fill="none" stroke={trendColor} strokeWidth={0.5} opacity={isLast ? 0.4 : 0.15} />
+                        <circle cx={props.cx} cy={props.cy} r={size + 2} fill={trendColor} opacity={0.1} />
                         <circle
                           cx={props.cx} cy={props.cy} r={size}
                           fill={isLast ? "hsl(var(--background))" : trendColor}
@@ -538,14 +572,7 @@ export default function PremierMarkers() {
                           strokeDasharray={isLast ? "2 2" : "none"}
                           style={{ filter: `drop-shadow(0 0 6px ${trendColor})` }}
                         />
-                        {/* Center bright point */}
-                        {!isLast && (
-                          <circle
-                            cx={props.cx} cy={props.cy} r={1.5}
-                            fill="white"
-                            opacity={0.8}
-                          />
-                        )}
+                        {!isLast && <circle cx={props.cx} cy={props.cy} r={1.5} fill="white" opacity={0.8} />}
                       </g>
                     );
                   }}
@@ -555,15 +582,17 @@ export default function PremierMarkers() {
             </ResponsiveContainer>
           </div>
 
-          <div className="relative flex items-center justify-between">
+          <div className="relative flex items-center justify-between flex-wrap gap-y-1">
             <p className="text-[9px] font-mono text-muted-foreground/25 tracking-wider">
-              {scoreHistory.length} SAMPLES ANALYZED
+              {scoreHistory.length} SAMPLES • {benchmarks.label}
             </p>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 flex-wrap">
               <div className="w-3 h-[1px]" style={{ background: trendColor }} />
-              <span className="text-[8px] font-mono text-muted-foreground/30">ACTUAL</span>
-              <div className="w-3 h-[1px] ml-2" style={{ background: trendColor, opacity: 0.4 }} />
-              <span className="text-[8px] font-mono text-muted-foreground/30">PROJECTED</span>
+              <span className="text-[8px] font-mono text-muted-foreground/30">YOU</span>
+              <div className="w-3 h-[1px] ml-1.5 opacity-40" style={{ background: "hsl(45 93% 47%)" }} />
+              <span className="text-[8px] font-mono text-muted-foreground/30">AVG</span>
+              <div className="w-3 h-[1px] ml-1.5 opacity-40" style={{ background: "hsl(152 69% 50%)" }} />
+              <span className="text-[8px] font-mono text-muted-foreground/30">OPTIMAL</span>
             </div>
           </div>
         </motion.div>
