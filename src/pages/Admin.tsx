@@ -207,6 +207,39 @@ const Admin = () => {
         patient_name: patientMap.get(r.user_id) || "Unknown",
       })));
     }
+
+    // Build activity feed from signups + audit logs
+    const activities: any[] = [];
+    (profilesRes.data || []).forEach(p => {
+      activities.push({
+        type: "signup",
+        label: `${p.first_name || ""} ${p.last_name || ""}`.trim() || "Unknown",
+        detail: "created an account",
+        timestamp: p.created_at,
+      });
+    });
+    (auditRes.data || []).forEach((a: any) => {
+      const patientName = a.patient_user_id ? patientMap.get(a.patient_user_id) || "Unknown" : null;
+      activities.push({
+        type: "audit",
+        label: patientName ? `${patientName}` : "Admin",
+        detail: a.action.replace(/_/g, " "),
+        resource: a.resource_type?.replace(/_/g, " "),
+        timestamp: a.created_at,
+      });
+    });
+    // Also add peptide requests as activity
+    (requestsRes.data || []).forEach((r: any) => {
+      activities.push({
+        type: "request",
+        label: patientMap.get(r.user_id) || "Unknown",
+        detail: `requested ${r.peptide_name}`,
+        status: r.status,
+        timestamp: r.created_at,
+      });
+    });
+    activities.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    setRecentActivity(activities.slice(0, 15));
   }, [user, isAdmin]);
 
   useEffect(() => { fetchAll(); }, [fetchAll]);
