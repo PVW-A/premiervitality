@@ -50,9 +50,9 @@ Deno.serve(async (req) => {
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
     // Parse body
-    const { request_id, card_nonce, include_injection_kit, delivery_method } = await req.json();
-    if (!request_id || !card_nonce) {
-      return new Response(JSON.stringify({ error: "Missing request_id or card_nonce" }), {
+    const { request_id, card_nonce, use_saved_card, include_injection_kit, delivery_method } = await req.json();
+    if (!request_id || (!card_nonce && !use_saved_card)) {
+      return new Response(JSON.stringify({ error: "Missing request_id or payment method" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -160,18 +160,33 @@ Deno.serve(async (req) => {
     }
     const orderId = orderData.order.id;
 
-    // Step 2: Process Payment with card nonce
+    // Resolve payment source — saved card or new nonce
+    const { data: profile } = await adminClient
+      .from("profiles")
+      .select("square_customer_id, square_card_id")
+      .eq("user_id", userId)
+      .single();
+
+    let paymentSourceId = card_nonce;
+    const squareCustomerId = profile?.square_customer_id;
+
+    if (use_saved_card && profile?.square_card_id) {
+      paymentSourceId = profile.square_card_id;
+    }
+
+    // Step 2: Process Payment
     const payRes = await fetch(`${squareBase}/payments`, {
       method: "POST",
       headers: squareHeaders,
       body: JSON.stringify({
         idempotency_key: `pay-${request_id}-${Date.now()}`,
-        source_id: card_nonce,
+        source_id: paymentSourceId,
         amount_money: { amount: totalCents, currency: "USD" },
         order_id: orderId,
         location_id: squareLocationId,
         autocomplete: true,
         note: `Peptide: ${peptideName} | Request: ${request_id}`,
+        ...(squareCustomerId ? { customer_id: squareCustomerId } : {}),
       }),
     });
     const payData = await payRes.json();
@@ -181,6 +196,35 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: errMsg, details: payData.errors }), {
         status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
+    }
+
+    // Step 3: Save card on file if new nonce and customer exists
+    if (card_nonce && squareCustomerId && !use_saved_card) {
+      try {
+        const cardRes = await fetch(`${squareBase}/cards`, {
+          method: "POST",
+          headers: squareHeaders,
+          body: JSON.stringify({
+            idempotency_key: `card-${request_id}-${Date.now()}`,
+            source_id: card_nonce,
+            card: { customer_id: squareCustomerId },
+          }),
+        });
+        const cardData = await cardRes.json();
+        if (cardRes.ok && cardData.card?.id) {
+          await adminClient
+            .from("profiles")
+            .update({
+              square_card_id: cardData.card.id,
+              square_card_last4: cardData.card.last_4 || null,
+              square_card_brand: cardData.card.card_brand || null,
+            })
+            .eq("user_id", userId);
+          console.log(`Card ${cardData.card.id} saved on file for user ${userId}`);
+        }
+      } catch (cardErr) {
+        console.error("Failed to save card on file (non-fatal):", cardErr);
+      }
     }
 
     // Step 3: Update request to paid
