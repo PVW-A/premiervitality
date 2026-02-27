@@ -18,6 +18,7 @@ const Auth = () => {
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [smsConsent, setSmsConsent] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -116,7 +117,7 @@ const Auth = () => {
         }
       }
     } else {
-      const { error } = await supabase.auth.signUp({
+      const { data: signUpData, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -124,8 +125,15 @@ const Auth = () => {
           emailRedirectTo: window.location.origin,
         },
       });
-      if (error) setError(error.message);
-      else setMessage("Check your email to confirm your account.");
+      if (error) {
+        setError(error.message);
+      } else {
+        // Record terms acceptance timestamp
+        if (signUpData?.user?.id) {
+          await supabase.from("profiles").update({ terms_accepted_at: new Date().toISOString() }).eq("user_id", signUpData.user.id);
+        }
+        setMessage("Check your email to confirm your account.");
+      }
     }
     setLoading(false);
   };
@@ -262,20 +270,46 @@ const Auth = () => {
           </div>
 
           {!isLogin && (
-            <div className="flex items-start space-x-3">
-              <Checkbox
-                id="sms-consent"
-                checked={smsConsent}
-                onCheckedChange={(checked) => setSmsConsent(checked === true)}
-                className="mt-0.5"
-              />
-              <label htmlFor="sms-consent" className="text-[11px] text-muted-foreground font-body font-light leading-relaxed cursor-pointer">
-                I consent to receive SMS messages from Premier Vitality &amp; Wellness including 2FA codes, account notifications, and promotional messages. Msg &amp; data rates may apply. Reply STOP to opt out.{" "}
-                <a href="/sms-consent" target="_blank" className="underline text-foreground hover:text-primary transition-colors">
-                  View full SMS policy
-                </a>
-              </label>
-            </div>
+            <>
+              <div className="flex items-start space-x-3">
+                <Checkbox
+                  id="sms-consent"
+                  checked={smsConsent}
+                  onCheckedChange={(checked) => setSmsConsent(checked === true)}
+                  className="mt-0.5"
+                />
+                <label htmlFor="sms-consent" className="text-[11px] text-muted-foreground font-body font-light leading-relaxed cursor-pointer">
+                  I consent to receive SMS messages from Premier Vitality &amp; Wellness including 2FA codes, account notifications, and promotional messages. Msg &amp; data rates may apply. Reply STOP to opt out.{" "}
+                  <a href="/sms-consent" target="_blank" className="underline text-foreground hover:text-primary transition-colors">
+                    View full SMS policy
+                  </a>
+                </label>
+              </div>
+
+              <div className="flex items-start space-x-3">
+                <Checkbox
+                  id="terms-accept"
+                  checked={termsAccepted}
+                  onCheckedChange={(checked) => setTermsAccepted(checked === true)}
+                  className="mt-0.5"
+                />
+                <label htmlFor="terms-accept" className="text-[11px] text-muted-foreground font-body font-light leading-relaxed cursor-pointer">
+                  I acknowledge that peptide therapy carries inherent risks and I voluntarily assume all risks associated with treatment. I have read and agree to the{" "}
+                  <a href="/terms" target="_blank" className="underline text-foreground hover:text-primary transition-colors">
+                    Terms of Service
+                  </a>
+                  ,{" "}
+                  <a href="/disclaimer" target="_blank" className="underline text-foreground hover:text-primary transition-colors">
+                    Medical Disclaimer
+                  </a>
+                  , and{" "}
+                  <a href="/privacy" target="_blank" className="underline text-foreground hover:text-primary transition-colors">
+                    Privacy Policy
+                  </a>
+                  , including the limitation of liability and assumption of risk provisions. I waive any and all claims against Premier Vitality &amp; Wellness, its founders, physicians, employees, and affiliates arising from my use of these services.
+                </label>
+              </div>
+            </>
           )}
 
           {error && <p className="text-destructive text-sm font-body">{error}</p>}
@@ -283,7 +317,7 @@ const Auth = () => {
 
           <Button
             type="submit"
-            disabled={loading || (!isLogin && !smsConsent)}
+            disabled={loading || (!isLogin && (!smsConsent || !termsAccepted))}
             className="w-full text-xs tracking-[0.2em] uppercase font-body font-light rounded-none h-11"
           >
             {loading ? "Please wait..." : isLogin ? "Sign In" : "Create Account"}
