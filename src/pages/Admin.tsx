@@ -400,7 +400,7 @@ const Admin = () => {
 
           {/* OVERVIEW TAB */}
           <TabsContent value="overview">
-            <AdminOverview patients={patients} orders={orders} patientPeptides={patientPeptides} peptides={peptides} recentActivity={recentActivity} />
+            <AdminOverview patients={patients} orders={orders} patientPeptides={patientPeptides} peptides={peptides} recentActivity={recentActivity} peptideRequests={peptideRequests} />
           </TabsContent>
 
           {/* PATIENTS TAB */}
