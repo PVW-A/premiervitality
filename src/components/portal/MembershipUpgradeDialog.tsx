@@ -83,22 +83,24 @@ export default function MembershipUpgradeDialog({
   const handleUpgrade = async (tierId: string, tierName: string) => {
     setUpgrading(tierId);
     try {
-      // Update the membership tier in the database
-      const { error } = await supabase
-        .from("memberships")
-        .update({ tier_id: tierId, updated_at: new Date().toISOString() })
-        .eq("id", currentMembership.id);
+      const res = await supabase.functions.invoke("upgrade-subscription", {
+        body: { new_tier_id: tierId },
+      });
 
-      if (error) throw error;
+      if (res.error) throw new Error(res.error.message || "Upgrade failed");
+      const data = res.data as { success?: boolean; error?: string; details?: Array<{ detail?: string }> };
+      if (!data?.success) {
+        throw new Error(data?.details?.[0]?.detail || data?.error || "Upgrade failed");
+      }
 
       toast.success(`Upgraded to ${tierName}!`, {
-        description: "Your membership has been upgraded. New benefits are active immediately.",
+        description: "Your subscription has been updated with Square. New benefits are active immediately.",
       });
       onOpenChange(false);
       onUpgraded();
-    } catch (e) {
+    } catch (e: unknown) {
       console.error("Upgrade error:", e);
-      toast.error("Failed to upgrade membership");
+      toast.error(e instanceof Error ? e.message : "Failed to upgrade membership");
     } finally {
       setUpgrading(null);
     }
