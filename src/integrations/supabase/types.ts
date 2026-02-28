@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_links: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          id: string
+          invitee_email: string
+          invitee_user_id: string | null
+          inviter_user_id: string
+          relationship: string | null
+          status: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          id?: string
+          invitee_email: string
+          invitee_user_id?: string | null
+          inviter_user_id: string
+          relationship?: string | null
+          status?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          id?: string
+          invitee_email?: string
+          invitee_user_id?: string | null
+          inviter_user_id?: string
+          relationship?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           action: string
@@ -841,6 +874,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      are_accounts_linked: {
+        Args: { _user_a: string; _user_b: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
