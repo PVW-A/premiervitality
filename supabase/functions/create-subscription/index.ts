@@ -201,6 +201,19 @@ Deno.serve(async (req) => {
 
     console.log(`Subscription created: ${subData.subscription.id} for user ${userId}`);
 
+    // Non-blocking Slack notification
+    try {
+      const patientName = `${first_name || profile?.first_name || ""} ${last_name || profile?.last_name || ""}`.trim() || "Unknown";
+      fetch(`${supabaseUrl}/functions/v1/slack-notify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${serviceKey}` },
+        body: JSON.stringify({
+          type: "subscription",
+          payload: { patient_name: patientName, tier_name: tier.name, billing_cycle },
+        }),
+      }).catch((e) => console.error("Slack notify error:", e));
+    } catch (e) { console.error("Slack notify error:", e); }
+
     return new Response(
       JSON.stringify({
         success: true,
