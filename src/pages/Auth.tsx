@@ -131,6 +131,10 @@ const Auth = () => {
         // Record terms acceptance timestamp
         if (signUpData?.user?.id) {
           await supabase.from("profiles").update({ terms_accepted_at: new Date().toISOString() }).eq("user_id", signUpData.user.id);
+          // Non-blocking Slack signup notification
+          supabase.functions.invoke("slack-notify", {
+            body: { type: "signup", payload: { email, first_name: firstName, last_name: lastName } },
+          }).catch((e) => console.error("Slack signup notify error:", e));
         }
         setMessage("Check your email to confirm your account.");
       }
