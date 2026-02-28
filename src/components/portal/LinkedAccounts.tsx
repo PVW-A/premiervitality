@@ -374,8 +374,8 @@ export default function LinkedAccounts() {
                 {categoryScores.length > 0 && (
                   <div className="grid gap-2">
                     {categoryScores.map((cat) => (
-                      <div key={cat.CatName} className="flex items-center gap-3 text-sm font-body font-light">
-                        <span className="text-muted-foreground w-28 text-xs">{cat.CatName}</span>
+                      <div key={cat.catName} className="flex items-center gap-3 text-sm font-body font-light">
+                        <span className="text-muted-foreground w-28 text-xs">{cat.catName}</span>
                         <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
                           <div className="h-full rounded-full" style={{ width: `${cat.score}%`, backgroundColor: cat.color }} />
                         </div>
