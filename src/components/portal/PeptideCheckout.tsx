@@ -395,7 +395,7 @@ export default function PeptideCheckout({
             </button>
             <button
               onClick={handlePay}
-              disabled={loading || (!useSavedCard && !cardReady)}
+              disabled={loading || (!useSavedCard && !cardReady) || (delivery === "shipping" && !signatureConfirmed)}
               className="flex-[2] py-3 text-xs tracking-[0.2em] uppercase font-body font-light bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? (
