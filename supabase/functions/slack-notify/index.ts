@@ -88,7 +88,7 @@ Deno.serve(async (req) => {
 
       const { data: requests, error } = await admin
         .from("peptide_requests")
-        .select("*, profiles!inner(first_name, last_name)")
+        .select("*")
         .eq("status", "paid")
         .gte("updated_at", sevenDaysAgo.toISOString())
         .order("updated_at", { ascending: false });
@@ -100,6 +100,14 @@ Deno.serve(async (req) => {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
+
+      // Fetch profiles for all user_ids
+      const userIds = [...new Set((requests || []).map((r: any) => r.user_id))];
+      const { data: profiles } = userIds.length > 0
+        ? await admin.from("profiles").select("user_id, first_name, last_name").in("user_id", userIds)
+        : { data: [] };
+      const profileMap: Record<string, { first_name: string; last_name: string }> = {};
+      (profiles || []).forEach((p: any) => { profileMap[p.user_id] = p; });
 
       if (!requests || requests.length === 0) {
         await slackPost("#orders", "📋 *Monday Order Summary*\n\nNo new paid orders this week.");
