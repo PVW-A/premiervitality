@@ -23,6 +23,7 @@ const Index = () => (
       <VitalityScoreSection />
       <BiologicalAgeSection />
       <BloodworkPanelsSection />
+      <PopularPeptidesCarousel />
       <FoundersSection />
       <CTASection />
     </main>
