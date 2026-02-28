@@ -96,7 +96,6 @@ export default function MyRequests({
       ) : (
         <div className="space-y-3">
           {requests.map((r) => {
-            const opts = getOptions(r.id);
             const needsOptions = r.status === "approved";
 
             return (
