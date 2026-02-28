@@ -35,3 +35,6 @@ verify_jwt = false
 
 [functions.import-vpi-pricing]
 verify_jwt = false
+
+[functions.slack-notify]
+verify_jwt = false
