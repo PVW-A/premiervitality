@@ -163,7 +163,7 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           query: {
             filter: {
-              customer_ids: [profile.square_customer_id],
+              customer_ids: [squareCustomerId],
               location_ids: [squareLocationId],
             },
           },
