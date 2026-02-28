@@ -180,83 +180,19 @@ export default function MyRequests({
                     </div>
                   </div>
 
-                  {/* Options picker for approved requests */}
+                  {/* Pay button for approved requests */}
                   {needsOptions && (
-                    <div className="border-t border-border pt-4 space-y-4">
-                      <p className="text-xs tracking-[0.15em] uppercase text-primary font-body font-light">
-                        Configure your order
-                      </p>
-
-                      {/* Injection Kit — only for injectables */}
-                      {isInjectable(r.peptide_id) && (
-                        <div className="flex items-center justify-between">
-                          <div className="space-y-0.5">
-                            <Label className="text-sm font-body font-light text-foreground">
-                              Injection Kit — $30.00
-                            </Label>
-                            <p className="text-xs text-muted-foreground font-body font-light">
-                              Includes 35 needles &amp; 35 alcohol swabs
-                            </p>
-                          </div>
-                          <Switch
-                            checked={opts.kit}
-                            onCheckedChange={(v) => setOption(r.id, { kit: v })}
-                          />
-                        </div>
-                      )}
-
-                      {/* Delivery method */}
-                      <div className="space-y-2">
-                        <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">
-                          Delivery Method
-                        </Label>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setOption(r.id, { delivery: "pickup" })}
-                            className={`flex items-start gap-3 p-3 rounded border transition-colors text-left ${
-                              opts.delivery === "pickup"
-                                ? "border-primary bg-primary/5"
-                                : "border-border bg-secondary/50 hover:border-muted-foreground/30"
-                            }`}
-                          >
-                            <MapPin size={16} strokeWidth={1.2} className={opts.delivery === "pickup" ? "text-primary mt-0.5" : "text-muted-foreground mt-0.5"} />
-                            <div>
-                              <p className="text-sm font-body font-light text-foreground">Pickup</p>
-                              <p className="text-xs text-muted-foreground font-body font-light mt-0.5">{PICKUP_ADDRESS}</p>
-                            </div>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setOption(r.id, { delivery: "shipping" })}
-                            className={`flex items-start gap-3 p-3 rounded border transition-colors text-left ${
-                              opts.delivery === "shipping"
-                                ? "border-primary bg-primary/5"
-                                : "border-border bg-secondary/50 hover:border-muted-foreground/30"
-                            }`}
-                          >
-                            <Truck size={16} strokeWidth={1.2} className={opts.delivery === "shipping" ? "text-primary mt-0.5" : "text-muted-foreground mt-0.5"} />
-                            <div>
-                              <p className="text-sm font-body font-light text-foreground">Ship to my address — $35.00</p>
-                              <p className="text-xs text-muted-foreground font-body font-light mt-0.5">Overnight priority</p>
-                            </div>
-                          </button>
-                        </div>
+                    <div className="border-t border-border pt-4 flex items-center justify-between">
+                      <div>
+                        <p className="text-xs text-muted-foreground font-body font-light">Starting at</p>
+                        <p className="text-lg font-heading font-light text-foreground">${(r.price ?? 0).toFixed(2)}</p>
                       </div>
-
-                      {/* Total + Pay */}
-                      <div className="flex items-center justify-between pt-2 border-t border-border">
-                        <div>
-                          <p className="text-xs text-muted-foreground font-body font-light">Order Total</p>
-                          <p className="text-lg font-heading font-light text-foreground">${calcTotal(r).toFixed(2)}</p>
-                        </div>
-                        <Button
-                          onClick={() => openCheckout(r)}
-                          className="text-xs tracking-wider uppercase font-body font-light rounded-none gap-1.5"
-                        >
-                          <CreditCard size={14} /> Pay Now
-                        </Button>
-                      </div>
+                      <Button
+                        onClick={() => openCheckout(r)}
+                        className="text-xs tracking-wider uppercase font-body font-light rounded-none gap-1.5"
+                      >
+                        <CreditCard size={14} /> Pay Now
+                      </Button>
                     </div>
                   )}
                 </CardContent>
