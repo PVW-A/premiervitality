@@ -105,6 +105,7 @@ export default function PeptideCheckout({
     if (open) {
       setKit(initialKit);
       setDelivery(initialDelivery);
+      setSignatureConfirmed(false);
     }
   }, [open, initialKit, initialDelivery]);
 
