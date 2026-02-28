@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Loader2, ArrowLeft, MapPin, Truck, Syringe, CreditCard, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -72,6 +73,7 @@ export default function PeptideCheckout({
   const [cardReady, setCardReady] = useState(false);
   const [kit, setKit] = useState(initialKit);
   const [delivery, setDelivery] = useState(initialDelivery);
+  const [signatureConfirmed, setSignatureConfirmed] = useState(false);
   const cardRef = useRef<SquareCard | null>(null);
   const initRef = useRef(false);
 
@@ -103,6 +105,7 @@ export default function PeptideCheckout({
     if (open) {
       setKit(initialKit);
       setDelivery(initialDelivery);
+      setSignatureConfirmed(false);
     }
   }, [open, initialKit, initialDelivery]);
 
@@ -295,6 +298,22 @@ export default function PeptideCheckout({
                     </div>
                   </button>
                 </div>
+
+                {/* Signature confirmation for shipping */}
+                {delivery === "shipping" && (
+                  <div className="pt-2 border-t border-border/50">
+                    <label className="flex items-start gap-2.5 cursor-pointer">
+                      <Checkbox
+                        checked={signatureConfirmed}
+                        onCheckedChange={(v) => setSignatureConfirmed(v === true)}
+                        className="mt-0.5"
+                      />
+                      <span className="text-[11px] text-muted-foreground font-body font-light leading-relaxed">
+                        I confirm someone will be available to <span className="text-foreground font-normal">sign for this package</span> upon delivery. Overnight shipments require an adult signature — undeliverable packages may be returned.
+                      </span>
+                    </label>
+                  </div>
+                )}
               </div>
 
               {/* Total */}
@@ -377,7 +396,7 @@ export default function PeptideCheckout({
             </button>
             <button
               onClick={handlePay}
-              disabled={loading || (!useSavedCard && !cardReady)}
+              disabled={loading || (!useSavedCard && !cardReady) || (delivery === "shipping" && !signatureConfirmed)}
               className="flex-[2] py-3 text-xs tracking-[0.2em] uppercase font-body font-light bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? (
