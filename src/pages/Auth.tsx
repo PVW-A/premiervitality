@@ -365,7 +365,7 @@ const Auth = () => {
               onClick={async () => {
                 if (!email) { setError("Enter your email first."); return; }
                 setError(""); setMessage(""); setLoading(true);
-                const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
                   redirectTo: `${window.location.origin}/reset-password`,
                 });
                 if (error) setError(error.message);
