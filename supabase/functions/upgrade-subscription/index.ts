@@ -144,18 +144,31 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Build Square customer body from submitted info
+    const ci = customer_info || {};
+    const customerBody: Record<string, unknown> = {
+      given_name: ci.first_name || profile?.first_name || "",
+      family_name: ci.last_name || profile?.last_name || "",
+      email_address: userEmail || "",
+      phone_number: ci.phone || profile?.phone || "",
+    };
+    if (ci.birthday) customerBody.birthday = ci.birthday;
+    if (ci.address) {
+      customerBody.address = {
+        address_line_1: ci.address.line1 || "",
+        locality: ci.address.city || "",
+        administrative_district_level_1: ci.address.state || "",
+        postal_code: ci.address.zip || "",
+        country: "US",
+      };
+    }
+
     if (!squareCustomerId) {
       // No match found — create a new Square customer
       const custRes = await fetch(`${squareBase}/customers`, {
         method: "POST",
         headers: squareHeaders,
-        body: JSON.stringify({
-          given_name: profile?.first_name || "",
-          family_name: profile?.last_name || "",
-          email_address: userEmail || "",
-          phone_number: profile?.phone || "",
-          idempotency_key: `cust-${userId}`,
-        }),
+        body: JSON.stringify({ ...customerBody, idempotency_key: `cust-${userId}` }),
       });
       const custData = await custRes.json();
       if (!custRes.ok || !custData.customer?.id) {
@@ -167,12 +180,33 @@ Deno.serve(async (req) => {
       }
       squareCustomerId = custData.customer.id;
       console.log(`Created new Square customer ${squareCustomerId} for user ${userId}`);
+    } else {
+      // Update existing Square customer with latest info
+      await fetch(`${squareBase}/customers/${squareCustomerId}`, {
+        method: "PUT",
+        headers: squareHeaders,
+        body: JSON.stringify(customerBody),
+      });
+      console.log(`Updated Square customer ${squareCustomerId} with new info`);
     }
 
-    // Save the square_customer_id to profile
+    // Save square_customer_id + profile info locally
+    const profileUpdate: Record<string, unknown> = {
+      square_customer_id: squareCustomerId,
+    };
+    if (ci.first_name) profileUpdate.first_name = ci.first_name;
+    if (ci.last_name) profileUpdate.last_name = ci.last_name;
+    if (ci.phone) profileUpdate.phone = ci.phone;
+    if (ci.birthday) profileUpdate.birthday = ci.birthday;
+    if (ci.address) {
+      if (ci.address.line1) profileUpdate.address_line1 = ci.address.line1;
+      if (ci.address.city) profileUpdate.address_city = ci.address.city;
+      if (ci.address.state) profileUpdate.address_state = ci.address.state;
+      if (ci.address.zip) profileUpdate.address_zip = ci.address.zip;
+    }
     await adminClient
       .from("profiles")
-      .update({ square_customer_id: squareCustomerId })
+      .update(profileUpdate)
       .eq("user_id", userId);
 
     // Find the active Square subscription for this customer
