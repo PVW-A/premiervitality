@@ -408,6 +408,9 @@ const Portal = () => {
             >
               <BookOpen size={14} className="mr-1.5" /> View Full Catalog & Pricing
             </Button>
+            {/* Linked Accounts */}
+            <LinkedAccounts />
+
             {/* Peptide Inventory */}
             <section>
               <div className="flex items-center gap-2 mb-4">
