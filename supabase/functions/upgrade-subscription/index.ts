@@ -41,7 +41,7 @@ Deno.serve(async (req) => {
     const userId = claimsData.claims.sub as string;
     const userEmail = claimsData.claims.email as string;
 
-    const { new_tier_id } = await req.json();
+    const { new_tier_id, customer_info } = await req.json();
     if (!new_tier_id) {
       return new Response(JSON.stringify({ error: "Missing new_tier_id" }), {
         status: 400,
@@ -144,18 +144,31 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Build Square customer body from submitted info
+    const ci = customer_info || {};
+    const customerBody: Record<string, unknown> = {
+      given_name: ci.first_name || profile?.first_name || "",
+      family_name: ci.last_name || profile?.last_name || "",
+      email_address: userEmail || "",
+      phone_number: ci.phone || profile?.phone || "",
+    };
+    if (ci.birthday) customerBody.birthday = ci.birthday;
+    if (ci.address) {
+      customerBody.address = {
+        address_line_1: ci.address.line1 || "",
+        locality: ci.address.city || "",
+        administrative_district_level_1: ci.address.state || "",
+        postal_code: ci.address.zip || "",
+        country: "US",
+      };
+    }
+
     if (!squareCustomerId) {
       // No match found — create a new Square customer
       const custRes = await fetch(`${squareBase}/customers`, {
         method: "POST",
         headers: squareHeaders,
-        body: JSON.stringify({
-          given_name: profile?.first_name || "",
-          family_name: profile?.last_name || "",
-          email_address: userEmail || "",
-          phone_number: profile?.phone || "",
-          idempotency_key: `cust-${userId}`,
-        }),
+        body: JSON.stringify({ ...customerBody, idempotency_key: `cust-${userId}` }),
       });
       const custData = await custRes.json();
       if (!custRes.ok || !custData.customer?.id) {
@@ -167,12 +180,33 @@ Deno.serve(async (req) => {
       }
       squareCustomerId = custData.customer.id;
       console.log(`Created new Square customer ${squareCustomerId} for user ${userId}`);
+    } else {
+      // Update existing Square customer with latest info
+      await fetch(`${squareBase}/customers/${squareCustomerId}`, {
+        method: "PUT",
+        headers: squareHeaders,
+        body: JSON.stringify(customerBody),
+      });
+      console.log(`Updated Square customer ${squareCustomerId} with new info`);
     }
 
-    // Save the square_customer_id to profile
+    // Save square_customer_id + profile info locally
+    const profileUpdate: Record<string, unknown> = {
+      square_customer_id: squareCustomerId,
+    };
+    if (ci.first_name) profileUpdate.first_name = ci.first_name;
+    if (ci.last_name) profileUpdate.last_name = ci.last_name;
+    if (ci.phone) profileUpdate.phone = ci.phone;
+    if (ci.birthday) profileUpdate.birthday = ci.birthday;
+    if (ci.address) {
+      if (ci.address.line1) profileUpdate.address_line1 = ci.address.line1;
+      if (ci.address.city) profileUpdate.address_city = ci.address.city;
+      if (ci.address.state) profileUpdate.address_state = ci.address.state;
+      if (ci.address.zip) profileUpdate.address_zip = ci.address.zip;
+    }
     await adminClient
       .from("profiles")
-      .update({ square_customer_id: squareCustomerId })
+      .update(profileUpdate)
       .eq("user_id", userId);
 
     // Find the active Square subscription for this customer
@@ -281,37 +315,7 @@ Deno.serve(async (req) => {
       })
       .eq("id", membership.id);
 
-    // Sync profile info from Square customer record
-    try {
-      const custDetailRes = await fetch(
-        `${squareBase}/customers/${squareCustomerId}`,
-        { headers: squareHeaders }
-      );
-      const custDetailData = await custDetailRes.json();
-      const sqCust = custDetailData.customer;
-      if (sqCust) {
-        const profileSync: Record<string, unknown> = {};
-        if (sqCust.given_name) profileSync.first_name = sqCust.given_name;
-        if (sqCust.family_name) profileSync.last_name = sqCust.family_name;
-        if (sqCust.phone_number) profileSync.phone = sqCust.phone_number;
-        if (sqCust.birthday) profileSync.birthday = sqCust.birthday;
-        if (sqCust.address) {
-          if (sqCust.address.address_line_1) profileSync.address_line1 = sqCust.address.address_line_1;
-          if (sqCust.address.locality) profileSync.address_city = sqCust.address.locality;
-          if (sqCust.address.administrative_district_level_1) profileSync.address_state = sqCust.address.administrative_district_level_1;
-          if (sqCust.address.postal_code) profileSync.address_zip = sqCust.address.postal_code;
-        }
-        if (Object.keys(profileSync).length > 0) {
-          await adminClient
-            .from("profiles")
-            .update(profileSync)
-            .eq("user_id", userId);
-          console.log(`Synced Square profile data for user ${userId}:`, Object.keys(profileSync));
-        }
-      }
-    } catch (syncErr) {
-      console.error("Non-fatal: failed to sync Square profile data:", syncErr);
-    }
+
 
     console.log(
       `Subscription ${resultSubscriptionId} upgraded to plan ${newPlanVariationId} for user ${userId}`
