@@ -122,8 +122,30 @@ Deno.serve(async (req) => {
 
     let squareCustomerId = profile?.square_customer_id;
 
+    if (!squareCustomerId && userEmail) {
+      // Search Square for an existing customer matching this email
+      const searchCustRes = await fetch(`${squareBase}/customers/search`, {
+        method: "POST",
+        headers: squareHeaders,
+        body: JSON.stringify({
+          query: {
+            filter: {
+              email_address: { exact: userEmail },
+            },
+          },
+        }),
+      });
+      const searchCustData = await searchCustRes.json();
+      const matchedCustomer = searchCustData.customers?.[0];
+
+      if (matchedCustomer) {
+        squareCustomerId = matchedCustomer.id;
+        console.log(`Matched existing Square customer ${squareCustomerId} by email ${userEmail}`);
+      }
+    }
+
     if (!squareCustomerId) {
-      // Auto-create a Square customer for users who don't have one yet
+      // No match found — create a new Square customer
       const custRes = await fetch(`${squareBase}/customers`, {
         method: "POST",
         headers: squareHeaders,
@@ -144,15 +166,14 @@ Deno.serve(async (req) => {
         );
       }
       squareCustomerId = custData.customer.id;
-
-      // Save the new square_customer_id to the profile
-      await adminClient
-        .from("profiles")
-        .update({ square_customer_id: squareCustomerId })
-        .eq("user_id", userId);
-
-      console.log(`Created Square customer ${squareCustomerId} for user ${userId}`);
+      console.log(`Created new Square customer ${squareCustomerId} for user ${userId}`);
     }
+
+    // Save the square_customer_id to profile
+    await adminClient
+      .from("profiles")
+      .update({ square_customer_id: squareCustomerId })
+      .eq("user_id", userId);
 
     // Find the active Square subscription for this customer
     const searchRes = await fetch(
