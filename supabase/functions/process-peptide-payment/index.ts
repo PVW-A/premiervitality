@@ -227,7 +227,7 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Step 3: Update request to paid
+    // Step 4: Update request to paid
     await adminClient
       .from("peptide_requests")
       .update({
@@ -235,11 +235,52 @@ Deno.serve(async (req) => {
         square_order_id: orderId,
         include_injection_kit: addKit,
         delivery_method: addShipping ? "shipping" : "pickup",
-        payment_url: null, // no external link needed
+        payment_url: null,
       })
       .eq("id", request_id);
 
     console.log(`Payment ${payData.payment.id} completed for request ${request_id}`);
+
+    // Step 5: Send Slack purchase notification (non-blocking)
+    try {
+      const { data: patientProfile } = await adminClient
+        .from("profiles")
+        .select("first_name, last_name")
+        .eq("user_id", userId)
+        .single();
+
+      // Get peptide cost for profit calculation
+      const { data: peptideRow } = await adminClient
+        .from("peptides")
+        .select("cost")
+        .eq("id", requestRow.peptide_id)
+        .single();
+
+      const costCents = Math.round((peptideRow?.cost || 0) * 100);
+
+      const slackUrl = `${supabaseUrl}/functions/v1/slack-notify`;
+      fetch(slackUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${serviceRoleKey}`,
+        },
+        body: JSON.stringify({
+          type: "purchase",
+          payload: {
+            patient_name: `${patientProfile?.first_name || "Unknown"} ${patientProfile?.last_name || ""}`.trim(),
+            peptide_name: peptideName,
+            total_cents: totalCents,
+            cost_cents: costCents,
+            include_kit: addKit,
+            delivery_method: addShipping ? "shipping" : "pickup",
+            request_id,
+          },
+        }),
+      }).catch((err) => console.error("Slack notify failed (non-fatal):", err));
+    } catch (slackErr) {
+      console.error("Slack notify setup failed (non-fatal):", slackErr);
+    }
 
     return new Response(JSON.stringify({
       success: true,
