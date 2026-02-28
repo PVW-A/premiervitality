@@ -591,6 +591,62 @@ export type Database = {
           },
         ]
       }
+      peptide_subscriptions: {
+        Row: {
+          created_at: string
+          delivery_method: string
+          id: string
+          include_injection_kit: boolean
+          last_charged_at: string | null
+          next_charge_at: string
+          peptide_id: string
+          peptide_name: string
+          price: number
+          status: string
+          updated_at: string
+          user_id: string
+          variation_label: string | null
+        }
+        Insert: {
+          created_at?: string
+          delivery_method?: string
+          id?: string
+          include_injection_kit?: boolean
+          last_charged_at?: string | null
+          next_charge_at: string
+          peptide_id: string
+          peptide_name: string
+          price: number
+          status?: string
+          updated_at?: string
+          user_id: string
+          variation_label?: string | null
+        }
+        Update: {
+          created_at?: string
+          delivery_method?: string
+          id?: string
+          include_injection_kit?: boolean
+          last_charged_at?: string | null
+          next_charge_at?: string
+          peptide_id?: string
+          peptide_name?: string
+          price?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+          variation_label?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "peptide_subscriptions_peptide_id_fkey"
+            columns: ["peptide_id"]
+            isOneToOne: false
+            referencedRelation: "peptides"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       peptides: {
         Row: {
           administration: string | null

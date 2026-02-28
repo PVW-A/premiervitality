@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ClipboardList, CreditCard } from "lucide-react";
+import { ClipboardList, CreditCard, RefreshCw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import PeptideCheckout from "./PeptideCheckout";
+import { toast } from "sonner";
 
 interface PeptideRequest {
   id: string;
@@ -36,9 +37,11 @@ const SHIPPING_PRICE = 35;
 export default function MyRequests({
   requests,
   onRefresh,
+  membership,
 }: {
   requests: PeptideRequest[];
   onRefresh: () => void;
+  membership?: any;
 }) {
   const [adminRoutes, setAdminRoutes] = useState<Record<string, string>>({});
   const [checkoutRequest, setCheckoutRequest] = useState<PeptideRequest | null>(null);
@@ -147,6 +150,38 @@ export default function MyRequests({
                           {r.delivery_method === "shipping" ? "📦 Shipping overnight" : `📍 Pickup at ${PICKUP_ADDRESS}`}
                           {r.include_injection_kit && " · Injection kit included"}
                         </p>
+                      )}
+                      {/* Subscribe Monthly button for paid requests when user has membership */}
+                      {r.status === "paid" && membership && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={async () => {
+                            const nextCharge = new Date();
+                            nextCharge.setDate(nextCharge.getDate() + 30);
+                            const { error } = await supabase
+                              .from("peptide_subscriptions")
+                              .insert({
+                                user_id: (await supabase.auth.getUser()).data.user?.id!,
+                                peptide_id: r.peptide_id,
+                                peptide_name: r.peptide_name,
+                                variation_label: r.variation_label,
+                                price: r.price ?? 0,
+                                include_injection_kit: r.include_injection_kit,
+                                delivery_method: r.delivery_method || "pickup",
+                                next_charge_at: nextCharge.toISOString().split("T")[0],
+                              });
+                            if (error) {
+                              toast.error("Failed to set up auto-order");
+                            } else {
+                              toast.success("Monthly auto-order activated! Your card will be charged automatically.");
+                              onRefresh();
+                            }
+                          }}
+                          className="mt-2 text-[10px] tracking-wider uppercase font-body font-light rounded-none gap-1.5 border-primary/30 text-primary hover:bg-primary/10"
+                        >
+                          <RefreshCw size={12} /> Subscribe Monthly
+                        </Button>
                       )}
                     </div>
                   </div>

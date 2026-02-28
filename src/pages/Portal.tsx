@@ -15,6 +15,7 @@ import LoyaltyRewards from "@/components/portal/LoyaltyRewards";
 import SubscriptionCheckout from "@/components/SubscriptionCheckout";
 import BloodworkUploader from "@/components/portal/BloodworkUploader";
 import PeptideReminders from "@/components/portal/PeptideReminders";
+import PeptideSubscriptions from "@/components/portal/PeptideSubscriptions";
 import VitalityScoreBadge from "@/components/portal/VitalityScoreBadge";
 import VitalityScoreDrawer from "@/components/portal/VitalityScoreDrawer";
 import MembershipUpgradeDialog from "@/components/portal/MembershipUpgradeDialog";
@@ -465,8 +466,11 @@ const Portal = () => {
               )}
             </section>
 
+            {/* Monthly Auto-Orders */}
+            {user && <PeptideSubscriptions userId={user.id} />}
+
             {/* My Requests */}
-            <MyRequests requests={requests} onRefresh={fetchData} />
+            <MyRequests requests={requests} onRefresh={fetchData} membership={membership} />
 
             {/* Orders */}
             <section>
