@@ -73,6 +73,7 @@ export default function PeptideCheckout({
   const [cardReady, setCardReady] = useState(false);
   const [kit, setKit] = useState(initialKit);
   const [delivery, setDelivery] = useState(initialDelivery);
+  const [signatureConfirmed, setSignatureConfirmed] = useState(false);
   const cardRef = useRef<SquareCard | null>(null);
   const initRef = useRef(false);
 
