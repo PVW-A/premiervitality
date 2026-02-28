@@ -41,9 +41,6 @@ export default function MyRequests({
   requests: PeptideRequest[];
   onRefresh: () => void;
 }) {
-  const [options, setOptions] = useState<
-    Record<string, { kit: boolean; delivery: "pickup" | "shipping" }>
-  >({});
   const [adminRoutes, setAdminRoutes] = useState<Record<string, string>>({});
   const [checkoutRequest, setCheckoutRequest] = useState<PeptideRequest | null>(null);
 
@@ -67,32 +64,9 @@ export default function MyRequests({
   const isInjectable = (peptideId: string) =>
     INJECTABLE_ROUTES.includes(adminRoutes[peptideId] || "");
 
-  const getOptions = (id: string) =>
-    options[id] ?? { kit: false, delivery: "pickup" as const };
-
-  const setOption = (
-    id: string,
-    patch: Partial<{ kit: boolean; delivery: "pickup" | "shipping" }>
-  ) => {
-    setOptions((prev) => ({
-      ...prev,
-      [id]: { ...getOptions(id), ...patch },
-    }));
-  };
-
-  const calcTotal = (r: PeptideRequest) => {
-    const opts = getOptions(r.id);
-    let total = r.price ?? 0;
-    if (opts.kit && isInjectable(r.peptide_id)) total += INJECTION_KIT_PRICE;
-    if (opts.delivery === "shipping") total += SHIPPING_PRICE;
-    return total;
-  };
-
   const openCheckout = (r: PeptideRequest) => {
     setCheckoutRequest(r);
   };
-
-  const checkoutOpts = checkoutRequest ? getOptions(checkoutRequest.id) : { kit: false, delivery: "pickup" as const };
 
   return (
     <section>
