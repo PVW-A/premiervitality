@@ -8,6 +8,30 @@ const corsHeaders = {
 
 const GATEWAY_URL = "https://connector-gateway.lovable.dev/slack/api";
 
+async function findChannelId(channelName: string): Promise<string> {
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
+  const SLACK_API_KEY = Deno.env.get("SLACK_API_KEY")!;
+  const name = channelName.replace(/^#/, "");
+
+  let cursor = "";
+  do {
+    const url = `${GATEWAY_URL}/conversations.list?types=public_channel&limit=200${cursor ? `&cursor=${cursor}` : ""}`;
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "X-Connection-Api-Key": SLACK_API_KEY,
+      },
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(`conversations.list failed: ${JSON.stringify(data)}`);
+    const match = data.channels?.find((c: any) => c.name === name);
+    if (match) return match.id;
+    cursor = data.response_metadata?.next_cursor || "";
+  } while (cursor);
+
+  throw new Error(`Channel "${channelName}" not found`);
+}
+
 async function slackPost(channel: string, text: string, blocks?: unknown[]) {
   const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
   if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
@@ -15,7 +39,9 @@ async function slackPost(channel: string, text: string, blocks?: unknown[]) {
   const SLACK_API_KEY = Deno.env.get("SLACK_API_KEY");
   if (!SLACK_API_KEY) throw new Error("SLACK_API_KEY is not configured");
 
-  const body: Record<string, unknown> = { channel, text };
+  const channelId = await findChannelId(channel);
+
+  const body: Record<string, unknown> = { channel: channelId, text };
   if (blocks) body.blocks = blocks;
 
   const res = await fetch(`${GATEWAY_URL}/chat.postMessage`, {
@@ -29,8 +55,8 @@ async function slackPost(channel: string, text: string, blocks?: unknown[]) {
   });
 
   const data = await res.json();
-  if (!res.ok) {
-    throw new Error(`Slack API call failed [${res.status}]: ${JSON.stringify(data)}`);
+  if (!res.ok || !data.ok) {
+    throw new Error(`Slack chat.postMessage failed [${res.status}]: ${JSON.stringify(data)}`);
   }
   return data;
 }
