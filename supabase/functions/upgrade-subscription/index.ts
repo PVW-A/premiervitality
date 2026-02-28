@@ -41,7 +41,7 @@ Deno.serve(async (req) => {
     const userId = claimsData.claims.sub as string;
     const userEmail = claimsData.claims.email as string;
 
-    const { new_tier_id } = await req.json();
+    const { new_tier_id, customer_info } = await req.json();
     if (!new_tier_id) {
       return new Response(JSON.stringify({ error: "Missing new_tier_id" }), {
         status: 400,
