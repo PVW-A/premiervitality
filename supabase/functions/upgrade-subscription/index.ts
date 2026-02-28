@@ -106,18 +106,45 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Get Square customer ID from profile
+    // Get Square customer ID from profile (or create one)
     const { data: profile } = await adminClient
       .from("profiles")
-      .select("square_customer_id")
+      .select("square_customer_id, first_name, last_name, phone")
       .eq("user_id", userId)
       .single();
 
-    if (!profile?.square_customer_id) {
-      return new Response(
-        JSON.stringify({ error: "No Square customer on file. Please contact support." }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    let squareCustomerId = profile?.square_customer_id;
+
+    if (!squareCustomerId) {
+      // Auto-create a Square customer for users who don't have one yet
+      const custRes = await fetch(`${squareBase}/customers`, {
+        method: "POST",
+        headers: squareHeaders,
+        body: JSON.stringify({
+          given_name: profile?.first_name || "",
+          family_name: profile?.last_name || "",
+          email_address: userEmail || "",
+          phone_number: profile?.phone || "",
+          idempotency_key: `cust-${userId}`,
+        }),
+      });
+      const custData = await custRes.json();
+      if (!custRes.ok || !custData.customer?.id) {
+        console.error("Square create customer error:", custData);
+        return new Response(
+          JSON.stringify({ error: "Failed to create Square customer", details: custData.errors }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      squareCustomerId = custData.customer.id;
+
+      // Save the new square_customer_id to the profile
+      await adminClient
+        .from("profiles")
+        .update({ square_customer_id: squareCustomerId })
+        .eq("user_id", userId);
+
+      console.log(`Created Square customer ${squareCustomerId} for user ${userId}`);
     }
 
     const squareBase = "https://connect.squareup.com/v2";
