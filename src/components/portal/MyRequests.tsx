@@ -79,7 +79,7 @@ export default function MyRequests({
       {/* Ordering cadence notice */}
       <div className="mb-4 p-3 rounded border border-primary/20 bg-primary/5">
         <p className="text-xs font-body font-light text-foreground">
-          📅 <span className="font-medium">Ordering Cadence:</span> We place supplier orders every <span className="text-primary font-medium">Monday</span>. 
+          <span className="font-medium">Ordering Cadence:</span> We place supplier orders every <span className="text-primary font-medium">Monday</span>. 
           Submit and pay for your order by Sunday evening to be included in the next batch. 
           Orders received after Monday will ship with the following week's order.
         </p>
