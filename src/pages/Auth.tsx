@@ -121,7 +121,7 @@ const Auth = () => {
       }
     } else {
       const { data: signUpData, error } = await supabase.auth.signUp({
-        email,
+        email: normalizedEmail,
         password,
         options: {
           data: { first_name: firstName, last_name: lastName, phone, sms_consent: smsConsent },
