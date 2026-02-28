@@ -178,6 +178,23 @@ Deno.serve(async (req) => {
     let resultSubscriptionId: string;
 
     if (!activeSub) {
+      // Fetch plan variation phases from Square Catalog API
+      // Plans created in the Square Dashboard use RELATIVE pricing and require phases
+      const catalogRes = await fetch(
+        `${squareBase}/catalog/object/${newPlanVariationId}`,
+        { headers: squareHeaders }
+      );
+      const catalogData = await catalogRes.json();
+      const planPhases =
+        catalogData.object?.subscription_plan_variation_data?.phases || [];
+
+      const subscriptionPhases = planPhases.map(
+        (phase: { ordinal: number; cadence: string; uid: string }) => ({
+          ordinal: phase.ordinal,
+          order_template_id: phase.uid,
+        })
+      );
+
       // No existing subscription — create a new one
       const createRes = await fetch(`${squareBase}/subscriptions`, {
         method: "POST",
@@ -188,6 +205,7 @@ Deno.serve(async (req) => {
           customer_id: squareCustomerId,
           plan_variation_id: newPlanVariationId,
           start_date: new Date().toISOString().split("T")[0],
+          ...(subscriptionPhases.length > 0 && { phases: subscriptionPhases }),
         }),
       });
       const createData = await createRes.json();
