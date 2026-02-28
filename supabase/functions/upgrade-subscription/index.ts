@@ -175,38 +175,62 @@ Deno.serve(async (req) => {
       (s: { status: string }) => s.status === "ACTIVE"
     );
 
-    if (!activeSub) {
-      return new Response(
-        JSON.stringify({ error: "No active Square subscription found. Please contact support." }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    let resultSubscriptionId: string;
 
-    // Swap the subscription plan using Square's update endpoint
-    // Square handles prorating automatically when changing plan variations
-    const updateRes = await fetch(
-      `${squareBase}/subscriptions/${activeSub.id}`,
-      {
-        method: "PUT",
+    if (!activeSub) {
+      // No existing subscription — create a new one
+      const createRes = await fetch(`${squareBase}/subscriptions`, {
+        method: "POST",
         headers: squareHeaders,
         body: JSON.stringify({
-          subscription: {
-            plan_variation_id: newPlanVariationId,
-          },
+          idempotency_key: `upgrade-${userId}-${Date.now()}`,
+          location_id: squareLocationId,
+          customer_id: squareCustomerId,
+          plan_variation_id: newPlanVariationId,
+          start_date: new Date().toISOString().split("T")[0],
         }),
-      }
-    );
-    const updateData = await updateRes.json();
+      });
+      const createData = await createRes.json();
 
-    if (!updateRes.ok || !updateData.subscription) {
-      console.error("Square subscription update error:", updateData);
-      return new Response(
-        JSON.stringify({
-          error: "Failed to update subscription with Square",
-          details: updateData.errors,
-        }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      if (!createRes.ok || !createData.subscription) {
+        console.error("Square subscription create error:", createData);
+        return new Response(
+          JSON.stringify({
+            error: "Failed to create subscription with Square",
+            details: createData.errors,
+          }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      resultSubscriptionId = createData.subscription.id;
+      console.log(`Created new Square subscription ${resultSubscriptionId} for user ${userId}`);
+    } else {
+      // Swap the subscription plan using Square's update endpoint
+      const updateRes = await fetch(
+        `${squareBase}/subscriptions/${activeSub.id}`,
+        {
+          method: "PUT",
+          headers: squareHeaders,
+          body: JSON.stringify({
+            subscription: {
+              plan_variation_id: newPlanVariationId,
+            },
+          }),
+        }
       );
+      const updateData = await updateRes.json();
+
+      if (!updateRes.ok || !updateData.subscription) {
+        console.error("Square subscription update error:", updateData);
+        return new Response(
+          JSON.stringify({
+            error: "Failed to update subscription with Square",
+            details: updateData.errors,
+          }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      resultSubscriptionId = activeSub.id;
     }
 
     // Update local membership record
@@ -219,13 +243,13 @@ Deno.serve(async (req) => {
       .eq("id", membership.id);
 
     console.log(
-      `Subscription ${activeSub.id} upgraded to plan ${newPlanVariationId} for user ${userId}`
+      `Subscription ${resultSubscriptionId} upgraded to plan ${newPlanVariationId} for user ${userId}`
     );
 
     return new Response(
       JSON.stringify({
         success: true,
-        subscription_id: activeSub.id,
+        subscription_id: resultSubscriptionId,
         new_plan: newPlanVariationId,
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
