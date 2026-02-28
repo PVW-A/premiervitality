@@ -184,8 +184,8 @@ export default function MyRequests({
           price: checkoutRequest.price ?? 0,
           peptide_id: checkoutRequest.peptide_id,
         } : null}
-        includeKit={checkoutOpts.kit}
-        deliveryMethod={checkoutOpts.delivery}
+        includeKit={false}
+        deliveryMethod={"pickup"}
         isInjectable={checkoutRequest ? isInjectable(checkoutRequest.peptide_id) : false}
         onSuccess={onRefresh}
       />
