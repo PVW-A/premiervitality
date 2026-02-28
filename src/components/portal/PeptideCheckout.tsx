@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Loader2, ArrowLeft, MapPin, Truck, Syringe, CreditCard, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 
