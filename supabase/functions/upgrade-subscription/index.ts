@@ -106,6 +106,13 @@ Deno.serve(async (req) => {
       );
     }
 
+    const squareBase = "https://connect.squareup.com/v2";
+    const squareHeaders = {
+      "Square-Version": "2025-01-23",
+      Authorization: `Bearer ${squareToken}`,
+      "Content-Type": "application/json",
+    };
+
     // Get Square customer ID from profile (or create one)
     const { data: profile } = await adminClient
       .from("profiles")
@@ -146,13 +153,6 @@ Deno.serve(async (req) => {
 
       console.log(`Created Square customer ${squareCustomerId} for user ${userId}`);
     }
-
-    const squareBase = "https://connect.squareup.com/v2";
-    const squareHeaders = {
-      "Square-Version": "2025-01-23",
-      Authorization: `Bearer ${squareToken}`,
-      "Content-Type": "application/json",
-    };
 
     // Find the active Square subscription for this customer
     const searchRes = await fetch(
