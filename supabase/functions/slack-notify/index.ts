@@ -41,6 +41,17 @@ async function slackPost(channel: string, text: string, blocks?: unknown[]) {
 
   const channelId = await findChannelId(channel);
 
+  // Auto-join channel if needed
+  await fetch(`${GATEWAY_URL}/conversations.join`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${LOVABLE_API_KEY}`,
+      "X-Connection-Api-Key": SLACK_API_KEY,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ channel: channelId }),
+  });
+
   const body: Record<string, unknown> = { channel: channelId, text };
   if (blocks) body.blocks = blocks;
 
