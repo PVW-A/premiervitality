@@ -100,8 +100,10 @@ const Auth = () => {
     setMessage("");
     setLoading(true);
 
+    const normalizedEmail = email.trim().toLowerCase();
+
     if (isLogin) {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password });
       if (error) {
         setError(error.message);
         setLoading(false);
@@ -119,7 +121,7 @@ const Auth = () => {
       }
     } else {
       const { data: signUpData, error } = await supabase.auth.signUp({
-        email,
+        email: normalizedEmail,
         password,
         options: {
           data: { first_name: firstName, last_name: lastName, phone, sms_consent: smsConsent },
@@ -363,7 +365,7 @@ const Auth = () => {
               onClick={async () => {
                 if (!email) { setError("Enter your email first."); return; }
                 setError(""); setMessage(""); setLoading(true);
-                const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
                   redirectTo: `${window.location.origin}/reset-password`,
                 });
                 if (error) setError(error.message);
