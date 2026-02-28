@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ClipboardList, CreditCard } from "lucide-react";
+import { ClipboardList, CreditCard, RefreshCw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import PeptideCheckout from "./PeptideCheckout";
+import { toast } from "sonner";
 
 interface PeptideRequest {
   id: string;
