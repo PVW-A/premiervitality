@@ -113,7 +113,56 @@ Deno.serve(async (req) => {
       });
     }
 
-    // ─── TYPE 2: Weekly Monday order summary ───
+    // ─── TYPE 2: New signup notification ───
+    if (type === "signup") {
+      const { email, first_name, last_name } = payload;
+      const name = `${first_name || ""} ${last_name || ""}`.trim() || "Unknown";
+      const lines = [
+        `🆕 *New Patient Signup*`,
+        `*Name:* ${name}`,
+        `*Email:* ${email}`,
+        `_${new Date().toLocaleString("en-US", { timeZone: "America/Denver" })}_`,
+      ].join("\n");
+
+      await slackPost("#orders", lines);
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // ─── TYPE 3: New subscription notification ───
+    if (type === "subscription") {
+      const { patient_name, tier_name, billing_cycle } = payload;
+      const lines = [
+        `🎉 *New Subscription*`,
+        `*Patient:* ${patient_name}`,
+        `*Plan:* ${tier_name} (${billing_cycle})`,
+        `_${new Date().toLocaleString("en-US", { timeZone: "America/Denver" })}_`,
+      ].join("\n");
+
+      await slackPost("#orders", lines);
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // ─── TYPE 4: Subscription upgrade notification ───
+    if (type === "upgrade") {
+      const { patient_name, old_tier, new_tier } = payload;
+      const lines = [
+        `⬆️ *Subscription Upgrade*`,
+        `*Patient:* ${patient_name}`,
+        `*From:* ${old_tier} → *To:* ${new_tier}`,
+        `_${new Date().toLocaleString("en-US", { timeZone: "America/Denver" })}_`,
+      ].join("\n");
+
+      await slackPost("#orders", lines);
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // ─── TYPE 5: Weekly Monday order summary ───
     if (type === "weekly_summary") {
       const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
       const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;

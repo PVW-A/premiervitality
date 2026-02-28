@@ -315,7 +315,19 @@ Deno.serve(async (req) => {
       })
       .eq("id", membership.id);
 
-
+    // Non-blocking Slack notification
+    try {
+      const { data: oldTierData } = await adminClient.from("membership_tiers").select("name").eq("id", membership.tier_id).single();
+      const patientName = `${ci.first_name || profile?.first_name || ""} ${ci.last_name || profile?.last_name || ""}`.trim() || "Unknown";
+      fetch(`${supabaseUrl}/functions/v1/slack-notify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${serviceKey}` },
+        body: JSON.stringify({
+          type: "upgrade",
+          payload: { patient_name: patientName, old_tier: oldTierData?.name || "Unknown", new_tier: newTier.name },
+        }),
+      }).catch((e) => console.error("Slack notify error:", e));
+    } catch (e) { console.error("Slack notify error:", e); }
 
     console.log(
       `Subscription ${resultSubscriptionId} upgraded to plan ${newPlanVariationId} for user ${userId}`
