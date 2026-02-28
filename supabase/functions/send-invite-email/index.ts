@@ -106,21 +106,20 @@ Deno.serve(async (req) => {
           <h2 style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;font-size:22px;color:hsl(220,26%,14%);margin:0 0 16px;">
             You've been invited to link accounts
           </h2>
-          <p style="font-size:14px;line-height:1.6;color:hsl(218,12%,45%);margin:0 0 24px;">
+           <p style="font-size:14px;line-height:1.6;color:hsl(218,12%,45%);margin:0 0 24px;">
             ${senderName} has invited you to link your Premier Vitality accounts. 
             Linking accounts allows family members to share health data, manage billing together, 
             and stay connected on your wellness journey.
           </p>
           <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
             <tr><td style="background:hsl(39,38%,45%);border-radius:4px;padding:12px 32px;text-align:center;">
-              <a href="${portalUrl}" style="color:hsl(40,20%,96%);text-decoration:none;font-size:12px;letter-spacing:0.15em;text-transform:uppercase;font-family:'Inter',Arial,sans-serif;font-weight:400;">
-                Open Your Portal
+              <a href="${signupUrl}" style="color:hsl(40,20%,96%);text-decoration:none;font-size:12px;letter-spacing:0.15em;text-transform:uppercase;font-family:'Inter',Arial,sans-serif;font-weight:400;">
+                Create Your Account
               </a>
             </td></tr>
           </table>
           <p style="font-size:12px;line-height:1.5;color:hsl(218,12%,45%);margin:24px 0 0;text-align:center;">
-            Log in to your account to accept the invitation.
-            <br/>Don't have an account yet? Sign up first, then the invite will be waiting for you.
+            Already have an account? Simply log in — your accounts will be linked automatically.
           </p>
         </td></tr>
         <tr><td style="text-align:center;padding-top:24px;">
