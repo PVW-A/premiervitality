@@ -119,7 +119,7 @@ Deno.serve(async (req) => {
       // Group by patient
       const grouped: Record<string, { name: string; items: string[] }> = {};
       for (const r of requests) {
-        const profile = (r as any).profiles;
+        const profile = profileMap[r.user_id];
         const name = `${profile?.first_name || "Unknown"} ${profile?.last_name || ""}`.trim();
         if (!grouped[r.user_id]) {
           grouped[r.user_id] = { name, items: [] };
