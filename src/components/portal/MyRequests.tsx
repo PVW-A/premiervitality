@@ -36,9 +36,11 @@ const SHIPPING_PRICE = 35;
 export default function MyRequests({
   requests,
   onRefresh,
+  membership,
 }: {
   requests: PeptideRequest[];
   onRefresh: () => void;
+  membership?: any;
 }) {
   const [adminRoutes, setAdminRoutes] = useState<Record<string, string>>({});
   const [checkoutRequest, setCheckoutRequest] = useState<PeptideRequest | null>(null);
