@@ -297,6 +297,22 @@ export default function PeptideCheckout({
                     </div>
                   </button>
                 </div>
+
+                {/* Signature confirmation for shipping */}
+                {delivery === "shipping" && (
+                  <div className="pt-2 border-t border-border/50">
+                    <label className="flex items-start gap-2.5 cursor-pointer">
+                      <Checkbox
+                        checked={signatureConfirmed}
+                        onCheckedChange={(v) => setSignatureConfirmed(v === true)}
+                        className="mt-0.5"
+                      />
+                      <span className="text-[11px] text-muted-foreground font-body font-light leading-relaxed">
+                        I confirm someone will be available to <span className="text-foreground font-normal">sign for this package</span> upon delivery. Overnight shipments require an adult signature — undeliverable packages may be returned.
+                      </span>
+                    </label>
+                  </div>
+                )}
               </div>
 
               {/* Total */}
