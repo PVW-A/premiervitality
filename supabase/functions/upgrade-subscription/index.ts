@@ -39,6 +39,7 @@ Deno.serve(async (req) => {
       });
     }
     const userId = claimsData.claims.sub as string;
+    const userEmail = claimsData.claims.email as string;
 
     const { new_tier_id } = await req.json();
     if (!new_tier_id) {
