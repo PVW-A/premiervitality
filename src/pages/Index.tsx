@@ -4,6 +4,8 @@ import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
 import FoundersSection from "@/components/FoundersSection";
 import VitalityScoreSection from "@/components/VitalityScoreSection";
+import BiologicalAgeSection from "@/components/BiologicalAgeSection";
+import BloodworkPanelsSection from "@/components/BloodworkPanelsSection";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
@@ -18,6 +20,8 @@ const Index = () => (
       <HeroSection />
       <AboutSection />
       <VitalityScoreSection />
+      <BiologicalAgeSection />
+      <BloodworkPanelsSection />
       <FoundersSection />
       <CTASection />
     </main>
