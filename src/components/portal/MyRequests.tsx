@@ -162,7 +162,7 @@ export default function MyRequests({
                             const { error } = await supabase
                               .from("peptide_subscriptions")
                               .insert({
-                                user_id: r.user_id || (await supabase.auth.getUser()).data.user?.id,
+                                user_id: (await supabase.auth.getUser()).data.user?.id!,
                                 peptide_id: r.peptide_id,
                                 peptide_name: r.peptide_name,
                                 variation_label: r.variation_label,
