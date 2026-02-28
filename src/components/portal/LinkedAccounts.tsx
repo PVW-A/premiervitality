@@ -60,20 +60,41 @@ export default function LinkedAccounts() {
   const handleSendInvite = async () => {
     if (!user || !inviteEmail.trim()) return;
     setSending(true);
+    const normalizedEmail = inviteEmail.trim().toLowerCase();
     try {
       const { error } = await supabase.from("account_links").insert({
         inviter_user_id: user.id,
-        invitee_email: inviteEmail.trim().toLowerCase(),
+        invitee_email: normalizedEmail,
       } as any);
       if (error) {
         if (error.code === "23505") toast.error("An invite to this email already exists.");
         else toast.error(error.message);
-      } else {
-        toast.success("Invite sent! They'll see it when they log in.");
-        setInviteEmail("");
-        setInviteOpen(false);
-        fetchLinks();
+        return;
       }
+
+      // Fetch inviter's name for the email
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("first_name, last_name")
+        .eq("user_id", user.id)
+        .single();
+      const inviterName = profile
+        ? `${profile.first_name || ""} ${profile.last_name || ""}`.trim()
+        : user.email || "A member";
+
+      // Fire invite email + in-app notification + Slack alert
+      supabase.functions.invoke("send-invite-email", {
+        body: {
+          invitee_email: normalizedEmail,
+          inviter_name: inviterName,
+          inviter_user_id: user.id,
+        },
+      }).catch((err) => console.error("Invite notification error:", err));
+
+      toast.success("Invite sent! They'll receive an email notification.");
+      setInviteEmail("");
+      setInviteOpen(false);
+      fetchLinks();
     } finally {
       setSending(false);
     }
