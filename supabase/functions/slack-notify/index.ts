@@ -162,7 +162,26 @@ Deno.serve(async (req) => {
       });
     }
 
-    // ─── TYPE 5: Weekly Monday order summary ───
+    // ─── TYPE 5: Auto-reorder notification ───
+    if (type === "auto_reorder") {
+      const { patient_name, peptide_name, total_cents, delivery_method } = payload;
+      const total = (total_cents / 100).toFixed(2);
+      const lines = [
+        `🔄 *Monthly Auto-Order Charged*`,
+        `*Patient:* ${patient_name}`,
+        `*Item:* ${peptide_name}`,
+        `*Total:* $${total}`,
+        `*Delivery:* ${delivery_method === "shipping" ? "Overnight Shipping" : "Local Pickup"}`,
+        `_${new Date().toLocaleString("en-US", { timeZone: "America/Denver" })}_`,
+      ].join("\n");
+
+      await slackPost("#orders", lines);
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // ─── TYPE 6: Weekly Monday order summary ───
     if (type === "weekly_summary") {
       const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
       const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
