@@ -466,8 +466,11 @@ const Portal = () => {
               )}
             </section>
 
+            {/* Monthly Auto-Orders */}
+            {user && <PeptideSubscriptions userId={user.id} />}
+
             {/* My Requests */}
-            <MyRequests requests={requests} onRefresh={fetchData} />
+            <MyRequests requests={requests} onRefresh={fetchData} membership={membership} />
 
             {/* Orders */}
             <section>
