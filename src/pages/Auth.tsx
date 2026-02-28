@@ -100,8 +100,10 @@ const Auth = () => {
     setMessage("");
     setLoading(true);
 
+    const normalizedEmail = email.trim().toLowerCase();
+
     if (isLogin) {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password });
       if (error) {
         setError(error.message);
         setLoading(false);
