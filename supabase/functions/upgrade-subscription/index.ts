@@ -281,6 +281,38 @@ Deno.serve(async (req) => {
       })
       .eq("id", membership.id);
 
+    // Sync profile info from Square customer record
+    try {
+      const custDetailRes = await fetch(
+        `${squareBase}/customers/${squareCustomerId}`,
+        { headers: squareHeaders }
+      );
+      const custDetailData = await custDetailRes.json();
+      const sqCust = custDetailData.customer;
+      if (sqCust) {
+        const profileSync: Record<string, unknown> = {};
+        if (sqCust.given_name) profileSync.first_name = sqCust.given_name;
+        if (sqCust.family_name) profileSync.last_name = sqCust.family_name;
+        if (sqCust.phone_number) profileSync.phone = sqCust.phone_number;
+        if (sqCust.birthday) profileSync.birthday = sqCust.birthday;
+        if (sqCust.address) {
+          if (sqCust.address.address_line_1) profileSync.address_line1 = sqCust.address.address_line_1;
+          if (sqCust.address.locality) profileSync.address_city = sqCust.address.locality;
+          if (sqCust.address.administrative_district_level_1) profileSync.address_state = sqCust.address.administrative_district_level_1;
+          if (sqCust.address.postal_code) profileSync.address_zip = sqCust.address.postal_code;
+        }
+        if (Object.keys(profileSync).length > 0) {
+          await adminClient
+            .from("profiles")
+            .update(profileSync)
+            .eq("user_id", userId);
+          console.log(`Synced Square profile data for user ${userId}:`, Object.keys(profileSync));
+        }
+      }
+    } catch (syncErr) {
+      console.error("Non-fatal: failed to sync Square profile data:", syncErr);
+    }
+
     console.log(
       `Subscription ${resultSubscriptionId} upgraded to plan ${newPlanVariationId} for user ${userId}`
     );
