@@ -1,6 +1,6 @@
 import SEO from "@/components/SEO";
 import { useState, useEffect, useMemo } from "react";
-import { ArrowLeft, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import PopularPeptidesCarousel from "@/components/PopularPeptidesCarousel";
@@ -107,27 +107,13 @@ const Peptides = () => {
       />
       <Navbar />
       <PopularPeptidesCarousel />
-      <main className="pt-0 pb-20 px-6">
+      <main className="pb-20 px-6">
         <div className="max-w-5xl mx-auto">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 text-xs tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors font-body font-light mb-10"
-          >
-            <ArrowLeft size={14} strokeWidth={1.2} />
-            Back to Home
-          </Link>
-
-          <p className="text-[10px] tracking-[0.4em] uppercase text-primary/60 text-center mb-4 font-body font-extralight">
-            Exclusive Protocols
-          </p>
-          <h1 className="text-3xl md:text-5xl font-extralight text-center mb-5 tracking-tight font-heading">
-            The Peptide Collection
-          </h1>
-          <p className="text-muted-foreground/60 text-center max-w-md mx-auto mb-12 font-body font-extralight text-sm leading-relaxed">
-            Physician-curated peptide therapies, each protocol individually tailored to your biochemistry. Select a compound below to review clinical applications.
-          </p>
 
           {/* Search */}
+          <p className="text-muted-foreground/60 text-center max-w-md mx-auto mb-8 font-body font-extralight text-sm leading-relaxed">
+            Select a compound below to review clinical applications, dosing, and pricing.
+          </p>
           <div className="max-w-md mx-auto mb-6">
             <div className="relative">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
