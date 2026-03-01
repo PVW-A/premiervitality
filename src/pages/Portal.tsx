@@ -551,7 +551,6 @@ const Portal = () => {
           {[
             { value: "dashboard", icon: Pill, label: "Dashboard" },
             { value: "markers", icon: Activity, label: "Markers" },
-            { value: "news", icon: Newspaper, label: "News" },
             { value: "rewards", icon: Star, label: "Rewards" },
           ].map(({ value, icon: Icon, label }) => (
             <button
