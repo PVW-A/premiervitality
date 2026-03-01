@@ -58,6 +58,26 @@ export default function LinkedAccounts() {
 
   useEffect(() => { fetchLinks(); }, [fetchLinks]);
 
+  // Fetch display names for linked user IDs
+  useEffect(() => {
+    if (!user || links.length === 0) return;
+    const ids = links.map((l) => l.inviter_user_id === user.id ? l.invitee_user_id : l.inviter_user_id).filter(Boolean) as string[];
+    if (ids.length === 0) return;
+    supabase
+      .from("profiles")
+      .select("user_id, first_name, last_name")
+      .in("user_id", ids)
+      .then(({ data }) => {
+        if (!data) return;
+        const map: Record<string, string> = {};
+        for (const p of data) {
+          const name = [p.first_name, p.last_name].filter(Boolean).join(" ").trim();
+          if (name) map[p.user_id] = name;
+        }
+        setLinkedNames(map);
+      });
+  }, [links, user]);
+
   const handleSendInvite = async () => {
     if (!user || !inviteEmail.trim()) return;
     setSending(true);
