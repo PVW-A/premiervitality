@@ -1,5 +1,5 @@
 import SEO from "@/components/SEO";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { openCalendly } from "@/hooks/useCalendly";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -10,16 +10,15 @@ import { useAuth } from "@/hooks/useAuth";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SubscriptionCheckout from "@/components/SubscriptionCheckout";
+import BloodworkBreakdown from "@/components/services/BloodworkBreakdown";
 
 const Services = () => {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
   const navigate = useNavigate();
   const { user, loading } = useAuth();
 
-  // Gate: redirect unauthenticated users to auth
-  useEffect(() => {
-    if (!loading && !user) navigate("/auth?redirect=/services");
-  }, [user, loading, navigate]);
+  // Allow browsing without auth; gate checkout only
+
 
   const { data: tiers, isLoading } = useQuery({
     queryKey: ["membership-tiers"],
@@ -208,6 +207,9 @@ const Services = () => {
                       </div>
                     ))}
                   </div>
+
+                  <BloodworkBreakdown slug={tier.slug} />
+
 
                   <button
                     onClick={() => handleJoin(tier)}
