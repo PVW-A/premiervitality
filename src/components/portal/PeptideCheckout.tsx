@@ -48,7 +48,7 @@ interface PeptideCheckoutProps {
     peptide_id: string;
   } | null;
   includeKit: boolean;
-  deliveryMethod: "pickup" | "shipping";
+  deliveryMethod: "pickup" | "shipping" | "courier";
   isInjectable: boolean;
   onSuccess: () => void;
 }
