@@ -11,6 +11,10 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SubscriptionCheckout from "@/components/SubscriptionCheckout";
 import BloodworkBreakdown from "@/components/services/BloodworkBreakdown";
+import HowItWorks from "@/components/services/HowItWorks";
+import TierComparisonTable from "@/components/services/TierComparisonTable";
+import MembershipFAQ from "@/components/services/MembershipFAQ";
+import SocialProofStrip from "@/components/services/SocialProofStrip";
 
 const Services = () => {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
@@ -118,6 +122,9 @@ const Services = () => {
             discounts.
           </motion.p>
         </section>
+
+        {/* How It Works */}
+        <HowItWorks />
 
         {/* Billing Toggle */}
         <div className="flex justify-center mb-14">
@@ -230,8 +237,17 @@ const Services = () => {
           </div>
         )}
 
+        {/* Comparison Table */}
+        <TierComparisonTable />
+
+        {/* Social Proof */}
+        <SocialProofStrip />
+
+        {/* FAQ */}
+        <MembershipFAQ />
+
         {/* Bottom CTA */}
-        <section className="max-w-3xl mx-auto text-center px-6 mt-20">
+        <section className="max-w-3xl mx-auto text-center px-6">
           <p className="text-muted-foreground font-body font-light text-sm leading-relaxed">
             All memberships include access to our complete peptide catalog with
             member-exclusive pricing. Need help choosing?{" "}
