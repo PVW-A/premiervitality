@@ -100,10 +100,12 @@ Deno.serve(async (req) => {
     // Calculate total in cents
     const addKit = include_injection_kit === true || include_injection_kit === "true";
     const addShipping = typeof delivery_method === "string" && delivery_method.toLowerCase() === "shipping";
+    const addCourier = typeof delivery_method === "string" && delivery_method.toLowerCase() === "courier";
 
     let totalCents = Math.round(price * 100);
     if (addKit) totalCents += INJECTION_KIT_PRICE;
     if (addShipping) totalCents += SHIPPING_PRICE;
+    if (addCourier) totalCents += COURIER_PRICE;
 
     const squareBase = "https://connect.squareup.com/v2";
     const squareHeaders = {
