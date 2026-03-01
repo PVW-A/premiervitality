@@ -48,10 +48,11 @@ interface ProtocolItem {
 
 interface Protocol {
   id: string;
+  category_id: string;
   name: string;
   tier: string;
   description: string | null;
-  items: ProtocolItem[];
+  items: unknown;
   total_cost: number;
   total_price: number;
   duration_weeks: number;
