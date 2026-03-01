@@ -266,7 +266,7 @@ export default function PeptideCheckout({
                 <Label className="text-[10px] tracking-wider uppercase text-muted-foreground font-body font-light">
                   Delivery
                 </Label>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   <button
                     type="button"
                     onClick={() => setDelivery("pickup")}
@@ -295,13 +295,29 @@ export default function PeptideCheckout({
                   >
                     <Truck size={14} strokeWidth={1.2} className={delivery === "shipping" ? "text-primary mt-0.5" : "text-muted-foreground mt-0.5"} />
                     <div>
-                      <p className="text-xs font-body font-light text-foreground">Ship — $35.00</p>
-                      <p className="text-[10px] text-muted-foreground font-body font-light mt-0.5">Overnight priority</p>
+                      <p className="text-xs font-body font-light text-foreground">Ship — $35</p>
+                      <p className="text-[10px] text-muted-foreground font-body font-light mt-0.5">Overnight</p>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDelivery("courier")}
+                    className={cn(
+                      "flex items-start gap-2 p-3 rounded border transition-colors text-left",
+                      delivery === "courier"
+                        ? "border-primary bg-primary/5"
+                        : "border-border bg-secondary/50 hover:border-muted-foreground/30"
+                    )}
+                  >
+                    <Truck size={14} strokeWidth={1.2} className={delivery === "courier" ? "text-primary mt-0.5" : "text-muted-foreground mt-0.5"} />
+                    <div>
+                      <p className="text-xs font-body font-light text-foreground">Courier — $50</p>
+                      <p className="text-[10px] text-muted-foreground font-body font-light mt-0.5">To your door</p>
                     </div>
                   </button>
                 </div>
 
-                {/* Signature confirmation for shipping */}
+                {/* Shipping notice */}
                 {delivery === "shipping" && (
                   <div className="pt-2 border-t border-border/50">
                     <label className="flex items-start gap-2.5 cursor-pointer">
@@ -311,7 +327,7 @@ export default function PeptideCheckout({
                         className="mt-0.5"
                       />
                       <span className="text-[11px] text-muted-foreground font-body font-light leading-relaxed">
-                        I confirm someone will be available to <span className="text-foreground font-normal">sign for this package</span> upon delivery. Overnight shipments require an adult signature — undeliverable packages may be returned.
+                        I understand this shipment requires an <span className="text-foreground font-normal">adult signature</span>. If no one is available to sign, the package will be held at a <span className="text-foreground font-normal">nearby FedEx location</span> for next-day pickup. FedEx will contact you via phone to coordinate.
                       </span>
                     </label>
                   </div>
