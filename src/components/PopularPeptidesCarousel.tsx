@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import peptideVial from "@/assets/peptide-vial.png";
+import peptideVial from "@/assets/pv-branded-vial.png";
 
 interface PeptideItem {
   id: string;
