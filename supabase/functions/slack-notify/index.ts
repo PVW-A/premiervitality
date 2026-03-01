@@ -233,7 +233,7 @@ Deno.serve(async (req) => {
           ? `${r.peptide_name} — ${r.variation_label}`
           : r.peptide_name;
         if (r.include_injection_kit) item += " + Injection Kit";
-        item += ` (${r.delivery_method === "shipping" ? "Ship" : "Pickup"})`;
+        item += ` (${r.delivery_method === "shipping" ? "Ship" : r.delivery_method === "courier" ? "Courier" : "Pickup"})`;
         grouped[r.user_id].items.push(item);
       }
 
