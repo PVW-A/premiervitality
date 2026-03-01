@@ -54,7 +54,7 @@ const BloodworkBreakdown = ({ slug }: Props) => {
   if (!info) return null;
 
   return (
-    <div className="mt-6 border-t border-border pt-5 space-y-4">
+    <div className="mt-6 border-t border-border pt-5 space-y-4 mb-8">
       <p className="text-[10px] tracking-[0.25em] uppercase text-primary font-body font-light">
         Included Bloodwork
       </p>
