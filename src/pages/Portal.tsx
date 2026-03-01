@@ -251,12 +251,10 @@ const Portal = () => {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={(v) => {
-          if (v === "catalog") { navigate("/catalog"); return; }
           setActiveTab(v);
         }} className="w-full">
           <TabsList className="bg-card border border-border rounded-none h-auto p-0 w-full justify-start gap-0 hidden sm:flex">
             {[
-              { value: "catalog", icon: ShoppingBag, label: "Catalog" },
               { value: "dashboard", icon: Pill, label: "Dashboard" },
               { value: "markers", icon: Activity, label: "Vitality Score" },
               { value: "rewards", icon: Star, label: "Rewards" },
