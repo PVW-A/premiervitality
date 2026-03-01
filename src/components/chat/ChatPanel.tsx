@@ -179,6 +179,13 @@ const ChatPanel = ({ open, onClose }: ChatPanelProps) => {
         >
           {/* Header */}
           <div className="flex items-center gap-3 px-5 py-4 border-b border-border/30">
+            <button
+              onClick={handleBack}
+              className="sm:hidden rounded-full p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-colors"
+              aria-label="Go back"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </button>
             <PVMonogram className="w-6 h-6" />
             <div className="flex-1">
               <h3 className="font-heading text-sm font-semibold text-foreground tracking-wide">
