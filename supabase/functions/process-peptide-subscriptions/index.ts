@@ -215,7 +215,7 @@ Deno.serve(async (req) => {
               patient_name: patientName,
               peptide_name: peptideName,
               total_cents: totalCents,
-              delivery_method: addShipping ? "shipping" : "pickup",
+              delivery_method: addCourier ? "courier" : addShipping ? "shipping" : "pickup",
             },
           }),
         }).catch((e) => console.error("Slack error:", e));
