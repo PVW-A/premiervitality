@@ -87,7 +87,7 @@ export default function PopularPeptidesCarousel() {
   const benefitsList = current.benefits.split(",").map((b) => b.trim()).filter(Boolean);
 
   return (
-    <section className="py-24 px-6 relative overflow-hidden">
+    <section className="py-8 px-6 relative overflow-hidden">
       {/* Background glow */}
       <div className="absolute inset-0 pointer-events-none">
         <motion.div
