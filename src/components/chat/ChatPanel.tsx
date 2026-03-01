@@ -27,6 +27,14 @@ const ChatPanel = ({ open, onClose }: ChatPanelProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    onClose();
+    const isPortal = location.pathname.startsWith("/portal");
+    navigate(isPortal ? "/portal" : "/");
+  };
 
   useEffect(() => {
     if (open) inputRef.current?.focus();
