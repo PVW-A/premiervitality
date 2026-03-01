@@ -143,8 +143,8 @@ const Protocols = () => {
         </section>
 
         {/* Category Tabs */}
-        <div className="max-w-6xl mx-auto px-6 mb-12">
-          <div className="flex flex-wrap justify-center gap-2">
+        <div className="max-w-5xl mx-auto px-6 mb-14">
+          <div className="flex flex-wrap justify-center gap-3 md:gap-4">
             {categories?.map((cat) => {
               const Icon = iconMap[cat.icon || ""] || Heart;
               const isActive = cat.id === selectedCatId;
@@ -155,13 +155,13 @@ const Protocols = () => {
                     setActiveCategory(cat.id);
                     setExpandedProtocol(null);
                   }}
-                  className={`flex items-center gap-2 px-4 py-2.5 text-[10px] tracking-[0.18em] uppercase font-body font-light rounded-none border transition-all duration-200 ${
+                  className={`flex items-center gap-2.5 px-6 py-3.5 text-[10px] tracking-[0.2em] uppercase font-body font-light rounded-none border transition-all duration-200 ${
                     isActive
                       ? "bg-primary text-primary-foreground border-primary"
-                      : "border-border text-muted-foreground hover:text-foreground hover:border-primary/40"
+                      : "border-border/60 text-muted-foreground hover:text-foreground hover:border-primary/40"
                   }`}
                 >
-                  <Icon size={14} strokeWidth={1.2} />
+                  <Icon size={16} strokeWidth={1.2} />
                   {cat.name}
                 </button>
               );
