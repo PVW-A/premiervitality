@@ -373,7 +373,7 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
             ) : (
               <div className="space-y-1">
                 {recentTransactions.map(t => {
-                  const total = (t.price || 0) + (t.include_injection_kit ? KIT_PRICE : 0) + (t.delivery_method === "ship" ? SHIPPING_PRICE : 0);
+                  const total = (t.price || 0) + (t.include_injection_kit ? KIT_PRICE : 0) + (t.delivery_method === "courier" ? COURIER_PRICE : (t.delivery_method === "ship" || t.delivery_method === "shipping") ? SHIPPING_PRICE : 0);
                   return (
                     <div key={t.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                       <div className="min-w-0">
