@@ -8,6 +8,7 @@ const Navbar = () => {
   const links = [
     { label: "About", href: "/about" },
     { label: "Membership", href: "/services" },
+    { label: "Protocols", href: "/protocols" },
     { label: "Peptides", href: "/peptides" },
     { label: "FAQ", href: "/faq" },
   ];
