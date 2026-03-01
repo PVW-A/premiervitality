@@ -57,6 +57,7 @@ const SQUARE_APP_ID = "sq0idp-kWcPexAAa-82PgTZwZqotA";
 const SQUARE_LOCATION_ID = "L85CTM0203T96";
 const INJECTION_KIT_PRICE = 30;
 const SHIPPING_PRICE = 35;
+const COURIER_PRICE = 50;
 const PICKUP_ADDRESS = "1870 W. Fry Rd. Ste 1, Chandler, AZ 85224";
 
 export default function PeptideCheckout({
