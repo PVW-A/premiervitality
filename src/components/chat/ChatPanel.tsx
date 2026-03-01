@@ -173,7 +173,7 @@ const ChatPanel = ({ open, onClose }: ChatPanelProps) => {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.97 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
-          className="fixed z-50 flex flex-col border border-border/40 bg-background shadow-2xl overflow-hidden
+          className="fixed z-[60] flex flex-col border border-border/40 bg-background shadow-2xl overflow-hidden
             inset-0 rounded-none
             sm:inset-auto sm:bottom-20 sm:right-6 sm:w-[380px] sm:max-w-[calc(100vw-2rem)] sm:h-[520px] sm:max-h-[70vh] sm:rounded-2xl"
         >
