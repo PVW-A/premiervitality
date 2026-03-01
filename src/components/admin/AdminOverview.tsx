@@ -148,7 +148,8 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
       peptideRevenue += r.price || 0;
       peptideCost += costMap.get(r.peptide_id) || 0;
       if (r.include_injection_kit) { kitCount++; kitRevenue += KIT_PRICE; kitCost += KIT_COST; }
-      if (r.delivery_method === "ship") { shipCount++; shippingRevenue += SHIPPING_PRICE; shippingCost += SHIPPING_COST; }
+      if (r.delivery_method === "ship" || r.delivery_method === "shipping") { shipCount++; shippingRevenue += SHIPPING_PRICE; shippingCost += SHIPPING_COST; }
+      if (r.delivery_method === "courier") { shipCount++; shippingRevenue += COURIER_PRICE; shippingCost += COURIER_COST; }
     });
     const totalRevenue = peptideRevenue + kitRevenue + shippingRevenue;
     const totalCost = peptideCost + kitCost + shippingCost;
