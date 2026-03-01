@@ -95,9 +95,11 @@ Deno.serve(async (req) => {
         // Calculate total
         const addKit = sub.include_injection_kit === true;
         const addShipping = sub.delivery_method === "shipping";
+        const addCourier = sub.delivery_method === "courier";
         let totalCents = Math.round(sub.price * 100);
         if (addKit) totalCents += INJECTION_KIT_PRICE;
         if (addShipping) totalCents += SHIPPING_PRICE;
+        if (addCourier) totalCents += COURIER_PRICE;
 
         const peptideName = sub.variation_label
           ? `${sub.peptide_name} — ${sub.variation_label}`
