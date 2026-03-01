@@ -10,7 +10,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import PVMonogram from "@/components/PVMonogram";
 import MyRequests from "@/components/portal/MyRequests";
 import PremierMarkers from "@/components/portal/PremierMarkers";
-import PortalNews from "@/components/portal/PortalNews";
 import LoyaltyRewards from "@/components/portal/LoyaltyRewards";
 import SubscriptionCheckout from "@/components/SubscriptionCheckout";
 import BloodworkUploader from "@/components/portal/BloodworkUploader";
