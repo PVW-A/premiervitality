@@ -6,4 +6,4 @@ Disallow: /auth
 Disallow: /reset-password
 Disallow: /catalog
 
-Sitemap: https://premiervitality.lovable.app/sitemap.xml
+Sitemap: https://www.premiervitalityandwellness.com/sitemap.xml
