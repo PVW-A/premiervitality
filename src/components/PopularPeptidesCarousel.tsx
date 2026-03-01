@@ -120,7 +120,7 @@ export default function PopularPeptidesCarousel() {
           >
             <Sparkles size={12} strokeWidth={1.5} className="text-primary" />
             <span className="text-[10px] tracking-[0.3em] uppercase text-primary font-body font-light">
-              Featured Protocols
+              Popular Peptides
             </span>
           </div>
           <h2 className="text-3xl md:text-5xl font-heading font-extralight text-foreground tracking-tight">
