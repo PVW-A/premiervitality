@@ -1,10 +1,9 @@
 import SEO from "@/components/SEO";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
-import AboutSection from "@/components/AboutSection";
 import FoundersSection from "@/components/FoundersSection";
-import VitalityScoreSection from "@/components/VitalityScoreSection";
-import BiologicalAgeSection from "@/components/BiologicalAgeSection";
+import AboutSection from "@/components/AboutSection";
+import HealthIntelligenceSection from "@/components/HealthIntelligenceSection";
 import BloodworkPanelsSection from "@/components/BloodworkPanelsSection";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
@@ -18,12 +17,10 @@ const Index = () => (
     <Navbar />
     <main>
       <HeroSection />
-      <AboutSection />
-      <VitalityScoreSection />
-      <BiologicalAgeSection />
-      <BloodworkPanelsSection />
-      
       <FoundersSection />
+      <AboutSection />
+      <HealthIntelligenceSection />
+      <BloodworkPanelsSection />
       <CTASection />
     </main>
     <Footer />
