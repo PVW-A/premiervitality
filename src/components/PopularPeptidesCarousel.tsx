@@ -259,16 +259,18 @@ export default function PopularPeptidesCarousel() {
           ))}
         </div>
 
-        {/* CTA */}
-        <div className="text-center mt-10">
-          <Link
-            to="/peptides"
-            className="inline-flex items-center gap-2 text-xs tracking-[0.2em] uppercase font-body font-light text-primary hover:text-foreground transition-colors"
-          >
-            View All Protocols
-            <ChevronRight size={14} strokeWidth={1.3} />
-          </Link>
-        </div>
+        {/* CTA — hide when already on peptides page */}
+        {!isOnPeptidePage && (
+          <div className="text-center mt-10">
+            <Link
+              to="/peptides"
+              className="inline-flex items-center gap-2 text-xs tracking-[0.2em] uppercase font-body font-light text-primary hover:text-foreground transition-colors"
+            >
+              View All Protocols
+              <ChevronRight size={14} strokeWidth={1.3} />
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );
