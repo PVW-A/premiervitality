@@ -8,6 +8,7 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const links = [
     { label: "About", href: "/about" },
+    { label: "Membership", href: "/services" },
     { label: "FAQ", href: "/faq" },
     { label: "Peptides", href: "/peptides" },
     { label: "News", href: "/news" },
