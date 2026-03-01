@@ -19,7 +19,7 @@ import Terms from "./pages/Terms";
 import Disclaimer from "./pages/Disclaimer";
 import Services from "./pages/Services";
 import DrJamesStory from "./pages/DrJamesStory";
-
+import ServiceArea from "./pages/ServiceArea";
 import FAQ from "./pages/FAQ";
 import SmsConsent from "./pages/SmsConsent";
 import ResetPassword from "./pages/ResetPassword";
