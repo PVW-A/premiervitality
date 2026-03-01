@@ -37,7 +37,7 @@ const SmsConsent = () => (
           <p>After opting out, you will receive one final confirmation message. Please note that opting out of promotional messages does not affect 2FA security messages, which are required for account security and can be disabled by turning off two-factor authentication in your portal settings.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">5. Help</h2>
-          <p>For assistance, reply <strong className="text-foreground">HELP</strong> to any of our messages or email us at <strong className="text-foreground">info@premiervitalitywellness.com</strong>.</p>
+          <p>For assistance, reply <strong className="text-foreground">HELP</strong> to any of our messages or email us at <strong className="text-foreground">info@premiervitalityandwellness.com</strong>.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">6. Message &amp; Data Rates</h2>
           <p>Standard message and data rates may apply based on your mobile carrier plan. Premier Vitality &amp; Wellness is not responsible for any charges incurred from your wireless provider.</p>
