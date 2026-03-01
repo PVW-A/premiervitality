@@ -1,4 +1,5 @@
 import { useAuth } from "@/hooks/useAuth";
+import PopularPeptidesCarousel from "@/components/PopularPeptidesCarousel";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
