@@ -376,136 +376,153 @@ const Portal = () => {
               </section>
             )}
 
-            {/* Quick action — always visible */}
-            <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate("/catalog")}
-                className="text-xs tracking-wider uppercase font-body font-light rounded-none border-primary/40 text-primary hover:bg-primary/10"
-              >
-                <ShoppingBag size={14} className="mr-1.5" /> Browse Catalog
-              </Button>
-            </div>
-
-            {/* Linked Accounts — always shown since it has its own invite CTA */}
-            <LinkedAccounts />
-
-            {/* Active content sections — only rendered when there's data */}
-            {peptides.length > 0 && (
-              <section>
-                <div className="flex items-center gap-2 mb-3">
-                  <Pill size={16} strokeWidth={1.2} className="text-primary" />
-                  <h2 className="text-xs tracking-[0.2em] uppercase text-foreground font-body font-light">
-                    Your Peptides
-                  </h2>
-                </div>
-                <div className="grid gap-3 md:grid-cols-2">
-                  {peptides.map((p) => (
-                    <Card key={p.id} className="border-border bg-card">
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-base font-heading font-light text-foreground">
-                          {p.peptide_name}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-2">
-                        {p.dosage && (
-                          <div className="flex justify-between text-sm font-body font-light">
-                            <span className="text-muted-foreground">Dosage</span>
-                            <span className="text-foreground">{p.dosage}</span>
-                          </div>
-                        )}
-                        <div className="flex justify-between text-sm font-body font-light">
-                          <span className="text-muted-foreground">Remaining</span>
-                          <span className="text-foreground">{p.quantity_remaining} units</span>
-                        </div>
-                        <div className="flex justify-between text-sm font-body font-light items-center">
-                          <span className="text-muted-foreground flex items-center gap-1">
-                            <Clock size={12} strokeWidth={1.2} /> Supply
-                          </span>
-                          <span className={`text-foreground ${p.quantity_remaining / p.usage_per_day <= 7 ? "text-destructive" : ""}`}>
-                            {getDaysRemaining(p.quantity_remaining, p.usage_per_day)}
-                          </span>
-                        </div>
-                        {p.notes && (
-                          <p className="text-xs text-muted-foreground font-body font-light pt-2 border-t border-border">
-                            {p.notes}
-                          </p>
-                        )}
-                        {user && <PeptideReminders peptide={p} userId={user.id} />}
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Monthly Auto-Orders — component self-hides when empty */}
-            {user && <PeptideSubscriptions userId={user.id} />}
-
-            {/* My Requests — only show when there are requests */}
-            {requests.length > 0 && (
-              <MyRequests requests={requests} onRefresh={fetchData} membership={membership} />
-            )}
-
-            {/* Orders — only show when there are orders */}
-            {orders.length > 0 && (
-              <section>
-                <div className="flex items-center gap-2 mb-3">
-                  <Package size={16} strokeWidth={1.2} className="text-primary" />
-                  <h2 className="text-xs tracking-[0.2em] uppercase text-foreground font-body font-light">
-                    Orders
-                  </h2>
-                </div>
-                <div className="space-y-2">
-                  {orders.map((o) => (
-                    <Card key={o.id} className="border-border bg-card">
-                      <CardContent className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline" className={statusColor[o.status] || ""}>
-                            {o.status}
-                          </Badge>
-                          <span className="text-xs text-muted-foreground font-body font-light">
-                            {new Date(o.created_at).toLocaleDateString()}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          {o.tracking_number && (
-                            <span className="text-xs text-muted-foreground font-body font-light">
-                              Tracking: {o.tracking_number}
-                            </span>
-                          )}
-                          {o.expected_delivery && (
-                            <span className="text-xs text-muted-foreground font-body font-light">
-                              ETA: {new Date(o.expected_delivery).toLocaleDateString()}
-                            </span>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Empty state — show only when nothing exists at all */}
-            {!hasActivity && membership && (
-              <Card className="border-border bg-card/50">
-                <CardContent className="py-12 text-center space-y-3">
-                  <Pill size={28} strokeWidth={1} className="text-primary/40 mx-auto" />
-                  <p className="text-sm text-muted-foreground font-body font-light">
-                    You're all set! Browse the catalog to request your first peptide.
-                  </p>
+            {/* Member-only sections */}
+            {membership ? (
+              <>
+                {/* Quick action */}
+                <div className="flex items-center gap-3">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => navigate("/catalog")}
                     className="text-xs tracking-wider uppercase font-body font-light rounded-none border-primary/40 text-primary hover:bg-primary/10"
                   >
-                    Browse Catalog
+                    <ShoppingBag size={14} className="mr-1.5" /> Browse Catalog
                   </Button>
-                </CardContent>
-              </Card>
+                </div>
+
+                {/* Linked Accounts */}
+                <LinkedAccounts />
+
+                {/* Peptide Inventory */}
+                {peptides.length > 0 && (
+                  <section>
+                    <div className="flex items-center gap-2 mb-3">
+                      <Pill size={16} strokeWidth={1.2} className="text-primary" />
+                      <h2 className="text-xs tracking-[0.2em] uppercase text-foreground font-body font-light">
+                        Your Peptides
+                      </h2>
+                    </div>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      {peptides.map((p) => (
+                        <Card key={p.id} className="border-border bg-card">
+                          <CardHeader className="pb-2">
+                            <CardTitle className="text-base font-heading font-light text-foreground">
+                              {p.peptide_name}
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-2">
+                            {p.dosage && (
+                              <div className="flex justify-between text-sm font-body font-light">
+                                <span className="text-muted-foreground">Dosage</span>
+                                <span className="text-foreground">{p.dosage}</span>
+                              </div>
+                            )}
+                            <div className="flex justify-between text-sm font-body font-light">
+                              <span className="text-muted-foreground">Remaining</span>
+                              <span className="text-foreground">{p.quantity_remaining} units</span>
+                            </div>
+                            <div className="flex justify-between text-sm font-body font-light items-center">
+                              <span className="text-muted-foreground flex items-center gap-1">
+                                <Clock size={12} strokeWidth={1.2} /> Supply
+                              </span>
+                              <span className={`text-foreground ${p.quantity_remaining / p.usage_per_day <= 7 ? "text-destructive" : ""}`}>
+                                {getDaysRemaining(p.quantity_remaining, p.usage_per_day)}
+                              </span>
+                            </div>
+                            {p.notes && (
+                              <p className="text-xs text-muted-foreground font-body font-light pt-2 border-t border-border">
+                                {p.notes}
+                              </p>
+                            )}
+                            {user && <PeptideReminders peptide={p} userId={user.id} />}
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {/* Monthly Auto-Orders */}
+                {user && <PeptideSubscriptions userId={user.id} />}
+
+                {/* My Requests */}
+                {requests.length > 0 && (
+                  <MyRequests requests={requests} onRefresh={fetchData} membership={membership} />
+                )}
+
+                {/* Orders */}
+                {orders.length > 0 && (
+                  <section>
+                    <div className="flex items-center gap-2 mb-3">
+                      <Package size={16} strokeWidth={1.2} className="text-primary" />
+                      <h2 className="text-xs tracking-[0.2em] uppercase text-foreground font-body font-light">
+                        Orders
+                      </h2>
+                    </div>
+                    <div className="space-y-2">
+                      {orders.map((o) => (
+                        <Card key={o.id} className="border-border bg-card">
+                          <CardContent className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline" className={statusColor[o.status] || ""}>
+                                {o.status}
+                              </Badge>
+                              <span className="text-xs text-muted-foreground font-body font-light">
+                                {new Date(o.created_at).toLocaleDateString()}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              {o.tracking_number && (
+                                <span className="text-xs text-muted-foreground font-body font-light">
+                                  Tracking: {o.tracking_number}
+                                </span>
+                              )}
+                              {o.expected_delivery && (
+                                <span className="text-xs text-muted-foreground font-body font-light">
+                                  ETA: {new Date(o.expected_delivery).toLocaleDateString()}
+                                </span>
+                              )}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {/* Empty state for members with no activity */}
+                {!hasActivity && (
+                  <Card className="border-border bg-card/50">
+                    <CardContent className="py-12 text-center space-y-3">
+                      <Pill size={28} strokeWidth={1} className="text-primary/40 mx-auto" />
+                      <p className="text-sm text-muted-foreground font-body font-light">
+                        You're all set! Browse the catalog to request your first peptide.
+                      </p>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => navigate("/catalog")}
+                        className="text-xs tracking-wider uppercase font-body font-light rounded-none border-primary/40 text-primary hover:bg-primary/10"
+                      >
+                        Browse Catalog
+                      </Button>
+                    </CardContent>
+                  </Card>
+                )}
+              </>
+            ) : (
+              /* Non-member — just show a prompt to subscribe */
+              !tiers && (
+                <Card className="border-border bg-card/50">
+                  <CardContent className="py-12 text-center space-y-3">
+                    <Sparkles size={28} strokeWidth={1} className="text-primary/40 mx-auto" />
+                    <p className="text-sm text-muted-foreground font-body font-light">
+                      Choose a membership plan above to unlock your dashboard.
+                    </p>
+                  </CardContent>
+                </Card>
+              )
             )}
           </TabsContent>
 
