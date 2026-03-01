@@ -22,7 +22,7 @@ import ForcePasswordChangeDialog from "@/components/portal/ForcePasswordChangeDi
 import UserSettingsMenu from "@/components/portal/UserSettingsMenu";
 import NotificationCenter from "@/components/portal/NotificationCenter";
 import LinkedAccounts from "@/components/portal/LinkedAccounts";
-import { Pill, Package, Clock, Activity, Newspaper, Star, Check, Sparkles, ArrowUp, ShoppingBag } from "lucide-react";
+import { Pill, Package, Clock, Activity, Star, Check, Sparkles, ArrowUp, ShoppingBag } from "lucide-react";
 import { type BiomarkerResult, getAllMarkers, computeVitalityScore } from "@/lib/vitality";
 
 interface PatientPeptide {
