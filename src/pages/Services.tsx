@@ -11,6 +11,10 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SubscriptionCheckout from "@/components/SubscriptionCheckout";
 import BloodworkBreakdown from "@/components/services/BloodworkBreakdown";
+import HowItWorks from "@/components/services/HowItWorks";
+import TierComparisonTable from "@/components/services/TierComparisonTable";
+import MembershipFAQ from "@/components/services/MembershipFAQ";
+import SocialProofStrip from "@/components/services/SocialProofStrip";
 
 const Services = () => {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
