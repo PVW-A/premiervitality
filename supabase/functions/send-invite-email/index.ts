@@ -142,7 +142,7 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         from: "Premier Vitality <noreply@premiervitalityandwellness.com>",
         to: [invitee_email],
-        subject: `${senderName} invited you to link accounts on Premier Vitality`,
+        subject: `${senderName} invited you to join Premier Vitality & Wellness`,
         html: emailHtml,
       }),
     });
