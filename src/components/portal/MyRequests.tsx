@@ -133,7 +133,7 @@ export default function MyRequests({
                               <>${(
                                 r.price +
                                 (r.include_injection_kit ? INJECTION_KIT_PRICE : 0) +
-                                (r.delivery_method === "shipping" ? SHIPPING_PRICE : 0)
+                                (r.delivery_method === "shipping" ? SHIPPING_PRICE : r.delivery_method === "courier" ? COURIER_PRICE : 0)
                               ).toFixed(2)}</>
                             ) : (
                               <>${r.price.toFixed(2)}</>
