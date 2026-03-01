@@ -794,6 +794,89 @@ export type Database = {
         }
         Relationships: []
       }
+      protocol_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+          slug: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          slug: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      protocols: {
+        Row: {
+          category_id: string
+          created_at: string
+          description: string | null
+          duration_weeks: number
+          id: string
+          items: Json
+          name: string
+          sort_order: number
+          tier: string
+          total_cost: number
+          total_price: number
+          updated_at: string
+        }
+        Insert: {
+          category_id: string
+          created_at?: string
+          description?: string | null
+          duration_weeks?: number
+          id?: string
+          items?: Json
+          name: string
+          sort_order?: number
+          tier: string
+          total_cost?: number
+          total_price?: number
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string
+          created_at?: string
+          description?: string | null
+          duration_weeks?: number
+          id?: string
+          items?: Json
+          name?: string
+          sort_order?: number
+          tier?: string
+          total_cost?: number
+          total_price?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "protocols_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "protocol_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trusted_devices: {
         Row: {
           created_at: string
