@@ -20,6 +20,7 @@ interface PeptideSub {
 
 const INJECTION_KIT_PRICE = 30;
 const SHIPPING_PRICE = 35;
+const COURIER_PRICE = 50;
 
 export default function PeptideSubscriptions({ userId }: { userId: string }) {
   const [subs, setSubs] = useState<PeptideSub[]>([]);
