@@ -532,10 +532,8 @@ const Portal = () => {
             <PremierMarkers />
           </TabsContent>
 
-          {/* Peptide News Tab */}
-          <TabsContent value="news" className="mt-6">
-            <PortalNews />
-          </TabsContent>
+
+
 
           {/* Rewards Tab */}
           <TabsContent value="rewards" className="mt-6">
