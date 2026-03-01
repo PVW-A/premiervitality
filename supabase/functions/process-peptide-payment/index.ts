@@ -283,7 +283,7 @@ Deno.serve(async (req) => {
             total_cents: totalCents,
             cost_cents: costCents,
             include_kit: addKit,
-            delivery_method: addShipping ? "shipping" : "pickup",
+            delivery_method: addCourier ? "courier" : addShipping ? "shipping" : "pickup",
             request_id,
           },
         }),
