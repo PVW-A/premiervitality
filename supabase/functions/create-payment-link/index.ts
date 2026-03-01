@@ -8,7 +8,9 @@ const corsHeaders = {
 
 const INJECTION_KIT_PRICE = 3000; // $30.00 in cents
 const SHIPPING_PRICE = 3500; // $35.00 in cents
+const COURIER_PRICE = 5000; // $50.00 in cents
 const SHIPPING_SKU = "SHIP-FEDEX-ONP";
+const COURIER_SKU = "SHIP-COURIER-LOCAL";
 const INJECTION_KIT_SKU = "ET-INS-05ML-31G-516-40";
 
 Deno.serve(async (req) => {
