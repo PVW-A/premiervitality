@@ -9,9 +9,9 @@ const stats = [
 ];
 
 const SocialProofStrip = () => (
-  <section className="max-w-5xl mx-auto px-6 mb-20">
-    <div className="border border-border bg-card p-8 md:p-12">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+  <section className="max-w-5xl mx-auto px-6 mb-14 md:mb-20">
+    <div className="border border-border bg-card p-6 md:p-12">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-8">
         {stats.map((stat, i) => (
           <motion.div
             key={stat.label}

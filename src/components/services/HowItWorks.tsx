@@ -20,17 +20,17 @@ const steps = [
 ];
 
 const HowItWorks = () => (
-  <section className="max-w-5xl mx-auto px-6 mb-20">
+  <section className="max-w-5xl mx-auto px-6 mb-14 md:mb-20">
     <motion.p
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="text-center text-xs tracking-[0.35em] uppercase text-primary font-body font-light mb-10"
+      className="text-center text-xs tracking-[0.35em] uppercase text-primary font-body font-light mb-6 md:mb-10"
     >
       How It Works
     </motion.p>
 
-    <div className="grid md:grid-cols-3 gap-8">
+    <div className="grid md:grid-cols-3 gap-5 md:gap-8">
       {steps.map((step, i) => (
         <motion.div
           key={step.title}

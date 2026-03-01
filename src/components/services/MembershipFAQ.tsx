@@ -34,7 +34,7 @@ const faqs = [
 ];
 
 const MembershipFAQ = () => (
-  <section className="max-w-3xl mx-auto px-6 mb-20">
+  <section className="max-w-3xl mx-auto px-6 mb-14 md:mb-20">
     <motion.p
       initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
