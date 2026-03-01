@@ -208,6 +208,9 @@ const Services = () => {
                     ))}
                   </div>
 
+                  <BloodworkBreakdown slug={tier.slug} />
+
+
                   <button
                     onClick={() => handleJoin(tier)}
                     disabled={isCurrentTier}
