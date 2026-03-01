@@ -20,6 +20,7 @@ interface PeptideSub {
 
 const INJECTION_KIT_PRICE = 30;
 const SHIPPING_PRICE = 35;
+const COURIER_PRICE = 50;
 
 export default function PeptideSubscriptions({ userId }: { userId: string }) {
   const [subs, setSubs] = useState<PeptideSub[]>([]);
@@ -79,7 +80,7 @@ export default function PeptideSubscriptions({ userId }: { userId: string }) {
           const total =
             sub.price +
             (sub.include_injection_kit ? INJECTION_KIT_PRICE : 0) +
-            (sub.delivery_method === "shipping" ? SHIPPING_PRICE : 0);
+            (sub.delivery_method === "shipping" ? SHIPPING_PRICE : sub.delivery_method === "courier" ? COURIER_PRICE : 0);
 
           return (
             <Card key={sub.id} className="border-border bg-card">
@@ -103,7 +104,7 @@ export default function PeptideSubscriptions({ userId }: { userId: string }) {
                       ${total.toFixed(2)}/month
                       {sub.include_injection_kit && " · Kit included"}
                       {" · "}
-                      {sub.delivery_method === "shipping" ? "Shipped" : "Pickup"}
+                      {sub.delivery_method === "shipping" ? "Shipped" : sub.delivery_method === "courier" ? "Courier" : "Pickup"}
                     </p>
                     {sub.status !== "cancelled" && (
                       <p className="text-[10px] text-muted-foreground/70 font-body font-light">

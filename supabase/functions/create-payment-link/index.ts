@@ -8,7 +8,9 @@ const corsHeaders = {
 
 const INJECTION_KIT_PRICE = 3000; // $30.00 in cents
 const SHIPPING_PRICE = 3500; // $35.00 in cents
+const COURIER_PRICE = 5000; // $50.00 in cents
 const SHIPPING_SKU = "SHIP-FEDEX-ONP";
+const COURIER_SKU = "SHIP-COURIER-LOCAL";
 const INJECTION_KIT_SKU = "ET-INS-05ML-31G-516-40";
 
 Deno.serve(async (req) => {
@@ -120,11 +122,15 @@ Deno.serve(async (req) => {
       include_injection_kit === true || include_injection_kit === "true";
 
     const normalizedDeliveryMethod =
-      typeof delivery_method === "string" &&
-      delivery_method.toLowerCase() === "shipping"
-        ? "shipping"
+      typeof delivery_method === "string"
+        ? delivery_method.toLowerCase() === "shipping"
+          ? "shipping"
+          : delivery_method.toLowerCase() === "courier"
+            ? "courier"
+            : "pickup"
         : "pickup";
     const addShipping = normalizedDeliveryMethod === "shipping";
+    const addCourier = normalizedDeliveryMethod === "courier";
 
     const peptideName = requestRow.variation_label
       ? `${requestRow.peptide_name} — ${requestRow.variation_label}`
@@ -160,6 +166,18 @@ Deno.serve(async (req) => {
         note: `SKU: ${SHIPPING_SKU}`,
         base_price_money: {
           amount: SHIPPING_PRICE,
+          currency: "USD",
+        },
+      });
+    }
+
+    if (addCourier) {
+      lineItems.push({
+        name: "Courier Delivery",
+        quantity: "1",
+        note: `SKU: ${COURIER_SKU}`,
+        base_price_money: {
+          amount: COURIER_PRICE,
           currency: "USD",
         },
       });

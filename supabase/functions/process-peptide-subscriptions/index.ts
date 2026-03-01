@@ -8,6 +8,7 @@ const corsHeaders = {
 
 const INJECTION_KIT_PRICE = 3000; // cents
 const SHIPPING_PRICE = 3500; // cents
+const COURIER_PRICE = 5000; // cents
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -94,9 +95,11 @@ Deno.serve(async (req) => {
         // Calculate total
         const addKit = sub.include_injection_kit === true;
         const addShipping = sub.delivery_method === "shipping";
+        const addCourier = sub.delivery_method === "courier";
         let totalCents = Math.round(sub.price * 100);
         if (addKit) totalCents += INJECTION_KIT_PRICE;
         if (addShipping) totalCents += SHIPPING_PRICE;
+        if (addCourier) totalCents += COURIER_PRICE;
 
         const peptideName = sub.variation_label
           ? `${sub.peptide_name} — ${sub.variation_label}`
@@ -122,6 +125,13 @@ Deno.serve(async (req) => {
             name: "Overnight Shipping",
             quantity: "1",
             base_price_money: { amount: SHIPPING_PRICE, currency: "USD" },
+          });
+        }
+        if (addCourier) {
+          lineItems.push({
+            name: "Courier Delivery",
+            quantity: "1",
+            base_price_money: { amount: COURIER_PRICE, currency: "USD" },
           });
         }
 
@@ -178,7 +188,7 @@ Deno.serve(async (req) => {
           price: sub.price,
           status: "paid",
           include_injection_kit: addKit,
-          delivery_method: addShipping ? "shipping" : "pickup",
+           delivery_method: addCourier ? "courier" : addShipping ? "shipping" : "pickup",
           square_order_id: orderData.order.id,
         });
 
@@ -205,7 +215,7 @@ Deno.serve(async (req) => {
               patient_name: patientName,
               peptide_name: peptideName,
               total_cents: totalCents,
-              delivery_method: addShipping ? "shipping" : "pickup",
+              delivery_method: addCourier ? "courier" : addShipping ? "shipping" : "pickup",
             },
           }),
         }).catch((e) => console.error("Slack error:", e));

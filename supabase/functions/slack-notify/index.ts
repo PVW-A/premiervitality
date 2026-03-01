@@ -101,7 +101,7 @@ Deno.serve(async (req) => {
         `*Patient:* ${patient_name}`,
         `*Item:* ${peptide_name}`,
         include_kit ? `• Injection Kit included` : null,
-        `*Delivery:* ${delivery_method === "shipping" ? "Overnight Shipping" : "Local Pickup"}`,
+        `*Delivery:* ${delivery_method === "shipping" ? "Overnight Shipping" : delivery_method === "courier" ? "Courier Delivery" : "Local Pickup"}`,
         `*Revenue:* $${revenue}  |  *Cost:* $${cost}  |  *Profit:* $${profit}`,
         `_Request ID: ${request_id}_`,
       ].filter(Boolean).join("\n");
@@ -171,7 +171,7 @@ Deno.serve(async (req) => {
         `*Patient:* ${patient_name}`,
         `*Item:* ${peptide_name}`,
         `*Total:* $${total}`,
-        `*Delivery:* ${delivery_method === "shipping" ? "Overnight Shipping" : "Local Pickup"}`,
+        `*Delivery:* ${delivery_method === "shipping" ? "Overnight Shipping" : delivery_method === "courier" ? "Courier Delivery" : "Local Pickup"}`,
         `_${new Date().toLocaleString("en-US", { timeZone: "America/Denver" })}_`,
       ].join("\n");
 
@@ -233,7 +233,7 @@ Deno.serve(async (req) => {
           ? `${r.peptide_name} — ${r.variation_label}`
           : r.peptide_name;
         if (r.include_injection_kit) item += " + Injection Kit";
-        item += ` (${r.delivery_method === "shipping" ? "Ship" : "Pickup"})`;
+        item += ` (${r.delivery_method === "shipping" ? "Ship" : r.delivery_method === "courier" ? "Courier" : "Pickup"})`;
         grouped[r.user_id].items.push(item);
       }
 

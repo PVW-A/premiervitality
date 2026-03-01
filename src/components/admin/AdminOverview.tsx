@@ -76,6 +76,8 @@ const KIT_PRICE = 30;
 const KIT_COST = 12;
 const SHIPPING_PRICE = 35;
 const SHIPPING_COST = 35;
+const COURIER_PRICE = 50;
+const COURIER_COST = 35;
 
 type PresetKey = "today" | "7d" | "30d" | "90d" | "ytd" | "all";
 
@@ -146,7 +148,8 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
       peptideRevenue += r.price || 0;
       peptideCost += costMap.get(r.peptide_id) || 0;
       if (r.include_injection_kit) { kitCount++; kitRevenue += KIT_PRICE; kitCost += KIT_COST; }
-      if (r.delivery_method === "ship") { shipCount++; shippingRevenue += SHIPPING_PRICE; shippingCost += SHIPPING_COST; }
+      if (r.delivery_method === "ship" || r.delivery_method === "shipping") { shipCount++; shippingRevenue += SHIPPING_PRICE; shippingCost += SHIPPING_COST; }
+      if (r.delivery_method === "courier") { shipCount++; shippingRevenue += COURIER_PRICE; shippingCost += COURIER_COST; }
     });
     const totalRevenue = peptideRevenue + kitRevenue + shippingRevenue;
     const totalCost = peptideCost + kitCost + shippingCost;
@@ -159,8 +162,10 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
     filteredRequests.forEach(r => {
       const day = format(new Date(r.created_at), "MMM d");
       const existing = buckets.get(day) || { revenue: 0, profit: 0, orders: 0 };
-      const rev = (r.price || 0) + (r.include_injection_kit ? KIT_PRICE : 0) + (r.delivery_method === "ship" ? SHIPPING_PRICE : 0);
-      const cost = (costMap.get(r.peptide_id) || 0) + (r.include_injection_kit ? KIT_COST : 0) + (r.delivery_method === "ship" ? SHIPPING_COST : 0);
+      const deliveryRev = r.delivery_method === "courier" ? COURIER_PRICE : (r.delivery_method === "ship" || r.delivery_method === "shipping") ? SHIPPING_PRICE : 0;
+      const deliveryCost = r.delivery_method === "courier" ? COURIER_COST : (r.delivery_method === "ship" || r.delivery_method === "shipping") ? SHIPPING_COST : 0;
+      const rev = (r.price || 0) + (r.include_injection_kit ? KIT_PRICE : 0) + deliveryRev;
+      const cost = (costMap.get(r.peptide_id) || 0) + (r.include_injection_kit ? KIT_COST : 0) + deliveryCost;
       existing.revenue += rev;
       existing.profit += rev - cost;
       existing.orders += 1;
@@ -368,7 +373,7 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
             ) : (
               <div className="space-y-1">
                 {recentTransactions.map(t => {
-                  const total = (t.price || 0) + (t.include_injection_kit ? KIT_PRICE : 0) + (t.delivery_method === "ship" ? SHIPPING_PRICE : 0);
+                  const total = (t.price || 0) + (t.include_injection_kit ? KIT_PRICE : 0) + (t.delivery_method === "courier" ? COURIER_PRICE : (t.delivery_method === "ship" || t.delivery_method === "shipping") ? SHIPPING_PRICE : 0);
                   return (
                     <div key={t.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                       <div className="min-w-0">

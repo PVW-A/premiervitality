@@ -8,6 +8,7 @@ const corsHeaders = {
 
 const INJECTION_KIT_PRICE = 3000; // $30.00 in cents
 const SHIPPING_PRICE = 3500; // $35.00 in cents
+const COURIER_PRICE = 5000; // $50.00 in cents
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -99,10 +100,12 @@ Deno.serve(async (req) => {
     // Calculate total in cents
     const addKit = include_injection_kit === true || include_injection_kit === "true";
     const addShipping = typeof delivery_method === "string" && delivery_method.toLowerCase() === "shipping";
+    const addCourier = typeof delivery_method === "string" && delivery_method.toLowerCase() === "courier";
 
     let totalCents = Math.round(price * 100);
     if (addKit) totalCents += INJECTION_KIT_PRICE;
     if (addShipping) totalCents += SHIPPING_PRICE;
+    if (addCourier) totalCents += COURIER_PRICE;
 
     const squareBase = "https://connect.squareup.com/v2";
     const squareHeaders = {
@@ -135,6 +138,13 @@ Deno.serve(async (req) => {
         name: "Overnight Shipping",
         quantity: "1",
         base_price_money: { amount: SHIPPING_PRICE, currency: "USD" },
+      });
+    }
+    if (addCourier) {
+      lineItems.push({
+        name: "Courier Delivery",
+        quantity: "1",
+        base_price_money: { amount: COURIER_PRICE, currency: "USD" },
       });
     }
 
@@ -234,7 +244,7 @@ Deno.serve(async (req) => {
         status: "paid",
         square_order_id: orderId,
         include_injection_kit: addKit,
-        delivery_method: addShipping ? "shipping" : "pickup",
+        delivery_method: addCourier ? "courier" : addShipping ? "shipping" : "pickup",
         payment_url: null,
       })
       .eq("id", request_id);
@@ -273,7 +283,7 @@ Deno.serve(async (req) => {
             total_cents: totalCents,
             cost_cents: costCents,
             include_kit: addKit,
-            delivery_method: addShipping ? "shipping" : "pickup",
+            delivery_method: addCourier ? "courier" : addShipping ? "shipping" : "pickup",
             request_id,
           },
         }),
