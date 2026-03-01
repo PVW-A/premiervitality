@@ -80,7 +80,7 @@ export default function PeptideSubscriptions({ userId }: { userId: string }) {
           const total =
             sub.price +
             (sub.include_injection_kit ? INJECTION_KIT_PRICE : 0) +
-            (sub.delivery_method === "shipping" ? SHIPPING_PRICE : 0);
+            (sub.delivery_method === "shipping" ? SHIPPING_PRICE : sub.delivery_method === "courier" ? COURIER_PRICE : 0);
 
           return (
             <Card key={sub.id} className="border-border bg-card">
