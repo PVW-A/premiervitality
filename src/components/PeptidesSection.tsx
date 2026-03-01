@@ -50,17 +50,17 @@ const PeptidesSection = () => (
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className="flex flex-wrap justify-center gap-3 md:gap-4 mb-14 max-w-3xl mx-auto"
+        className="flex flex-wrap justify-center gap-2 mb-14 max-w-3xl mx-auto"
       >
         {protocolCategories.map((cat) => {
           const Icon = cat.icon;
           return (
             <div
               key={cat.name}
-              className="border border-border/60 px-6 py-4 flex items-center gap-3 bg-card hover:border-primary/30 transition-colors"
+              className="border border-border/50 px-3 py-2 md:px-5 md:py-3 flex items-center gap-1.5 bg-card hover:border-primary/30 transition-colors"
             >
-              <Icon size={18} strokeWidth={1.2} className="text-primary/60" />
-              <p className="text-[10px] tracking-[0.18em] uppercase font-body font-light text-foreground whitespace-nowrap">
+              <Icon size={13} strokeWidth={1.2} className="text-primary/60 hidden sm:block" />
+              <p className="text-[9px] md:text-[10px] tracking-[0.15em] uppercase font-body font-light text-foreground whitespace-nowrap">
                 {cat.name}
               </p>
             </div>
