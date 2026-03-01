@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Syringe, SprayCan, Pill, Droplets, Check, CheckCircle, Loader2 } from "lucide-react";
-import peptideVial from "@/assets/peptide-vial.png";
+import peptideVial from "@/assets/pv-branded-vial.png";
 import type { PeptideGroup } from "@/components/PeptideCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";

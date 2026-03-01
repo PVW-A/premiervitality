@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import peptideVial from "@/assets/peptide-vial.png";
+import peptideVial from "@/assets/pv-branded-vial.png";
 
 const highlights = [
   { category: "Recovery & Healing", count: 2 },
