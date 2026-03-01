@@ -86,7 +86,7 @@ Deno.serve(async (req) => {
     }
 
     const senderName = inviter_name || "A Premier Vitality member";
-    const signupUrl = "https://premiervitalitywellness.com/auth?tab=signup";
+    const signupUrl = "https://premiervitalityandwellness.com/auth?tab=signup";
 
     // ─── Send invite email via Resend ───
     const emailHtml = `
