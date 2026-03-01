@@ -10,7 +10,6 @@ const Navbar = () => {
     { label: "Membership", href: "/services" },
     { label: "Peptides", href: "/peptides" },
     { label: "FAQ", href: "/faq" },
-    { label: "News", href: "/news" },
   ];
 
   return (
