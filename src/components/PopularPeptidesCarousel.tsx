@@ -87,7 +87,7 @@ export default function PopularPeptidesCarousel() {
   const benefitsList = current.benefits.split(",").map((b) => b.trim()).filter(Boolean);
 
   return (
-    <section className="py-24 px-6 relative overflow-hidden">
+    <section className="py-8 px-6 relative overflow-hidden">
       {/* Background glow */}
       <div className="absolute inset-0 pointer-events-none">
         <motion.div
@@ -109,10 +109,10 @@ export default function PopularPeptidesCarousel() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-14"
+          className="text-center mb-10"
         >
           <div
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full"
             style={{
               background: "hsl(var(--primary) / 0.08)",
               border: "1px solid hsl(var(--primary) / 0.15)",
@@ -123,9 +123,6 @@ export default function PopularPeptidesCarousel() {
               Popular Peptides
             </span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-heading font-extralight text-foreground tracking-tight">
-            Popular Peptides
-          </h2>
         </motion.div>
 
         {/* Carousel card */}
@@ -259,18 +256,6 @@ export default function PopularPeptidesCarousel() {
           ))}
         </div>
 
-        {/* CTA — hide when already on peptides page */}
-        {!isOnPeptidePage && (
-          <div className="text-center mt-10">
-            <Link
-              to="/peptides"
-              className="inline-flex items-center gap-2 text-xs tracking-[0.2em] uppercase font-body font-light text-primary hover:text-foreground transition-colors"
-            >
-              View All Peptides
-              <ChevronRight size={14} strokeWidth={1.3} />
-            </Link>
-          </div>
-        )}
       </div>
     </section>
   );
