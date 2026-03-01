@@ -171,7 +171,7 @@ Deno.serve(async (req) => {
         `*Patient:* ${patient_name}`,
         `*Item:* ${peptide_name}`,
         `*Total:* $${total}`,
-        `*Delivery:* ${delivery_method === "shipping" ? "Overnight Shipping" : "Local Pickup"}`,
+        `*Delivery:* ${delivery_method === "shipping" ? "Overnight Shipping" : delivery_method === "courier" ? "Courier Delivery" : "Local Pickup"}`,
         `_${new Date().toLocaleString("en-US", { timeZone: "America/Denver" })}_`,
       ].join("\n");
 
