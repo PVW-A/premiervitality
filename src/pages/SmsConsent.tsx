@@ -53,8 +53,8 @@ const SmsConsent = () => (
 
           <h2 className="text-lg font-extralight text-foreground pt-4">10. Contact Information</h2>
           <p>Premier Vitality &amp; Wellness<br />
-          Email: <strong className="text-foreground">info@premiervitalitywellness.com</strong><br />
-          Website: <strong className="text-foreground">premiervitalitywellness.com</strong></p>
+          Email: <strong className="text-foreground">info@premiervitalityandwellness.com</strong><br />
+          Website: <strong className="text-foreground">www.premiervitalityandwellness.com</strong></p>
         </div>
       </div>
     </main>

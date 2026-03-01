@@ -107,7 +107,7 @@ Deno.serve(async (req) => {
             You've been invited to link accounts
           </h2>
            <p style="font-size:14px;line-height:1.6;color:hsl(218,12%,45%);margin:0 0 24px;">
-            ${senderName} has invited you to link your Premier Vitality accounts. 
+            ${senderName} has invited you to join Premier Vitality &amp; Wellness. 
             Linking accounts allows family members to share health data, manage billing together, 
             and stay connected on your wellness journey.
           </p>
