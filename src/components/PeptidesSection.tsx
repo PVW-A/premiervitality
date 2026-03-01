@@ -1,15 +1,16 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
-import peptideVial from "@/assets/pv-branded-vial.png";
+import { ArrowRight, Scale, Heart, Zap, Shield, Sparkles, Scissors, Bandage, Flame } from "lucide-react";
 
-const highlights = [
-  { category: "Recovery & Healing", count: 2 },
-  { category: "Weight Management", count: 2 },
-  { category: "Anti-Aging & Performance", count: 3 },
-  { category: "Cognitive & Mood", count: 2 },
-  { category: "Immune Support", count: 1 },
-  { category: "And More…", count: null },
+const protocolCategories = [
+  { name: "Weight Management", icon: Scale },
+  { name: "Wellness", icon: Heart },
+  { name: "Sexual Well-being", icon: Flame },
+  { name: "Skin Care", icon: Sparkles },
+  { name: "Hair Restoration", icon: Scissors },
+  { name: "Injury & Repair", icon: Bandage },
+  { name: "Performance", icon: Zap },
+  { name: "Immunity Health", icon: Shield },
 ];
 
 const PeptidesSection = () => (
@@ -21,7 +22,7 @@ const PeptidesSection = () => (
         viewport={{ once: true }}
         className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-3 font-body font-light"
       >
-        Our Protocols
+        Precision Protocols
       </motion.p>
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
@@ -30,7 +31,7 @@ const PeptidesSection = () => (
         transition={{ duration: 0.6 }}
         className="text-3xl md:text-5xl font-extralight mb-6 tracking-tight font-heading"
       >
-        Peptide Catalog
+        Curated Treatment Packages
       </motion.h2>
       <motion.p
         initial={{ opacity: 0, y: 20 }}
@@ -39,7 +40,8 @@ const PeptidesSection = () => (
         transition={{ duration: 0.6, delay: 0.1 }}
         className="text-muted-foreground max-w-lg mx-auto mb-14 font-body font-light text-sm leading-relaxed"
       >
-        15+ physician-directed peptide protocols spanning recovery, longevity, weight management, cognitive health, and beyond.
+        Physician-directed multi-compound protocols across 8 health categories,
+        each available in Premier, Core, and Essential tiers.
       </motion.p>
 
       {/* Category preview grid */}
@@ -48,24 +50,22 @@ const PeptidesSection = () => (
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-14"
+        className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-14"
       >
-        {highlights.map((h, i) => (
-          <div
-            key={h.category}
-            className="border border-border rounded-lg p-5 flex flex-col items-center gap-3 bg-card hover:border-primary/20 transition-colors"
-          >
-            <img src={peptideVial} alt="" className="w-10 h-10 object-contain opacity-60" />
-            <p className="text-xs tracking-[0.15em] uppercase font-body font-light text-foreground">
-              {h.category}
-            </p>
-            {h.count && (
-              <p className="text-[10px] text-muted-foreground font-body font-light">
-                {h.count} protocols
+        {protocolCategories.map((cat) => {
+          const Icon = cat.icon;
+          return (
+            <div
+              key={cat.name}
+              className="border border-border p-5 flex flex-col items-center gap-3 bg-card hover:border-primary/20 transition-colors"
+            >
+              <Icon size={22} strokeWidth={1.2} className="text-primary/60" />
+              <p className="text-[10px] tracking-[0.15em] uppercase font-body font-light text-foreground">
+                {cat.name}
               </p>
-            )}
-          </div>
-        ))}
+            </div>
+          );
+        })}
       </motion.div>
 
       <motion.div
@@ -73,12 +73,20 @@ const PeptidesSection = () => (
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.3 }}
+        className="flex flex-col sm:flex-row items-center justify-center gap-4"
       >
+        <Link
+          to="/protocols"
+          className="inline-flex items-center gap-3 px-10 py-3 bg-primary text-primary-foreground text-xs font-body font-light tracking-[0.25em] uppercase hover:bg-primary/90 transition-colors"
+        >
+          View Protocols
+          <ArrowRight size={14} strokeWidth={1.2} />
+        </Link>
         <Link
           to="/peptides"
           className="inline-flex items-center gap-3 px-10 py-3 border border-primary/30 text-xs font-body font-light tracking-[0.25em] uppercase text-foreground hover:bg-primary/5 transition-colors"
         >
-          Explore All Protocols
+          Browse Peptides
           <ArrowRight size={14} strokeWidth={1.2} />
         </Link>
       </motion.div>
