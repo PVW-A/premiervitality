@@ -106,7 +106,8 @@ const Peptides = () => {
         canonical="/peptides"
       />
       <Navbar />
-      <main className="pt-24 pb-20 px-6">
+      <PopularPeptidesCarousel />
+      <main className="pt-0 pb-20 px-6">
         <div className="max-w-5xl mx-auto">
           <Link
             to="/"
