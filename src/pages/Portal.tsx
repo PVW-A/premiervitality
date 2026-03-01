@@ -260,7 +260,7 @@ const Portal = () => {
               { value: "dashboard", icon: Pill, label: "Dashboard" },
               { value: "markers", icon: Activity, label: "Vitality Score" },
               { value: "rewards", icon: Star, label: "Rewards" },
-              { value: "rewards", icon: Star, label: "Rewards" },
+            ].map(({ value, icon: Icon, label }) => (
             ].map(({ value, icon: Icon, label }) => (
               <TabsTrigger
                 key={value}
