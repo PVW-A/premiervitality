@@ -24,7 +24,7 @@ const localJsonLd = {
   "description":
     "Physician-directed peptide therapy clinic in Chandler, AZ serving the East Valley. Specializing in longevity, anti-aging, hormone optimization, and cellular recovery.",
   "url": "https://www.premiervitalityandwellness.com/service-area",
-  "telephone": "+1-480-234-9108",
+  "telephone": "+1-772-280-2912",
   "email": "contact@premiervitalityandwellness.com",
   "address": {
     "@type": "PostalAddress",
