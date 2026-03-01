@@ -31,13 +31,13 @@ const SmsConsent = () => (
           <p>You can opt out of receiving text messages at any time by:</p>
           <ul className="list-disc pl-6 space-y-2">
             <li>Replying <strong className="text-foreground">STOP</strong> to any message you receive from us.</li>
-            <li>Contacting us at <strong className="text-foreground">info@premiervitalitywellness.com</strong>.</li>
+            <li>Contacting us at <strong className="text-foreground">info@premiervitalityandwellness.com</strong>.</li>
             <li>Updating your notification preferences in your account portal settings.</li>
           </ul>
           <p>After opting out, you will receive one final confirmation message. Please note that opting out of promotional messages does not affect 2FA security messages, which are required for account security and can be disabled by turning off two-factor authentication in your portal settings.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">5. Help</h2>
-          <p>For assistance, reply <strong className="text-foreground">HELP</strong> to any of our messages or email us at <strong className="text-foreground">info@premiervitalitywellness.com</strong>.</p>
+          <p>For assistance, reply <strong className="text-foreground">HELP</strong> to any of our messages or email us at <strong className="text-foreground">info@premiervitalityandwellness.com</strong>.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">6. Message &amp; Data Rates</h2>
           <p>Standard message and data rates may apply based on your mobile carrier plan. Premier Vitality &amp; Wellness is not responsible for any charges incurred from your wireless provider.</p>
@@ -53,8 +53,8 @@ const SmsConsent = () => (
 
           <h2 className="text-lg font-extralight text-foreground pt-4">10. Contact Information</h2>
           <p>Premier Vitality &amp; Wellness<br />
-          Email: <strong className="text-foreground">info@premiervitalitywellness.com</strong><br />
-          Website: <strong className="text-foreground">premiervitalitywellness.com</strong></p>
+          Email: <strong className="text-foreground">info@premiervitalityandwellness.com</strong><br />
+          Website: <strong className="text-foreground">www.premiervitalityandwellness.com</strong></p>
         </div>
       </div>
     </main>
