@@ -33,6 +33,7 @@ const statusBadge: Record<string, string> = {
 const PICKUP_ADDRESS = "1870 W. Fry Rd. Ste 1, Chandler, AZ 85224";
 const INJECTION_KIT_PRICE = 30;
 const SHIPPING_PRICE = 35;
+const COURIER_PRICE = 50;
 
 export default function MyRequests({
   requests,
