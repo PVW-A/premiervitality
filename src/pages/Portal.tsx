@@ -10,7 +10,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import PVMonogram from "@/components/PVMonogram";
 import MyRequests from "@/components/portal/MyRequests";
 import PremierMarkers from "@/components/portal/PremierMarkers";
-import PortalNews from "@/components/portal/PortalNews";
 import LoyaltyRewards from "@/components/portal/LoyaltyRewards";
 import SubscriptionCheckout from "@/components/SubscriptionCheckout";
 import BloodworkUploader from "@/components/portal/BloodworkUploader";
@@ -23,7 +22,7 @@ import ForcePasswordChangeDialog from "@/components/portal/ForcePasswordChangeDi
 import UserSettingsMenu from "@/components/portal/UserSettingsMenu";
 import NotificationCenter from "@/components/portal/NotificationCenter";
 import LinkedAccounts from "@/components/portal/LinkedAccounts";
-import { Pill, Package, Clock, Activity, Newspaper, Star, Check, Sparkles, ArrowUp, ShoppingBag } from "lucide-react";
+import { Pill, Package, Clock, Activity, Star, Check, Sparkles, ArrowUp, ShoppingBag } from "lucide-react";
 import { type BiomarkerResult, getAllMarkers, computeVitalityScore } from "@/lib/vitality";
 
 interface PatientPeptide {
@@ -259,7 +258,6 @@ const Portal = () => {
               { value: "catalog", icon: ShoppingBag, label: "Catalog" },
               { value: "dashboard", icon: Pill, label: "Dashboard" },
               { value: "markers", icon: Activity, label: "Vitality Score" },
-              { value: "news", icon: Newspaper, label: "Peptide News" },
               { value: "rewards", icon: Star, label: "Rewards" },
             ].map(({ value, icon: Icon, label }) => (
               <TabsTrigger
@@ -532,10 +530,8 @@ const Portal = () => {
             <PremierMarkers />
           </TabsContent>
 
-          {/* Peptide News Tab */}
-          <TabsContent value="news" className="mt-6">
-            <PortalNews />
-          </TabsContent>
+
+
 
           {/* Rewards Tab */}
           <TabsContent value="rewards" className="mt-6">
@@ -553,7 +549,6 @@ const Portal = () => {
           {[
             { value: "dashboard", icon: Pill, label: "Dashboard" },
             { value: "markers", icon: Activity, label: "Markers" },
-            { value: "news", icon: Newspaper, label: "News" },
             { value: "rewards", icon: Star, label: "Rewards" },
           ].map(({ value, icon: Icon, label }) => (
             <button
