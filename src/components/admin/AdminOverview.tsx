@@ -76,6 +76,8 @@ const KIT_PRICE = 30;
 const KIT_COST = 12;
 const SHIPPING_PRICE = 35;
 const SHIPPING_COST = 35;
+const COURIER_PRICE = 50;
+const COURIER_COST = 35;
 
 type PresetKey = "today" | "7d" | "30d" | "90d" | "ytd" | "all";
 
