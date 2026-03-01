@@ -26,6 +26,8 @@ const categoryHues: Record<string, number> = {
 const AUTO_INTERVAL = 4500;
 
 export default function PopularPeptidesCarousel() {
+  const location = useLocation();
+  const isOnPeptidePage = location.pathname === "/peptides";
   const [peptides, setPeptides] = useState<PeptideItem[]>([]);
   const [active, setActive] = useState(0);
   const [direction, setDirection] = useState(1);
