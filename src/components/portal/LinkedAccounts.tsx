@@ -253,6 +253,8 @@ export default function LinkedAccounts() {
         <div className="grid gap-4 sm:grid-cols-2">
           {links.map((link) => {
             const linkedId = getLinkedUserId(link);
+            const displayName = linkedId ? linkedNames[linkedId] : null;
+            const label = displayName || link.invitee_email;
             return (
               <Card key={link.id} className="border-border">
                 <CardContent className="flex items-center justify-between py-4">
@@ -261,25 +263,32 @@ export default function LinkedAccounts() {
                       <Users size={16} className="text-primary" />
                     </div>
                     <div>
-                      <p className="text-sm font-body font-light text-foreground">{link.invitee_email}</p>
+                      <p className="text-sm font-body font-light text-foreground">{label}</p>
                       <Badge variant="outline" className={`text-[9px] uppercase tracking-wider font-body ${statusBadge.accepted}`}>
                         Linked
                       </Badge>
                     </div>
                   </div>
-                  <div className="flex gap-1">
+                  <div className="flex gap-1.5">
                     {linkedId && (
                       <Button
-                        variant="ghost"
+                        variant="outline"
                         size="icon"
-                        onClick={() => viewMember(linkedId, link.invitee_email)}
-                        title="View data"
+                        onClick={() => viewMember(linkedId, label)}
+                        title="View health data"
+                        className="h-8 w-8 border-border/60 hover:border-primary/40 hover:bg-primary/5"
                       >
-                        <Eye size={16} />
+                        <Eye size={14} className="text-muted-foreground" />
                       </Button>
                     )}
-                    <Button variant="ghost" size="icon" onClick={() => handleRemoveLink(link.id)} title="Remove link">
-                      <Trash2 size={14} className="text-destructive" />
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleRemoveLink(link.id)}
+                      title="Remove link"
+                      className="h-8 w-8 border-border/60 hover:border-destructive/40 hover:bg-destructive/5"
+                    >
+                      <Trash2 size={14} className="text-destructive/70" />
                     </Button>
                   </div>
                 </CardContent>
