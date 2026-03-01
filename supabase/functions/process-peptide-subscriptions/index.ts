@@ -188,7 +188,7 @@ Deno.serve(async (req) => {
           price: sub.price,
           status: "paid",
           include_injection_kit: addKit,
-          delivery_method: addShipping ? "shipping" : "pickup",
+           delivery_method: addCourier ? "courier" : addShipping ? "shipping" : "pickup",
           square_order_id: orderData.order.id,
         });
 
