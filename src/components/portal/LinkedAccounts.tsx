@@ -35,6 +35,7 @@ export default function LinkedAccounts() {
   const { user } = useAuth();
   const [links, setLinks] = useState<AccountLink[]>([]);
   const [pendingInvites, setPendingInvites] = useState<AccountLink[]>([]);
+  const [linkedNames, setLinkedNames] = useState<Record<string, string>>({});
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteOpen, setInviteOpen] = useState(false);
   const [sending, setSending] = useState(false);
