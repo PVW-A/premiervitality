@@ -244,7 +244,7 @@ Deno.serve(async (req) => {
         status: "paid",
         square_order_id: orderId,
         include_injection_kit: addKit,
-        delivery_method: addShipping ? "shipping" : "pickup",
+        delivery_method: addCourier ? "courier" : addShipping ? "shipping" : "pickup",
         payment_url: null,
       })
       .eq("id", request_id);
