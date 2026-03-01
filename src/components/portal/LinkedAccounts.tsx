@@ -35,6 +35,7 @@ export default function LinkedAccounts() {
   const { user } = useAuth();
   const [links, setLinks] = useState<AccountLink[]>([]);
   const [pendingInvites, setPendingInvites] = useState<AccountLink[]>([]);
+  const [linkedNames, setLinkedNames] = useState<Record<string, string>>({});
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteOpen, setInviteOpen] = useState(false);
   const [sending, setSending] = useState(false);
@@ -56,6 +57,26 @@ export default function LinkedAccounts() {
   }, [user]);
 
   useEffect(() => { fetchLinks(); }, [fetchLinks]);
+
+  // Fetch display names for linked user IDs
+  useEffect(() => {
+    if (!user || links.length === 0) return;
+    const ids = links.map((l) => l.inviter_user_id === user.id ? l.invitee_user_id : l.inviter_user_id).filter(Boolean) as string[];
+    if (ids.length === 0) return;
+    supabase
+      .from("profiles")
+      .select("user_id, first_name, last_name")
+      .in("user_id", ids)
+      .then(({ data }) => {
+        if (!data) return;
+        const map: Record<string, string> = {};
+        for (const p of data) {
+          const name = [p.first_name, p.last_name].filter(Boolean).join(" ").trim();
+          if (name) map[p.user_id] = name;
+        }
+        setLinkedNames(map);
+      });
+  }, [links, user]);
 
   const handleSendInvite = async () => {
     if (!user || !inviteEmail.trim()) return;
@@ -232,6 +253,8 @@ export default function LinkedAccounts() {
         <div className="grid gap-4 sm:grid-cols-2">
           {links.map((link) => {
             const linkedId = getLinkedUserId(link);
+            const displayName = linkedId ? linkedNames[linkedId] : null;
+            const label = displayName || link.invitee_email;
             return (
               <Card key={link.id} className="border-border">
                 <CardContent className="flex items-center justify-between py-4">
@@ -240,25 +263,32 @@ export default function LinkedAccounts() {
                       <Users size={16} className="text-primary" />
                     </div>
                     <div>
-                      <p className="text-sm font-body font-light text-foreground">{link.invitee_email}</p>
+                      <p className="text-sm font-body font-light text-foreground">{label}</p>
                       <Badge variant="outline" className={`text-[9px] uppercase tracking-wider font-body ${statusBadge.accepted}`}>
                         Linked
                       </Badge>
                     </div>
                   </div>
-                  <div className="flex gap-1">
+                  <div className="flex gap-1.5">
                     {linkedId && (
                       <Button
-                        variant="ghost"
+                        variant="outline"
                         size="icon"
-                        onClick={() => viewMember(linkedId, link.invitee_email)}
-                        title="View data"
+                        onClick={() => viewMember(linkedId, label)}
+                        title="View health data"
+                        className="h-8 w-8 border-border/60 hover:border-primary/40 hover:bg-primary/5"
                       >
-                        <Eye size={16} />
+                        <Eye size={14} className="text-muted-foreground" />
                       </Button>
                     )}
-                    <Button variant="ghost" size="icon" onClick={() => handleRemoveLink(link.id)} title="Remove link">
-                      <Trash2 size={14} className="text-destructive" />
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleRemoveLink(link.id)}
+                      title="Remove link"
+                      className="h-8 w-8 border-border/60 hover:border-destructive/40 hover:bg-destructive/5"
+                    >
+                      <Trash2 size={14} className="text-destructive/70" />
                     </Button>
                   </div>
                 </CardContent>
