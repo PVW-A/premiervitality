@@ -109,11 +109,11 @@ const ServiceArea = () => (
                 <span>1870 W Frye Rd, Ste 1<br />Chandler, AZ 85224</span>
               </div>
               <a
-                href="tel:+14802349108"
+                href="tel:+17722802912"
                 className="flex items-center gap-2.5 text-sm text-muted-foreground font-body font-light hover:text-primary transition-colors"
               >
                 <Phone size={15} className="text-primary shrink-0" />
-                (480) 234-9108
+                (772) 280-2912
               </a>
               <a
                 href="mailto:contact@premiervitalityandwellness.com"
