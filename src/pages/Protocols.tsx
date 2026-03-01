@@ -44,6 +44,7 @@ interface ProtocolItem {
   dose: string;
   cost: number;
   price: number;
+  rationale?: string;
 }
 
 interface Protocol {
