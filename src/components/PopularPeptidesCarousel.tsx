@@ -109,10 +109,10 @@ export default function PopularPeptidesCarousel() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-14"
+          className="text-center mb-10"
         >
           <div
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full"
             style={{
               background: "hsl(var(--primary) / 0.08)",
               border: "1px solid hsl(var(--primary) / 0.15)",
@@ -123,9 +123,6 @@ export default function PopularPeptidesCarousel() {
               Popular Peptides
             </span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-heading font-extralight text-foreground tracking-tight">
-            Popular Peptides
-          </h2>
         </motion.div>
 
         {/* Carousel card */}
