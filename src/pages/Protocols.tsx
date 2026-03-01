@@ -44,6 +44,7 @@ interface ProtocolItem {
   dose: string;
   cost: number;
   price: number;
+  rationale?: string;
 }
 
 interface Protocol {
@@ -275,7 +276,7 @@ const Protocols = () => {
                                   <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground font-body mb-3">
                                     Included Products
                                   </p>
-                                  <div className="flex flex-col gap-3">
+                                  <div className="flex flex-col gap-4">
                                     {(proto.items as ProtocolItem[]).map((item, ii) => (
                                       <div key={ii} className="border-l-2 border-border/40 pl-3">
                                         <div className="flex items-start justify-between gap-2">
@@ -286,7 +287,12 @@ const Protocols = () => {
                                             ${item.price.toFixed(2)}
                                           </span>
                                         </div>
-                                        <p className="text-[10px] text-muted-foreground font-body font-light leading-relaxed mt-1">
+                                        {item.rationale && (
+                                          <p className="text-[10px] text-primary/70 font-body font-light leading-relaxed mt-1.5 italic">
+                                            {item.rationale}
+                                          </p>
+                                        )}
+                                        <p className="text-[10px] text-muted-foreground/50 font-body font-light leading-relaxed mt-1">
                                           {item.dose}
                                         </p>
                                       </div>
