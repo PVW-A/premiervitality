@@ -449,6 +449,8 @@ const Portal = () => {
                 {requests.length > 0 && (
                   <MyRequests requests={requests} onRefresh={fetchData} membership={membership} />
                 )}
+                {/* Injection Guide */}
+                <InjectionGuide />
 
                 {/* Orders */}
                 {orders.length > 0 && (
