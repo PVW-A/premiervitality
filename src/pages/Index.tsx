@@ -6,7 +6,6 @@ import FoundersSection from "@/components/FoundersSection";
 import VitalityScoreSection from "@/components/VitalityScoreSection";
 import BiologicalAgeSection from "@/components/BiologicalAgeSection";
 import BloodworkPanelsSection from "@/components/BloodworkPanelsSection";
-
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
