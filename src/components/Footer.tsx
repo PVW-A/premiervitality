@@ -23,11 +23,11 @@ const Footer = () => (
 
         <div className="flex flex-col gap-2.5">
           <a
-            href="tel:+14809102359"
+            href="tel:+14802349108"
             className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors font-body font-light"
           >
             <Phone size={14} strokeWidth={1.2} className="text-primary" />
-            (480) 910-2359
+            (480) 234-9108
           </a>
           <a
             href="mailto:contact@premiervitalityandwellness.com"

@@ -24,7 +24,7 @@ const localJsonLd = {
   "description":
     "Physician-directed peptide therapy clinic in Chandler, AZ serving the East Valley. Specializing in longevity, anti-aging, hormone optimization, and cellular recovery.",
   "url": "https://www.premiervitalityandwellness.com/service-area",
-  "telephone": "+1-480-910-2359",
+  "telephone": "+1-480-234-9108",
   "email": "contact@premiervitalityandwellness.com",
   "address": {
     "@type": "PostalAddress",
@@ -109,11 +109,11 @@ const ServiceArea = () => (
                 <span>1870 W Frye Rd, Ste 1<br />Chandler, AZ 85224</span>
               </div>
               <a
-                href="tel:+14809102359"
+                href="tel:+14802349108"
                 className="flex items-center gap-2.5 text-sm text-muted-foreground font-body font-light hover:text-primary transition-colors"
               >
                 <Phone size={15} className="text-primary shrink-0" />
-                (480) 910-2359
+                (480) 234-9108
               </a>
               <a
                 href="mailto:contact@premiervitalityandwellness.com"
