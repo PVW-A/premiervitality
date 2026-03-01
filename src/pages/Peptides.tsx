@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 import { ArrowLeft, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
+import PopularPeptidesCarousel from "@/components/PopularPeptidesCarousel";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
@@ -105,7 +106,8 @@ const Peptides = () => {
         canonical="/peptides"
       />
       <Navbar />
-      <main className="pt-24 pb-20 px-6">
+      <PopularPeptidesCarousel />
+      <main className="pt-0 pb-20 px-6">
         <div className="max-w-5xl mx-auto">
           <Link
             to="/"

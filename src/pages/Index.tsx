@@ -6,7 +6,7 @@ import FoundersSection from "@/components/FoundersSection";
 import VitalityScoreSection from "@/components/VitalityScoreSection";
 import BiologicalAgeSection from "@/components/BiologicalAgeSection";
 import BloodworkPanelsSection from "@/components/BloodworkPanelsSection";
-import PopularPeptidesCarousel from "@/components/PopularPeptidesCarousel";
+
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
@@ -23,7 +23,7 @@ const Index = () => (
       <VitalityScoreSection />
       <BiologicalAgeSection />
       <BloodworkPanelsSection />
-      <PopularPeptidesCarousel />
+      
       <FoundersSection />
       <CTASection />
     </main>
