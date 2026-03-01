@@ -101,7 +101,7 @@ Deno.serve(async (req) => {
         `*Patient:* ${patient_name}`,
         `*Item:* ${peptide_name}`,
         include_kit ? `• Injection Kit included` : null,
-        `*Delivery:* ${delivery_method === "shipping" ? "Overnight Shipping" : "Local Pickup"}`,
+        `*Delivery:* ${delivery_method === "shipping" ? "Overnight Shipping" : delivery_method === "courier" ? "Courier Delivery" : "Local Pickup"}`,
         `*Revenue:* $${revenue}  |  *Cost:* $${cost}  |  *Profit:* $${profit}`,
         `_Request ID: ${request_id}_`,
       ].filter(Boolean).join("\n");
