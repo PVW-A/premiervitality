@@ -213,7 +213,7 @@ const ChatPanel = ({ open, onClose }: ChatPanelProps) => {
                 onKeyDown={handleKeyDown}
                 placeholder="Ask about peptides..."
                 rows={1}
-                className="flex-1 resize-none bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none max-h-20"
+                className="flex-1 resize-none bg-transparent text-base sm:text-sm text-foreground placeholder:text-muted-foreground outline-none max-h-20"
               />
               <button
                 onClick={() => send(input)}
