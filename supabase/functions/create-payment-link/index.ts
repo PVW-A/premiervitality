@@ -171,6 +171,18 @@ Deno.serve(async (req) => {
       });
     }
 
+    if (addCourier) {
+      lineItems.push({
+        name: "Courier Delivery",
+        quantity: "1",
+        note: `SKU: ${COURIER_SKU}`,
+        base_price_money: {
+          amount: COURIER_PRICE,
+          currency: "USD",
+        },
+      });
+    }
+
     const payload = {
       idempotency_key: crypto.randomUUID(),
       order: {

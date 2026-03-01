@@ -140,6 +140,13 @@ Deno.serve(async (req) => {
         base_price_money: { amount: SHIPPING_PRICE, currency: "USD" },
       });
     }
+    if (addCourier) {
+      lineItems.push({
+        name: "Courier Delivery",
+        quantity: "1",
+        base_price_money: { amount: COURIER_PRICE, currency: "USD" },
+      });
+    }
 
     // Step 1: Create Square Order
     const orderRes = await fetch(`${squareBase}/orders`, {
