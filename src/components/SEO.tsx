@@ -12,7 +12,7 @@ interface SEOProps {
 const SITE_NAME = "Premier Vitality & Wellness";
 const DEFAULT_DESC =
   "Advanced peptide therapy for longevity, performance, and recovery. Physician-directed protocols backed by science and tailored to your biology.";
-const BASE_URL = "https://premiervitality.lovable.app";
+const BASE_URL = "https://www.premiervitalityandwellness.com";
 const DEFAULT_IMAGE = `${BASE_URL}/og-image.png`;
 
 const SEO = ({

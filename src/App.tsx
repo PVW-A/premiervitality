@@ -19,7 +19,7 @@ import Terms from "./pages/Terms";
 import Disclaimer from "./pages/Disclaimer";
 import Services from "./pages/Services";
 import DrJamesStory from "./pages/DrJamesStory";
-
+import ServiceArea from "./pages/ServiceArea";
 import FAQ from "./pages/FAQ";
 import SmsConsent from "./pages/SmsConsent";
 import ResetPassword from "./pages/ResetPassword";
@@ -60,7 +60,7 @@ const App = () => (
               <Route path="/disclaimer" element={<Disclaimer />} />
               <Route path="/services" element={<Services />} />
               <Route path="/dr-james-story" element={<DrJamesStory />} />
-              
+              <Route path="/service-area" element={<ServiceArea />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/sms-consent" element={<SmsConsent />} />
               <Route path="/reset-password" element={<ResetPassword />} />
