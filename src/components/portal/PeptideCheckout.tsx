@@ -167,6 +167,7 @@ export default function PeptideCheckout({
     let total = request.price;
     if (kit && isInjectable) total += INJECTION_KIT_PRICE;
     if (delivery === "shipping") total += SHIPPING_PRICE;
+    if (delivery === "courier") total += COURIER_PRICE;
     return total;
   };
 
