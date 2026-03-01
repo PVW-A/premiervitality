@@ -23,7 +23,7 @@ import ForcePasswordChangeDialog from "@/components/portal/ForcePasswordChangeDi
 import UserSettingsMenu from "@/components/portal/UserSettingsMenu";
 import NotificationCenter from "@/components/portal/NotificationCenter";
 import LinkedAccounts from "@/components/portal/LinkedAccounts";
-import { LogOut, Pill, Package, Clock, BookOpen, Activity, Newspaper, Star, Check, Sparkles, ArrowUp, ShoppingBag } from "lucide-react";
+import { Pill, Package, Clock, Activity, Newspaper, Star, Check, Sparkles, ArrowUp, ShoppingBag } from "lucide-react";
 import { type BiomarkerResult, getAllMarkers, computeVitalityScore } from "@/lib/vitality";
 
 interface PatientPeptide {
@@ -153,7 +153,6 @@ const Portal = () => {
       .order("created_at", { ascending: false });
     if (bwData) setBloodworkUploads(bwData);
 
-    // Fetch biomarker results for the vitality badge
     const { data: bioData } = await supabase
       .from("biomarker_results")
       .select("*")
@@ -174,6 +173,9 @@ const Portal = () => {
 
   const vitalityScore = computeVitalityScore(biomarkerResults, getAllMarkers());
 
+  // Determine if the dashboard has any actual data to show beyond membership
+  const hasActivity = peptides.length > 0 || orders.length > 0 || requests.length > 0;
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -189,14 +191,12 @@ const Portal = () => {
       {/* Header */}
       <header className="border-b border-border bg-background/90 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-6 flex items-center justify-between h-16">
-          <div className="flex items-center gap-3">
-            <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <PVMonogram className="w-8 h-8" />
-              <span className="text-xs tracking-[0.25em] uppercase text-foreground font-body font-light hidden sm:inline">
-                Premier Vitality
-              </span>
-            </a>
-          </div>
+          <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <PVMonogram className="w-8 h-8" />
+            <span className="text-xs tracking-[0.25em] uppercase text-foreground font-body font-light hidden sm:inline">
+              Premier Vitality
+            </span>
+          </a>
           <div className="flex items-center gap-4">
             <NotificationCenter onNavigate={(tab) => setActiveTab(tab)} />
             <UserSettingsMenu
@@ -210,7 +210,6 @@ const Portal = () => {
         </div>
       </header>
 
-      {/* Force password change for legacy accounts */}
       {user && forcePasswordChange && (
         <ForcePasswordChangeDialog
           open={forcePasswordChange}
@@ -219,21 +218,30 @@ const Portal = () => {
         />
       )}
 
-      <main className="max-w-5xl mx-auto px-6 py-10 space-y-8">
+      <main className="max-w-5xl mx-auto px-6 py-8 space-y-6">
         {/* Welcome + Vitality Badge */}
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-heading font-light text-foreground">
+            <h1 className="text-2xl sm:text-3xl font-heading font-light text-foreground">
               Welcome{profile?.first_name ? `, ${profile.first_name}` : ""}
             </h1>
-            <p className="text-sm text-muted-foreground font-body font-light mt-1">
-              Your peptide inventory, biomarkers, and clinical resources — all in one place.
-            </p>
+            {membership && (
+              <button
+                onClick={() => setUpgradeOpen(true)}
+                className="group inline-flex items-center gap-2 mt-1.5"
+              >
+                <Badge variant="outline" className="border-primary/40 text-primary text-[10px] tracking-wider uppercase font-body font-light px-2.5 py-0.5 group-hover:bg-primary/10 transition-colors cursor-pointer">
+                  {(membership as any).membership_tiers?.name ?? "Active"} Member
+                </Badge>
+                <span className="text-[10px] text-muted-foreground font-body font-light group-hover:text-primary transition-colors flex items-center gap-0.5">
+                  <ArrowUp size={9} /> Upgrade
+                </span>
+              </button>
+            )}
           </div>
           <VitalityScoreBadge score={vitalityScore} onClick={() => setDrawerOpen(true)} />
         </div>
 
-        {/* Vitality Score Drawer */}
         <VitalityScoreDrawer
           open={drawerOpen}
           onOpenChange={setDrawerOpen}
@@ -247,52 +255,37 @@ const Portal = () => {
           setActiveTab(v);
         }} className="w-full">
           <TabsList className="bg-card border border-border rounded-none h-auto p-0 w-full justify-start gap-0 hidden sm:flex">
-            <TabsTrigger
-              value="catalog"
-              className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
-            >
-              <ShoppingBag size={14} className="mr-2" /> Catalog
-            </TabsTrigger>
-            <TabsTrigger
-              value="dashboard"
-              className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
-            >
-              <Pill size={14} className="mr-2" /> Dashboard
-            </TabsTrigger>
-            <TabsTrigger
-              value="markers"
-              className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
-            >
-              <Activity size={14} className="mr-2" /> Vitality Score
-            </TabsTrigger>
-            <TabsTrigger
-              value="news"
-              className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
-            >
-              <Newspaper size={14} className="mr-2" /> Peptide News
-            </TabsTrigger>
-            <TabsTrigger
-              value="rewards"
-              className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
-            >
-              <Star size={14} className="mr-2" /> Rewards
-            </TabsTrigger>
+            {[
+              { value: "catalog", icon: ShoppingBag, label: "Catalog" },
+              { value: "dashboard", icon: Pill, label: "Dashboard" },
+              { value: "markers", icon: Activity, label: "Vitality Score" },
+              { value: "news", icon: Newspaper, label: "Peptide News" },
+              { value: "rewards", icon: Star, label: "Rewards" },
+            ].map(({ value, icon: Icon, label }) => (
+              <TabsTrigger
+                key={value}
+                value={value}
+                className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
+              >
+                <Icon size={14} className="mr-2" /> {label}
+              </TabsTrigger>
+            ))}
           </TabsList>
 
           {/* Dashboard Tab */}
-          <TabsContent value="dashboard" className="mt-8 space-y-10">
+          <TabsContent value="dashboard" className="mt-6 space-y-8">
             {/* Membership Upsell for non-subscribers */}
             {!membership && tiers && tiers.length > 0 && (
-              <section className="space-y-6">
+              <section className="space-y-5">
                 <div>
-                  <h2 className="text-xs tracking-[0.3em] uppercase text-primary font-body font-light mb-2">
+                  <h2 className="text-xs tracking-[0.3em] uppercase text-primary font-body font-light mb-1">
                     Choose Your Plan
                   </h2>
                   <p className="text-sm text-muted-foreground font-body font-light">
                     Subscribe to unlock member pricing, lab work, and the ability to request peptides.
                   </p>
                 </div>
-                <div className="flex justify-start mb-2">
+                <div className="flex items-center gap-2 mb-1">
                   <div className="inline-flex items-center bg-secondary rounded-full p-1 gap-1">
                     <button
                       onClick={() => setBillingCycle("monthly")}
@@ -305,15 +298,15 @@ const Portal = () => {
                       className={`px-4 py-1.5 text-[10px] tracking-[0.15em] uppercase font-body font-light rounded-full transition-colors ${
                         billingCycle === "annual" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                       }`}
-                     >Annual</button>
-                   </div>
-                   {billingCycle === "monthly" && (
-                     <p className="text-[10px] text-primary font-body font-light ml-2 animate-pulse">
-                       💰 Save up to 17% with an annual plan
-                     </p>
-                   )}
-                 </div>
-                <div className="grid gap-6 md:grid-cols-3">
+                    >Annual</button>
+                  </div>
+                  {billingCycle === "monthly" && (
+                    <p className="text-[10px] text-primary font-body font-light animate-pulse">
+                      💰 Save up to 17% with annual
+                    </p>
+                  )}
+                </div>
+                <div className="grid gap-4 md:grid-cols-3">
                   {tiers.map((tier) => {
                     const price = billingCycle === "monthly" ? tier.monthly_price : tier.annual_price;
                     const isPopular = tier.slug === "premium";
@@ -327,7 +320,7 @@ const Portal = () => {
                             </span>
                           </div>
                         )}
-                        <CardHeader className="pb-3">
+                        <CardHeader className="pb-2">
                           <CardTitle className="text-xs tracking-[0.3em] uppercase text-primary font-body font-light">
                             {tier.name}
                           </CardTitle>
@@ -341,12 +334,12 @@ const Portal = () => {
                             )}
                           </div>
                         </CardHeader>
-                        <CardContent className="space-y-2">
+                        <CardContent className="space-y-1.5 pt-0">
                           {tier.discount_pct > 0 && (
-                          <div className="flex items-start gap-2 text-xs text-muted-foreground font-body font-light">
-                            <Check size={13} className="text-primary mt-0.5 shrink-0" />
-                            <span>{tier.discount_pct}% peptide discount</span>
-                          </div>
+                            <div className="flex items-start gap-2 text-xs text-muted-foreground font-body font-light">
+                              <Check size={13} className="text-primary mt-0.5 shrink-0" />
+                              <span>{tier.discount_pct}% peptide discount</span>
+                            </div>
                           )}
                           <div className="flex items-start gap-2 text-xs text-muted-foreground font-body font-light">
                             <Check size={13} className="text-primary mt-0.5 shrink-0" />
@@ -367,7 +360,7 @@ const Portal = () => {
                               setCheckoutTier({ id: tier.id, name: tier.name, slug: tier.slug, monthly_price: tier.monthly_price, annual_price: tier.annual_price });
                               setCheckoutOpen(true);
                             }}
-                            className={`w-full mt-4 py-2.5 text-[10px] tracking-[0.2em] uppercase font-body font-light transition-colors ${
+                            className={`w-full mt-3 py-2.5 text-[10px] tracking-[0.2em] uppercase font-body font-light transition-colors ${
                               isPopular
                                 ? "bg-primary text-primary-foreground hover:bg-primary/90"
                                 : "border border-primary/40 text-primary hover:bg-primary/10"
@@ -383,60 +376,39 @@ const Portal = () => {
               </section>
             )}
 
-            {/* Active membership badge — clickable to upgrade */}
-            {membership && (
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => setUpgradeOpen(true)}
-                  className="group flex items-center gap-2 transition-colors"
-                >
-                  <Badge variant="outline" className="border-primary/40 text-primary text-xs tracking-wider uppercase font-body font-light px-3 py-1 group-hover:bg-primary/10 transition-colors cursor-pointer">
-                    {(membership as any).membership_tiers?.name ?? "Active"} Member
-                  </Badge>
-                  <span className="text-[10px] text-muted-foreground font-body font-light group-hover:text-primary transition-colors flex items-center gap-1">
-                    <ArrowUp size={10} /> Upgrade
-                  </span>
-                </button>
-              </div>
-            )}
+            {/* Quick action — always visible */}
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate("/catalog")}
+                className="text-xs tracking-wider uppercase font-body font-light rounded-none border-primary/40 text-primary hover:bg-primary/10"
+              >
+                <ShoppingBag size={14} className="mr-1.5" /> Browse Catalog
+              </Button>
+            </div>
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate("/catalog")}
-              className="text-xs tracking-wider uppercase font-body font-light rounded-none border-primary/40 text-primary hover:bg-primary/10"
-            >
-              <BookOpen size={14} className="mr-1.5" /> View Full Catalog & Pricing
-            </Button>
-            {/* Linked Accounts */}
+            {/* Linked Accounts — always shown since it has its own invite CTA */}
             <LinkedAccounts />
 
-            {/* Peptide Inventory */}
-            <section>
-              <div className="flex items-center gap-2 mb-4">
-                <Pill size={16} strokeWidth={1.2} className="text-primary" />
-                <h2 className="text-xs tracking-[0.2em] uppercase text-foreground font-body font-light">
-                  Your Peptides
-                </h2>
-              </div>
-              {peptides.length === 0 ? (
-                <Card className="border-border bg-card">
-                  <CardContent className="py-10 text-center">
-                    <p className="text-sm text-muted-foreground font-body font-light">
-                      No peptides assigned yet. Your provider will add them to your account.
-                    </p>
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className="grid gap-4 md:grid-cols-2">
+            {/* Active content sections — only rendered when there's data */}
+            {peptides.length > 0 && (
+              <section>
+                <div className="flex items-center gap-2 mb-3">
+                  <Pill size={16} strokeWidth={1.2} className="text-primary" />
+                  <h2 className="text-xs tracking-[0.2em] uppercase text-foreground font-body font-light">
+                    Your Peptides
+                  </h2>
+                </div>
+                <div className="grid gap-3 md:grid-cols-2">
                   {peptides.map((p) => (
                     <Card key={p.id} className="border-border bg-card">
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-lg font-heading font-light text-foreground">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-base font-heading font-light text-foreground">
                           {p.peptide_name}
                         </CardTitle>
                       </CardHeader>
-                      <CardContent className="space-y-3">
+                      <CardContent className="space-y-2">
                         {p.dosage && (
                           <div className="flex justify-between text-sm font-body font-light">
                             <span className="text-muted-foreground">Dosage</span>
@@ -449,7 +421,7 @@ const Portal = () => {
                         </div>
                         <div className="flex justify-between text-sm font-body font-light items-center">
                           <span className="text-muted-foreground flex items-center gap-1">
-                            <Clock size={12} strokeWidth={1.2} /> Supply Duration
+                            <Clock size={12} strokeWidth={1.2} /> Supply
                           </span>
                           <span className={`text-foreground ${p.quantity_remaining / p.usage_per_day <= 7 ? "text-destructive" : ""}`}>
                             {getDaysRemaining(p.quantity_remaining, p.usage_per_day)}
@@ -460,87 +432,98 @@ const Portal = () => {
                             {p.notes}
                           </p>
                         )}
-                        {user && (
-                          <PeptideReminders peptide={p} userId={user.id} />
-                        )}
+                        {user && <PeptideReminders peptide={p} userId={user.id} />}
                       </CardContent>
                     </Card>
                   ))}
                 </div>
-              )}
-            </section>
+              </section>
+            )}
 
-            {/* Monthly Auto-Orders */}
+            {/* Monthly Auto-Orders — component self-hides when empty */}
             {user && <PeptideSubscriptions userId={user.id} />}
 
-            {/* My Requests */}
-            <MyRequests requests={requests} onRefresh={fetchData} membership={membership} />
+            {/* My Requests — only show when there are requests */}
+            {requests.length > 0 && (
+              <MyRequests requests={requests} onRefresh={fetchData} membership={membership} />
+            )}
 
-            {/* Orders */}
-            <section>
-              <div className="flex items-center gap-2 mb-4">
-                <Package size={16} strokeWidth={1.2} className="text-primary" />
-                <h2 className="text-xs tracking-[0.2em] uppercase text-foreground font-body font-light">
-                  Orders
-                </h2>
-              </div>
-              {orders.length === 0 ? (
-                <Card className="border-border bg-card">
-                  <CardContent className="py-10 text-center">
-                    <p className="text-sm text-muted-foreground font-body font-light">
-                      No orders yet.
-                    </p>
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className="space-y-3">
+            {/* Orders — only show when there are orders */}
+            {orders.length > 0 && (
+              <section>
+                <div className="flex items-center gap-2 mb-3">
+                  <Package size={16} strokeWidth={1.2} className="text-primary" />
+                  <h2 className="text-xs tracking-[0.2em] uppercase text-foreground font-body font-light">
+                    Orders
+                  </h2>
+                </div>
+                <div className="space-y-2">
                   {orders.map((o) => (
                     <Card key={o.id} className="border-border bg-card">
-                      <CardContent className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline" className={statusColor[o.status] || ""}>
-                              {o.status}
-                            </Badge>
-                            <span className="text-xs text-muted-foreground font-body font-light">
-                              {new Date(o.created_at).toLocaleDateString()}
-                            </span>
-                          </div>
+                      <CardContent className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className={statusColor[o.status] || ""}>
+                            {o.status}
+                          </Badge>
+                          <span className="text-xs text-muted-foreground font-body font-light">
+                            {new Date(o.created_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3">
                           {o.tracking_number && (
-                            <p className="text-xs text-muted-foreground font-body font-light">
+                            <span className="text-xs text-muted-foreground font-body font-light">
                               Tracking: {o.tracking_number}
-                            </p>
+                            </span>
+                          )}
+                          {o.expected_delivery && (
+                            <span className="text-xs text-muted-foreground font-body font-light">
+                              ETA: {new Date(o.expected_delivery).toLocaleDateString()}
+                            </span>
                           )}
                         </div>
-                        {o.expected_delivery && (
-                          <p className="text-xs text-muted-foreground font-body font-light">
-                            Expected: {new Date(o.expected_delivery).toLocaleDateString()}
-                          </p>
-                        )}
                       </CardContent>
                     </Card>
                   ))}
                 </div>
-              )}
-            </section>
+              </section>
+            )}
+
+            {/* Empty state — show only when nothing exists at all */}
+            {!hasActivity && membership && (
+              <Card className="border-border bg-card/50">
+                <CardContent className="py-12 text-center space-y-3">
+                  <Pill size={28} strokeWidth={1} className="text-primary/40 mx-auto" />
+                  <p className="text-sm text-muted-foreground font-body font-light">
+                    You're all set! Browse the catalog to request your first peptide.
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => navigate("/catalog")}
+                    className="text-xs tracking-wider uppercase font-body font-light rounded-none border-primary/40 text-primary hover:bg-primary/10"
+                  >
+                    Browse Catalog
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           {/* Premier Markers Tab */}
-          <TabsContent value="markers" className="mt-8 space-y-10">
+          <TabsContent value="markers" className="mt-6 space-y-8">
             <BloodworkUploader uploads={bloodworkUploads} onRefresh={fetchData} />
             <PremierMarkers />
           </TabsContent>
 
           {/* Peptide News Tab */}
-          <TabsContent value="news" className="mt-8">
+          <TabsContent value="news" className="mt-6">
             <PortalNews />
           </TabsContent>
 
           {/* Rewards Tab */}
-          <TabsContent value="rewards" className="mt-8">
+          <TabsContent value="rewards" className="mt-6">
             <LoyaltyRewards />
           </TabsContent>
-
         </Tabs>
 
         {/* Bottom spacer for mobile nav */}
@@ -549,7 +532,7 @@ const Portal = () => {
 
       {/* Mobile Bottom Nav */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border sm:hidden">
-        <div className="flex justify-around items-center h-16">
+        <div className="flex justify-around items-center h-14">
           {[
             { value: "dashboard", icon: Pill, label: "Dashboard" },
             { value: "markers", icon: Activity, label: "Markers" },
@@ -559,18 +542,19 @@ const Portal = () => {
             <button
               key={value}
               onClick={() => setActiveTab(value)}
-              className={`flex flex-col items-center justify-center gap-1 flex-1 h-full transition-colors font-body font-light ${
+              className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition-colors font-body font-light ${
                 activeTab === value
                   ? "text-primary"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Icon size={20} />
-              <span className="text-[10px] tracking-[0.1em] uppercase">{label}</span>
+              <Icon size={18} />
+              <span className="text-[9px] tracking-[0.1em] uppercase">{label}</span>
             </button>
           ))}
         </div>
       </nav>
+
       <SubscriptionCheckout
         open={checkoutOpen}
         onOpenChange={setCheckoutOpen}
