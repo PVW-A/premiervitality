@@ -1,5 +1,5 @@
 import SEO from "@/components/SEO";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { openCalendly } from "@/hooks/useCalendly";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SubscriptionCheckout from "@/components/SubscriptionCheckout";
+import BloodworkBreakdown from "@/components/services/BloodworkBreakdown";
 
 const Services = () => {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
