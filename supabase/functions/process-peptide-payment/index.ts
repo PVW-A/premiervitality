@@ -8,6 +8,7 @@ const corsHeaders = {
 
 const INJECTION_KIT_PRICE = 3000; // $30.00 in cents
 const SHIPPING_PRICE = 3500; // $35.00 in cents
+const COURIER_PRICE = 5000; // $50.00 in cents
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
