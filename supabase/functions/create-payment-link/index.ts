@@ -122,11 +122,15 @@ Deno.serve(async (req) => {
       include_injection_kit === true || include_injection_kit === "true";
 
     const normalizedDeliveryMethod =
-      typeof delivery_method === "string" &&
-      delivery_method.toLowerCase() === "shipping"
-        ? "shipping"
+      typeof delivery_method === "string"
+        ? delivery_method.toLowerCase() === "shipping"
+          ? "shipping"
+          : delivery_method.toLowerCase() === "courier"
+            ? "courier"
+            : "pickup"
         : "pickup";
     const addShipping = normalizedDeliveryMethod === "shipping";
+    const addCourier = normalizedDeliveryMethod === "courier";
 
     const peptideName = requestRow.variation_label
       ? `${requestRow.peptide_name} — ${requestRow.variation_label}`
