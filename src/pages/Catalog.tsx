@@ -162,14 +162,14 @@ const Catalog = () => {
       </header>
 
       <main className="max-w-5xl mx-auto px-6 py-10 space-y-8">
+        {/* Popular Peptides Carousel */}
+        <PopularPeptidesCarousel />
+
         <div className="text-center">
-          <p className="text-[10px] tracking-[0.4em] uppercase text-primary/60 mb-4 font-body font-extralight">
-            Patient Catalog
-          </p>
-          <h1 className="text-3xl md:text-4xl font-extralight mb-4 tracking-tight font-heading">
-            Peptide Collection & Pricing
-          </h1>
-          <p className="text-muted-foreground/60 max-w-md mx-auto mb-8 font-body font-extralight text-sm leading-relaxed">
+          <h2 className="text-2xl md:text-3xl font-extralight mb-2 tracking-tight font-heading">
+            Full Catalog & Pricing
+          </h2>
+          <p className="text-muted-foreground/60 max-w-md mx-auto mb-4 font-body font-extralight text-sm leading-relaxed">
             Select a peptide, choose your preferred concentration, and request it instantly.
           </p>
         </div>
