@@ -17,10 +17,8 @@ const Services = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
 
-  // Gate: redirect unauthenticated users to auth
-  useEffect(() => {
-    if (!loading && !user) navigate("/auth?redirect=/services");
-  }, [user, loading, navigate]);
+  // Allow browsing without auth; gate checkout only
+
 
   const { data: tiers, isLoading } = useQuery({
     queryKey: ["membership-tiers"],
