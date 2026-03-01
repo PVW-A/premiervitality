@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 import { ArrowLeft, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
+import PopularPeptidesCarousel from "@/components/PopularPeptidesCarousel";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
