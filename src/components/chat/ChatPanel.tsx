@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { X, Send, Loader2 } from "lucide-react";
+import { X, Send, Loader2, ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useLocation, useNavigate } from "react-router-dom";
 import ChatMessage from "./ChatMessage";
 import PVMonogram from "@/components/PVMonogram";
 
@@ -26,6 +27,14 @@ const ChatPanel = ({ open, onClose }: ChatPanelProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    onClose();
+    const isPortal = location.pathname.startsWith("/portal");
+    navigate(isPortal ? "/portal" : "/");
+  };
 
   useEffect(() => {
     if (open) inputRef.current?.focus();
@@ -170,6 +179,13 @@ const ChatPanel = ({ open, onClose }: ChatPanelProps) => {
         >
           {/* Header */}
           <div className="flex items-center gap-3 px-5 py-4 border-b border-border/30">
+            <button
+              onClick={handleBack}
+              className="sm:hidden rounded-full p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-colors"
+              aria-label="Go back"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </button>
             <PVMonogram className="w-6 h-6" />
             <div className="flex-1">
               <h3 className="font-heading text-sm font-semibold text-foreground tracking-wide">
