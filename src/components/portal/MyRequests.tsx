@@ -148,7 +148,7 @@ export default function MyRequests({
                       )}
                       {r.status === "paid" && r.delivery_method && (
                         <p className="text-[10px] text-muted-foreground/60 font-body font-light mt-1">
-                          {r.delivery_method === "shipping" ? "📦 Shipping overnight" : `📍 Pickup at ${PICKUP_ADDRESS}`}
+                          {r.delivery_method === "shipping" ? "📦 Shipping overnight" : r.delivery_method === "courier" ? "🚗 Courier delivery" : `📍 Pickup at ${PICKUP_ADDRESS}`}
                           {r.include_injection_kit && " · Injection kit included"}
                         </p>
                       )}

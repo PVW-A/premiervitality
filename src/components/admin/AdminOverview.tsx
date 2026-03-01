@@ -162,8 +162,10 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
     filteredRequests.forEach(r => {
       const day = format(new Date(r.created_at), "MMM d");
       const existing = buckets.get(day) || { revenue: 0, profit: 0, orders: 0 };
-      const rev = (r.price || 0) + (r.include_injection_kit ? KIT_PRICE : 0) + (r.delivery_method === "ship" ? SHIPPING_PRICE : 0);
-      const cost = (costMap.get(r.peptide_id) || 0) + (r.include_injection_kit ? KIT_COST : 0) + (r.delivery_method === "ship" ? SHIPPING_COST : 0);
+      const deliveryRev = r.delivery_method === "courier" ? COURIER_PRICE : (r.delivery_method === "ship" || r.delivery_method === "shipping") ? SHIPPING_PRICE : 0;
+      const deliveryCost = r.delivery_method === "courier" ? COURIER_COST : (r.delivery_method === "ship" || r.delivery_method === "shipping") ? SHIPPING_COST : 0;
+      const rev = (r.price || 0) + (r.include_injection_kit ? KIT_PRICE : 0) + deliveryRev;
+      const cost = (costMap.get(r.peptide_id) || 0) + (r.include_injection_kit ? KIT_COST : 0) + deliveryCost;
       existing.revenue += rev;
       existing.profit += rev - cost;
       existing.orders += 1;

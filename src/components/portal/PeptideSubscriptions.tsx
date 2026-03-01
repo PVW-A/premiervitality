@@ -104,7 +104,7 @@ export default function PeptideSubscriptions({ userId }: { userId: string }) {
                       ${total.toFixed(2)}/month
                       {sub.include_injection_kit && " · Kit included"}
                       {" · "}
-                      {sub.delivery_method === "shipping" ? "Shipped" : "Pickup"}
+                      {sub.delivery_method === "shipping" ? "Shipped" : sub.delivery_method === "courier" ? "Courier" : "Pickup"}
                     </p>
                     {sub.status !== "cancelled" && (
                       <p className="text-[10px] text-muted-foreground/70 font-body font-light">
