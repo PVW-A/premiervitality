@@ -113,7 +113,7 @@ const ServiceArea = () => (
                 className="flex items-center gap-2.5 text-sm text-muted-foreground font-body font-light hover:text-primary transition-colors"
               >
                 <Phone size={15} className="text-primary shrink-0" />
-                (480) 910-2359
+                (480) 234-9108
               </a>
               <a
                 href="mailto:contact@premiervitalityandwellness.com"
