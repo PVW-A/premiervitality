@@ -8,7 +8,7 @@ import Footer from "@/components/Footer";
 import { openCalendly } from "@/hooks/useCalendly";
 import {
   Scale, Heart, Flame, Sparkles, Scissors, Bandage, Zap, Shield,
-  ChevronDown, Check, ArrowRight,
+  ChevronDown, ArrowRight,
 } from "lucide-react";
 
 const iconMap: Record<string, React.ElementType> = {
