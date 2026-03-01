@@ -92,7 +92,7 @@ const Protocols = () => {
         .select("*")
         .order("sort_order");
       if (error) throw error;
-      return data as Protocol[];
+      return data as unknown as Protocol[];
     },
   });
 

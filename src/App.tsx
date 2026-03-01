@@ -64,6 +64,7 @@ const App = () => (
               <Route path="/service-area" element={<ServiceArea />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/sms-consent" element={<SmsConsent />} />
+              <Route path="/protocols" element={<Protocols />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
