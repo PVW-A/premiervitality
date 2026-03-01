@@ -237,8 +237,17 @@ const Services = () => {
           </div>
         )}
 
+        {/* Comparison Table */}
+        <TierComparisonTable />
+
+        {/* Social Proof */}
+        <SocialProofStrip />
+
+        {/* FAQ */}
+        <MembershipFAQ />
+
         {/* Bottom CTA */}
-        <section className="max-w-3xl mx-auto text-center px-6 mt-20">
+        <section className="max-w-3xl mx-auto text-center px-6">
           <p className="text-muted-foreground font-body font-light text-sm leading-relaxed">
             All memberships include access to our complete peptide catalog with
             member-exclusive pricing. Need help choosing?{" "}
