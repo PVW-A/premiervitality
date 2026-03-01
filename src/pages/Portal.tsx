@@ -259,7 +259,7 @@ const Portal = () => {
               { value: "catalog", icon: ShoppingBag, label: "Catalog" },
               { value: "dashboard", icon: Pill, label: "Dashboard" },
               { value: "markers", icon: Activity, label: "Vitality Score" },
-              { value: "news", icon: Newspaper, label: "Peptide News" },
+              { value: "rewards", icon: Star, label: "Rewards" },
               { value: "rewards", icon: Star, label: "Rewards" },
             ].map(({ value, icon: Icon, label }) => (
               <TabsTrigger
