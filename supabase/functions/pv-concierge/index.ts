@@ -105,6 +105,14 @@ serve(async (req) => {
   }
 
   try {
+    // Rate limit: 20 messages per 5 minutes per IP
+    const rateLimitResult = await checkRateLimit(
+      getClientIdentifier(req),
+      { endpoint: "pv-concierge", maxRequests: 20, windowSeconds: 300 },
+      corsHeaders
+    );
+    if (!rateLimitResult.allowed) return rateLimitResult.response;
+
     const { messages } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
