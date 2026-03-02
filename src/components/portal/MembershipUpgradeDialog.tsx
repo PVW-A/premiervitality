@@ -322,7 +322,7 @@ export default function MembershipUpgradeDialog({
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label className="text-xs font-body font-light text-muted-foreground">First Name *</Label>
-                <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="bg-background border-border text-sm" />
+                <Input value={firstName} onChange={(e) => setFirstName(sanitizeName(e.target.value))} maxLength={100} className="bg-background border-border text-sm" />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-body font-light text-muted-foreground">Last Name *</Label>
