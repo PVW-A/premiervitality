@@ -65,7 +65,8 @@ const HeroSection = () => (
               const cx = 50;
               const yStart = 10;
               const yEnd = 90;
-              const turns = 2;
+              const turns = 1.5;
+              const phaseOffset = Math.PI / 2; // start at max spread
 
               // Generate points for both strands
               const strand1: string[] = [];
@@ -75,7 +76,7 @@ const HeroSection = () => (
               for (let i = 0; i <= steps; i++) {
                 const t = i / steps;
                 const y = yStart + t * (yEnd - yStart);
-                const angle = t * turns * Math.PI * 2;
+                const angle = t * turns * Math.PI * 2 + phaseOffset;
                 const x1 = cx + Math.sin(angle) * amplitude;
                 const x2 = cx + Math.sin(angle + Math.PI) * amplitude;
                 strand1.push(`${x1.toFixed(1)},${y.toFixed(1)}`);
