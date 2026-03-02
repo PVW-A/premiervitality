@@ -44,15 +44,15 @@ const HeroSection = () => (
         {/* Phase 1-2: Double Helix — starts tiny, expands, then fades as ring forms */}
         <motion.div
           className="absolute inset-0 flex items-center justify-center pointer-events-none"
-          initial={{ opacity: 0, scale: 0.08 }}
+          initial={{ opacity: 0, scale: 0.15 }}
           animate={{
-            opacity: [0, 1, 1, 1, 0],
-            scale: [0.08, 0.08, 1, 1, 1.1],
-            rotate: [0, 0, 0, 180, 360],
+            opacity: [0, 1, 1, 1, 1, 0],
+            scale: [0.15, 0.5, 1, 1, 1, 1.05],
+            rotate: [0, 0, 0, 0, 180, 360],
           }}
           transition={{
-            duration: 3.2,
-            times: [0, 0.05, 0.4, 0.7, 1],
+            duration: 5,
+            times: [0, 0.08, 0.3, 0.6, 0.8, 1],
             ease: [0.22, 1, 0.36, 1],
             delay: 0.1,
           }}
@@ -63,22 +63,22 @@ const HeroSection = () => (
               d="M25 8 C58 22, 58 35, 25 50 C-8 65, -8 78, 25 92"
               fill="none"
               stroke="hsl(var(--primary) / 0.6)"
-              strokeWidth="1.5"
+              strokeWidth="1.8"
               strokeLinecap="round"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: [0, 1] }}
-              transition={{ duration: 1.6, ease: "easeInOut", delay: 0.15 }}
+              transition={{ duration: 2, ease: "easeInOut", delay: 0.2 }}
             />
             {/* Strand 2 */}
             <motion.path
               d="M75 8 C42 22, 42 35, 75 50 C108 65, 108 78, 75 92"
               fill="none"
-              stroke="hsl(var(--primary) / 0.4)"
-              strokeWidth="1.5"
+              stroke="hsl(var(--primary) / 0.45)"
+              strokeWidth="1.8"
               strokeLinecap="round"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: [0, 1] }}
-              transition={{ duration: 1.6, ease: "easeInOut", delay: 0.25 }}
+              transition={{ duration: 2, ease: "easeInOut", delay: 0.35 }}
             />
             {/* Rungs connecting the strands */}
             {[15, 27, 39, 50, 61, 73, 85].map((y, i) => {
@@ -91,11 +91,11 @@ const HeroSection = () => (
                   y1={y}
                   x2={50 + 25 - offset}
                   y2={y}
-                  stroke="hsl(var(--primary) / 0.2)"
-                  strokeWidth="0.7"
+                  stroke="hsl(var(--primary) / 0.25)"
+                  strokeWidth="0.8"
                   initial={{ opacity: 0, scaleX: 0 }}
                   animate={{ opacity: [0, 1], scaleX: [0, 1] }}
-                  transition={{ duration: 0.35, delay: 0.4 + i * 0.12 }}
+                  transition={{ duration: 0.5, delay: 0.8 + i * 0.2 }}
                 />
               );
             })}
@@ -111,7 +111,7 @@ const HeroSection = () => (
             style={{ border: "1.5px solid hsl(var(--primary) / 0.4)" }}
             initial={{ width: 0, height: 0, opacity: 0 }}
             animate={{ width: 120, height: 120, opacity: 1 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 2.8 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 4.6 }}
           />
         </motion.div>
 
@@ -122,9 +122,9 @@ const HeroSection = () => (
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1, rotate: 360 }}
           transition={{
-            opacity: { duration: 0.5, delay: 3.2 },
-            scale: { duration: 0.5, delay: 3.2 },
-            rotate: { duration: 30, repeat: Infinity, ease: "linear", delay: 3.2 },
+            opacity: { duration: 0.5, delay: 5.1 },
+            scale: { duration: 0.5, delay: 5.1 },
+            rotate: { duration: 30, repeat: Infinity, ease: "linear", delay: 5.1 },
           }}
         />
 
@@ -141,8 +141,8 @@ const HeroSection = () => (
             ],
           }}
           transition={{
-            opacity: { duration: 0.5, delay: 3.2 },
-            boxShadow: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 3.5 },
+            opacity: { duration: 0.5, delay: 5.1 },
+            boxShadow: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 5.5 },
           }}
         />
 
@@ -151,7 +151,7 @@ const HeroSection = () => (
           className="relative z-10"
           initial={{ opacity: 0, scale: 0.05 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, delay: 2.9, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 1.2, delay: 4.8, ease: [0.22, 1, 0.36, 1] }}
         >
           <PVMonogram className="w-20 h-20 md:w-28 md:h-28" />
         </motion.div>
