@@ -233,7 +233,7 @@ const UserSettingsMenu = ({ firstName, lastName, userId, onSignOut, onProfileUpd
                 </div>
                 <div className="space-y-1.5">
                   <Label className="font-body text-[10px] uppercase tracking-[0.15em] text-muted-foreground">Last Name</Label>
-                  <Input value={lName} onChange={(e) => setLName(e.target.value)} placeholder="Last" className="font-body font-light" />
+                  <Input value={lName} onChange={(e) => setLName(sanitizeName(e.target.value))} placeholder="Last" className="font-body font-light" maxLength={100} />
                 </div>
               </div>
 
