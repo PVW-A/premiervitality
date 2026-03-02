@@ -244,7 +244,7 @@ const SubscriptionCheckout = ({
               </div>
               <div>
                 <Label className="text-xs text-muted-foreground font-body font-light">Last Name <span className="text-primary">*</span></Label>
-                <Input value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Doe" className={cn("mt-1", inputCls)} />
+                <Input value={lastName} onChange={(e) => setLastName(sanitizeName(e.target.value))} placeholder="Doe" maxLength={100} className={cn("mt-1", inputCls)} />
               </div>
             </div>
 
