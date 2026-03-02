@@ -58,14 +58,14 @@ const HeroSection = () => (
           }}
         >
           {/* Proper double helix: two sine-wave backbones that cross over each other + rungs */}
-          <svg viewBox="0 0 60 120" className="w-20 h-28 md:w-24 md:h-32">
+          <svg viewBox="0 0 100 100" className="w-28 h-28 md:w-32 md:h-32">
             {(() => {
               const steps = 60;
-              const amplitude = 14;
-              const cx = 30;
-              const yStart = 5;
-              const yEnd = 115;
-              const turns = 2.5;
+              const amplitude = 22;
+              const cx = 50;
+              const yStart = 10;
+              const yEnd = 90;
+              const turns = 1.75;
 
               // Generate points for both strands
               const strand1: string[] = [];
