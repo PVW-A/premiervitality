@@ -41,63 +41,68 @@ const HeroSection = () => (
     <div className="relative z-10 max-w-3xl mx-auto px-6 pt-20 sm:pt-0 text-center flex flex-col items-center">
       {/* Monogram with yin-yang animated reveal */}
       <div className="relative mb-10 w-32 h-32 md:w-36 md:h-36 flex items-center justify-center aspect-square">
-        {/* Double Helix SVG — rotates & collapses into circle as PV appears */}
+        {/* Phase 1-2: Double Helix — starts tiny, expands, then fades as ring forms */}
         <motion.div
           className="absolute inset-0 flex items-center justify-center pointer-events-none"
-          initial={{ opacity: 0, scale: 0.3, rotate: 0 }}
-          animate={{ opacity: [0, 1, 1, 0], scale: [0.3, 1, 1, 0.85], rotate: [0, 180, 360, 360] }}
+          initial={{ opacity: 0, scale: 0.08 }}
+          animate={{
+            opacity: [0, 1, 1, 1, 0],
+            scale: [0.08, 0.08, 1, 1, 1.1],
+            rotate: [0, 0, 0, 180, 360],
+          }}
           transition={{
-            duration: 2.4,
-            times: [0, 0.3, 0.7, 1],
+            duration: 3.2,
+            times: [0, 0.05, 0.4, 0.7, 1],
             ease: [0.22, 1, 0.36, 1],
             delay: 0.1,
           }}
         >
-          <svg viewBox="0 0 100 100" className="w-24 h-24 md:w-32 md:h-32">
+          <svg viewBox="0 0 100 100" className="w-28 h-28 md:w-32 md:h-32">
             {/* Strand 1 */}
             <motion.path
-              d="M30 5 C55 20, 55 30, 30 50 C5 70, 5 80, 30 95"
+              d="M25 8 C58 22, 58 35, 25 50 C-8 65, -8 78, 25 92"
               fill="none"
-              stroke="hsl(var(--primary) / 0.5)"
+              stroke="hsl(var(--primary) / 0.6)"
               strokeWidth="1.5"
               strokeLinecap="round"
               initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 1.4, ease: "easeInOut", delay: 0.2 }}
+              animate={{ pathLength: [0, 1] }}
+              transition={{ duration: 1.6, ease: "easeInOut", delay: 0.15 }}
             />
             {/* Strand 2 */}
             <motion.path
-              d="M70 5 C45 20, 45 30, 70 50 C95 70, 95 80, 70 95"
+              d="M75 8 C42 22, 42 35, 75 50 C108 65, 108 78, 75 92"
               fill="none"
-              stroke="hsl(var(--primary) / 0.3)"
+              stroke="hsl(var(--primary) / 0.4)"
               strokeWidth="1.5"
               strokeLinecap="round"
               initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 1.4, ease: "easeInOut", delay: 0.3 }}
+              animate={{ pathLength: [0, 1] }}
+              transition={{ duration: 1.6, ease: "easeInOut", delay: 0.25 }}
             />
-            {/* Rungs */}
-            {[18, 32, 50, 68, 82].map((y, i) => {
-              const offset = Math.sin(((y - 50) / 45) * Math.PI) * 20;
+            {/* Rungs connecting the strands */}
+            {[15, 27, 39, 50, 61, 73, 85].map((y, i) => {
+              const t = (y - 50) / 42;
+              const offset = Math.sin(t * Math.PI) * 25;
               return (
                 <motion.line
                   key={i}
-                  x1={50 - 20 + offset}
+                  x1={50 - 25 + offset}
                   y1={y}
-                  x2={50 + 20 - offset}
+                  x2={50 + 25 - offset}
                   y2={y}
-                  stroke="hsl(var(--primary) / 0.15)"
-                  strokeWidth="0.8"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: [0, 1] }}
-                  transition={{ duration: 0.4, delay: 0.5 + i * 0.15 }}
+                  stroke="hsl(var(--primary) / 0.2)"
+                  strokeWidth="0.7"
+                  initial={{ opacity: 0, scaleX: 0 }}
+                  animate={{ opacity: [0, 1], scaleX: [0, 1] }}
+                  transition={{ duration: 0.35, delay: 0.4 + i * 0.12 }}
                 />
               );
             })}
           </svg>
         </motion.div>
 
-        {/* Circle ring — appears as yin-yang fades */}
+        {/* Phase 3: Circle ring — helix "unwraps" into this ring */}
         <motion.div
           className="absolute inset-0 flex items-center justify-center pointer-events-none"
         >
@@ -106,7 +111,7 @@ const HeroSection = () => (
             style={{ border: "1.5px solid hsl(var(--primary) / 0.4)" }}
             initial={{ width: 0, height: 0, opacity: 0 }}
             animate={{ width: 120, height: 120, opacity: 1 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 1.6 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 2.8 }}
           />
         </motion.div>
 
@@ -117,9 +122,9 @@ const HeroSection = () => (
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1, rotate: 360 }}
           transition={{
-            opacity: { duration: 0.5, delay: 2 },
-            scale: { duration: 0.5, delay: 2 },
-            rotate: { duration: 30, repeat: Infinity, ease: "linear", delay: 2 },
+            opacity: { duration: 0.5, delay: 3.2 },
+            scale: { duration: 0.5, delay: 3.2 },
+            rotate: { duration: 30, repeat: Infinity, ease: "linear", delay: 3.2 },
           }}
         />
 
@@ -136,17 +141,17 @@ const HeroSection = () => (
             ],
           }}
           transition={{
-            opacity: { duration: 0.5, delay: 2 },
-            boxShadow: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 2.5 },
+            opacity: { duration: 0.5, delay: 3.2 },
+            boxShadow: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 3.5 },
           }}
         />
 
-        {/* PV letters — fade in after yin-yang dissolves */}
+        {/* Phase 4: PV — starts as a dot and grows into the monogram */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.9, delay: 1.8, ease: [0.22, 1, 0.36, 1] }}
           className="relative z-10"
+          initial={{ opacity: 0, scale: 0.05 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.2, delay: 2.9, ease: [0.22, 1, 0.36, 1] }}
         >
           <PVMonogram className="w-20 h-20 md:w-28 md:h-28" />
         </motion.div>
