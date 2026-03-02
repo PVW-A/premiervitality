@@ -143,8 +143,8 @@ const HeroSection = () => (
                     <motion.line
                       key={`rf-${i}`}
                       x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2}
-                      stroke="hsl(var(--primary) / 0.3)"
-                      strokeWidth="1.2"
+                      stroke="hsl(var(--primary) / 0.45)"
+                      strokeWidth="1.5"
                       strokeLinecap="round"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
