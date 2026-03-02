@@ -247,7 +247,7 @@ const UserSettingsMenu = ({ firstName, lastName, userId, onSignOut, onProfileUpd
               {/* Phone */}
               <div className="space-y-1.5">
                 <Label className="font-body text-[10px] uppercase tracking-[0.15em] text-muted-foreground">Phone</Label>
-                <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(555) 000-0000" className="font-body font-light" />
+                <Input value={phone} onChange={(e) => setPhone(sanitizePhone(e.target.value))} placeholder="(555) 000-0000" className="font-body font-light" />
               </div>
 
               {/* Address */}
