@@ -39,34 +39,71 @@ const HeroSection = () => (
 
 
     <div className="relative z-10 max-w-3xl mx-auto px-6 pt-20 sm:pt-0 text-center flex flex-col items-center">
-      {/* Monogram with ring */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.85 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.2 }}
-        className="relative mb-10"
-      >
-        {/* Orbit ring */}
+      {/* Monogram with animated reveal */}
+      <div className="relative mb-10">
+        {/* Expanding circle ring — starts as a dot, swirls open */}
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 1 }}
+        >
+          {/* The ring itself */}
+          <motion.div
+            className="rounded-full"
+            style={{
+              border: "1.5px solid hsl(var(--primary) / 0.5)",
+            }}
+            initial={{ width: 6, height: 6, opacity: 0 }}
+            animate={{ width: 140, height: 140, opacity: 1 }}
+            transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+          />
+        </motion.div>
+
+        {/* Second ring — expands slightly after the first */}
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        >
+          <motion.div
+            className="rounded-full"
+            style={{
+              border: "1px solid hsl(var(--primary) / 0.15)",
+            }}
+            initial={{ width: 4, height: 4, opacity: 0 }}
+            animate={{ width: 180, height: 180, opacity: 1 }}
+            transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
+          />
+        </motion.div>
+
+        {/* Rotating orbit rings (appear after expand) */}
         <motion.div
           className="absolute -inset-4 rounded-full"
-          style={{
-            border: "1px solid hsl(var(--primary) / 0.1)",
+          style={{ border: "1px solid hsl(var(--primary) / 0.1)" }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1, rotate: 360 }}
+          transition={{
+            opacity: { duration: 0.6, delay: 1.2 },
+            scale: { duration: 0.6, delay: 1.2 },
+            rotate: { duration: 30, repeat: Infinity, ease: "linear", delay: 1.2 },
           }}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
         />
         <motion.div
           className="absolute -inset-8 rounded-full"
-          style={{
-            border: "1px solid hsl(var(--primary) / 0.05)",
+          style={{ border: "1px solid hsl(var(--primary) / 0.05)" }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1, rotate: -360 }}
+          transition={{
+            opacity: { duration: 0.6, delay: 1.4 },
+            scale: { duration: 0.6, delay: 1.4 },
+            rotate: { duration: 45, repeat: Infinity, ease: "linear", delay: 1.4 },
           }}
-          animate={{ rotate: -360 }}
-          transition={{ duration: 45, repeat: Infinity, ease: "linear" }}
         />
+
         {/* Ambient pulse */}
         <motion.div
           className="absolute -inset-6 rounded-full"
+          initial={{ opacity: 0 }}
           animate={{
+            opacity: 1,
             boxShadow: [
               "0 0 20px 0px hsl(var(--primary) / 0.0)",
               "0 0 40px 10px hsl(var(--primary) / 0.06)",
@@ -74,13 +111,21 @@ const HeroSection = () => (
             ],
           }}
           transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut",
+            opacity: { duration: 0.5, delay: 1.2 },
+            boxShadow: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1.5 },
           }}
         />
-        <PVMonogram className="w-20 h-20 md:w-28 md:h-28 relative z-10" />
-      </motion.div>
+
+        {/* PV letters — fade in after circle expands */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.6 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          className="relative z-10"
+        >
+          <PVMonogram className="w-20 h-20 md:w-28 md:h-28" />
+        </motion.div>
+      </div>
 
       <motion.h1
         initial={{ opacity: 0, y: 30 }}
