@@ -57,48 +57,102 @@ const HeroSection = () => (
             delay: 0.1,
           }}
         >
-          <svg viewBox="0 0 100 100" className="w-28 h-28 md:w-32 md:h-32">
-            {/* Strand 1 */}
-            <motion.path
-              d="M25 8 C58 22, 58 35, 25 50 C-8 65, -8 78, 25 92"
-              fill="none"
-              stroke="hsl(var(--primary) / 0.6)"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: [0, 1] }}
-              transition={{ duration: 2, ease: "easeInOut", delay: 0.2 }}
-            />
-            {/* Strand 2 */}
-            <motion.path
-              d="M75 8 C42 22, 42 35, 75 50 C108 65, 108 78, 75 92"
-              fill="none"
-              stroke="hsl(var(--primary) / 0.45)"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: [0, 1] }}
-              transition={{ duration: 2, ease: "easeInOut", delay: 0.35 }}
-            />
-            {/* Rungs connecting the strands */}
-            {[15, 27, 39, 50, 61, 73, 85].map((y, i) => {
-              const t = (y - 50) / 42;
-              const offset = Math.sin(t * Math.PI) * 25;
+          {/* Proper double helix: two sine-wave backbones that cross over each other + rungs */}
+          <svg viewBox="0 0 60 120" className="w-20 h-28 md:w-24 md:h-32">
+            {(() => {
+              const steps = 60;
+              const amplitude = 14;
+              const cx = 30;
+              const yStart = 5;
+              const yEnd = 115;
+              const turns = 2.5;
+
+              // Generate points for both strands
+              const strand1: string[] = [];
+              const strand2: string[] = [];
+              const rungs: { x1: number; y1: number; x2: number; y2: number; behind: boolean }[] = [];
+
+              for (let i = 0; i <= steps; i++) {
+                const t = i / steps;
+                const y = yStart + t * (yEnd - yStart);
+                const angle = t * turns * Math.PI * 2;
+                const x1 = cx + Math.sin(angle) * amplitude;
+                const x2 = cx + Math.sin(angle + Math.PI) * amplitude;
+                strand1.push(`${x1.toFixed(1)},${y.toFixed(1)}`);
+                strand2.push(`${x2.toFixed(1)},${y.toFixed(1)}`);
+              }
+
+              // Rungs at regular intervals
+              const rungCount = 10;
+              for (let i = 0; i < rungCount; i++) {
+                const t = (i + 0.5) / rungCount;
+                const y = yStart + t * (yEnd - yStart);
+                const angle = t * turns * Math.PI * 2;
+                const x1 = cx + Math.sin(angle) * amplitude;
+                const x2 = cx + Math.sin(angle + Math.PI) * amplitude;
+                // Rung is "behind" when strand1 is crossing in front
+                const behind = Math.cos(angle) > 0;
+                rungs.push({ x1, y1: y, x2, y2: y, behind });
+              }
+
+              const path1 = `M ${strand1[0]} ` + strand1.slice(1).map((p) => `L ${p}`).join(" ");
+              const path2 = `M ${strand2[0]} ` + strand2.slice(1).map((p) => `L ${p}`).join(" ");
+
               return (
-                <motion.line
-                  key={i}
-                  x1={50 - 25 + offset}
-                  y1={y}
-                  x2={50 + 25 - offset}
-                  y2={y}
-                  stroke="hsl(var(--primary) / 0.25)"
-                  strokeWidth="0.8"
-                  initial={{ opacity: 0, scaleX: 0 }}
-                  animate={{ opacity: [0, 1], scaleX: [0, 1] }}
-                  transition={{ duration: 0.5, delay: 0.8 + i * 0.2 }}
-                />
+                <>
+                  {/* Rungs behind */}
+                  {rungs.filter((r) => r.behind).map((r, i) => (
+                    <motion.line
+                      key={`rb-${i}`}
+                      x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2}
+                      stroke="hsl(var(--primary) / 0.2)"
+                      strokeWidth="1.2"
+                      strokeLinecap="round"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3, delay: 0.6 + i * 0.18 }}
+                    />
+                  ))}
+                  {/* Strand 1 (back portions appear first) */}
+                  <motion.path
+                    d={path1}
+                    fill="none"
+                    stroke="hsl(var(--primary) / 0.6)"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 2.2, ease: "easeInOut", delay: 0.15 }}
+                  />
+                  {/* Strand 2 */}
+                  <motion.path
+                    d={path2}
+                    fill="none"
+                    stroke="hsl(var(--primary) / 0.4)"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 2.2, ease: "easeInOut", delay: 0.3 }}
+                  />
+                  {/* Rungs in front */}
+                  {rungs.filter((r) => !r.behind).map((r, i) => (
+                    <motion.line
+                      key={`rf-${i}`}
+                      x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2}
+                      stroke="hsl(var(--primary) / 0.3)"
+                      strokeWidth="1.2"
+                      strokeLinecap="round"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3, delay: 0.8 + i * 0.18 }}
+                    />
+                  ))}
+                </>
               );
-            })}
+            })()}
           </svg>
         </motion.div>
 
