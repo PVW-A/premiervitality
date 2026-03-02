@@ -65,7 +65,7 @@ const HeroSection = () => (
               const cx = 50;
               const yStart = 10;
               const yEnd = 90;
-              const turns = 1.75;
+              const turns = 2;
 
               // Generate points for both strands
               const strand1: string[] = [];
