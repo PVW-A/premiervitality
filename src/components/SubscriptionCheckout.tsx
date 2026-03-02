@@ -252,7 +252,7 @@ const SubscriptionCheckout = ({
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label className="text-xs text-muted-foreground font-body font-light">Email <span className="text-primary">*</span></Label>
-                <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="john@email.com" className={cn("mt-1", inputCls)} />
+                <Input type="email" value={email} onChange={(e) => setEmail(sanitizeEmail(e.target.value))} placeholder="john@email.com" maxLength={255} className={cn("mt-1", inputCls)} />
               </div>
               <div>
                 <Label className="text-xs text-muted-foreground font-body font-light">Phone <span className="text-primary">*</span></Label>
