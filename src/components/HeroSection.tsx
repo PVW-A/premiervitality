@@ -40,7 +40,7 @@ const HeroSection = () => (
 
     <div className="relative z-10 max-w-3xl mx-auto px-6 pt-20 sm:pt-0 text-center flex flex-col items-center">
       {/* Monogram with yin-yang animated reveal */}
-      <div className="relative mb-10 w-28 h-28 md:w-36 md:h-36 flex items-center justify-center">
+      <div className="relative mb-10 w-32 h-32 md:w-36 md:h-36 flex items-center justify-center aspect-square">
         {/* Yin-Yang SVG — spins then fades as PV appears */}
         <motion.div
           className="absolute inset-0 flex items-center justify-center pointer-events-none"
@@ -81,7 +81,7 @@ const HeroSection = () => (
             className="rounded-full"
             style={{ border: "1.5px solid hsl(var(--primary) / 0.4)" }}
             initial={{ width: 0, height: 0, opacity: 0 }}
-            animate={{ width: 130, height: 130, opacity: 1 }}
+            animate={{ width: 120, height: 120, opacity: 1 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 1.6 }}
           />
         </motion.div>
