@@ -13,6 +13,14 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Rate limit: 5 subscription attempts per 10 minutes per IP
+    const rateLimitResult = await checkRateLimit(
+      getClientIdentifier(req),
+      { endpoint: "create-subscription", maxRequests: 5, windowSeconds: 600 },
+      corsHeaders
+    );
+    if (!rateLimitResult.allowed) return rateLimitResult.response;
+
     // Auth check
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {

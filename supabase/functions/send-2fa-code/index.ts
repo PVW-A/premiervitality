@@ -12,6 +12,14 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Rate limit: 5 requests per 60 seconds per IP
+    const rateLimitResult = await checkRateLimit(
+      getClientIdentifier(req),
+      { endpoint: "send-2fa-code", maxRequests: 5, windowSeconds: 60 },
+      corsHeaders
+    );
+    if (!rateLimitResult.allowed) return rateLimitResult.response;
+
     const TWILIO_ACCOUNT_SID = Deno.env.get("TWILIO_ACCOUNT_SID");
     const TWILIO_AUTH_TOKEN = Deno.env.get("TWILIO_AUTH_TOKEN");
     const TWILIO_PHONE_NUMBER = Deno.env.get("TWILIO_PHONE_NUMBER");

@@ -12,6 +12,14 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Rate limit: 10 attempts per 5 minutes per IP (brute force protection)
+    const rateLimitResult = await checkRateLimit(
+      getClientIdentifier(req),
+      { endpoint: "verify-2fa-code", maxRequests: 10, windowSeconds: 300 },
+      corsHeaders
+    );
+    if (!rateLimitResult.allowed) return rateLimitResult.response;
+
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
