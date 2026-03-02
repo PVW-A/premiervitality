@@ -12,6 +12,7 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, ArrowRight, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { sanitizeName, sanitizePhone, sanitizeEmail, sanitizeAddress, sanitizeZip } from "@/lib/sanitize";
 
 declare global {
   interface Window {
@@ -239,11 +240,11 @@ const SubscriptionCheckout = ({
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label className="text-xs text-muted-foreground font-body font-light">First Name <span className="text-primary">*</span></Label>
-                <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="John" className={cn("mt-1", inputCls)} />
+                <Input value={firstName} onChange={(e) => setFirstName(sanitizeName(e.target.value))} placeholder="John" maxLength={100} className={cn("mt-1", inputCls)} />
               </div>
               <div>
                 <Label className="text-xs text-muted-foreground font-body font-light">Last Name <span className="text-primary">*</span></Label>
-                <Input value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Doe" className={cn("mt-1", inputCls)} />
+                <Input value={lastName} onChange={(e) => setLastName(sanitizeName(e.target.value))} placeholder="Doe" maxLength={100} className={cn("mt-1", inputCls)} />
               </div>
             </div>
 
@@ -251,11 +252,11 @@ const SubscriptionCheckout = ({
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label className="text-xs text-muted-foreground font-body font-light">Email <span className="text-primary">*</span></Label>
-                <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="john@email.com" className={cn("mt-1", inputCls)} />
+                <Input type="email" value={email} onChange={(e) => setEmail(sanitizeEmail(e.target.value))} placeholder="john@email.com" maxLength={255} className={cn("mt-1", inputCls)} />
               </div>
               <div>
                 <Label className="text-xs text-muted-foreground font-body font-light">Phone <span className="text-primary">*</span></Label>
-                <Input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(555) 123-4567" className={cn("mt-1", inputCls)} />
+                <Input type="tel" value={phone} onChange={(e) => setPhone(sanitizePhone(e.target.value))} placeholder="(555) 123-4567" className={cn("mt-1", inputCls)} />
               </div>
             </div>
 
@@ -282,16 +283,16 @@ const SubscriptionCheckout = ({
             <p className="text-xs tracking-[0.2em] uppercase text-primary font-body font-light pt-2">Shipping Address</p>
             <div>
               <Label className="text-xs text-muted-foreground font-body font-light">Street Address <span className="text-primary">*</span></Label>
-              <Input value={address.line1} onChange={(e) => setAddress((a) => ({ ...a, line1: e.target.value }))} placeholder="123 Main St" className={cn("mt-1", inputCls)} />
+              <Input value={address.line1} onChange={(e) => setAddress((a) => ({ ...a, line1: sanitizeAddress(e.target.value) }))} placeholder="123 Main St" maxLength={200} className={cn("mt-1", inputCls)} />
             </div>
             <div>
               <Label className="text-xs text-muted-foreground font-body font-light">Apt / Suite</Label>
-              <Input value={address.line2} onChange={(e) => setAddress((a) => ({ ...a, line2: e.target.value }))} placeholder="Apt 4B" className={cn("mt-1", inputCls)} />
+              <Input value={address.line2} onChange={(e) => setAddress((a) => ({ ...a, line2: sanitizeAddress(e.target.value, 100) }))} placeholder="Apt 4B" maxLength={100} className={cn("mt-1", inputCls)} />
             </div>
             <div className="grid grid-cols-3 gap-3">
               <div>
                 <Label className="text-xs text-muted-foreground font-body font-light">City <span className="text-primary">*</span></Label>
-                <Input value={address.city} onChange={(e) => setAddress((a) => ({ ...a, city: e.target.value }))} placeholder="Houston" className={cn("mt-1", inputCls)} />
+                <Input value={address.city} onChange={(e) => setAddress((a) => ({ ...a, city: sanitizeAddress(e.target.value, 100) }))} placeholder="Houston" maxLength={100} className={cn("mt-1", inputCls)} />
               </div>
               <div>
                 <Label className="text-xs text-muted-foreground font-body font-light">State <span className="text-primary">*</span></Label>
@@ -308,7 +309,7 @@ const SubscriptionCheckout = ({
               </div>
               <div>
                 <Label className="text-xs text-muted-foreground font-body font-light">Zip <span className="text-primary">*</span></Label>
-                <Input value={address.zip} onChange={(e) => setAddress((a) => ({ ...a, zip: e.target.value }))} placeholder="77001" maxLength={10} className={cn("mt-1", inputCls)} />
+                <Input value={address.zip} onChange={(e) => setAddress((a) => ({ ...a, zip: sanitizeZip(e.target.value) }))} placeholder="77001" maxLength={10} className={cn("mt-1", inputCls)} />
               </div>
             </div>
 

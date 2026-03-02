@@ -15,6 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
+import { sanitizeName, sanitizePhone, sanitizeAddress, sanitizeZip } from "@/lib/sanitize";
 
 const US_STATES = [
   "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA",
@@ -228,11 +229,11 @@ const UserSettingsMenu = ({ firstName, lastName, userId, onSignOut, onProfileUpd
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label className="font-body text-[10px] uppercase tracking-[0.15em] text-muted-foreground">First Name</Label>
-                  <Input value={fName} onChange={(e) => setFName(e.target.value)} placeholder="First" className="font-body font-light" />
+                  <Input value={fName} onChange={(e) => setFName(sanitizeName(e.target.value))} placeholder="First" className="font-body font-light" maxLength={100} />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="font-body text-[10px] uppercase tracking-[0.15em] text-muted-foreground">Last Name</Label>
-                  <Input value={lName} onChange={(e) => setLName(e.target.value)} placeholder="Last" className="font-body font-light" />
+                  <Input value={lName} onChange={(e) => setLName(sanitizeName(e.target.value))} placeholder="Last" className="font-body font-light" maxLength={100} />
                 </div>
               </div>
 
@@ -246,15 +247,15 @@ const UserSettingsMenu = ({ firstName, lastName, userId, onSignOut, onProfileUpd
               {/* Phone */}
               <div className="space-y-1.5">
                 <Label className="font-body text-[10px] uppercase tracking-[0.15em] text-muted-foreground">Phone</Label>
-                <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(555) 000-0000" className="font-body font-light" />
+                <Input value={phone} onChange={(e) => setPhone(sanitizePhone(e.target.value))} placeholder="(555) 000-0000" className="font-body font-light" />
               </div>
 
               {/* Address */}
               <div className="space-y-3">
                 <Label className="font-body text-[10px] uppercase tracking-[0.15em] text-muted-foreground">Address</Label>
-                <Input value={addressLine1} onChange={(e) => setAddressLine1(e.target.value)} placeholder="Street address" className="font-body font-light" />
+                <Input value={addressLine1} onChange={(e) => setAddressLine1(sanitizeAddress(e.target.value))} placeholder="Street address" className="font-body font-light" maxLength={200} />
                 <div className="grid grid-cols-3 gap-2">
-                  <Input value={addressCity} onChange={(e) => setAddressCity(e.target.value)} placeholder="City" className="font-body font-light" />
+                  <Input value={addressCity} onChange={(e) => setAddressCity(sanitizeAddress(e.target.value, 100))} placeholder="City" className="font-body font-light" maxLength={100} />
                   <Select value={addressState} onValueChange={setAddressState}>
                     <SelectTrigger className="font-body font-light">
                       <SelectValue placeholder="State" />
@@ -265,7 +266,7 @@ const UserSettingsMenu = ({ firstName, lastName, userId, onSignOut, onProfileUpd
                       ))}
                     </SelectContent>
                   </Select>
-                  <Input value={addressZip} onChange={(e) => setAddressZip(e.target.value)} placeholder="ZIP" className="font-body font-light" maxLength={10} />
+                  <Input value={addressZip} onChange={(e) => setAddressZip(sanitizeZip(e.target.value))} placeholder="ZIP" className="font-body font-light" maxLength={10} />
                 </div>
               </div>
 

@@ -5,6 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLocation, useNavigate } from "react-router-dom";
 import ChatMessage from "./ChatMessage";
 import PVMonogram from "@/components/PVMonogram";
+import { sanitizeMessage } from "@/lib/sanitize";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -48,8 +49,9 @@ const ChatPanel = ({ open, onClose }: ChatPanelProps) => {
 
   const send = useCallback(
     async (text: string) => {
-      if (!text.trim() || isLoading) return;
-      const userMsg: Msg = { role: "user", content: text.trim() };
+      const sanitized = sanitizeMessage(text);
+      if (!sanitized || isLoading) return;
+      const userMsg: Msg = { role: "user", content: sanitized };
       const newMessages = [...messages, userMsg];
       setMessages(newMessages);
       setInput("");

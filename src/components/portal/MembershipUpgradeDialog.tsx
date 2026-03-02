@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Check, ArrowUp, ArrowLeft, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { sanitizeName, sanitizePhone, sanitizeAddress, sanitizeZip } from "@/lib/sanitize";
 
 interface CurrentMembership {
   id: string;
@@ -321,18 +322,18 @@ export default function MembershipUpgradeDialog({
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label className="text-xs font-body font-light text-muted-foreground">First Name *</Label>
-                <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="bg-background border-border text-sm" />
+                <Input value={firstName} onChange={(e) => setFirstName(sanitizeName(e.target.value))} maxLength={100} className="bg-background border-border text-sm" />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-body font-light text-muted-foreground">Last Name *</Label>
-                <Input value={lastName} onChange={(e) => setLastName(e.target.value)} className="bg-background border-border text-sm" />
+                <Input value={lastName} onChange={(e) => setLastName(sanitizeName(e.target.value))} maxLength={100} className="bg-background border-border text-sm" />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label className="text-xs font-body font-light text-muted-foreground">Phone *</Label>
-                <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(555) 123-4567" className="bg-background border-border text-sm" />
+                <Input value={phone} onChange={(e) => setPhone(sanitizePhone(e.target.value))} placeholder="(555) 123-4567" className="bg-background border-border text-sm" />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-body font-light text-muted-foreground">Date of Birth</Label>
@@ -342,13 +343,13 @@ export default function MembershipUpgradeDialog({
 
             <div className="space-y-1.5">
               <Label className="text-xs font-body font-light text-muted-foreground">Street Address *</Label>
-              <Input value={addressLine1} onChange={(e) => setAddressLine1(e.target.value)} className="bg-background border-border text-sm" />
+              <Input value={addressLine1} onChange={(e) => setAddressLine1(sanitizeAddress(e.target.value))} maxLength={200} className="bg-background border-border text-sm" />
             </div>
 
             <div className="grid grid-cols-3 gap-3">
               <div className="space-y-1.5">
                 <Label className="text-xs font-body font-light text-muted-foreground">City *</Label>
-                <Input value={addressCity} onChange={(e) => setAddressCity(e.target.value)} className="bg-background border-border text-sm" />
+                <Input value={addressCity} onChange={(e) => setAddressCity(sanitizeAddress(e.target.value, 100))} maxLength={100} className="bg-background border-border text-sm" />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-body font-light text-muted-foreground">State *</Label>
@@ -365,7 +366,7 @@ export default function MembershipUpgradeDialog({
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-body font-light text-muted-foreground">ZIP *</Label>
-                <Input value={addressZip} onChange={(e) => setAddressZip(e.target.value)} className="bg-background border-border text-sm" />
+                <Input value={addressZip} onChange={(e) => setAddressZip(sanitizeZip(e.target.value))} maxLength={10} className="bg-background border-border text-sm" />
               </div>
             </div>
 

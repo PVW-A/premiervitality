@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import PVMonogram from "@/components/PVMonogram";
 import { useAuth } from "@/hooks/useAuth";
 import { getDeviceFingerprint, getDeviceName } from "@/lib/deviceFingerprint";
+import { sanitizeName, sanitizePhone, sanitizeEmail } from "@/lib/sanitize";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -223,7 +224,8 @@ const Auth = () => {
                   <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">First Name</Label>
                   <Input
                     value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
+                    onChange={(e) => setFirstName(sanitizeName(e.target.value))}
+                    maxLength={100}
                     required={!isLogin}
                     className="bg-secondary border-border text-foreground font-body font-light"
                   />
@@ -232,7 +234,8 @@ const Auth = () => {
                   <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Last Name</Label>
                   <Input
                     value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
+                    onChange={(e) => setLastName(sanitizeName(e.target.value))}
+                    maxLength={100}
                     required={!isLogin}
                     className="bg-secondary border-border text-foreground font-body font-light"
                   />
@@ -243,7 +246,7 @@ const Auth = () => {
                 <Input
                   type="tel"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => setPhone(sanitizePhone(e.target.value))}
                   placeholder="+1 (555) 123-4567"
                   required={!isLogin}
                   className="bg-secondary border-border text-foreground font-body font-light"
@@ -259,7 +262,8 @@ const Auth = () => {
             <Input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setEmail(sanitizeEmail(e.target.value))}
+              maxLength={255}
               required
               className="bg-secondary border-border text-foreground font-body font-light"
             />
