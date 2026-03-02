@@ -1,8 +1,9 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { checkRateLimit, getClientIdentifier } from "../_shared/rate-limiter.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 Deno.serve(async (req) => {
@@ -11,6 +12,14 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Rate limit: 10 attempts per 5 minutes per IP (brute force protection)
+    const rateLimitResult = await checkRateLimit(
+      getClientIdentifier(req),
+      { endpoint: "verify-2fa-code", maxRequests: 10, windowSeconds: 300 },
+      corsHeaders
+    );
+    if (!rateLimitResult.allowed) return rateLimitResult.response;
+
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
