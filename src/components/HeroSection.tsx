@@ -44,15 +44,15 @@ const HeroSection = () => (
         {/* Phase 1-2: Double Helix — starts tiny, expands, then fades as ring forms */}
         <motion.div
           className="absolute inset-0 flex items-center justify-center pointer-events-none"
-          initial={{ opacity: 0, scale: 0.08 }}
+          initial={{ opacity: 0, scale: 0.15 }}
           animate={{
-            opacity: [0, 1, 1, 1, 0],
-            scale: [0.08, 0.08, 1, 1, 1.1],
-            rotate: [0, 0, 0, 180, 360],
+            opacity: [0, 1, 1, 1, 1, 0],
+            scale: [0.15, 0.5, 1, 1, 1, 1.05],
+            rotate: [0, 0, 0, 0, 180, 360],
           }}
           transition={{
-            duration: 3.2,
-            times: [0, 0.05, 0.4, 0.7, 1],
+            duration: 5,
+            times: [0, 0.08, 0.3, 0.6, 0.8, 1],
             ease: [0.22, 1, 0.36, 1],
             delay: 0.1,
           }}
@@ -63,22 +63,22 @@ const HeroSection = () => (
               d="M25 8 C58 22, 58 35, 25 50 C-8 65, -8 78, 25 92"
               fill="none"
               stroke="hsl(var(--primary) / 0.6)"
-              strokeWidth="1.5"
+              strokeWidth="1.8"
               strokeLinecap="round"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: [0, 1] }}
-              transition={{ duration: 1.6, ease: "easeInOut", delay: 0.15 }}
+              transition={{ duration: 2, ease: "easeInOut", delay: 0.2 }}
             />
             {/* Strand 2 */}
             <motion.path
               d="M75 8 C42 22, 42 35, 75 50 C108 65, 108 78, 75 92"
               fill="none"
-              stroke="hsl(var(--primary) / 0.4)"
-              strokeWidth="1.5"
+              stroke="hsl(var(--primary) / 0.45)"
+              strokeWidth="1.8"
               strokeLinecap="round"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: [0, 1] }}
-              transition={{ duration: 1.6, ease: "easeInOut", delay: 0.25 }}
+              transition={{ duration: 2, ease: "easeInOut", delay: 0.35 }}
             />
             {/* Rungs connecting the strands */}
             {[15, 27, 39, 50, 61, 73, 85].map((y, i) => {
@@ -91,11 +91,11 @@ const HeroSection = () => (
                   y1={y}
                   x2={50 + 25 - offset}
                   y2={y}
-                  stroke="hsl(var(--primary) / 0.2)"
-                  strokeWidth="0.7"
+                  stroke="hsl(var(--primary) / 0.25)"
+                  strokeWidth="0.8"
                   initial={{ opacity: 0, scaleX: 0 }}
                   animate={{ opacity: [0, 1], scaleX: [0, 1] }}
-                  transition={{ duration: 0.35, delay: 0.4 + i * 0.12 }}
+                  transition={{ duration: 0.5, delay: 0.8 + i * 0.2 }}
                 />
               );
             })}
