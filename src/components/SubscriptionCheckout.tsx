@@ -292,7 +292,7 @@ const SubscriptionCheckout = ({
             <div className="grid grid-cols-3 gap-3">
               <div>
                 <Label className="text-xs text-muted-foreground font-body font-light">City <span className="text-primary">*</span></Label>
-                <Input value={address.city} onChange={(e) => setAddress((a) => ({ ...a, city: e.target.value }))} placeholder="Houston" className={cn("mt-1", inputCls)} />
+                <Input value={address.city} onChange={(e) => setAddress((a) => ({ ...a, city: sanitizeAddress(e.target.value, 100) }))} placeholder="Houston" maxLength={100} className={cn("mt-1", inputCls)} />
               </div>
               <div>
                 <Label className="text-xs text-muted-foreground font-body font-light">State <span className="text-primary">*</span></Label>
