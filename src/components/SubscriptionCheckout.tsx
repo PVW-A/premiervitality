@@ -256,7 +256,7 @@ const SubscriptionCheckout = ({
               </div>
               <div>
                 <Label className="text-xs text-muted-foreground font-body font-light">Phone <span className="text-primary">*</span></Label>
-                <Input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(555) 123-4567" className={cn("mt-1", inputCls)} />
+                <Input type="tel" value={phone} onChange={(e) => setPhone(sanitizePhone(e.target.value))} placeholder="(555) 123-4567" className={cn("mt-1", inputCls)} />
               </div>
             </div>
 
