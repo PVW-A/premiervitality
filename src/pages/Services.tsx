@@ -127,7 +127,7 @@ const Services = () => {
         <HowItWorks />
 
         {/* Billing Toggle */}
-        <div className="flex justify-center mb-14">
+        <div className="flex justify-center mt-16 mb-14">
           <div className="inline-flex items-center bg-secondary rounded-full p-1 gap-1">
             <button
               onClick={() => setBillingCycle("monthly")}
