@@ -240,7 +240,7 @@ const SubscriptionCheckout = ({
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label className="text-xs text-muted-foreground font-body font-light">First Name <span className="text-primary">*</span></Label>
-                <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="John" className={cn("mt-1", inputCls)} />
+                <Input value={firstName} onChange={(e) => setFirstName(sanitizeName(e.target.value))} placeholder="John" maxLength={100} className={cn("mt-1", inputCls)} />
               </div>
               <div>
                 <Label className="text-xs text-muted-foreground font-body font-light">Last Name <span className="text-primary">*</span></Label>
