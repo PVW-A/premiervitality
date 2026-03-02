@@ -12,6 +12,7 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, ArrowRight, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { sanitizeName, sanitizePhone, sanitizeEmail, sanitizeAddress, sanitizeZip } from "@/lib/sanitize";
 
 declare global {
   interface Window {
