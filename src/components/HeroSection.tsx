@@ -81,7 +81,7 @@ const HeroSection = () => (
             className="rounded-full"
             style={{ border: "1.5px solid hsl(var(--primary) / 0.4)" }}
             initial={{ width: 0, height: 0, opacity: 0 }}
-            animate={{ width: 130, height: 130, opacity: 1 }}
+            animate={{ width: 120, height: 120, opacity: 1 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 1.6 }}
           />
         </motion.div>
