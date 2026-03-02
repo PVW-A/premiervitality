@@ -118,8 +118,8 @@ const HeroSection = () => (
                   <motion.path
                     d={path1}
                     fill="none"
-                    stroke="hsl(var(--primary) / 0.6)"
-                    strokeWidth="2"
+                    stroke="hsl(var(--primary) / 0.85)"
+                    strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     initial={{ pathLength: 0 }}
