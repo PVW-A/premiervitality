@@ -39,62 +39,63 @@ const HeroSection = () => (
 
 
     <div className="relative z-10 max-w-3xl mx-auto px-6 pt-20 sm:pt-0 text-center flex flex-col items-center">
-      {/* Monogram with animated reveal */}
-      <div className="relative mb-10">
-        {/* Expanding circle ring — starts as a dot, swirls open */}
+      {/* Monogram with yin-yang animated reveal */}
+      <div className="relative mb-10 w-28 h-28 md:w-36 md:h-36 flex items-center justify-center">
+        {/* Yin-Yang SVG — spins then fades as PV appears */}
         <motion.div
           className="absolute inset-0 flex items-center justify-center pointer-events-none"
-          initial={{ opacity: 1 }}
-          animate={{ opacity: 1 }}
+          initial={{ opacity: 0, scale: 0.3, rotate: 0 }}
+          animate={{ opacity: [0, 1, 1, 0], scale: [0.3, 1, 1, 0.9], rotate: [0, 360, 720, 720] }}
+          transition={{
+            duration: 2.2,
+            times: [0, 0.35, 0.7, 1],
+            ease: [0.22, 1, 0.36, 1],
+            delay: 0.1,
+          }}
         >
-          {/* The ring itself */}
+          <svg viewBox="0 0 100 100" className="w-24 h-24 md:w-32 md:h-32">
+            {/* Outer circle */}
+            <circle cx="50" cy="50" r="48" fill="none" stroke="hsl(var(--primary) / 0.4)" strokeWidth="1" />
+            {/* Yin half */}
+            <path
+              d="M50 2 A48 48 0 0 1 50 98 A24 24 0 0 1 50 50 A24 24 0 0 0 50 2"
+              fill="hsl(var(--primary) / 0.15)"
+            />
+            {/* Yang half */}
+            <path
+              d="M50 2 A48 48 0 0 0 50 98 A24 24 0 0 0 50 50 A24 24 0 0 1 50 2"
+              fill="hsl(var(--primary) / 0.05)"
+            />
+            {/* Yin dot */}
+            <circle cx="50" cy="26" r="5" fill="hsl(var(--primary) / 0.05)" />
+            {/* Yang dot */}
+            <circle cx="50" cy="74" r="5" fill="hsl(var(--primary) / 0.15)" />
+          </svg>
+        </motion.div>
+
+        {/* Circle ring — appears as yin-yang fades */}
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        >
           <motion.div
             className="rounded-full"
-            style={{
-              border: "1.5px solid hsl(var(--primary) / 0.5)",
-            }}
-            initial={{ width: 6, height: 6, opacity: 0 }}
-            animate={{ width: 140, height: 140, opacity: 1 }}
-            transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+            style={{ border: "1.5px solid hsl(var(--primary) / 0.4)" }}
+            initial={{ width: 0, height: 0, opacity: 0 }}
+            animate={{ width: 130, height: 130, opacity: 1 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 1.6 }}
           />
         </motion.div>
 
-        {/* Second ring — expands slightly after the first */}
-        <motion.div
-          className="absolute inset-0 flex items-center justify-center pointer-events-none"
-        >
-          <motion.div
-            className="rounded-full"
-            style={{
-              border: "1px solid hsl(var(--primary) / 0.15)",
-            }}
-            initial={{ width: 4, height: 4, opacity: 0 }}
-            animate={{ width: 180, height: 180, opacity: 1 }}
-            transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
-          />
-        </motion.div>
-
-        {/* Rotating orbit rings (appear after expand) */}
+        {/* Outer orbit ring */}
         <motion.div
           className="absolute -inset-4 rounded-full"
-          style={{ border: "1px solid hsl(var(--primary) / 0.1)" }}
+          style={{ border: "1px solid hsl(var(--primary) / 0.08)" }}
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1, rotate: 360 }}
           transition={{
-            opacity: { duration: 0.6, delay: 1.2 },
-            scale: { duration: 0.6, delay: 1.2 },
-            rotate: { duration: 30, repeat: Infinity, ease: "linear", delay: 1.2 },
-          }}
-        />
-        <motion.div
-          className="absolute -inset-8 rounded-full"
-          style={{ border: "1px solid hsl(var(--primary) / 0.05)" }}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1, rotate: -360 }}
-          transition={{
-            opacity: { duration: 0.6, delay: 1.4 },
-            scale: { duration: 0.6, delay: 1.4 },
-            rotate: { duration: 45, repeat: Infinity, ease: "linear", delay: 1.4 },
+            opacity: { duration: 0.5, delay: 2 },
+            scale: { duration: 0.5, delay: 2 },
+            rotate: { duration: 30, repeat: Infinity, ease: "linear", delay: 2 },
           }}
         />
 
@@ -111,16 +112,16 @@ const HeroSection = () => (
             ],
           }}
           transition={{
-            opacity: { duration: 0.5, delay: 1.2 },
-            boxShadow: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1.5 },
+            opacity: { duration: 0.5, delay: 2 },
+            boxShadow: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 2.5 },
           }}
         />
 
-        {/* PV letters — fade in after circle expands */}
+        {/* PV letters — fade in after yin-yang dissolves */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.6 }}
+          initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.9, delay: 1.8, ease: [0.22, 1, 0.36, 1] }}
           className="relative z-10"
         >
           <PVMonogram className="w-20 h-20 md:w-28 md:h-28" />
