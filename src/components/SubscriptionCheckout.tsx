@@ -287,7 +287,7 @@ const SubscriptionCheckout = ({
             </div>
             <div>
               <Label className="text-xs text-muted-foreground font-body font-light">Apt / Suite</Label>
-              <Input value={address.line2} onChange={(e) => setAddress((a) => ({ ...a, line2: e.target.value }))} placeholder="Apt 4B" className={cn("mt-1", inputCls)} />
+              <Input value={address.line2} onChange={(e) => setAddress((a) => ({ ...a, line2: sanitizeAddress(e.target.value, 100) }))} placeholder="Apt 4B" maxLength={100} className={cn("mt-1", inputCls)} />
             </div>
             <div className="grid grid-cols-3 gap-3">
               <div>
