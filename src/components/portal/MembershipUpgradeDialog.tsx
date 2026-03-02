@@ -333,7 +333,7 @@ export default function MembershipUpgradeDialog({
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label className="text-xs font-body font-light text-muted-foreground">Phone *</Label>
-                <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(555) 123-4567" className="bg-background border-border text-sm" />
+                <Input value={phone} onChange={(e) => setPhone(sanitizePhone(e.target.value))} placeholder="(555) 123-4567" className="bg-background border-border text-sm" />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-body font-light text-muted-foreground">Date of Birth</Label>
