@@ -283,7 +283,7 @@ const SubscriptionCheckout = ({
             <p className="text-xs tracking-[0.2em] uppercase text-primary font-body font-light pt-2">Shipping Address</p>
             <div>
               <Label className="text-xs text-muted-foreground font-body font-light">Street Address <span className="text-primary">*</span></Label>
-              <Input value={address.line1} onChange={(e) => setAddress((a) => ({ ...a, line1: e.target.value }))} placeholder="123 Main St" className={cn("mt-1", inputCls)} />
+              <Input value={address.line1} onChange={(e) => setAddress((a) => ({ ...a, line1: sanitizeAddress(e.target.value) }))} placeholder="123 Main St" maxLength={200} className={cn("mt-1", inputCls)} />
             </div>
             <div>
               <Label className="text-xs text-muted-foreground font-body font-light">Apt / Suite</Label>
