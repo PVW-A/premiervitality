@@ -177,9 +177,9 @@ const HeroSection = () => (
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1, rotate: 360 }}
           transition={{
-            opacity: { duration: 0.5, delay: 3.8 },
-            scale: { duration: 0.5, delay: 3.8 },
-            rotate: { duration: 30, repeat: Infinity, ease: "linear", delay: 3.8 },
+            opacity: { duration: 0.5, delay: 4.5 },
+            scale: { duration: 0.5, delay: 4.5 },
+            rotate: { duration: 30, repeat: Infinity, ease: "linear", delay: 4.5 },
           }}
         />
 
