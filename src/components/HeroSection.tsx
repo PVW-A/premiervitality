@@ -51,8 +51,8 @@ const HeroSection = () => (
             rotate: [0, 0, 0, 0, 180, 360],
           }}
           transition={{
-            duration: 5,
-            times: [0, 0.08, 0.3, 0.6, 0.8, 1],
+             duration: 3.8,
+            times: [0, 0.08, 0.35, 0.65, 0.82, 1],
             ease: [0.22, 1, 0.36, 1],
             delay: 0.1,
           }}
