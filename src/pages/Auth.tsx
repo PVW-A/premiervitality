@@ -224,7 +224,8 @@ const Auth = () => {
                   <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">First Name</Label>
                   <Input
                     value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
+                    onChange={(e) => setFirstName(sanitizeName(e.target.value))}
+                    maxLength={100}
                     required={!isLogin}
                     className="bg-secondary border-border text-foreground font-body font-light"
                   />
