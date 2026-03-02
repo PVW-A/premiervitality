@@ -40,7 +40,7 @@ const HeroSection = () => (
 
     <div className="relative z-10 max-w-3xl mx-auto px-6 pt-20 sm:pt-0 text-center flex flex-col items-center">
       {/* Monogram with yin-yang animated reveal */}
-      <div className="relative mb-10 w-28 h-28 md:w-36 md:h-36 flex items-center justify-center">
+      <div className="relative mb-10 w-32 h-32 md:w-36 md:h-36 flex items-center justify-center aspect-square">
         {/* Yin-Yang SVG — spins then fades as PV appears */}
         <motion.div
           className="absolute inset-0 flex items-center justify-center pointer-events-none"
