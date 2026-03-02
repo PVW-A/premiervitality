@@ -229,7 +229,7 @@ const UserSettingsMenu = ({ firstName, lastName, userId, onSignOut, onProfileUpd
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label className="font-body text-[10px] uppercase tracking-[0.15em] text-muted-foreground">First Name</Label>
-                  <Input value={fName} onChange={(e) => setFName(e.target.value)} placeholder="First" className="font-body font-light" />
+                  <Input value={fName} onChange={(e) => setFName(sanitizeName(e.target.value))} placeholder="First" className="font-body font-light" maxLength={100} />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="font-body text-[10px] uppercase tracking-[0.15em] text-muted-foreground">Last Name</Label>
