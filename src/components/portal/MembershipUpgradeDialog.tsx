@@ -349,7 +349,7 @@ export default function MembershipUpgradeDialog({
             <div className="grid grid-cols-3 gap-3">
               <div className="space-y-1.5">
                 <Label className="text-xs font-body font-light text-muted-foreground">City *</Label>
-                <Input value={addressCity} onChange={(e) => setAddressCity(e.target.value)} className="bg-background border-border text-sm" />
+                <Input value={addressCity} onChange={(e) => setAddressCity(sanitizeAddress(e.target.value, 100))} maxLength={100} className="bg-background border-border text-sm" />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-body font-light text-muted-foreground">State *</Label>
