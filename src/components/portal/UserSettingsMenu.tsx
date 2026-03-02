@@ -255,7 +255,7 @@ const UserSettingsMenu = ({ firstName, lastName, userId, onSignOut, onProfileUpd
                 <Label className="font-body text-[10px] uppercase tracking-[0.15em] text-muted-foreground">Address</Label>
                 <Input value={addressLine1} onChange={(e) => setAddressLine1(sanitizeAddress(e.target.value))} placeholder="Street address" className="font-body font-light" maxLength={200} />
                 <div className="grid grid-cols-3 gap-2">
-                  <Input value={addressCity} onChange={(e) => setAddressCity(e.target.value)} placeholder="City" className="font-body font-light" />
+                  <Input value={addressCity} onChange={(e) => setAddressCity(sanitizeAddress(e.target.value, 100))} placeholder="City" className="font-body font-light" maxLength={100} />
                   <Select value={addressState} onValueChange={setAddressState}>
                     <SelectTrigger className="font-body font-light">
                       <SelectValue placeholder="State" />
