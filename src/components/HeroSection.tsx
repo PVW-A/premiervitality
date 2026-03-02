@@ -51,8 +51,8 @@ const HeroSection = () => (
             rotate: [0, 0, 0, 0, 180, 360],
           }}
           transition={{
-            duration: 5,
-            times: [0, 0.08, 0.3, 0.6, 0.8, 1],
+             duration: 3.8,
+            times: [0, 0.08, 0.35, 0.65, 0.82, 1],
             ease: [0.22, 1, 0.36, 1],
             delay: 0.1,
           }}
@@ -166,7 +166,7 @@ const HeroSection = () => (
             style={{ border: "1.5px solid hsl(var(--primary) / 0.4)" }}
             initial={{ width: 0, height: 0, opacity: 0 }}
             animate={{ width: 120, height: 120, opacity: 1 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 4.6 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 3.4 }}
           />
         </motion.div>
 
@@ -177,9 +177,9 @@ const HeroSection = () => (
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1, rotate: 360 }}
           transition={{
-            opacity: { duration: 0.5, delay: 5.1 },
-            scale: { duration: 0.5, delay: 5.1 },
-            rotate: { duration: 30, repeat: Infinity, ease: "linear", delay: 5.1 },
+            opacity: { duration: 0.5, delay: 3.8 },
+            scale: { duration: 0.5, delay: 3.8 },
+            rotate: { duration: 30, repeat: Infinity, ease: "linear", delay: 3.8 },
           }}
         />
 
@@ -196,8 +196,8 @@ const HeroSection = () => (
             ],
           }}
           transition={{
-            opacity: { duration: 0.5, delay: 5.1 },
-            boxShadow: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 5.5 },
+            opacity: { duration: 0.5, delay: 3.8 },
+            boxShadow: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 4.2 },
           }}
         />
 
@@ -206,7 +206,7 @@ const HeroSection = () => (
           className="relative z-10"
           initial={{ opacity: 0, scale: 0.05 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, delay: 4.8, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 1, delay: 3.5, ease: [0.22, 1, 0.36, 1] }}
         >
           <PVMonogram className="w-20 h-20 md:w-28 md:h-28" />
         </motion.div>
