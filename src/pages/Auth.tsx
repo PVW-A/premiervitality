@@ -262,7 +262,8 @@ const Auth = () => {
             <Input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setEmail(sanitizeEmail(e.target.value))}
+              maxLength={255}
               required
               className="bg-secondary border-border text-foreground font-body font-light"
             />

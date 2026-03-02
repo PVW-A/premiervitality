@@ -366,7 +366,7 @@ export default function MembershipUpgradeDialog({
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-body font-light text-muted-foreground">ZIP *</Label>
-                <Input value={addressZip} onChange={(e) => setAddressZip(e.target.value)} className="bg-background border-border text-sm" />
+                <Input value={addressZip} onChange={(e) => setAddressZip(sanitizeZip(e.target.value))} maxLength={10} className="bg-background border-border text-sm" />
               </div>
             </div>
 

@@ -266,7 +266,7 @@ const UserSettingsMenu = ({ firstName, lastName, userId, onSignOut, onProfileUpd
                       ))}
                     </SelectContent>
                   </Select>
-                  <Input value={addressZip} onChange={(e) => setAddressZip(e.target.value)} placeholder="ZIP" className="font-body font-light" maxLength={10} />
+                  <Input value={addressZip} onChange={(e) => setAddressZip(sanitizeZip(e.target.value))} placeholder="ZIP" className="font-body font-light" maxLength={10} />
                 </div>
               </div>
 

@@ -309,7 +309,7 @@ const SubscriptionCheckout = ({
               </div>
               <div>
                 <Label className="text-xs text-muted-foreground font-body font-light">Zip <span className="text-primary">*</span></Label>
-                <Input value={address.zip} onChange={(e) => setAddress((a) => ({ ...a, zip: e.target.value }))} placeholder="77001" maxLength={10} className={cn("mt-1", inputCls)} />
+                <Input value={address.zip} onChange={(e) => setAddress((a) => ({ ...a, zip: sanitizeZip(e.target.value) }))} placeholder="77001" maxLength={10} className={cn("mt-1", inputCls)} />
               </div>
             </div>
 
