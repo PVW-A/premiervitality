@@ -88,7 +88,7 @@ const HeroSection = () => (
               for (let i = 0; i < rungCount; i++) {
                 const t = (i + 0.5) / rungCount;
                 const y = yStart + t * (yEnd - yStart);
-                const angle = t * turns * Math.PI * 2;
+                const angle = t * turns * Math.PI * 2 + phaseOffset;
                 const x1 = cx + Math.sin(angle) * amplitude;
                 const x2 = cx + Math.sin(angle + Math.PI) * amplitude;
                 // Rung is "behind" when strand1 is crossing in front
