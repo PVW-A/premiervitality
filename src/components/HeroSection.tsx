@@ -41,35 +41,59 @@ const HeroSection = () => (
     <div className="relative z-10 max-w-3xl mx-auto px-6 pt-20 sm:pt-0 text-center flex flex-col items-center">
       {/* Monogram with yin-yang animated reveal */}
       <div className="relative mb-10 w-32 h-32 md:w-36 md:h-36 flex items-center justify-center aspect-square">
-        {/* Yin-Yang SVG — spins then fades as PV appears */}
+        {/* Double Helix SVG — rotates & collapses into circle as PV appears */}
         <motion.div
           className="absolute inset-0 flex items-center justify-center pointer-events-none"
           initial={{ opacity: 0, scale: 0.3, rotate: 0 }}
-          animate={{ opacity: [0, 1, 1, 0], scale: [0.3, 1, 1, 0.9], rotate: [0, 360, 720, 720] }}
+          animate={{ opacity: [0, 1, 1, 0], scale: [0.3, 1, 1, 0.85], rotate: [0, 180, 360, 360] }}
           transition={{
-            duration: 2.2,
-            times: [0, 0.35, 0.7, 1],
+            duration: 2.4,
+            times: [0, 0.3, 0.7, 1],
             ease: [0.22, 1, 0.36, 1],
             delay: 0.1,
           }}
         >
           <svg viewBox="0 0 100 100" className="w-24 h-24 md:w-32 md:h-32">
-            {/* Outer circle */}
-            <circle cx="50" cy="50" r="48" fill="none" stroke="hsl(var(--primary) / 0.4)" strokeWidth="1" />
-            {/* Yin half */}
-            <path
-              d="M50 2 A48 48 0 0 1 50 98 A24 24 0 0 1 50 50 A24 24 0 0 0 50 2"
-              fill="hsl(var(--primary) / 0.15)"
+            {/* Strand 1 */}
+            <motion.path
+              d="M30 5 C55 20, 55 30, 30 50 C5 70, 5 80, 30 95"
+              fill="none"
+              stroke="hsl(var(--primary) / 0.5)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 1.4, ease: "easeInOut", delay: 0.2 }}
             />
-            {/* Yang half */}
-            <path
-              d="M50 2 A48 48 0 0 0 50 98 A24 24 0 0 0 50 50 A24 24 0 0 1 50 2"
-              fill="hsl(var(--primary) / 0.05)"
+            {/* Strand 2 */}
+            <motion.path
+              d="M70 5 C45 20, 45 30, 70 50 C95 70, 95 80, 70 95"
+              fill="none"
+              stroke="hsl(var(--primary) / 0.3)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 1.4, ease: "easeInOut", delay: 0.3 }}
             />
-            {/* Yin dot */}
-            <circle cx="50" cy="26" r="5" fill="hsl(var(--primary) / 0.05)" />
-            {/* Yang dot */}
-            <circle cx="50" cy="74" r="5" fill="hsl(var(--primary) / 0.15)" />
+            {/* Rungs */}
+            {[18, 32, 50, 68, 82].map((y, i) => {
+              const offset = Math.sin(((y - 50) / 45) * Math.PI) * 20;
+              return (
+                <motion.line
+                  key={i}
+                  x1={50 - 20 + offset}
+                  y1={y}
+                  x2={50 + 20 - offset}
+                  y2={y}
+                  stroke="hsl(var(--primary) / 0.15)"
+                  strokeWidth="0.8"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: [0, 1] }}
+                  transition={{ duration: 0.4, delay: 0.5 + i * 0.15 }}
+                />
+              );
+            })}
           </svg>
         </motion.div>
 
