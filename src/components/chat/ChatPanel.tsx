@@ -5,6 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLocation, useNavigate } from "react-router-dom";
 import ChatMessage from "./ChatMessage";
 import PVMonogram from "@/components/PVMonogram";
+import { sanitizeMessage } from "@/lib/sanitize";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
