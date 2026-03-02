@@ -46,13 +46,13 @@ const HeroSection = () => (
           className="absolute inset-0 flex items-center justify-center pointer-events-none"
           initial={{ opacity: 0, scale: 0.15 }}
           animate={{
-            opacity: [0, 1, 1, 1, 1, 0],
-            scale: [0.15, 0.5, 1, 1, 1, 1.05],
+            opacity: [0, 0, 1, 1, 1, 0],
+            scale: [0.15, 0.15, 0.5, 1, 1, 1.05],
             rotate: [0, 0, 0, 0, 180, 360],
           }}
           transition={{
              duration: 4.6,
-            times: [0, 0.06, 0.3, 0.7, 0.85, 1],
+            times: [0, 0.35, 0.45, 0.65, 0.82, 1],
             ease: [0.22, 1, 0.36, 1],
             delay: 0.1,
           }}
