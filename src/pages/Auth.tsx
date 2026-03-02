@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import PVMonogram from "@/components/PVMonogram";
 import { useAuth } from "@/hooks/useAuth";
 import { getDeviceFingerprint, getDeviceName } from "@/lib/deviceFingerprint";
+import { sanitizeName, sanitizePhone, sanitizeEmail } from "@/lib/sanitize";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
