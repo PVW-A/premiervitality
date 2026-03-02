@@ -196,8 +196,8 @@ const HeroSection = () => (
             ],
           }}
           transition={{
-            opacity: { duration: 0.5, delay: 3.8 },
-            boxShadow: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 4.2 },
+            opacity: { duration: 0.5, delay: 4.5 },
+            boxShadow: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 5 },
           }}
         />
 
