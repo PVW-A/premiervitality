@@ -1,43 +1,33 @@
 project_id = "shwnyggnwajdfxbwsdhz"
 
-[functions.create-payment-link]
-verify_jwt = false
-
-[functions.create-subscription]
-verify_jwt = false
-
-[functions.square-webhook]
-verify_jwt = false
-
-[functions.pv-concierge]
-verify_jwt = false
-
-[functions.square-loyalty]
-verify_jwt = false
-
-[functions.parse-bloodwork]
-verify_jwt = false
-
-[functions.generate-peptide-descriptions]
-verify_jwt = false
-
-[functions.send-2fa-code]
-verify_jwt = false
-
-[functions.verify-2fa-code]
-verify_jwt = false
-
-[functions.send-reminders]
-verify_jwt = false
-
-[functions.twilio-webhook]
-verify_jwt = false
-
-[functions.import-vpi-pricing]
-verify_jwt = false
-
-[functions.slack-notify]
-verify_jwt = false
-
-[functions.send-invite-email]
-verify_jwt = false
+[functions]
+  [functions.auth-email-hook]
+    verify_jwt = false
+  [functions.create-payment-link]
+    verify_jwt = false
+  [functions.create-subscription]
+    verify_jwt = false
+  [functions.generate-peptide-descriptions]
+    verify_jwt = false
+  [functions.import-vpi-pricing]
+    verify_jwt = false
+  [functions.parse-bloodwork]
+    verify_jwt = false
+  [functions.pv-concierge]
+    verify_jwt = false
+  [functions.send-2fa-code]
+    verify_jwt = false
+  [functions.send-invite-email]
+    verify_jwt = false
+  [functions.send-reminders]
+    verify_jwt = false
+  [functions.slack-notify]
+    verify_jwt = false
+  [functions.square-loyalty]
+    verify_jwt = false
+  [functions.square-webhook]
+    verify_jwt = false
+  [functions.twilio-webhook]
+    verify_jwt = false
+  [functions.verify-2fa-code]
+    verify_jwt = false
