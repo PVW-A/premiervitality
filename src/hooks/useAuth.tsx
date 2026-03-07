@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setLoading(false);
-      if (_event === "SIGNED_IN" && window.location.pathname === "/") {
+      if (_event === "SIGNED_IN") {
         window.location.href = "/portal";
       }
     });
