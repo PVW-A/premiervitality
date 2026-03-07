@@ -3,13 +3,15 @@ import { supabase } from "@/integrations/supabase/client";
 
 const AuthCallback = () => {
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session) {
+        subscription.unsubscribe();
         window.location.replace("/portal");
-      } else {
+      } else if (event === "SIGNED_OUT") {
         window.location.replace("/auth");
       }
     });
+    return () => subscription.unsubscribe();
   }, []);
 
   return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh"}}>Signing you in...</div>;
