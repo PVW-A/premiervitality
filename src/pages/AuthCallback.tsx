@@ -3,18 +3,13 @@ import { supabase } from "@/integrations/supabase/client";
 
 const AuthCallback = () => {
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN" && session) {
-        subscription.unsubscribe();
-        window.location.replace("/portal");
-      } else if (event === "SIGNED_OUT") {
-        window.location.replace("/auth");
-      }
-    });
-    return () => subscription.unsubscribe();
+    setTimeout(async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      window.location.replace(session ? "/portal" : "/auth");
+    }, 2000);
   }, []);
 
-  return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh"}}>Signing you in...</div>;
+  return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:"#0a0a0a",color:"#c9a84c",fontFamily:"serif",fontSize:"1.2rem",letterSpacing:"0.2em"}}>SIGNING IN...</div>;
 };
 
 export default AuthCallback;
