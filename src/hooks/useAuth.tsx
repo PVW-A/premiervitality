@@ -25,9 +25,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setLoading(false);
-      if (_event === "SIGNED_IN") {
-        if (typeof window !== "undefined") { window.location.replace("/portal"); }
-      }
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {

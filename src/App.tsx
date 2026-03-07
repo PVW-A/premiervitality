@@ -23,6 +23,7 @@ import ServiceArea from "./pages/ServiceArea";
 import FAQ from "./pages/FAQ";
 import SmsConsent from "./pages/SmsConsent";
 import ResetPassword from "./pages/ResetPassword";
+import AuthCallback from "./pages/AuthCallback";
 import Protocols from "./pages/Protocols";
 import NotFound from "./pages/NotFound";
 import ChatButton from "./components/chat/ChatButton";
@@ -66,6 +67,7 @@ const App = () => (
               <Route path="/sms-consent" element={<SmsConsent />} />
               <Route path="/protocols" element={<Protocols />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

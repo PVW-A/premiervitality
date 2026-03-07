@@ -346,7 +346,7 @@ const Auth = () => {
           variant="outline"
           onClick={async () => {
             setError("");
-            const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin } });
+            const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: `${window.location.origin}/auth/callback` } });
             if (error) setError(error.message || "Google sign-in failed");
           }}
           className="w-full mt-4 h-11 rounded-none border-border text-foreground font-body font-light text-xs tracking-[0.15em] uppercase flex items-center justify-center gap-3 hover:bg-secondary/80"
