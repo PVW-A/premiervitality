@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -347,9 +346,7 @@ const Auth = () => {
           variant="outline"
           onClick={async () => {
             setError("");
-            const { error } = await lovable.auth.signInWithOAuth("google", {
-              redirect_uri: window.location.origin,
-            });
+            const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin } });
             if (error) setError(error.message || "Google sign-in failed");
           }}
           className="w-full mt-4 h-11 rounded-none border-border text-foreground font-body font-light text-xs tracking-[0.15em] uppercase flex items-center justify-center gap-3 hover:bg-secondary/80"
