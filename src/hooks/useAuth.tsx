@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setSession(session);
       setLoading(false);
       if (_event === "SIGNED_IN") {
-        setTimeout(() => { window.location.href = "/portal"; }, 500);
+        if (typeof window !== "undefined") { window.location.replace("/portal"); }
       }
     });
 
