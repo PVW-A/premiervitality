@@ -9,7 +9,15 @@ import { sanitizeMessage } from "@/lib/sanitize";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
-const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pv-concierge`;
+const ANTHROPIC_API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY;
+const CHAT_URL = "https://api.anthropic.com/v1/messages";
+
+const SYSTEM_PROMPT = `You are PV Concierge, the virtual assistant for Premier Vitality & Wellness, a physician-directed peptide therapy clinic. You help visitors learn about peptide therapy, our services, membership tiers, and how to get started.
+
+Rules:
+1) Never promise or claim any peptide treats, cures, or definitively causes any outcome. Use language like "research suggests", "may support", "some studies indicate".
+2) Never suggest, recommend, or mention specific dosages.
+3) Always recommend consulting with our physician team before starting any protocol.`;
 
 const WELCOME_MESSAGE: Msg = {
   role: "assistant",
@@ -72,21 +80,31 @@ const ChatPanel = ({ open, onClose }: ChatPanelProps) => {
       };
 
       try {
+        const apiMessages = newMessages
+          .filter((m) => m !== WELCOME_MESSAGE)
+          .map((m) => ({ role: m.role, content: m.content }));
+
         const resp = await fetch(CHAT_URL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            "x-api-key": ANTHROPIC_API_KEY,
+            "anthropic-version": "2023-06-01",
+            "anthropic-dangerous-allow-browser": "true",
           },
           body: JSON.stringify({
-            messages: newMessages.filter((m) => m !== WELCOME_MESSAGE),
+            model: "claude-haiku-4-5-20251001",
+            max_tokens: 1024,
+            system: SYSTEM_PROMPT,
+            stream: true,
+            messages: apiMessages,
           }),
         });
 
         if (!resp.ok || !resp.body) {
           const errData = await resp.json().catch(() => null);
           upsertAssistant(
-            errData?.error ||
+            errData?.error?.message ||
               "I'm having trouble connecting right now. Please try again in a moment."
           );
           setIsLoading(false);
@@ -108,43 +126,23 @@ const ChatPanel = ({ open, onClose }: ChatPanelProps) => {
             let line = textBuffer.slice(0, newlineIndex);
             textBuffer = textBuffer.slice(newlineIndex + 1);
             if (line.endsWith("\r")) line = line.slice(0, -1);
-            if (line.startsWith(":") || line.trim() === "") continue;
+            if (line.startsWith("event:")) {
+              if (line.includes("message_stop")) streamDone = true;
+              continue;
+            }
             if (!line.startsWith("data: ")) continue;
             const jsonStr = line.slice(6).trim();
-            if (jsonStr === "[DONE]") {
-              streamDone = true;
-              break;
-            }
             try {
               const parsed = JSON.parse(jsonStr);
-              const content = parsed.choices?.[0]?.delta?.content as
-                | string
-                | undefined;
-              if (content) upsertAssistant(content);
+              if (
+                parsed.type === "content_block_delta" &&
+                parsed.delta?.type === "text_delta" &&
+                parsed.delta?.text
+              ) {
+                upsertAssistant(parsed.delta.text);
+              }
             } catch {
-              textBuffer = line + "\n" + textBuffer;
-              break;
-            }
-          }
-        }
-
-        // Final flush
-        if (textBuffer.trim()) {
-          for (let raw of textBuffer.split("\n")) {
-            if (!raw) continue;
-            if (raw.endsWith("\r")) raw = raw.slice(0, -1);
-            if (raw.startsWith(":") || raw.trim() === "") continue;
-            if (!raw.startsWith("data: ")) continue;
-            const jsonStr = raw.slice(6).trim();
-            if (jsonStr === "[DONE]") continue;
-            try {
-              const parsed = JSON.parse(jsonStr);
-              const content = parsed.choices?.[0]?.delta?.content as
-                | string
-                | undefined;
-              if (content) upsertAssistant(content);
-            } catch {
-              /* ignore */
+              /* ignore parse errors */
             }
           }
         }
