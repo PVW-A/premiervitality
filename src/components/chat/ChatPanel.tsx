@@ -9,15 +9,7 @@ import { sanitizeMessage } from "@/lib/sanitize";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
-const ANTHROPIC_API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY;
-const CHAT_URL = "https://api.anthropic.com/v1/messages";
-
-const SYSTEM_PROMPT = `You are PV Concierge, the virtual assistant for Premier Vitality & Wellness, a physician-directed peptide therapy clinic. You help visitors learn about peptide therapy, our services, membership tiers, and how to get started.
-
-Rules:
-1) Never promise or claim any peptide treats, cures, or definitively causes any outcome. Use language like "research suggests", "may support", "some studies indicate".
-2) Never suggest, recommend, or mention specific dosages.
-3) Always recommend consulting with our physician team before starting any protocol.`;
+const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 
 const WELCOME_MESSAGE: Msg = {
   role: "assistant",
@@ -88,17 +80,9 @@ const ChatPanel = ({ open, onClose }: ChatPanelProps) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "x-api-key": ANTHROPIC_API_KEY,
-            "anthropic-version": "2023-06-01",
-            "anthropic-dangerous-allow-browser": "true",
+            "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
           },
-          body: JSON.stringify({
-            model: "claude-haiku-4-5-20251001",
-            max_tokens: 1024,
-            system: SYSTEM_PROMPT,
-            stream: true,
-            messages: apiMessages,
-          }),
+          body: JSON.stringify({ messages: apiMessages }),
         });
 
         if (!resp.ok || !resp.body) {
