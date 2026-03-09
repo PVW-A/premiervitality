@@ -16,17 +16,63 @@ interface Product {
   price: number;
 }
 
-interface ProductGroup {
-  name: string;
-  category: string;
-  subcategory: string | null;
-  variants: { id: string; size: string; price: number }[];
+interface Variant {
+  id: string;
+  size: string;
+  price: number;
 }
+
+interface Formulation {
+  fullName: string;
+  displayName: string;
+  variants: Variant[];
+}
+
+interface ProductGroup {
+  baseName: string;
+  category: string;
+  formulations: Formulation[];
+}
+
+const extractBaseName = (name: string): string => {
+  return name
+    .split(/\s+\+\s+/)[0]
+    .replace(/\s+per\s+mL.*/i, "")
+    .replace(/\s+in\s+(MCT|Ethyl).*/i, "")
+    .replace(/\s+--\s+.*/g, "")
+    .replace(/\s+\*\*.*?\*\*.*/g, "")
+    .replace(/\s+\*.*?\*.*/g, "")
+    .replace(/\s+(Topical|Injectable|Capsule|Tablet|Nasal|Oral|Ophthalmic|SQ|IM|IV|Lyophilized|Inhalation|Suspension|Lollipop|Troche|Suppository|Foam|Gel|Ointment|Solution|Spray|Cream)\b.*/i, "")
+    .replace(/\s+\[\d+.*?\]\s*$/i, "")
+    .trim();
+};
+
+const getDisplayName = (fullName: string, baseName: string): string => {
+  if (fullName.toLowerCase().startsWith(baseName.toLowerCase())) {
+    const rest = fullName.slice(baseName.length).replace(/^\s*\+?\s*/, "").trim();
+    if (rest) {
+      return rest
+        .replace(/\s+per\s+mL\s*--\s*/i, " — ")
+        .replace(/\s+in\s+Serum\s+Pump\s*$/i, "")
+        .replace(/\s+in\s+Dropper\s+Bottle\s*$/i, "")
+        .replace(/\s+in\s+Ointment\s+Jar\s*$/i, "")
+        .replace(/\s+--\s+.*/g, "")
+        .replace(/\s+\[\d+mL\]\s*$/i, "")
+        .trim();
+    }
+  }
+  return fullName
+    .replace(/\s+per\s+mL\s*--\s*/i, " — ")
+    .replace(/\s+in\s+Serum\s+Pump\s*$/i, "")
+    .replace(/\s+--\s+.*/g, "")
+    .trim();
+};
 
 const Peptides = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [expandedName, setExpandedName] = useState<string | null>(null);
+  const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
+  const [expandedFormulation, setExpandedFormulation] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({});
@@ -46,48 +92,45 @@ const Peptides = () => {
     fetchProducts();
   }, []);
 
-  // Group products by name
   const groups = useMemo(() => {
-    const map = new Map<string, ProductGroup>();
+    const groupMap = new Map<string, ProductGroup>();
     for (const p of products) {
-      if (!map.has(p.name)) {
-        map.set(p.name, {
-          name: p.name,
-          category: p.category,
-          subcategory: p.subcategory,
-          variants: [],
-        });
+      const base = extractBaseName(p.name);
+      const groupKey = `${p.category}__${base}`;
+      if (!groupMap.has(groupKey)) {
+        groupMap.set(groupKey, { baseName: base, category: p.category, formulations: [] });
       }
-      map.get(p.name)!.variants.push({ id: p.id, size: p.size, price: p.price });
+      const group = groupMap.get(groupKey)!;
+      let formulation = group.formulations.find(f => f.fullName === p.name);
+      if (!formulation) {
+        formulation = { fullName: p.name, displayName: getDisplayName(p.name, base), variants: [] };
+        group.formulations.push(formulation);
+      }
+      formulation.variants.push({ id: p.id, size: p.size, price: p.price });
     }
-    return Array.from(map.values());
+    return Array.from(groupMap.values());
   }, [products]);
 
   const categories = useMemo(() => {
-    return [...new Set(groups.map(g => g.category).filter(Boolean))].sort() as string[];
+    return [...new Set(groups.map(g => g.category))].sort();
   }, [groups]);
 
   const filtered = useMemo(() => {
     return groups.filter(g => {
-      const matchSearch = !search ||
-        g.name.toLowerCase().includes(search.toLowerCase()) ||
-        g.category.toLowerCase().includes(search.toLowerCase()) ||
-        (g.subcategory?.toLowerCase().includes(search.toLowerCase()) ?? false);
       const matchCategory = !activeCategory || g.category === activeCategory;
-      return matchSearch && matchCategory;
+      const matchSearch = !search ||
+        g.baseName.toLowerCase().includes(search.toLowerCase()) ||
+        g.category.toLowerCase().includes(search.toLowerCase()) ||
+        g.formulations.some(f => f.fullName.toLowerCase().includes(search.toLowerCase()));
+      return matchCategory && matchSearch;
     });
   }, [groups, search, activeCategory]);
-
-  const getSelectedVariant = (group: ProductGroup) => {
-    const selectedSize = selectedSizes[group.name];
-    return group.variants.find(v => v.size === selectedSize) ?? group.variants[0];
-  };
 
   return (
     <div className="min-h-screen bg-background">
       <SEO
         title="Peptide Therapy Catalog"
-        description="Browse our full catalog of peptide therapy compounds including BPC-157, Semaglutide, Sermorelin, and more. Physician-directed treatments for longevity, recovery, and performance."
+        description="Browse our full catalog of compounded peptide therapy products."
         canonical="/peptides"
       />
       <Navbar />
@@ -95,23 +138,21 @@ const Peptides = () => {
       <main className="pb-20 px-6">
         <div className="max-w-5xl mx-auto">
           <p className="text-muted-foreground/60 text-center max-w-md mx-auto mb-8 font-body font-extralight text-sm leading-relaxed">
-            Select a compound below to review available sizes and pricing.
+            Select a compound to review available formulations, sizes, and pricing.
           </p>
 
-          {/* Search */}
           <div className="max-w-md mx-auto mb-6">
             <div className="relative">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <Input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search by name, category, or method..."
+                placeholder="Search compounds, categories..."
                 className="pl-10 bg-card/40 border-border/50 font-body font-extralight text-sm tracking-wide placeholder:text-muted-foreground/30"
               />
             </div>
           </div>
 
-          {/* Category filters */}
           <div className="flex flex-wrap justify-center gap-2 mb-12">
             <button
               onClick={() => setActiveCategory(null)}
@@ -140,74 +181,105 @@ const Peptides = () => {
             </p>
           )}
 
-          {/* Product list */}
-          <div className="space-y-3">
+          <div className="space-y-2">
             {filtered.map((group) => {
-              const isExpanded = expandedName === group.name;
-              const selected = getSelectedVariant(group);
+              const groupKey = `${group.category}__${group.baseName}`;
+              const isGroupOpen = expandedGroup === groupKey;
 
               return (
-                <div
-                  key={group.name}
-                  className="border border-border/40 bg-card/20 transition-all duration-300"
-                >
-                  {/* Header row */}
+                <div key={groupKey} className="border border-border/40 bg-card/20">
                   <button
-                    onClick={() => setExpandedName(isExpanded ? null : group.name)}
+                    onClick={() => {
+                      setExpandedGroup(isGroupOpen ? null : groupKey);
+                      setExpandedFormulation(null);
+                    }}
                     className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-card/40 transition-colors"
                   >
-                    <div className="flex-1 min-w-0 pr-4">
-                      <p className="text-sm font-body font-light tracking-wide text-foreground/90 truncate">
-                        {group.name}
+                    <div>
+                      <p className="text-sm font-body font-light tracking-wide text-foreground/90">
+                        {group.baseName}
                       </p>
                       <p className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground/50 font-body font-extralight mt-0.5">
-                        {group.category}{group.subcategory ? ` · ${group.subcategory}` : ""}
+                        {group.category}
                       </p>
                     </div>
-                    <div className="flex items-center gap-4 shrink-0">
-                      {group.variants.length === 1 ? (
-                        <div className="text-right">
-                          <p className="text-xs text-muted-foreground/50 font-body">{group.variants[0].size}</p>
-                          <p className="text-sm font-body font-light text-primary/80">${group.variants[0].price.toFixed(2)}</p>
-                        </div>
-                      ) : (
-                        <div className="text-right">
-                          <p className="text-xs text-muted-foreground/50 font-body">{selected.size}</p>
-                          <p className="text-sm font-body font-light text-primary/80">${selected.price.toFixed(2)}</p>
-                        </div>
-                      )}
-                      {group.variants.length > 1 && (
-                        isExpanded
-                          ? <ChevronUp size={14} className="text-muted-foreground/40" />
-                          : <ChevronDown size={14} className="text-muted-foreground/40" />
-                      )}
+                    <div className="flex items-center gap-3 shrink-0">
+                      <span className="text-[9px] tracking-[0.15em] uppercase text-muted-foreground/30 font-body">
+                        {group.formulations.length} {group.formulations.length === 1 ? "formulation" : "formulations"}
+                      </span>
+                      {isGroupOpen
+                        ? <ChevronUp size={14} className="text-muted-foreground/40" />
+                        : <ChevronDown size={14} className="text-muted-foreground/40" />
+                      }
                     </div>
                   </button>
 
-                  {/* Expanded size selector */}
-                  {isExpanded && group.variants.length > 1 && (
-                    <div className="px-5 pb-5 border-t border-border/20">
-                      <p className="text-[9px] tracking-[0.2em] uppercase text-muted-foreground/40 font-body font-extralight mt-4 mb-3">
-                        Select size
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {group.variants.map((v) => {
-                          const isSelected = (selectedSizes[group.name] ?? group.variants[0].size) === v.size;
-                          return (
+                  {isGroupOpen && (
+                    <div className="border-t border-border/20 divide-y divide-border/10">
+                      {group.formulations.map((formulation) => {
+                        const fKey = formulation.fullName;
+                        const isFormOpen = expandedFormulation === fKey;
+                        const isSingleVariant = formulation.variants.length === 1;
+                        const selectedSize = selectedSizes[fKey];
+                        const selectedVariant = formulation.variants.find(v => v.size === selectedSize);
+
+                        return (
+                          <div key={fKey} className="bg-card/10">
                             <button
-                              key={v.id}
-                              onClick={() => setSelectedSizes(prev => ({ ...prev, [group.name]: v.size }))}
-                              className={`px-4 py-2 border text-xs font-body font-extralight tracking-wide transition-all duration-200 ${
-                                isSelected
-                                  ? "border-primary/40 bg-primary/10 text-primary/80"
-                                  : "border-border/40 text-muted-foreground/60 hover:border-border/60 hover:text-foreground/70"
-                              }`}
+                              onClick={() => {
+                                if (isSingleVariant) return;
+                                setExpandedFormulation(isFormOpen ? null : fKey);
+                              }}
+                              className={`w-full flex items-center justify-between px-6 py-3 text-left transition-colors ${!isSingleVariant ? "hover:bg-card/30" : "cursor-default"}`}
                             >
-                              {v.size} — <span className="text-primary/70">${v.price.toFixed(2)}</span>
+                              <p className="text-xs font-body font-extralight tracking-wide text-foreground/70 flex-1 pr-4 truncate">
+                                {formulation.displayName || formulation.fullName}
+                              </p>
+                              <div className="flex items-center gap-3 shrink-0">
+                                {isSingleVariant ? (
+                                  <span className="text-[10px] font-body text-muted-foreground/40">
+                                    {formulation.variants[0].size} · ${formulation.variants[0].price.toFixed(2)}
+                                  </span>
+                                ) : selectedVariant ? (
+                                  <span className="text-xs font-body text-primary/70">
+                                    {selectedVariant.size} · ${selectedVariant.price.toFixed(2)}
+                                  </span>
+                                ) : (
+                                  <span className="text-[9px] tracking-[0.1em] uppercase text-muted-foreground/30 font-body">
+                                    select size
+                                  </span>
+                                )}
+                                {!isSingleVariant && (
+                                  isFormOpen
+                                    ? <ChevronUp size={12} className="text-muted-foreground/30" />
+                                    : <ChevronDown size={12} className="text-muted-foreground/30" />
+                                )}
+                              </div>
                             </button>
-                          );
-                        })}
-                      </div>
+
+                            {isFormOpen && !isSingleVariant && (
+                              <div className="px-6 pb-4 flex flex-wrap gap-2">
+                                {formulation.variants.map((v) => {
+                                  const isSelected = selectedSizes[fKey] === v.size;
+                                  return (
+                                    <button
+                                      key={v.id}
+                                      onClick={() => setSelectedSizes(prev => ({ ...prev, [fKey]: v.size }))}
+                                      className={`px-4 py-2 border text-xs font-body font-extralight tracking-wide transition-all duration-200 ${
+                                        isSelected
+                                          ? "border-primary/40 bg-primary/10 text-primary/80"
+                                          : "border-border/30 text-muted-foreground/50 hover:border-border/50 hover:text-foreground/60"
+                                      }`}
+                                    >
+                                      {v.size}{isSelected && <span className="ml-2 text-primary/70">${v.price.toFixed(2)}</span>}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
@@ -216,7 +288,7 @@ const Peptides = () => {
 
             {!loading && filtered.length === 0 && (
               <p className="text-center text-sm text-muted-foreground font-body font-light py-10">
-                No peptides match your search.
+                No products match your search.
               </p>
             )}
           </div>
