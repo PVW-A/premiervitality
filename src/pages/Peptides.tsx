@@ -1,6 +1,5 @@
 import SEO from "@/components/SEO";
-import { useState, useEffect, useMemo } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { Search, ChevronDown, ChevronUp, FlaskConical } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -37,42 +36,36 @@ const getDisplayName = (fullName: string, baseName: string): string => {
   return fullName.replace(/\s+--\s+.*/g, "").trim();
 };
 
-const CARD_BASE: React.CSSProperties = {
+const CARD_GLASS: React.CSSProperties = {
   background: "rgba(255,255,255,0.03)",
   backdropFilter: "blur(12px)",
   WebkitBackdropFilter: "blur(12px)",
   boxShadow: "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)",
 };
-const CARD_HOVER_SHADOW = "0 16px 48px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)";
 
 const CompoundCard = ({
   compound,
   onRequest,
   isLoggedIn,
-  index,
 }: {
   compound: FeaturedCompound;
   onRequest: (c: FeaturedCompound) => void;
   isLoggedIn: boolean;
-  index: number;
 }) => {
   const [expanded, setExpanded] = useState(false);
   const [hovered, setHovered] = useState(false);
 
   return (
-    <motion.div
-      className="flex flex-col"
+    <div
+      className="flex flex-col h-full"
       style={{
-        ...CARD_BASE,
+        ...CARD_GLASS,
         border: `1px solid ${hovered ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.08)"}`,
-        boxShadow: hovered ? CARD_HOVER_SHADOW : CARD_BASE.boxShadow as string,
+        boxShadow: hovered
+          ? "0 16px 48px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)"
+          : CARD_GLASS.boxShadow as string,
         transition: "border-color 0.3s ease, box-shadow 0.3s ease",
       }}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.5, delay: index * 0.05 }}
-      whileHover={{ y: -4 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -146,8 +139,25 @@ const CompoundCard = ({
           </a>
         )}
       </div>
-    </motion.div>
+    </div>
   );
+};
+
+const useRevealGrid = (dep: unknown) => {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const cards = ref.current?.querySelectorAll<HTMLElement>(".pv-card-reveal");
+    if (!cards?.length) return;
+    const obs = new IntersectionObserver(
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) { (e.target as HTMLElement).classList.add("pv-visible"); obs.unobserve(e.target); }
+      }),
+      { threshold: 0.04 }
+    );
+    cards.forEach((c, i) => { c.style.animationDelay = `${Math.min(i * 0.04, 0.16)}s`; obs.observe(c); });
+    return () => obs.disconnect();
+  }, [dep]);
+  return ref;
 };
 
 const Peptides = () => {
@@ -161,6 +171,7 @@ const Peptides = () => {
   const [expandedFormulation, setExpandedFormulation] = useState<string | null>(null);
   const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({});
   const [orderDialog, setOrderDialog] = useState<{ open: boolean; compound: FeaturedCompound | null }>({ open: false, compound: null });
+  const featuredGridRef = useRevealGrid(filteredFeatured);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -279,15 +290,15 @@ const Peptides = () => {
             )}
 
             {filteredFeatured.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {filteredFeatured.map((compound, i) => (
-                  <CompoundCard
-                    key={compound.name}
-                    compound={compound}
-                    onRequest={c => setOrderDialog({ open: true, compound: c })}
-                    isLoggedIn={!!user}
-                    index={i}
-                  />
+              <div ref={featuredGridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {filteredFeatured.map(compound => (
+                  <div key={compound.name} className="pv-card-reveal pv-hover-lift">
+                    <CompoundCard
+                      compound={compound}
+                      onRequest={c => setOrderDialog({ open: true, compound: c })}
+                      isLoggedIn={!!user}
+                    />
+                  </div>
                 ))}
               </div>
             ) : (
@@ -334,7 +345,11 @@ const Peptides = () => {
                     const isOpen = expandedGroup === gKey;
                     return (
                       <div key={gKey} className="border border-border/30 bg-card/10">
-                        <button onClick={() => { setExpandedGroup(isOpen ? null : gKey); setExpandedFormulation(null); }} className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-card/30 transition-colors">
+                        <button onClick={() => {
+                          const opening = !isOpen;
+                          setExpandedGroup(opening ? gKey : null);
+                          setExpandedFormulation(opening && group.formulations.length === 1 ? group.formulations[0].fullName : null);
+                        }} className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-card/30 transition-colors">
                           <div>
                             <p className="text-xs font-body font-light text-foreground/80">{group.baseName}</p>
                             <p className="text-[9px] tracking-[0.15em] uppercase text-muted-foreground/40 font-body mt-0.5">{group.category}</p>
@@ -372,7 +387,7 @@ const Peptides = () => {
                                       {!isSingle && (isFOpen ? <ChevronUp size={10} className="text-muted-foreground/30" /> : <ChevronDown size={10} className="text-muted-foreground/30" />)}
                                     </div>
                                   </button>
-                                  {isFOpen && !isSingle && (
+                                  {(isFOpen || group.formulations.length === 1) && !isSingle && (
                                     <div className="px-5 pb-3 flex flex-wrap gap-1.5">
                                       {form.variants.map(v => {
                                         const isSel = selectedSizes[fKey] === v.size;

@@ -1,5 +1,5 @@
 import SEO from "@/components/SEO";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { openCalendly } from "@/hooks/useCalendly";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -60,6 +60,19 @@ const Services = () => {
     annual_price: number;
   } | null>(null);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const tiersGridRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const cards = tiersGridRef.current?.querySelectorAll<HTMLElement>(".pv-card-reveal");
+    if (!cards?.length) return;
+    const obs = new IntersectionObserver(
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) { (e.target as HTMLElement).classList.add("pv-visible"); obs.unobserve(e.target); }
+      }),
+      { threshold: 0.04 }
+    );
+    cards.forEach((c, i) => { c.style.animationDelay = `${Math.min(i * 0.04, 0.12)}s`; obs.observe(c); });
+    return () => obs.disconnect();
+  }, [tiers]);
 
   const handleJoin = (tier: NonNullable<typeof tiers>[number]) => {
     if (!user) {
@@ -98,7 +111,7 @@ const Services = () => {
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.35 }}
             className="text-xs tracking-[0.35em] uppercase text-primary font-body font-light mb-4"
           >
             Membership Plans
@@ -106,7 +119,7 @@ const Services = () => {
           <motion.h1
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: 0.35, delay: 0.05 }}
             className="text-4xl md:text-5xl lg:text-6xl font-heading font-light text-foreground mb-6"
           >
             Invest in Your Vitality
@@ -114,7 +127,7 @@ const Services = () => {
           <motion.p
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.35, delay: 0.1 }}
             className="text-muted-foreground font-body font-light text-sm md:text-base max-w-2xl mx-auto leading-relaxed"
           >
             Choose a membership to unlock access to our premium peptide catalog,
@@ -127,7 +140,7 @@ const Services = () => {
         <HowItWorks />
 
         {/* Billing Toggle */}
-        <div className="relative z-20 flex justify-center mt-16 mb-14">
+        <div className="flex justify-center mt-16 mb-14" style={{ position: "relative", zIndex: 30, isolation: "isolate" }}>
           <div className="inline-flex items-center bg-secondary rounded-full p-1 gap-1">
             <button
               onClick={() => setBillingCycle("monthly")}
@@ -158,7 +171,7 @@ const Services = () => {
             <div className="w-6 h-6 border border-primary/40 border-t-primary rounded-full animate-spin" />
           </div>
         ) : (
-          <div className="max-w-6xl mx-auto px-6 grid gap-8 md:grid-cols-3">
+          <div ref={tiersGridRef} className="max-w-6xl mx-auto px-6 grid gap-8 md:grid-cols-3" style={{ position: "relative", zIndex: 1 }}>
             {tiers?.map((tier, i) => {
               const price =
                 billingCycle === "monthly" ? tier.monthly_price : tier.annual_price;
@@ -167,14 +180,9 @@ const Services = () => {
               const features = (tier.features as string[]) || [];
 
               return (
-                <motion.div
+                <div
                   key={tier.id}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
-                  whileHover={{ y: -4 }}
-                  className={`relative z-0 flex flex-col p-8 md:p-10 ${
+                  className={`pv-card-reveal pv-hover-lift relative flex flex-col p-8 md:p-10 ${
                     isPopular ? "md:-mt-4 md:mb-0 md:pb-12" : ""
                   }`}
                   style={{
@@ -185,7 +193,6 @@ const Services = () => {
                     boxShadow: isPopular
                       ? "0 12px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)"
                       : "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)",
-                    transition: "transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease",
                   }}
                 >
                   {isPopular && (
@@ -242,7 +249,7 @@ const Services = () => {
                   >
                     {isCurrentTier ? "Current Plan" : "Get Started"}
                   </button>
-                </motion.div>
+                </div>
               );
             })}
           </div>

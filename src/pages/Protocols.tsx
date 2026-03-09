@@ -1,5 +1,5 @@
 import SEO from "@/components/SEO";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -101,6 +101,20 @@ const Protocols = () => {
   const selectedCat = categories?.find((c) => c.id === selectedCatId);
   const catProtocols = protocols?.filter((p) => p.category_id === selectedCatId) || [];
 
+  const protocolsRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const cards = protocolsRef.current?.querySelectorAll<HTMLElement>(".pv-card-reveal");
+    if (!cards?.length) return;
+    const obs = new IntersectionObserver(
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) { (e.target as HTMLElement).classList.add("pv-visible"); obs.unobserve(e.target); }
+      }),
+      { threshold: 0.04 }
+    );
+    cards.forEach((c, i) => { c.style.animationDelay = `${Math.min(i * 0.04, 0.16)}s`; obs.observe(c); });
+    return () => obs.disconnect();
+  }, [protocols, selectedCatId]);
+
   const tiers = ["premier", "core", "essential"] as const;
 
   return (
@@ -117,7 +131,7 @@ const Protocols = () => {
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.35 }}
             className="text-xs tracking-[0.35em] uppercase text-primary font-body font-light mb-4"
           >
             Precision Protocols
@@ -125,7 +139,7 @@ const Protocols = () => {
           <motion.h1
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: 0.35, delay: 0.05 }}
             className="text-4xl md:text-5xl lg:text-6xl font-heading font-light text-foreground mb-6"
           >
             Curated Treatment Packages
@@ -133,7 +147,7 @@ const Protocols = () => {
           <motion.p
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.35, delay: 0.1 }}
             className="text-muted-foreground font-body font-light text-sm md:text-base max-w-2xl mx-auto leading-relaxed"
           >
             Physician-directed multi-compound protocols designed for specific health
@@ -208,7 +222,7 @@ const Protocols = () => {
             <div className="w-6 h-6 border border-primary/40 border-t-primary rounded-full animate-spin" />
           </div>
         ) : (
-          <div className="max-w-6xl mx-auto px-6">
+          <div ref={protocolsRef} className="max-w-6xl mx-auto px-6">
             {/* Group by protocol name similarity across tiers */}
             {tiers.map((tier) => {
               const tierProtos = catProtocols.filter((p) => p.tier === tier);
@@ -225,24 +239,18 @@ const Protocols = () => {
                   </div>
 
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {tierProtos.map((proto, i) => {
+                    {tierProtos.map((proto) => {
                       const isExpanded = expandedProtocol === proto.id;
                       return (
-                        <motion.div
+                        <div
                           key={proto.id}
-                          initial={{ opacity: 0, y: 20 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true, margin: "-40px" }}
-                          transition={{ duration: 0.5, delay: i * 0.05 }}
-                          whileHover={{ y: -4 }}
-                          className="flex flex-col"
+                          className="pv-card-reveal pv-hover-lift flex flex-col"
                           style={{
                             background: "rgba(255,255,255,0.03)",
                             backdropFilter: "blur(12px)",
                             WebkitBackdropFilter: "blur(12px)",
                             border: `1px solid ${tier === "premier" ? "rgba(251,191,36,0.25)" : tier === "core" ? "rgba(56,189,248,0.2)" : "rgba(251,113,133,0.2)"}`,
                             boxShadow: "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)",
-                            transition: "transform 0.3s ease, box-shadow 0.3s ease",
                           }}
                         >
                           <button
@@ -329,7 +337,7 @@ const Protocols = () => {
                               </motion.div>
                             )}
                           </AnimatePresence>
-                        </motion.div>
+                        </div>
                       );
                     })}
                   </div>
