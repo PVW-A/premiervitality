@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import PVMonogram from "@/components/PVMonogram";
 import AdminOverview from "@/components/admin/AdminOverview";
 import AdminBiomarkers from "@/components/admin/AdminBiomarkers";
+import AdminOrders from "@/components/admin/AdminOrders";
 import { LogOut, Users, Pill, Package, Plus, Trash2, BarChart3, ClipboardList, CheckCircle, XCircle, Activity } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import { Textarea } from "@/components/ui/textarea";
@@ -395,6 +396,9 @@ const Admin = () => {
             </TabsTrigger>
             <TabsTrigger value="biomarkers" className="text-xs tracking-wider uppercase font-body font-light data-[state=active]:bg-background">
               <Activity size={14} className="mr-1.5" /> Biomarkers
+            </TabsTrigger>
+            <TabsTrigger value="treatment-requests" className="text-xs tracking-wider uppercase font-body font-light data-[state=active]:bg-background">
+              <CheckCircle size={14} className="mr-1.5" /> Treatment Requests
             </TabsTrigger>
           </TabsList>
 
@@ -871,6 +875,11 @@ const Admin = () => {
           {/* BIOMARKERS TAB */}
           <TabsContent value="biomarkers" className="space-y-4">
             <AdminBiomarkers patients={patients} />
+          </TabsContent>
+
+          {/* TREATMENT REQUESTS TAB */}
+          <TabsContent value="treatment-requests">
+            <AdminOrders />
           </TabsContent>
         </Tabs>
       </main>
