@@ -14,8 +14,16 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 const WELCOME_MESSAGE: Msg = {
   role: "assistant",
   content:
-    "Welcome to Premier Vitality. I can help you explore our peptide protocols, understand formulations, or connect you with our clinical team.\n\nWhat would you like to know?",
+    "Welcome to Premier Vitality & Wellness. I can help you explore our peptide protocols, understand formulations, or connect you with our clinical team.\n\nWhat would you like to know?",
 };
+
+const SUGGESTIONS: { label: string; message: string; href?: string }[] = [
+  { label: "What is peptide therapy?", message: "What is peptide therapy and how does it work?" },
+  { label: "Our peptides", message: "What peptides do you offer?", href: "/peptides" },
+  { label: "Membership & pricing", message: "Tell me about your membership tiers.", href: "/membership" },
+  { label: "How to get started", message: "How do I get started with Premier Vitality?", href: "/protocols" },
+  { label: "Book a consultation", message: "How do I schedule a consultation with your physicians?" },
+];
 
 interface ChatPanelProps {
   open: boolean;
@@ -26,6 +34,7 @@ const ChatPanel = ({ open, onClose }: ChatPanelProps) => {
   const [messages, setMessages] = useState<Msg[]>([WELCOME_MESSAGE]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [suggestionsDismissed, setSuggestionsDismissed] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const location = useLocation();
@@ -47,14 +56,24 @@ const ChatPanel = ({ open, onClose }: ChatPanelProps) => {
     }
   }, [messages]);
 
+  // Auto-resize textarea
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value);
+    e.target.style.height = "auto";
+    e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
+  };
+
   const send = useCallback(
     async (text: string) => {
       const sanitized = sanitizeMessage(text);
       if (!sanitized || isLoading) return;
+      setSuggestionsDismissed(true);
       const userMsg: Msg = { role: "user", content: sanitized };
       const newMessages = [...messages, userMsg];
       setMessages(newMessages);
       setInput("");
+      // Reset textarea height
+      if (inputRef.current) inputRef.current.style.height = "auto";
       setIsLoading(true);
 
       let assistantSoFar = "";
@@ -142,12 +161,23 @@ const ChatPanel = ({ open, onClose }: ChatPanelProps) => {
     [messages, isLoading]
   );
 
+  const handleSuggestion = (suggestion: typeof SUGGESTIONS[0]) => {
+    if (suggestion.href) {
+      onClose();
+      navigate(suggestion.href);
+    } else {
+      send(suggestion.message);
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       send(input);
     }
   };
+
+  const showSuggestions = !suggestionsDismissed && messages.length === 1;
 
   return (
     <AnimatePresence>
@@ -159,7 +189,7 @@ const ChatPanel = ({ open, onClose }: ChatPanelProps) => {
           transition={{ duration: 0.25, ease: "easeOut" }}
           className="fixed z-[60] flex flex-col border border-border/40 bg-background shadow-2xl overflow-hidden
             inset-0 rounded-none
-            sm:inset-auto sm:bottom-20 sm:right-6 sm:w-[380px] sm:max-w-[calc(100vw-2rem)] sm:h-[520px] sm:max-h-[70vh] sm:rounded-2xl"
+            sm:inset-auto sm:bottom-20 sm:right-6 sm:w-[380px] sm:max-w-[calc(100vw-2rem)] sm:h-[560px] sm:max-h-[75vh] sm:rounded-2xl"
         >
           {/* Header */}
           <div className="flex items-center gap-3 px-5 py-4 border-b border-border/30">
@@ -193,6 +223,22 @@ const ChatPanel = ({ open, onClose }: ChatPanelProps) => {
               {messages.map((m, i) => (
                 <ChatMessage key={i} role={m.role} content={m.content} />
               ))}
+
+              {/* Suggestion chips — shown only before first user message */}
+              {showSuggestions && (
+                <div className="flex flex-col gap-2 mt-1">
+                  {SUGGESTIONS.map((s) => (
+                    <button
+                      key={s.label}
+                      onClick={() => handleSuggestion(s)}
+                      className="text-left text-xs px-3 py-2 rounded-xl border border-primary/25 text-primary/80 hover:bg-primary/8 hover:border-primary/50 hover:text-primary transition-all duration-150"
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+
               {isLoading && messages[messages.length - 1]?.role === "user" && (
                 <div className="flex justify-start">
                   <div className="bg-card/80 border border-border/30 rounded-2xl px-4 py-3">
@@ -209,16 +255,17 @@ const ChatPanel = ({ open, onClose }: ChatPanelProps) => {
               <textarea
                 ref={inputRef}
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
                 placeholder="Ask about peptides..."
                 rows={1}
-                className="flex-1 resize-none bg-transparent text-base sm:text-sm text-foreground placeholder:text-muted-foreground outline-none max-h-20"
+                style={{ height: "auto" }}
+                className="flex-1 resize-none bg-transparent text-base sm:text-sm text-foreground placeholder:text-muted-foreground outline-none min-h-[24px] max-h-[120px] overflow-y-auto leading-6"
               />
               <button
                 onClick={() => send(input)}
                 disabled={!input.trim() || isLoading}
-                className="rounded-lg p-1.5 text-primary hover:bg-primary/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                className="rounded-lg p-1.5 text-primary hover:bg-primary/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0"
               >
                 <Send className="w-4 h-4" />
               </button>
