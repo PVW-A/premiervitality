@@ -289,10 +289,15 @@ const Auth = () => {
                   className="mt-0.5"
                 />
                 <label htmlFor="sms-consent" className="text-[11px] text-muted-foreground font-body font-light leading-relaxed cursor-pointer">
-                  I consent to receive SMS messages from Premier Vitality &amp; Wellness including 2FA codes, account notifications, and promotional messages. Msg &amp; data rates may apply. Reply STOP to opt out.{" "}
-                  <a href="/sms-consent" target="_blank" className="underline text-foreground hover:text-primary transition-colors">
-                    View full SMS policy
+                  I consent to receive SMS messages from Premier Vitality &amp; Wellness including security codes, order notifications, wellness reminders, and refill alerts. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to cancel. See our{" "}
+                  <a href="/privacy-policy" target="_blank" className="underline text-foreground hover:text-primary transition-colors">
+                    privacy policy
                   </a>
+                  {" "}and{" "}
+                  <a href="/terms" target="_blank" className="underline text-foreground hover:text-primary transition-colors">
+                    terms
+                  </a>
+                  .
                 </label>
               </div>
 
