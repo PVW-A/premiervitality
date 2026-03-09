@@ -85,7 +85,7 @@ const Services = () => {
     Math.round(((monthly - annual) / monthly) * 100);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" style={{ backgroundImage: "radial-gradient(ellipse 70% 40% at 50% 0%, hsl(39 38% 60% / 0.06) 0%, transparent 55%), radial-gradient(ellipse 50% 35% at 80% 70%, hsl(39 38% 40% / 0.04) 0%, transparent 55%)" }}>
       <SEO
         title="Membership Plans & Pricing"
         description="Join Premier Vitality & Wellness. Choose a membership plan for physician-directed peptide therapy, bloodwork analysis, and personalized longevity protocols."
@@ -127,7 +127,7 @@ const Services = () => {
         <HowItWorks />
 
         {/* Billing Toggle */}
-        <div className="relative z-10 flex justify-center mt-16 mb-14">
+        <div className="relative z-20 flex justify-center mt-16 mb-14">
           <div className="inline-flex items-center bg-secondary rounded-full p-1 gap-1">
             <button
               onClick={() => setBillingCycle("monthly")}
@@ -170,11 +170,23 @@ const Services = () => {
                 <motion.div
                   key={tier.id}
                   initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: i * 0.12 }}
-                  className={`relative z-0 flex flex-col border ${tierAccents[tier.slug] || "border-border"} bg-card p-8 md:p-10 ${
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                  whileHover={{ y: -4 }}
+                  className={`relative z-0 flex flex-col p-8 md:p-10 ${
                     isPopular ? "md:-mt-4 md:mb-0 md:pb-12" : ""
                   }`}
+                  style={{
+                    background: "rgba(255,255,255,0.03)",
+                    backdropFilter: "blur(12px)",
+                    WebkitBackdropFilter: "blur(12px)",
+                    border: `1px solid ${isPopular ? "hsl(39 38% 60% / 0.4)" : "rgba(255,255,255,0.08)"}`,
+                    boxShadow: isPopular
+                      ? "0 12px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)"
+                      : "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)",
+                    transition: "transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease",
+                  }}
                 >
                   {isPopular && (
                     <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
@@ -216,7 +228,6 @@ const Services = () => {
                   </div>
 
                   <BloodworkBreakdown slug={tier.slug} />
-
 
                   <button
                     onClick={() => handleJoin(tier)}

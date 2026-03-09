@@ -1,5 +1,6 @@
 import SEO from "@/components/SEO";
 import { useState, useEffect, useMemo } from "react";
+import { motion } from "framer-motion";
 import { Search, ChevronDown, ChevronUp, FlaskConical } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -36,31 +37,57 @@ const getDisplayName = (fullName: string, baseName: string): string => {
   return fullName.replace(/\s+--\s+.*/g, "").trim();
 };
 
+const CARD_BASE: React.CSSProperties = {
+  background: "rgba(255,255,255,0.03)",
+  backdropFilter: "blur(12px)",
+  WebkitBackdropFilter: "blur(12px)",
+  boxShadow: "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)",
+};
+const CARD_HOVER_SHADOW = "0 16px 48px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)";
+
 const CompoundCard = ({
   compound,
   onRequest,
   isLoggedIn,
+  index,
 }: {
   compound: FeaturedCompound;
   onRequest: (c: FeaturedCompound) => void;
   isLoggedIn: boolean;
+  index: number;
 }) => {
   const [expanded, setExpanded] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
   return (
-    <div className="border border-border/30 bg-card/20 hover:border-border/50 transition-all duration-300 flex flex-col">
+    <motion.div
+      className="flex flex-col"
+      style={{
+        ...CARD_BASE,
+        border: `1px solid ${hovered ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.08)"}`,
+        boxShadow: hovered ? CARD_HOVER_SHADOW : CARD_BASE.boxShadow as string,
+        transition: "border-color 0.3s ease, box-shadow 0.3s ease",
+      }}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.5, delay: index * 0.05 }}
+      whileHover={{ y: -4 }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
       {/* Card header */}
       <div className="p-5 flex-1">
         <div className="flex items-start justify-between mb-3">
-          {(() => { const Icon: LucideIcon = CATEGORY_ICONS[compound.category] || FlaskConical; return <Icon size={22} className="text-primary/60" strokeWidth={1.3} />; })()}
+          {(() => { const Icon: LucideIcon = CATEGORY_ICONS[compound.category] || FlaskConical; return <Icon size={16} style={{ opacity: 0.6 }} strokeWidth={1.3} className="text-primary" />; })()}
           {compound.popular && (
             <span className="text-[8px] tracking-[0.2em] uppercase font-body font-extralight px-2 py-0.5 border border-primary/20 text-primary/60 bg-primary/5">
               Popular
             </span>
           )}
         </div>
-        <p className="text-sm font-body font-light text-foreground/90 mb-1">{compound.name}</p>
-        <p className="text-[10px] tracking-[0.12em] uppercase text-muted-foreground/40 font-body font-extralight mb-3">
+        <p className="text-lg font-heading font-light text-foreground/90 mb-1">{compound.name}</p>
+        <p className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground/50 font-body font-extralight mb-3">
           {compound.category}
         </p>
         <p className="text-xs font-body font-extralight text-muted-foreground/70 leading-relaxed">
@@ -119,7 +146,7 @@ const CompoundCard = ({
           </a>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -180,7 +207,7 @@ const Peptides = () => {
     ), [groups, activeCategory, search]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" style={{ backgroundImage: "radial-gradient(ellipse 80% 40% at 20% 10%, hsl(39 38% 60% / 0.05) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 80% 80%, hsl(39 38% 40% / 0.04) 0%, transparent 55%)" }}>
       <SEO title="Treatments & Peptide Catalog" description="Physician-directed peptide therapy and longevity treatments. Browse by goal — weight loss, anti-aging, hormones, recovery, and more." canonical="/peptides" />
       <Navbar />
 
@@ -253,12 +280,13 @@ const Peptides = () => {
 
             {filteredFeatured.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {filteredFeatured.map(compound => (
+                {filteredFeatured.map((compound, i) => (
                   <CompoundCard
                     key={compound.name}
                     compound={compound}
                     onRequest={c => setOrderDialog({ open: true, compound: c })}
                     isLoggedIn={!!user}
+                    index={i}
                   />
                 ))}
               </div>

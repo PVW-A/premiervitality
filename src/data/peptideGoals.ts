@@ -2,8 +2,8 @@
 // Each compound maps to one or more goals and has both plain-English and clinical descriptions
 
 import {
-  Scale, Dumbbell, Clock, Zap, Heart, Leaf, Shield, FlaskConical,
-  Activity, Sparkles, Syringe,
+  Flame, Dumbbell, Sparkles, Zap, Heart, Droplets, Shield, TrendingUp,
+  Activity, Syringe, Brain,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -38,24 +38,25 @@ export const GOALS: Goal[] = [
 ];
 
 export const GOAL_ICONS: Record<Goal, LucideIcon> = {
-  "Weight Loss": Scale,
+  "Weight Loss": Flame,
   "Muscle & Recovery": Dumbbell,
-  "Anti-Aging": Clock,
+  "Anti-Aging": Sparkles,
   "Energy & Focus": Zap,
   "Sexual Health": Heart,
-  "Hair & Skin": Leaf,
+  "Hair & Skin": Droplets,
   "Immunity": Shield,
-  "Hormones": FlaskConical,
+  "Hormones": TrendingUp,
 };
 
 export const CATEGORY_ICONS: Record<string, LucideIcon> = {
-  "Weight Management": Scale,
+  "Weight Management": Flame,
   "Wellness": Activity,
-  "IM / IV / SQ Therapy": Syringe,
+  "IM / IV / SQ Therapy": Zap,
   "Sexual Well-Being": Heart,
   "Dermatology": Sparkles,
-  "Hair Restore": Leaf,
-  "Hormone Restoration": FlaskConical,
+  "Hair Restore": Droplets,
+  "Hormone Restoration": TrendingUp,
+  "Cognitive": Brain,
 };
 
 export const FEATURED_COMPOUNDS: FeaturedCompound[] = [

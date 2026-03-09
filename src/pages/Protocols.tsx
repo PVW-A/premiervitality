@@ -104,7 +104,7 @@ const Protocols = () => {
   const tiers = ["premier", "core", "essential"] as const;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" style={{ backgroundImage: "radial-gradient(ellipse 60% 40% at 70% 10%, hsl(39 38% 60% / 0.05) 0%, transparent 55%), radial-gradient(ellipse 50% 35% at 20% 80%, hsl(39 38% 40% / 0.04) 0%, transparent 55%)" }}>
       <SEO
         title="Precision Protocols | Tiered Treatment Packages"
         description="Explore our physician-directed precision protocols across Weight Management, Wellness, Performance, and more. Choose Premier, Core, or Essential tiers for your health goals."
@@ -230,10 +230,20 @@ const Protocols = () => {
                       return (
                         <motion.div
                           key={proto.id}
-                          initial={{ opacity: 0, y: 16 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.4, delay: i * 0.08 }}
-                          className={`border ${meta.border} bg-card flex flex-col`}
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true, margin: "-40px" }}
+                          transition={{ duration: 0.5, delay: i * 0.05 }}
+                          whileHover={{ y: -4 }}
+                          className="flex flex-col"
+                          style={{
+                            background: "rgba(255,255,255,0.03)",
+                            backdropFilter: "blur(12px)",
+                            WebkitBackdropFilter: "blur(12px)",
+                            border: `1px solid ${tier === "premier" ? "rgba(251,191,36,0.25)" : tier === "core" ? "rgba(56,189,248,0.2)" : "rgba(251,113,133,0.2)"}`,
+                            boxShadow: "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)",
+                            transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                          }}
                         >
                           <button
                             onClick={() => setExpandedProtocol(isExpanded ? null : proto.id)}
