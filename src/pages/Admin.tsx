@@ -1,890 +1,655 @@
-import { useAuth } from "@/hooks/useAuth";
-import { logAdminAction } from "@/lib/auditLog";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import PVMonogram from "@/components/PVMonogram";
-import AdminOverview from "@/components/admin/AdminOverview";
-import AdminBiomarkers from "@/components/admin/AdminBiomarkers";
-import AdminOrders from "@/components/admin/AdminOrders";
-import { LogOut, Users, Pill, Package, Plus, Trash2, BarChart3, ClipboardList, CheckCircle, XCircle, Activity } from "lucide-react";
-import type { Database } from "@/integrations/supabase/types";
-import { Textarea } from "@/components/ui/textarea";
+import {
+  LayoutDashboard, Users, ClipboardList, RefreshCw,
+  MessageSquare, Package, ChevronRight, TrendingUp,
+  Clock, CheckCircle, XCircle, AlertCircle, Search,
+  Phone, Mail, Calendar, DollarSign, Activity,
+  Bell, Settings, LogOut, Zap, ChevronDown, ChevronUp,
+  Send, Eye, MoreHorizontal
+} from "lucide-react";
 
-type OrderStatus = Database["public"]["Enums"]["order_status"];
-
-interface Patient {
-  user_id: string;
-  first_name: string | null;
-  last_name: string | null;
-  phone: string | null;
-  square_customer_id: string | null;
-}
-
-interface MergedCustomer {
-  square_id: string;
-  given_name: string | null;
-  family_name: string | null;
-  email: string | null;
-  phone: string | null;
-  birthday: string | null;
-  square_created_at: string | null;
-  note: string | null;
-  company_name: string | null;
-  address: any | null;
-  has_account: boolean;
-  app_user_id: string | null;
-}
-
-interface Peptide {
-  id: string;
-  name: string;
-  description: string | null;
-  unit: string | null;
-  price: number | null;
-  cost: number | null;
-}
-
-interface PatientPeptide {
-  id: string;
-  user_id: string;
-  peptide_id: string;
-  dosage: string | null;
-  quantity_remaining: number | null;
-  usage_per_day: number | null;
-  notes: string | null;
-  peptide_name?: string;
-  patient_name?: string;
-}
+// ── TYPES ──────────────────────────────────────────────────────────────────
 
 interface Order {
   id: string;
-  user_id: string;
-  status: OrderStatus;
-  tracking_number: string | null;
-  expected_delivery: string | null;
-  notes: string | null;
-  created_at: string;
-  total_amount: number;
-  patient_name?: string;
-}
-
-interface PeptideRequest {
-  id: string;
-  user_id: string;
-  peptide_id: string;
-  peptide_name: string;
-  variation_label: string | null;
+  patient_name: string;
+  patient_email: string;
+  patient_phone: string;
+  product_name: string;
+  product_category: string;
+  size: string | null;
   price: number | null;
-  status: string;
-  deny_reason: string | null;
+  status: "pending" | "approved" | "denied";
+  admin_notes: string | null;
+  square_payment_link: string | null;
   created_at: string;
-  include_injection_kit: boolean;
-  delivery_method: string | null;
-  patient_name?: string;
 }
 
-const ORDER_STATUSES: OrderStatus[] = ["pending", "processing", "shipped", "delivered", "cancelled"];
+interface Patient {
+  id: string;
+  email: string;
+  created_at: string;
+  // from orders
+  name?: string;
+  phone?: string;
+  orderCount?: number;
+  lastOrder?: string;
+  totalSpent?: number;
+}
 
-const statusColor: Record<string, string> = {
-  pending: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-  processing: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  shipped: "bg-purple-500/20 text-purple-400 border-purple-500/30",
-  delivered: "bg-green-500/20 text-green-400 border-green-500/30",
-  cancelled: "bg-destructive/20 text-destructive border-destructive/30",
-};
+type NavItem = "dashboard" | "orders" | "patients" | "sms" | "settings";
 
-const Admin = () => {
-  const { user, loading, signOut } = useAuth();
-  const navigate = useNavigate();
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
-  const [patients, setPatients] = useState<Patient[]>([]);
-  const [peptides, setPeptides] = useState<Peptide[]>([]);
-  const [patientPeptides, setPatientPeptides] = useState<PatientPeptide[]>([]);
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [peptideRequests, setPeptideRequests] = useState<PeptideRequest[]>([]);
-  const [denyDialogOpen, setDenyDialogOpen] = useState<string | null>(null);
-  const [denyReason, setDenyReason] = useState("");
-  const [allCustomers, setAllCustomers] = useState<MergedCustomer[]>([]);
-  const [recentActivity, setRecentActivity] = useState<any[]>([]);
+// ── STAT CARD ───────────────────────────────────────────────────────────────
 
-  // Dialog states
-  const [peptideDialogOpen, setPeptideDialogOpen] = useState(false);
-  const [assignDialogOpen, setAssignDialogOpen] = useState(false);
-  const [orderDialogOpen, setOrderDialogOpen] = useState(false);
-
-  // Form states
-  const [newPeptide, setNewPeptide] = useState({ name: "", description: "", unit: "mg", price: "", cost: "" });
-  const [newAssignment, setNewAssignment] = useState({ user_id: "", peptide_id: "", dosage: "", quantity_remaining: "0", usage_per_day: "1", notes: "" });
-  const [newOrder, setNewOrder] = useState({ user_id: "", status: "pending" as OrderStatus, tracking_number: "", expected_delivery: "", notes: "", total_amount: "" });
-
-  useEffect(() => {
-    if (!loading && !user) navigate("/auth");
-  }, [user, loading, navigate]);
-
-  useEffect(() => {
-    if (!user) return;
-    const checkAdmin = async () => {
-      const { data } = await supabase.rpc("has_role", { _user_id: user.id, _role: "admin" });
-      setIsAdmin(!!data);
-      if (!data) navigate("/portal");
-    };
-    checkAdmin();
-  }, [user, navigate]);
-
-  const fetchAll = useCallback(async () => {
-    if (!user || !isAdmin) return;
-
-    const [profilesRes, peptidesRes, ppRes, ordersRes, requestsRes, auditRes] = await Promise.all([
-      supabase.from("profiles").select("user_id, first_name, last_name, phone, square_customer_id, created_at"),
-      supabase.from("peptides").select("*").order("name"),
-      supabase.from("patient_peptides").select("*, peptides(name)"),
-      supabase.from("orders").select("*").order("created_at", { ascending: false }),
-      supabase.from("peptide_requests").select("*").order("created_at", { ascending: false }),
-      supabase.from("audit_logs").select("*").order("created_at", { ascending: false }).limit(20),
-    ]);
-
-    if (profilesRes.data) {
-      setPatients(profilesRes.data);
-    }
-
-    // Fetch ALL Square customers
-    supabase.functions.invoke("square-list-customers").then(({ data }) => {
-      if (data?.customers) {
-        const profileMap = new Map((profilesRes.data || []).map(p => [p.square_customer_id, p.user_id]));
-        const merged: MergedCustomer[] = data.customers.map((c: any) => ({
-          square_id: c.id,
-          given_name: c.given_name,
-          family_name: c.family_name,
-          email: c.email,
-          phone: c.phone,
-          birthday: c.birthday,
-          square_created_at: c.created_at,
-          note: c.note,
-          company_name: c.company_name,
-          address: c.address,
-          has_account: profileMap.has(c.id),
-          app_user_id: profileMap.get(c.id) || null,
-        }));
-        // Sort: accounts first, then alphabetical
-        merged.sort((a, b) => {
-          if (a.has_account !== b.has_account) return a.has_account ? -1 : 1;
-          const nameA = `${a.given_name || ""} ${a.family_name || ""}`.trim().toLowerCase();
-          const nameB = `${b.given_name || ""} ${b.family_name || ""}`.trim().toLowerCase();
-          return nameA.localeCompare(nameB);
-        });
-        setAllCustomers(merged);
-      }
-    }).catch(() => {});
-
-    if (peptidesRes.data) setPeptides(peptidesRes.data);
-
-    const patientMap = new Map((profilesRes.data || []).map(p => [p.user_id, `${p.first_name || ""} ${p.last_name || ""}`.trim() || "Unknown"]));
-
-    if (ppRes.data) {
-      setPatientPeptides(ppRes.data.map((pp: any) => ({
-        ...pp,
-        peptide_name: pp.peptides?.name ?? "Unknown",
-        patient_name: patientMap.get(pp.user_id) || "Unknown",
-      })));
-    }
-
-    if (ordersRes.data) {
-      setOrders(ordersRes.data.map((o: any) => ({
-        ...o,
-        patient_name: patientMap.get(o.user_id) || "Unknown",
-      })));
-    }
-
-    if (requestsRes.data) {
-      setPeptideRequests(requestsRes.data.map((r: any) => ({
-        ...r,
-        patient_name: patientMap.get(r.user_id) || "Unknown",
-      })));
-    }
-
-    // Build activity feed from signups + audit logs
-    const activities: any[] = [];
-    (profilesRes.data || []).forEach(p => {
-      activities.push({
-        type: "signup",
-        label: `${p.first_name || ""} ${p.last_name || ""}`.trim() || "Unknown",
-        detail: "created an account",
-        timestamp: p.created_at,
-      });
-    });
-    (auditRes.data || []).forEach((a: any) => {
-      const patientName = a.patient_user_id ? patientMap.get(a.patient_user_id) || "Unknown" : null;
-      activities.push({
-        type: "audit",
-        label: patientName ? `${patientName}` : "Admin",
-        detail: a.action.replace(/_/g, " "),
-        resource: a.resource_type?.replace(/_/g, " "),
-        timestamp: a.created_at,
-      });
-    });
-    // Also add peptide requests as activity
-    (requestsRes.data || []).forEach((r: any) => {
-      activities.push({
-        type: "request",
-        label: patientMap.get(r.user_id) || "Unknown",
-        detail: `requested ${r.peptide_name}`,
-        status: r.status,
-        timestamp: r.created_at,
-      });
-    });
-    activities.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-    setRecentActivity(activities.slice(0, 15));
-  }, [user, isAdmin]);
-
-  useEffect(() => { fetchAll(); }, [fetchAll]);
-
-  const handleAddPeptide = async () => {
-    if (!newPeptide.name.trim()) return;
-    const { data } = await supabase.from("peptides").insert({
-      name: newPeptide.name,
-      description: newPeptide.description || null,
-      unit: newPeptide.unit || "mg",
-      price: newPeptide.price ? parseFloat(newPeptide.price) : null,
-      cost: newPeptide.cost ? parseFloat(newPeptide.cost) : null,
-    }).select("id").single();
-    if (data) logAdminAction({ action: "create", resource_type: "peptide", resource_id: data.id });
-    setNewPeptide({ name: "", description: "", unit: "mg", price: "", cost: "" });
-    setPeptideDialogOpen(false);
-    fetchAll();
-  };
-
-  const handleDeletePeptide = async (id: string) => {
-    await supabase.from("peptides").delete().eq("id", id);
-    fetchAll();
-  };
-
-  const handleAssignPeptide = async () => {
-    if (!newAssignment.user_id || !newAssignment.peptide_id) return;
-    await supabase.from("patient_peptides").insert({
-      user_id: newAssignment.user_id,
-      peptide_id: newAssignment.peptide_id,
-      dosage: newAssignment.dosage || null,
-      quantity_remaining: parseFloat(newAssignment.quantity_remaining) || 0,
-      usage_per_day: parseFloat(newAssignment.usage_per_day) || 1,
-      notes: newAssignment.notes || null,
-    });
-    setNewAssignment({ user_id: "", peptide_id: "", dosage: "", quantity_remaining: "0", usage_per_day: "1", notes: "" });
-    setAssignDialogOpen(false);
-    fetchAll();
-  };
-
-  const handleRemoveAssignment = async (id: string) => {
-    await supabase.from("patient_peptides").delete().eq("id", id);
-    fetchAll();
-  };
-
-  const [approvingId, setApprovingId] = useState<string | null>(null);
-
-  const handleApproveRequest = async (id: string) => {
-    setApprovingId(id);
-    try {
-      const req = peptideRequests.find(r => r.id === id);
-      await supabase.from("peptide_requests").update({ status: "approved" }).eq("id", id);
-      logAdminAction({ action: "approve_request", resource_type: "peptide_request", resource_id: id, patient_user_id: req?.user_id });
-      const { toast } = await import("sonner");
-      toast.success("Request approved — patient can now configure & pay");
-    } catch (e: any) {
-      const { toast } = await import("sonner");
-      toast.error(e.message || "Failed to approve request");
-    } finally {
-      setApprovingId(null);
-      fetchAll();
-    }
-  };
-
-  const handleDenyRequest = async (id: string) => {
-    const req = peptideRequests.find(r => r.id === id);
-    await supabase.from("peptide_requests").update({ status: "denied", deny_reason: denyReason || null }).eq("id", id);
-    logAdminAction({ action: "deny_request", resource_type: "peptide_request", resource_id: id, patient_user_id: req?.user_id, metadata: { reason: denyReason } });
-    setDenyDialogOpen(null);
-    setDenyReason("");
-    fetchAll();
-  };
-
-  const handleDeleteRequest = async (id: string) => {
-    await supabase.from("peptide_requests").delete().eq("id", id);
-    fetchAll();
-  };
-
-  const handleCreateOrder = async () => {
-    if (!newOrder.user_id) return;
-    await supabase.from("orders").insert({
-      user_id: newOrder.user_id,
-      status: newOrder.status,
-      tracking_number: newOrder.tracking_number || null,
-      expected_delivery: newOrder.expected_delivery || null,
-      notes: newOrder.notes || null,
-      total_amount: newOrder.total_amount ? parseFloat(newOrder.total_amount) : 0,
-    });
-    setNewOrder({ user_id: "", status: "pending", tracking_number: "", expected_delivery: "", notes: "", total_amount: "" });
-    setOrderDialogOpen(false);
-    fetchAll();
-  };
-
-  const handleUpdateOrderStatus = async (orderId: string, status: OrderStatus) => {
-    const order = orders.find(o => o.id === orderId);
-    await supabase.from("orders").update({ status }).eq("id", orderId);
-    logAdminAction({ action: "update_order_status", resource_type: "order", resource_id: orderId, patient_user_id: order?.user_id, metadata: { new_status: status } });
-    fetchAll();
-  };
-
-  const handleDeleteOrder = async (id: string) => {
-    await supabase.from("orders").delete().eq("id", id);
-    fetchAll();
-  };
-
-  if (loading || isAdmin === null) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-muted-foreground text-sm font-body font-light tracking-wider uppercase animate-pulse">Loading...</p>
+const StatCard = ({ label, value, sub, icon: Icon, accent }: {
+  label: string; value: string | number; sub?: string;
+  icon: any; accent: string;
+}) => (
+  <div className="relative overflow-hidden border border-white/5 bg-white/[0.02] p-5 group hover:border-white/10 transition-all duration-300">
+    <div className={`absolute top-0 left-0 w-1 h-full ${accent}`} />
+    <div className="flex items-start justify-between mb-4">
+      <div className={`p-2 rounded-sm ${accent.replace('bg-', 'bg-').replace('-500', '-500/10')}`}>
+        <Icon size={14} className={accent.replace('bg-', 'text-').replace('/50', '')} strokeWidth={1.5} />
       </div>
-    );
-  }
+      <TrendingUp size={12} className="text-white/10 group-hover:text-white/20 transition-colors" />
+    </div>
+    <p className="text-2xl font-light text-white/90 tracking-tight mb-0.5">{value}</p>
+    <p className="text-[10px] tracking-[0.2em] uppercase text-white/30 font-light">{label}</p>
+    {sub && <p className="text-[10px] text-white/20 mt-1">{sub}</p>}
+  </div>
+);
+
+// ── ORDER ROW ───────────────────────────────────────────────────────────────
+
+const OrderRow = ({ order, onAction }: { order: Order; onAction: (id: string, status: "approved" | "denied", notes: string) => void }) => {
+  const [expanded, setExpanded] = useState(false);
+  const [notes, setNotes] = useState("");
+  const [processing, setProcessing] = useState(false);
+
+  const statusConfig = {
+    pending: { color: "text-amber-400", bg: "bg-amber-400/10 border-amber-400/20", dot: "bg-amber-400" },
+    approved: { color: "text-emerald-400", bg: "bg-emerald-400/10 border-emerald-400/20", dot: "bg-emerald-400" },
+    denied: { color: "text-red-400", bg: "bg-red-400/10 border-red-400/20", dot: "bg-red-400" },
+  }[order.status];
+
+  const handle = async (status: "approved" | "denied") => {
+    setProcessing(true);
+    await onAction(order.id, status, notes);
+    setProcessing(false);
+    setExpanded(false);
+  };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-background/90 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
-          <div className="flex items-center gap-3">
-            <PVMonogram className="w-8 h-8" />
-            <span className="text-xs tracking-[0.25em] uppercase text-foreground font-body font-light hidden sm:inline">
-              Admin Dashboard
-            </span>
-          </div>
-          <Button variant="ghost" size="icon" onClick={() => { signOut(); navigate("/auth"); }} className="text-muted-foreground hover:text-foreground">
-            <LogOut size={16} strokeWidth={1.2} />
-          </Button>
+    <div className="border-b border-white/5 last:border-0">
+      <div
+        onClick={() => setExpanded(!expanded)}
+        className="flex items-center gap-4 px-5 py-3.5 hover:bg-white/[0.02] cursor-pointer transition-colors group"
+      >
+        <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${statusConfig.dot}`} />
+        <div className="flex-1 min-w-0">
+          <p className="text-xs text-white/80 font-light truncate">{order.product_name}</p>
+          <p className="text-[10px] text-white/30 mt-0.5">{order.patient_name} · {new Date(order.created_at).toLocaleDateString()}</p>
         </div>
-      </header>
+        <div className="flex items-center gap-3 shrink-0">
+          {order.price && <span className="text-[10px] text-white/30">${order.price.toFixed(2)}</span>}
+          <span className={`px-2 py-0.5 rounded-sm border text-[9px] tracking-[0.12em] uppercase ${statusConfig.bg} ${statusConfig.color}`}>
+            {order.status}
+          </span>
+          {expanded ? <ChevronUp size={12} className="text-white/20" /> : <ChevronDown size={12} className="text-white/20" />}
+        </div>
+      </div>
 
-      <main className="max-w-6xl mx-auto px-6 py-10">
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="bg-secondary border border-border">
-            <TabsTrigger value="overview" className="text-xs tracking-wider uppercase font-body font-light data-[state=active]:bg-background">
-              <BarChart3 size={14} className="mr-1.5" /> Overview
-            </TabsTrigger>
-            <TabsTrigger value="patients" className="text-xs tracking-wider uppercase font-body font-light data-[state=active]:bg-background">
-              <Users size={14} className="mr-1.5" /> Patients
-            </TabsTrigger>
-            <TabsTrigger value="peptides" className="text-xs tracking-wider uppercase font-body font-light data-[state=active]:bg-background">
-              <Pill size={14} className="mr-1.5" /> Peptides
-            </TabsTrigger>
-            <TabsTrigger value="orders" className="text-xs tracking-wider uppercase font-body font-light data-[state=active]:bg-background">
-              <Package size={14} className="mr-1.5" /> Orders
-            </TabsTrigger>
-            <TabsTrigger value="requests" className="text-xs tracking-wider uppercase font-body font-light data-[state=active]:bg-background">
-              <ClipboardList size={14} className="mr-1.5" /> Requests
-              {peptideRequests.filter(r => r.status === "pending").length > 0 && (
-                <Badge variant="outline" className="ml-1.5 bg-primary/20 text-primary border-primary/30 text-[9px] px-1.5 py-0">
-                  {peptideRequests.filter(r => r.status === "pending").length}
-                </Badge>
-              )}
-            </TabsTrigger>
-            <TabsTrigger value="biomarkers" className="text-xs tracking-wider uppercase font-body font-light data-[state=active]:bg-background">
-              <Activity size={14} className="mr-1.5" /> Biomarkers
-            </TabsTrigger>
-            <TabsTrigger value="treatment-requests" className="text-xs tracking-wider uppercase font-body font-light data-[state=active]:bg-background">
-              <CheckCircle size={14} className="mr-1.5" /> Treatment Requests
-            </TabsTrigger>
-          </TabsList>
-
-          {/* OVERVIEW TAB */}
-          <TabsContent value="overview">
-            <AdminOverview patients={patients} orders={orders} patientPeptides={patientPeptides} peptides={peptides} recentActivity={recentActivity} peptideRequests={peptideRequests} />
-          </TabsContent>
-
-          {/* PATIENTS TAB */}
-          <TabsContent value="patients" className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-heading font-light text-foreground">Patient Records</h2>
-              <Dialog open={assignDialogOpen} onOpenChange={setAssignDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button size="sm" className="text-xs tracking-wider uppercase font-body font-light rounded-none">
-                    <Plus size={14} className="mr-1" /> Assign Peptide
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="bg-card border-border">
-                  <DialogHeader>
-                    <DialogTitle className="font-heading font-light text-foreground">Assign Peptide to Patient</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Patient</Label>
-                      <Select value={newAssignment.user_id} onValueChange={(v) => setNewAssignment(p => ({ ...p, user_id: v }))}>
-                        <SelectTrigger className="bg-secondary border-border"><SelectValue placeholder="Select patient" /></SelectTrigger>
-                        <SelectContent>
-                          {patients.map(p => (
-                            <SelectItem key={p.user_id} value={p.user_id}>{p.first_name} {p.last_name}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Peptide</Label>
-                      <Select value={newAssignment.peptide_id} onValueChange={(v) => setNewAssignment(p => ({ ...p, peptide_id: v }))}>
-                        <SelectTrigger className="bg-secondary border-border"><SelectValue placeholder="Select peptide" /></SelectTrigger>
-                        <SelectContent>
-                          {peptides.map(p => (
-                            <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="space-y-2">
-                        <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Dosage</Label>
-                        <Input value={newAssignment.dosage} onChange={e => setNewAssignment(p => ({ ...p, dosage: e.target.value }))} className="bg-secondary border-border" placeholder="e.g. 250mcg" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Quantity</Label>
-                        <Input type="number" value={newAssignment.quantity_remaining} onChange={e => setNewAssignment(p => ({ ...p, quantity_remaining: e.target.value }))} className="bg-secondary border-border" />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Usage/Day</Label>
-                      <Input type="number" value={newAssignment.usage_per_day} onChange={e => setNewAssignment(p => ({ ...p, usage_per_day: e.target.value }))} className="bg-secondary border-border" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Notes</Label>
-                      <Input value={newAssignment.notes} onChange={e => setNewAssignment(p => ({ ...p, notes: e.target.value }))} className="bg-secondary border-border" />
-                    </div>
-                    <Button onClick={handleAssignPeptide} className="w-full text-xs tracking-wider uppercase font-body font-light rounded-none">Assign</Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
+      {expanded && (
+        <div className="px-5 pb-4 pt-1 bg-white/[0.015] border-t border-white/5">
+          <div className="grid grid-cols-3 gap-4 mb-4 text-[10px]">
+            <div>
+              <p className="text-white/25 uppercase tracking-[0.15em] mb-1">Patient</p>
+              <p className="text-white/60">{order.patient_name}</p>
+              <p className="text-white/40">{order.patient_email}</p>
+              <p className="text-white/40">{order.patient_phone}</p>
             </div>
-
-            {allCustomers.length === 0 ? (
-              <p className="text-xs text-muted-foreground font-body font-light animate-pulse">Loading Square customers…</p>
-            ) : (
-              allCustomers.map(customer => {
-                const pp = customer.app_user_id ? patientPeptides.filter(p => p.user_id === customer.app_user_id) : [];
-                const customerOrders = customer.app_user_id ? orders.filter(o => o.user_id === customer.app_user_id) : [];
-                const totalSpend = customerOrders.filter(o => o.status !== "cancelled").reduce((s, o) => s + (o.total_amount || 0), 0);
-                return (
-                  <Card key={customer.square_id} className="border-border bg-card">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg font-heading font-light text-foreground flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span>{customer.given_name} {customer.family_name}</span>
-                          {customer.has_account ? (
-                            <Badge variant="outline" className="text-[9px] px-1.5 py-0 bg-primary/20 text-primary border-primary/30">
-                              App Account
-                            </Badge>
-                          ) : (
-                            <Badge variant="outline" className="text-[9px] px-1.5 py-0 bg-muted text-muted-foreground border-border">
-                              Square Only
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-3">
-                          {totalSpend > 0 && (
-                            <span className="text-xs text-primary font-body font-light">${totalSpend.toLocaleString()} spent</span>
-                          )}
-                        </div>
-                      </CardTitle>
-                      <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1">
-                        {customer.email && (
-                          <span className="text-[11px] text-muted-foreground font-body font-light">
-                            ✉ {customer.email}
-                          </span>
-                        )}
-                        {customer.phone && (
-                          <span className="text-[11px] text-muted-foreground font-body font-light">
-                            ☎ {customer.phone}
-                          </span>
-                        )}
-                        {customer.birthday && (
-                          <span className="text-[11px] text-muted-foreground font-body font-light">
-                            🎂 {customer.birthday.startsWith("0000") 
-                              ? (() => { const [, m, d] = customer.birthday.split("-"); return `${m}/${d}`; })()
-                              : (() => { const [y, m, d] = customer.birthday.split("-"); return `${m}/${d}/${y}`; })()
-                            }
-                            {customer.birthday.startsWith("0000") && (
-                              <span className="text-destructive ml-1">(year missing)</span>
-                            )}
-                          </span>
-                        )}
-                        {customer.company_name && (
-                          <span className="text-[11px] text-muted-foreground font-body font-light">
-                            🏢 {customer.company_name}
-                          </span>
-                        )}
-                        {customer.square_created_at && (
-                          <span className="text-[11px] text-muted-foreground/60 font-body font-light">
-                            Since {new Date(customer.square_created_at).toLocaleDateString()}
-                          </span>
-                        )}
-                      </div>
-                      {customer.note && (
-                        <p className="text-[11px] text-muted-foreground/70 font-body font-light italic mt-1">
-                          {customer.note}
-                        </p>
-                      )}
-                      {customer.address && (
-                        <div className="flex items-start gap-1.5 mt-1">
-                          <span className="text-[11px] text-muted-foreground font-body font-light">
-                            📍 {[
-                              customer.address.address_line_1,
-                              customer.address.address_line_2,
-                              customer.address.locality,
-                              customer.address.administrative_district_level_1,
-                              customer.address.postal_code
-                            ].filter(Boolean).join(", ")}
-                          </span>
-                        </div>
-                      )}
-                    </CardHeader>
-                    <CardContent>
-                      {pp.length === 0 ? (
-                        <p className="text-xs text-muted-foreground font-body font-light">
-                          {customer.has_account ? "No peptides assigned" : "—"}
-                        </p>
-                      ) : (
-                        <div className="space-y-2">
-                          {pp.map(p => {
-                            const daysLeft = p.usage_per_day && p.usage_per_day > 0 && p.quantity_remaining
-                              ? Math.floor(p.quantity_remaining / p.usage_per_day) : null;
-                            return (
-                              <div key={p.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-                                <div className="space-y-0.5">
-                                  <span className="text-sm text-foreground font-body font-light">{p.peptide_name}</span>
-                                  <div className="flex gap-3 text-xs text-muted-foreground font-body font-light">
-                                    {p.dosage && <span>{p.dosage}</span>}
-                                    <span>{p.quantity_remaining} remaining</span>
-                                    <span>{p.usage_per_day}/day</span>
-                                    {daysLeft !== null && (
-                                      <span className={daysLeft <= 7 ? "text-destructive" : "text-primary"}>
-                                        ~{daysLeft}d supply
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                                <Button variant="ghost" size="icon" onClick={() => handleRemoveAssignment(p.id)} className="text-muted-foreground hover:text-destructive h-8 w-8">
-                                  <Trash2 size={14} />
-                                </Button>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                );
-              })
-            )}
-          </TabsContent>
-
-          {/* PEPTIDES TAB */}
-          <TabsContent value="peptides" className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-heading font-light text-foreground">Peptide Catalog</h2>
-              <Dialog open={peptideDialogOpen} onOpenChange={setPeptideDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button size="sm" className="text-xs tracking-wider uppercase font-body font-light rounded-none">
-                    <Plus size={14} className="mr-1" /> Add Peptide
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="bg-card border-border">
-                  <DialogHeader>
-                    <DialogTitle className="font-heading font-light text-foreground">Add New Peptide</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Name</Label>
-                      <Input value={newPeptide.name} onChange={e => setNewPeptide(p => ({ ...p, name: e.target.value }))} className="bg-secondary border-border" placeholder="e.g. BPC-157" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Description</Label>
-                      <Input value={newPeptide.description} onChange={e => setNewPeptide(p => ({ ...p, description: e.target.value }))} className="bg-secondary border-border" />
-                    </div>
-                    <div className="grid grid-cols-3 gap-3">
-                      <div className="space-y-2">
-                        <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Unit</Label>
-                        <Input value={newPeptide.unit} onChange={e => setNewPeptide(p => ({ ...p, unit: e.target.value }))} className="bg-secondary border-border" placeholder="mg" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Price ($)</Label>
-                        <Input type="number" value={newPeptide.price} onChange={e => setNewPeptide(p => ({ ...p, price: e.target.value }))} className="bg-secondary border-border" placeholder="0.00" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Cost ($)</Label>
-                        <Input type="number" value={newPeptide.cost} onChange={e => setNewPeptide(p => ({ ...p, cost: e.target.value }))} className="bg-secondary border-border" placeholder="0.00" />
-                      </div>
-                    </div>
-                    <Button onClick={handleAddPeptide} className="w-full text-xs tracking-wider uppercase font-body font-light rounded-none">Add Peptide</Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
+            <div>
+              <p className="text-white/25 uppercase tracking-[0.15em] mb-1">Product</p>
+              <p className="text-white/60">{order.product_name}</p>
+              {order.size && <p className="text-white/40">{order.size}</p>}
+              {order.price && <p className="text-cyan-400/70">${order.price.toFixed(2)}</p>}
             </div>
-
-            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-              {peptides.map(p => {
-                return (
-                  <Card key={p.id} className="border-border bg-card">
-                    <CardContent className="py-4 flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-body font-light text-foreground">{p.name}</p>
-                        {p.description && <p className="text-xs text-muted-foreground font-body font-light mt-0.5">{p.description}</p>}
-                        <div className="flex gap-3 text-xs text-muted-foreground font-body font-light mt-1">
-                          <span>Unit: {p.unit}</span>
-                          {p.price && <span className="text-primary">${p.price}</span>}
-                          {p.cost != null && <span>Cost: ${p.cost}</span>}
-                        </div>
-                      </div>
-                      <Button variant="ghost" size="icon" onClick={() => handleDeletePeptide(p.id)} className="text-muted-foreground hover:text-destructive h-8 w-8">
-                        <Trash2 size={14} />
-                      </Button>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-              {peptides.length === 0 && (
-                <p className="text-sm text-muted-foreground font-body font-light col-span-full text-center py-10">No peptides in catalog yet.</p>
+            <div>
+              <p className="text-white/25 uppercase tracking-[0.15em] mb-1">Submitted</p>
+              <p className="text-white/60">{new Date(order.created_at).toLocaleString()}</p>
+              {order.square_payment_link && (
+                <a href={order.square_payment_link} target="_blank" rel="noopener noreferrer"
+                  className="text-cyan-400/60 underline mt-1 block truncate">Payment link</a>
               )}
             </div>
-          </TabsContent>
+          </div>
 
-          {/* ORDERS TAB */}
-          <TabsContent value="orders" className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-heading font-light text-foreground">Order Management</h2>
-              <Dialog open={orderDialogOpen} onOpenChange={setOrderDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button size="sm" className="text-xs tracking-wider uppercase font-body font-light rounded-none">
-                    <Plus size={14} className="mr-1" /> Create Order
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="bg-card border-border">
-                  <DialogHeader>
-                    <DialogTitle className="font-heading font-light text-foreground">Create New Order</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Patient</Label>
-                      <Select value={newOrder.user_id} onValueChange={(v) => setNewOrder(p => ({ ...p, user_id: v }))}>
-                        <SelectTrigger className="bg-secondary border-border"><SelectValue placeholder="Select patient" /></SelectTrigger>
-                        <SelectContent>
-                          {patients.map(p => (
-                            <SelectItem key={p.user_id} value={p.user_id}>{p.first_name} {p.last_name}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="space-y-2">
-                        <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Status</Label>
-                        <Select value={newOrder.status} onValueChange={(v) => setNewOrder(p => ({ ...p, status: v as OrderStatus }))}>
-                          <SelectTrigger className="bg-secondary border-border"><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            {ORDER_STATUSES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Amount ($)</Label>
-                        <Input type="number" value={newOrder.total_amount} onChange={e => setNewOrder(p => ({ ...p, total_amount: e.target.value }))} className="bg-secondary border-border" placeholder="0.00" />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Tracking Number</Label>
-                      <Input value={newOrder.tracking_number} onChange={e => setNewOrder(p => ({ ...p, tracking_number: e.target.value }))} className="bg-secondary border-border" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Expected Delivery</Label>
-                      <Input type="date" value={newOrder.expected_delivery} onChange={e => setNewOrder(p => ({ ...p, expected_delivery: e.target.value }))} className="bg-secondary border-border" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Notes</Label>
-                      <Input value={newOrder.notes} onChange={e => setNewOrder(p => ({ ...p, notes: e.target.value }))} className="bg-secondary border-border" />
-                    </div>
-                    <Button onClick={handleCreateOrder} className="w-full text-xs tracking-wider uppercase font-body font-light rounded-none">Create Order</Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            </div>
-
+          {order.status === "pending" && (
             <div className="space-y-3">
-              {orders.map(o => (
-                <Card key={o.id} className="border-border bg-card">
-                  <CardContent className="py-4">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-body font-light text-foreground">{o.patient_name}</span>
-                          <Badge variant="outline" className={statusColor[o.status] || ""}>{o.status}</Badge>
-                          {o.total_amount > 0 && (
-                            <span className="text-xs text-primary font-body font-light">${o.total_amount}</span>
-                          )}
-                        </div>
-                        <div className="flex gap-3 text-xs text-muted-foreground font-body font-light">
-                          <span>{new Date(o.created_at).toLocaleDateString()}</span>
-                          {o.tracking_number && <span>Track: {o.tracking_number}</span>}
-                          {o.expected_delivery && <span>ETA: {new Date(o.expected_delivery).toLocaleDateString()}</span>}
-                        </div>
-                        {o.notes && <p className="text-xs text-muted-foreground font-body font-light">{o.notes}</p>}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Select value={o.status} onValueChange={(v) => handleUpdateOrderStatus(o.id, v as OrderStatus)}>
-                          <SelectTrigger className="bg-secondary border-border w-32 h-8 text-xs"><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            {ORDER_STATUSES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
-                        <Button variant="ghost" size="icon" onClick={() => handleDeleteOrder(o.id)} className="text-muted-foreground hover:text-destructive h-8 w-8">
-                          <Trash2 size={14} />
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-              {orders.length === 0 && (
-                <Card className="border-border bg-card">
-                  <CardContent className="py-10 text-center">
-                    <p className="text-sm text-muted-foreground font-body font-light">No orders yet.</p>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
-          </TabsContent>
-
-          {/* REQUESTS TAB */}
-          <TabsContent value="requests" className="space-y-4">
-            <h2 className="text-xl font-heading font-light text-foreground">Peptide Requests</h2>
-
-            {peptideRequests.length === 0 ? (
-              <Card className="border-border bg-card">
-                <CardContent className="py-10 text-center">
-                  <p className="text-sm text-muted-foreground font-body font-light">No peptide requests yet.</p>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="space-y-3">
-                {peptideRequests.map(r => (
-                  <Card key={r.id} className="border-border bg-card">
-                    <CardContent className="py-4">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-sm font-body font-light text-foreground">{r.patient_name}</span>
-                            <Badge variant="outline" className={
-                              r.status === "pending" ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" :
-                              r.status === "approved" ? "bg-green-500/20 text-green-400 border-green-500/30" :
-                              "bg-destructive/20 text-destructive border-destructive/30"
-                            }>{r.status}</Badge>
-                            {r.price != null && (
-                              <span className="text-xs text-primary font-body font-light">${r.price}</span>
-                            )}
-                          </div>
-                          <p className="text-sm text-foreground/80 font-body font-light">
-                            {r.peptide_name}{r.variation_label ? ` — ${r.variation_label}` : ""}
-                          </p>
-                          <p className="text-xs text-muted-foreground font-body font-light">
-                            {new Date(r.created_at).toLocaleDateString()} at {new Date(r.created_at).toLocaleTimeString()}
-                          </p>
-                          {r.status === "denied" && r.deny_reason && (
-                            <p className="text-xs text-destructive font-body font-light mt-1">
-                              Reason: {r.deny_reason}
-                            </p>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          {r.status === "pending" && (
-                            <>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => handleApproveRequest(r.id)}
-                                disabled={approvingId === r.id}
-                                className="text-green-400 hover:text-green-300 hover:bg-green-500/10 h-8 text-xs tracking-wider uppercase font-body font-light"
-                              >
-                                {approvingId === r.id ? (
-                                  <span className="animate-spin mr-1">⏳</span>
-                                ) : (
-                                  <CheckCircle size={14} className="mr-1" />
-                                )}
-                                {approvingId === r.id ? "Approving..." : "Approve"}
-                              </Button>
-                              <Dialog open={denyDialogOpen === r.id} onOpenChange={(open) => { setDenyDialogOpen(open ? r.id : null); if (!open) setDenyReason(""); }}>
-                                <DialogTrigger asChild>
-                                  <Button
-                                    size="sm"
-                                    variant="ghost"
-                                    className="text-destructive hover:text-destructive/80 hover:bg-destructive/10 h-8 text-xs tracking-wider uppercase font-body font-light"
-                                  >
-                                    <XCircle size={14} className="mr-1" /> Deny
-                                  </Button>
-                                </DialogTrigger>
-                                <DialogContent className="bg-card border-border">
-                                  <DialogHeader>
-                                    <DialogTitle className="font-heading font-light text-foreground">Deny Request</DialogTitle>
-                                  </DialogHeader>
-                                  <div className="space-y-4">
-                                    <p className="text-sm text-muted-foreground font-body font-light">
-                                      Denying <span className="text-foreground">{r.peptide_name}</span> for <span className="text-foreground">{r.patient_name}</span>
-                                    </p>
-                                    <div className="space-y-2">
-                                      <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Reason (optional)</Label>
-                                      <Textarea
-                                        value={denyReason}
-                                        onChange={(e) => setDenyReason(e.target.value)}
-                                        placeholder="e.g. Lab results required before prescribing..."
-                                        className="bg-secondary border-border font-body font-light text-sm"
-                                        rows={3}
-                                      />
-                                    </div>
-                                    <Button
-                                      onClick={() => handleDenyRequest(r.id)}
-                                      variant="destructive"
-                                      className="w-full text-xs tracking-wider uppercase font-body font-light rounded-none"
-                                    >
-                                      Confirm Denial
-                                    </Button>
-                                  </div>
-                                </DialogContent>
-                              </Dialog>
-                            </>
-                          )}
-                          <Button variant="ghost" size="icon" onClick={() => handleDeleteRequest(r.id)} className="text-muted-foreground hover:text-destructive h-8 w-8">
-                            <Trash2 size={14} />
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+              <textarea
+                rows={2}
+                value={notes}
+                onChange={e => setNotes(e.target.value)}
+                placeholder="Notes for patient (sent via SMS on approval/denial)..."
+                className="w-full bg-black/30 border border-white/10 px-3 py-2 text-[11px] text-white/60 placeholder:text-white/15 focus:outline-none focus:border-white/20 resize-none font-light"
+              />
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handle("approved")}
+                  disabled={processing}
+                  className="flex-1 flex items-center justify-center gap-2 py-2 bg-emerald-500/10 border border-emerald-400/20 text-emerald-400/80 text-[10px] tracking-[0.15em] uppercase hover:bg-emerald-500/20 transition-colors disabled:opacity-40"
+                >
+                  <CheckCircle size={12} />
+                  {processing ? "Processing..." : "Approve + Send Payment"}
+                </button>
+                <button
+                  onClick={() => handle("denied")}
+                  disabled={processing}
+                  className="flex-1 flex items-center justify-center gap-2 py-2 bg-red-500/10 border border-red-400/20 text-red-400/80 text-[10px] tracking-[0.15em] uppercase hover:bg-red-500/20 transition-colors disabled:opacity-40"
+                >
+                  <XCircle size={12} />
+                  Deny
+                </button>
               </div>
-            )}
-          </TabsContent>
-
-          {/* BIOMARKERS TAB */}
-          <TabsContent value="biomarkers" className="space-y-4">
-            <AdminBiomarkers patients={patients} />
-          </TabsContent>
-
-          {/* TREATMENT REQUESTS TAB */}
-          <TabsContent value="treatment-requests">
-            <AdminOrders />
-          </TabsContent>
-        </Tabs>
-      </main>
+            </div>
+          )}
+          {order.admin_notes && order.status !== "pending" && (
+            <div className="mt-2 p-2 bg-white/5 border border-white/5">
+              <p className="text-[9px] text-white/25 uppercase tracking-[0.15em] mb-1">Notes Sent</p>
+              <p className="text-[11px] text-white/50">{order.admin_notes}</p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
 
-export default Admin;
+// ── PATIENT ROW ─────────────────────────────────────────────────────────────
+
+const PatientRow = ({ patient, onSMS }: { patient: Patient; onSMS: (p: Patient) => void }) => (
+  <div className="flex items-center gap-4 px-5 py-3.5 border-b border-white/5 last:border-0 hover:bg-white/[0.02] transition-colors group">
+    <div className="w-7 h-7 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+      <span className="text-[10px] text-white/40 font-light">
+        {(patient.name || patient.email).charAt(0).toUpperCase()}
+      </span>
+    </div>
+    <div className="flex-1 min-w-0">
+      <p className="text-xs text-white/70 font-light truncate">{patient.name || "—"}</p>
+      <p className="text-[10px] text-white/30 truncate">{patient.email}</p>
+    </div>
+    <div className="hidden md:flex items-center gap-6 text-[10px] text-white/25 shrink-0">
+      <span>{patient.phone || "—"}</span>
+      <span>{patient.orderCount || 0} orders</span>
+      {patient.totalSpent ? <span className="text-cyan-400/50">${patient.totalSpent.toFixed(0)}</span> : <span>$0</span>}
+      <span>{patient.lastOrder ? new Date(patient.lastOrder).toLocaleDateString() : "—"}</span>
+    </div>
+    <button
+      onClick={() => onSMS(patient)}
+      className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 border border-white/10 text-white/30 hover:text-white/60 hover:border-white/20"
+    >
+      <MessageSquare size={11} />
+    </button>
+  </div>
+);
+
+// ── SMS COMPOSER ─────────────────────────────────────────────────────────────
+
+const SMSComposer = ({ target, onClose }: { target: Patient | null; onClose: () => void }) => {
+  const [message, setMessage] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  const send = async () => {
+    if (!message.trim() || !target?.phone) return;
+    setSending(true);
+    const { error } = await supabase.functions.invoke("send-sms", {
+      body: { to: target.phone, body: `Premier Vitality & Wellness: ${message} Reply STOP to opt out.` }
+    });
+    setSending(false);
+    if (!error) { setSent(true); setTimeout(() => { setSent(false); onClose(); }, 1500); }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+      <div className="w-full max-w-md bg-[#0a0a0a] border border-white/10">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
+          <div>
+            <p className="text-[9px] tracking-[0.25em] uppercase text-white/25 mb-0.5">Manual SMS</p>
+            <p className="text-sm text-white/70 font-light">{target?.name || target?.email}</p>
+          </div>
+          <button onClick={onClose} className="text-white/20 hover:text-white/50 text-xs">✕</button>
+        </div>
+        <div className="p-5 space-y-4">
+          <div className="text-[10px] text-white/30 font-mono bg-black/30 px-3 py-2 border border-white/5">
+            To: {target?.phone || "No phone on file"}
+          </div>
+          <div>
+            <p className="text-[9px] tracking-[0.15em] uppercase text-white/25 mb-1.5">Your message</p>
+            <textarea
+              rows={4}
+              value={message}
+              onChange={e => setMessage(e.target.value)}
+              placeholder="Type your message..."
+              className="w-full bg-black/30 border border-white/10 px-3 py-2.5 text-xs text-white/60 placeholder:text-white/15 focus:outline-none focus:border-white/20 resize-none"
+            />
+            <p className="text-[9px] text-white/15 mt-1">
+              Will send as: "Premier Vitality &amp; Wellness: {message || "..."} Reply STOP to opt out."
+            </p>
+          </div>
+          {sent ? (
+            <div className="flex items-center gap-2 text-emerald-400/70 text-xs">
+              <CheckCircle size={12} /> Sent successfully
+            </div>
+          ) : (
+            <button
+              onClick={send}
+              disabled={sending || !message.trim() || !target?.phone}
+              className="w-full py-2.5 bg-cyan-500/10 border border-cyan-400/20 text-cyan-400/80 text-[10px] tracking-[0.2em] uppercase hover:bg-cyan-500/20 transition-colors disabled:opacity-30 flex items-center justify-center gap-2"
+            >
+              <Send size={11} />
+              {sending ? "Sending..." : "Send SMS"}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ── MAIN ADMIN PANEL ────────────────────────────────────────────────────────
+
+const AdminPanel = () => {
+  const [nav, setNav] = useState<NavItem>("dashboard");
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [orderFilter, setOrderFilter] = useState<"all" | "pending" | "approved" | "denied">("pending");
+  const [patientSearch, setPatientSearch] = useState("");
+  const [smsTarget, setSmsTarget] = useState<Patient | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchData = async () => {
+    setRefreshing(true);
+    // Orders
+    const { data: orderData } = await supabase
+      .from("orders").select("*").order("created_at", { ascending: false });
+    if (orderData) setOrders(orderData as Order[]);
+
+    // Patients from auth — use orders to build roster
+    const { data: allOrders } = await supabase
+      .from("orders").select("patient_id, patient_name, patient_email, patient_phone, price, created_at")
+      .order("created_at", { ascending: false });
+
+    if (allOrders) {
+      const patientMap = new Map<string, Patient>();
+      for (const o of allOrders) {
+        if (!o.patient_id) continue;
+        if (!patientMap.has(o.patient_id)) {
+          patientMap.set(o.patient_id, {
+            id: o.patient_id,
+            email: o.patient_email,
+            name: o.patient_name,
+            phone: o.patient_phone,
+            created_at: o.created_at,
+            orderCount: 0,
+            totalSpent: 0,
+            lastOrder: o.created_at,
+          });
+        }
+        const p = patientMap.get(o.patient_id)!;
+        p.orderCount = (p.orderCount || 0) + 1;
+        p.totalSpent = (p.totalSpent || 0) + (o.price || 0);
+        if (o.created_at > (p.lastOrder || "")) p.lastOrder = o.created_at;
+      }
+      setPatients(Array.from(patientMap.values()));
+    }
+
+    setLoading(false);
+    setRefreshing(false);
+  };
+
+  useEffect(() => { fetchData(); }, []);
+
+  const handleOrderAction = async (orderId: string, status: "approved" | "denied", notes: string) => {
+    await supabase.functions.invoke("notify-order-status", {
+      body: { orderId, status, adminNotes: notes || null }
+    });
+    await fetchData();
+  };
+
+  // Stats
+  const pendingCount = orders.filter(o => o.status === "pending").length;
+  const approvedCount = orders.filter(o => o.status === "approved").length;
+  const totalRevenue = orders.filter(o => o.status === "approved").reduce((s, o) => s + (o.price || 0), 0);
+  const thisMonthOrders = orders.filter(o => new Date(o.created_at).getMonth() === new Date().getMonth()).length;
+
+  const filteredOrders = orders.filter(o => orderFilter === "all" || o.status === orderFilter);
+  const filteredPatients = patients.filter(p =>
+    !patientSearch || p.name?.toLowerCase().includes(patientSearch.toLowerCase()) ||
+    p.email.toLowerCase().includes(patientSearch.toLowerCase()) ||
+    p.phone?.includes(patientSearch)
+  );
+
+  const navItems = [
+    { id: "dashboard" as NavItem, label: "Dashboard", icon: LayoutDashboard },
+    { id: "orders" as NavItem, label: "Requests", icon: ClipboardList, badge: pendingCount },
+    { id: "patients" as NavItem, label: "Patients", icon: Users },
+    { id: "sms" as NavItem, label: "SMS Center", icon: MessageSquare },
+    { id: "settings" as NavItem, label: "Settings", icon: Settings },
+  ];
+
+  return (
+    <div className="flex h-screen bg-[#050505] text-white overflow-hidden font-body">
+
+      {/* ── SIDEBAR ── */}
+      <aside className="w-56 shrink-0 border-r border-white/5 flex flex-col">
+        {/* Logo */}
+        <div className="px-5 py-5 border-b border-white/5">
+          <p className="text-[9px] tracking-[0.35em] uppercase text-white/25 mb-0.5">Premier Vitality</p>
+          <p className="text-xs font-light text-white/60">Admin Console</p>
+        </div>
+
+        {/* Nav */}
+        <nav className="flex-1 py-4 px-3 space-y-0.5">
+          {navItems.map(item => {
+            const Icon = item.icon;
+            const active = nav === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setNav(item.id)}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-left transition-all duration-200 group ${
+                  active ? "bg-white/5 text-white/80" : "text-white/30 hover:text-white/50 hover:bg-white/[0.02]"
+                }`}
+              >
+                <Icon size={14} strokeWidth={1.5} className={active ? "text-cyan-400/70" : ""} />
+                <span className="text-[11px] font-light tracking-wide flex-1">{item.label}</span>
+                {item.badge ? (
+                  <span className="px-1.5 py-0.5 rounded-sm bg-amber-400/15 text-amber-400/80 text-[9px] font-light">
+                    {item.badge}
+                  </span>
+                ) : null}
+                {active && <ChevronRight size={10} className="text-white/20" />}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Bottom */}
+        <div className="px-3 py-4 border-t border-white/5">
+          <button
+            onClick={fetchData}
+            disabled={refreshing}
+            className="w-full flex items-center gap-2 px-3 py-2 text-white/20 hover:text-white/40 transition-colors"
+          >
+            <RefreshCw size={12} className={refreshing ? "animate-spin" : ""} />
+            <span className="text-[10px]">{refreshing ? "Refreshing..." : "Refresh"}</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* ── MAIN CONTENT ── */}
+      <main className="flex-1 overflow-y-auto">
+
+        {/* ── DASHBOARD ── */}
+        {nav === "dashboard" && (
+          <div className="p-8">
+            <div className="mb-8">
+              <p className="text-[9px] tracking-[0.3em] uppercase text-white/20 mb-1">
+                {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
+              </p>
+              <h1 className="text-2xl font-extralight text-white/80">Good morning, Dr. Loo</h1>
+            </div>
+
+            {/* Stats grid */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+              <StatCard label="Pending Review" value={pendingCount} icon={Clock} accent="bg-amber-500/50" sub="Awaiting physician" />
+              <StatCard label="Approved" value={approvedCount} icon={CheckCircle} accent="bg-emerald-500/50" sub="All time" />
+              <StatCard label="Total Revenue" value={`$${totalRevenue.toFixed(0)}`} icon={DollarSign} accent="bg-cyan-500/50" sub="Approved orders" />
+              <StatCard label="This Month" value={thisMonthOrders} icon={Activity} accent="bg-violet-500/50" sub="New requests" />
+            </div>
+
+            {/* Pending orders quick view */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="border border-white/5 bg-white/[0.01]">
+                <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
+                  <p className="text-xs font-light text-white/50 tracking-wide">Pending Requests</p>
+                  <button onClick={() => setNav("orders")} className="text-[9px] text-cyan-400/50 hover:text-cyan-400/80 tracking-[0.15em] uppercase transition-colors">
+                    View all →
+                  </button>
+                </div>
+                {orders.filter(o => o.status === "pending").slice(0, 5).map(o => (
+                  <div key={o.id} className="flex items-center gap-3 px-5 py-3 border-b border-white/[0.03] last:border-0">
+                    <div className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[11px] text-white/60 truncate">{o.product_name}</p>
+                      <p className="text-[9px] text-white/25">{o.patient_name}</p>
+                    </div>
+                    <span className="text-[9px] text-white/20">{new Date(o.created_at).toLocaleDateString()}</span>
+                  </div>
+                ))}
+                {orders.filter(o => o.status === "pending").length === 0 && (
+                  <div className="py-8 text-center">
+                    <p className="text-[10px] text-white/15">No pending requests</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="border border-white/5 bg-white/[0.01]">
+                <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
+                  <p className="text-xs font-light text-white/50 tracking-wide">Recent Patients</p>
+                  <button onClick={() => setNav("patients")} className="text-[9px] text-cyan-400/50 hover:text-cyan-400/80 tracking-[0.15em] uppercase transition-colors">
+                    View all →
+                  </button>
+                </div>
+                {patients.slice(0, 5).map(p => (
+                  <div key={p.id} className="flex items-center gap-3 px-5 py-3 border-b border-white/[0.03] last:border-0">
+                    <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center shrink-0">
+                      <span className="text-[9px] text-white/30">{(p.name || p.email).charAt(0).toUpperCase()}</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[11px] text-white/60 truncate">{p.name || p.email}</p>
+                      <p className="text-[9px] text-white/25">{p.orderCount} orders</p>
+                    </div>
+                    <span className="text-[9px] text-cyan-400/40">${(p.totalSpent || 0).toFixed(0)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── ORDERS ── */}
+        {nav === "orders" && (
+          <div className="p-8">
+            <div className="mb-6 flex items-center justify-between">
+              <div>
+                <p className="text-[9px] tracking-[0.3em] uppercase text-white/20 mb-1">Treatment</p>
+                <h2 className="text-xl font-extralight text-white/80">Requests</h2>
+              </div>
+              <div className="flex gap-1.5">
+                {(["pending", "approved", "denied", "all"] as const).map(f => (
+                  <button
+                    key={f}
+                    onClick={() => setOrderFilter(f)}
+                    className={`px-3 py-1.5 text-[9px] tracking-[0.15em] uppercase border transition-all ${
+                      orderFilter === f ? "border-cyan-400/30 bg-cyan-400/10 text-cyan-400/80" : "border-white/5 text-white/20 hover:border-white/10 hover:text-white/40"
+                    }`}
+                  >
+                    {f}{f === "pending" && pendingCount > 0 && ` (${pendingCount})`}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="border border-white/5 bg-white/[0.01]">
+              {filteredOrders.length === 0 && !loading && (
+                <div className="py-16 text-center">
+                  <Clock size={20} className="text-white/10 mx-auto mb-3" strokeWidth={1} />
+                  <p className="text-[10px] text-white/15">No {orderFilter !== "all" ? orderFilter : ""} requests</p>
+                </div>
+              )}
+              {filteredOrders.map(o => (
+                <OrderRow key={o.id} order={o} onAction={handleOrderAction} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── PATIENTS ── */}
+        {nav === "patients" && (
+          <div className="p-8">
+            <div className="mb-6 flex items-center justify-between">
+              <div>
+                <p className="text-[9px] tracking-[0.3em] uppercase text-white/20 mb-1">Roster</p>
+                <h2 className="text-xl font-extralight text-white/80">Patients <span className="text-white/20 text-sm">({patients.length})</span></h2>
+              </div>
+              <div className="relative">
+                <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20" />
+                <input
+                  value={patientSearch}
+                  onChange={e => setPatientSearch(e.target.value)}
+                  placeholder="Search patients..."
+                  className="pl-8 pr-4 py-2 bg-white/[0.03] border border-white/5 text-[11px] text-white/50 placeholder:text-white/15 focus:outline-none focus:border-white/10 w-52"
+                />
+              </div>
+            </div>
+            <div className="border border-white/5 bg-white/[0.01]">
+              <div className="grid grid-cols-5 px-5 py-2.5 border-b border-white/5 text-[9px] tracking-[0.15em] uppercase text-white/20">
+                <span className="col-span-1">Name</span>
+                <span className="hidden md:block">Phone</span>
+                <span className="hidden md:block">Orders</span>
+                <span className="hidden md:block">Revenue</span>
+                <span className="hidden md:block">Last Order</span>
+              </div>
+              {filteredPatients.length === 0 && (
+                <div className="py-16 text-center">
+                  <Users size={20} className="text-white/10 mx-auto mb-3" strokeWidth={1} />
+                  <p className="text-[10px] text-white/15">No patients yet</p>
+                </div>
+              )}
+              {filteredPatients.map(p => (
+                <PatientRow key={p.id} patient={p} onSMS={setSmsTarget} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── SMS CENTER ── */}
+        {nav === "sms" && (
+          <div className="p-8">
+            <div className="mb-6">
+              <p className="text-[9px] tracking-[0.3em] uppercase text-white/20 mb-1">Communications</p>
+              <h2 className="text-xl font-extralight text-white/80">SMS Center</h2>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Manual blast */}
+              <div className="border border-white/5 bg-white/[0.01] p-6">
+                <p className="text-xs text-white/40 font-light mb-1">Broadcast Message</p>
+                <p className="text-[10px] text-white/20 mb-5">Send to all patients or a filtered group</p>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-[9px] tracking-[0.15em] uppercase text-white/20 mb-1.5">Recipients</p>
+                    <select className="w-full bg-black/30 border border-white/10 px-3 py-2 text-[11px] text-white/50 focus:outline-none">
+                      <option>All patients ({patients.length})</option>
+                      <option>Patients with pending orders</option>
+                      <option>Patients with approved orders</option>
+                    </select>
+                  </div>
+                  <div>
+                    <p className="text-[9px] tracking-[0.15em] uppercase text-white/20 mb-1.5">Message</p>
+                    <textarea
+                      rows={4}
+                      placeholder="Your message to patients..."
+                      className="w-full bg-black/30 border border-white/10 px-3 py-2.5 text-[11px] text-white/50 placeholder:text-white/15 focus:outline-none focus:border-white/15 resize-none"
+                    />
+                  </div>
+                  <button className="w-full py-2.5 bg-cyan-500/10 border border-cyan-400/20 text-cyan-400/70 text-[10px] tracking-[0.2em] uppercase hover:bg-cyan-500/20 transition-colors flex items-center justify-center gap-2">
+                    <Send size={11} /> Send Broadcast
+                  </button>
+                </div>
+              </div>
+
+              {/* Refill automation info */}
+              <div className="border border-white/5 bg-white/[0.01] p-6">
+                <div className="flex items-center gap-2 mb-1">
+                  <Zap size={12} className="text-cyan-400/60" strokeWidth={1.5} />
+                  <p className="text-xs text-white/40 font-light">Automated Refill Reminders</p>
+                </div>
+                <p className="text-[10px] text-white/20 mb-5">Auto-triggers when patient supply runs low</p>
+                <div className="space-y-3">
+                  <div className="p-3 bg-amber-400/5 border border-amber-400/10">
+                    <p className="text-[9px] text-amber-400/60 uppercase tracking-[0.15em] mb-1">Status</p>
+                    <p className="text-[11px] text-white/40">Pending Twilio A2P campaign approval</p>
+                  </div>
+                  <div className="space-y-2 text-[10px] text-white/30">
+                    <p>Once approved, the system will:</p>
+                    <p className="pl-3 border-l border-white/10">→ Check daily for patients with &lt;10 days supply</p>
+                    <p className="pl-3 border-l border-white/10">→ Send "Reply Y to reorder, N to skip"</p>
+                    <p className="pl-3 border-l border-white/10">→ Auto-create order on YES reply</p>
+                    <p className="pl-3 border-l border-white/10">→ Send Square payment link immediately</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Patient SMS quick-send list */}
+            <div className="mt-6 border border-white/5 bg-white/[0.01]">
+              <div className="px-5 py-4 border-b border-white/5">
+                <p className="text-xs text-white/40 font-light">Quick Send — Individual Patient</p>
+              </div>
+              {patients.slice(0, 10).map(p => (
+                <div key={p.id} className="flex items-center justify-between px-5 py-3 border-b border-white/[0.03] last:border-0">
+                  <div>
+                    <p className="text-[11px] text-white/50">{p.name || p.email}</p>
+                    <p className="text-[9px] text-white/25">{p.phone || "No phone"}</p>
+                  </div>
+                  <button
+                    onClick={() => setSmsTarget(p)}
+                    disabled={!p.phone}
+                    className="px-3 py-1.5 border border-white/10 text-[9px] text-white/30 hover:text-white/60 hover:border-white/20 transition-colors disabled:opacity-20 disabled:cursor-not-allowed flex items-center gap-1.5"
+                  >
+                    <MessageSquare size={10} /> Send SMS
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── SETTINGS ── */}
+        {nav === "settings" && (
+          <div className="p-8">
+            <div className="mb-6">
+              <p className="text-[9px] tracking-[0.3em] uppercase text-white/20 mb-1">Configuration</p>
+              <h2 className="text-xl font-extralight text-white/80">Settings</h2>
+            </div>
+            <div className="max-w-lg space-y-4">
+              {[
+                { label: "Twilio Status", value: "Pending A2P approval", status: "warning" },
+                { label: "Square Integration", value: "Connected", status: "ok" },
+                { label: "Supabase Edge Functions", value: "notify-order-status deployed", status: "ok" },
+                { label: "SMS Webhook", value: "handle-sms-reply (pending build)", status: "warning" },
+                { label: "Refill Automation", value: "Requires A2P approval + cron setup", status: "warning" },
+              ].map(item => (
+                <div key={item.label} className="flex items-center justify-between px-5 py-4 border border-white/5 bg-white/[0.01]">
+                  <p className="text-[11px] text-white/40">{item.label}</p>
+                  <div className="flex items-center gap-2">
+                    <div className={`w-1.5 h-1.5 rounded-full ${item.status === "ok" ? "bg-emerald-400" : "bg-amber-400"}`} />
+                    <p className="text-[10px] text-white/25">{item.value}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </main>
+
+      {/* SMS Composer overlay */}
+      {smsTarget && <SMSComposer target={smsTarget} onClose={() => setSmsTarget(null)} />}
+    </div>
+  );
+};
+
+export default AdminPanel;
