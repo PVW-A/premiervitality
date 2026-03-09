@@ -1,11 +1,12 @@
 import SEO from "@/components/SEO";
 import { useState, useEffect, useMemo } from "react";
 import { Search, ChevronDown, ChevronUp, FlaskConical } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
-import { FEATURED_COMPOUNDS, GOALS, GOAL_ICONS, type Goal, type FeaturedCompound } from "@/data/peptideGoals";
+import { FEATURED_COMPOUNDS, GOALS, GOAL_ICONS, CATEGORY_ICONS, type Goal, type FeaturedCompound } from "@/data/peptideGoals";
 import RequestOrderDialog from "@/components/RequestOrderDialog";
 
 interface Product {
@@ -51,7 +52,7 @@ const CompoundCard = ({
       {/* Card header */}
       <div className="p-5 flex-1">
         <div className="flex items-start justify-between mb-3">
-          <span className="text-2xl">{compound.icon}</span>
+          {(() => { const Icon: LucideIcon = CATEGORY_ICONS[compound.category] || FlaskConical; return <Icon size={22} className="text-primary/60" strokeWidth={1.3} />; })()}
           {compound.popular && (
             <span className="text-[8px] tracking-[0.2em] uppercase font-body font-extralight px-2 py-0.5 border border-primary/20 text-primary/60 bg-primary/5">
               Popular
@@ -68,11 +69,14 @@ const CompoundCard = ({
 
         {/* Goal tags */}
         <div className="flex flex-wrap gap-1.5 mt-3">
-          {compound.goals.map(g => (
-            <span key={g} className="text-[8px] tracking-[0.1em] uppercase font-body font-extralight px-2 py-0.5 bg-muted/20 text-muted-foreground/50 border border-border/20">
-              {GOAL_ICONS[g]} {g}
-            </span>
-          ))}
+          {compound.goals.map(g => {
+            const GoalIcon = GOAL_ICONS[g];
+            return (
+              <span key={g} className="inline-flex items-center gap-1 text-[8px] tracking-[0.1em] uppercase font-body font-extralight px-2 py-0.5 bg-muted/20 text-muted-foreground/50 border border-border/20">
+                <GoalIcon size={9} strokeWidth={1.5} />{g}
+              </span>
+            );
+          })}
         </div>
 
         {/* Clinical detail toggle */}
@@ -216,7 +220,7 @@ const Peptides = () => {
                     activeGoal === goal ? "bg-primary/10 text-primary/80 border-primary/20" : "border-border/40 text-muted-foreground/50 hover:text-foreground/60 hover:border-border/60"
                   }`}
                 >
-                  {GOAL_ICONS[goal]} {goal}
+                  {(() => { const GoalIcon = GOAL_ICONS[goal]; return <><GoalIcon size={9} strokeWidth={1.5} className="inline mr-1" />{goal}</>; })()}
                 </button>
               ))}
             </div>
@@ -352,7 +356,7 @@ const Peptides = () => {
                                       })}
                                       {user && selVariant && (
                                         <button
-                                          onClick={() => setOrderDialog({ open: true, compound: { name: group.baseName, tagline: "", clinicalSummary: "", goals: [], category: group.category, icon: "💉" } })}
+                                          onClick={() => setOrderDialog({ open: true, compound: { name: group.baseName, tagline: "", clinicalSummary: "", goals: [], category: group.category } })}
                                           className="ml-auto px-3 py-1.5 bg-primary/80 text-primary-foreground text-[10px] font-body font-extralight tracking-[0.1em] uppercase hover:bg-primary transition-colors"
                                         >
                                           Request
