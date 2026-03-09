@@ -127,7 +127,7 @@ const Services = () => {
         <HowItWorks />
 
         {/* Billing Toggle */}
-        <div className="flex justify-center mt-16 mb-14">
+        <div className="relative z-10 flex justify-center mt-16 mb-14">
           <div className="inline-flex items-center bg-secondary rounded-full p-1 gap-1">
             <button
               onClick={() => setBillingCycle("monthly")}
@@ -172,7 +172,7 @@ const Services = () => {
                   initial={{ opacity: 0, y: 24 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: i * 0.12 }}
-                  className={`relative flex flex-col border ${tierAccents[tier.slug] || "border-border"} bg-card p-8 md:p-10 ${
+                  className={`relative z-0 flex flex-col border ${tierAccents[tier.slug] || "border-border"} bg-card p-8 md:p-10 ${
                     isPopular ? "md:-mt-4 md:mb-0 md:pb-12" : ""
                   }`}
                 >
