@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import {
   LayoutDashboard, Users, ClipboardList, RefreshCw,
@@ -260,7 +261,11 @@ const SMSComposer = ({ target, onClose }: { target: Patient | null; onClose: () 
 
 // ── MAIN ADMIN PANEL ────────────────────────────────────────────────────────
 
+const ADMIN_USER_ID = "4b63e9d9-1cf9-49a1-9427-89e4035f8115";
+
 const AdminPanel = () => {
+  const navigate = useNavigate();
+  const [authChecked, setAuthChecked] = useState(false);
   const [nav, setNav] = useState<NavItem>("dashboard");
   const [orders, setOrders] = useState<Order[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -269,6 +274,17 @@ const AdminPanel = () => {
   const [patientSearch, setPatientSearch] = useState("");
   const [smsTarget, setSmsTarget] = useState<Patient | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { navigate("/auth"); return; }
+      if (user.id === ADMIN_USER_ID) { setAuthChecked(true); return; }
+      const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: user.id, _role: "admin" });
+      if (isAdmin) { setAuthChecked(true); } else { navigate("/portal"); }
+    };
+    checkAuth();
+  }, [navigate]);
 
   const fetchData = async () => {
     setRefreshing(true);
@@ -339,6 +355,8 @@ const AdminPanel = () => {
     { id: "sms" as NavItem, label: "SMS Center", icon: MessageSquare },
     { id: "settings" as NavItem, label: "Settings", icon: Settings },
   ];
+
+  if (!authChecked) return null;
 
   return (
     <div className="flex h-screen bg-[#050505] text-white overflow-hidden font-body">
