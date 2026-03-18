@@ -59,6 +59,7 @@ const App = () => (
               <Route path="/peptides" element={<PeptidesPage />} />
               <Route path="/our-why" element={<OurWhy />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/disclaimer" element={<Disclaimer />} />
               <Route path="/services" element={<Services />} />
