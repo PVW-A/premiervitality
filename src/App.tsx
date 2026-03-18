@@ -26,6 +26,9 @@ import ResetPassword from "./pages/ResetPassword";
 import AuthCallback from "./pages/AuthCallback";
 import Protocols from "./pages/Protocols";
 import PatientDashboard from "./pages/PatientDashboard";
+import Membership from "./pages/Membership";
+import OurPeptides from "./pages/OurPeptides";
+import HowToGetStarted from "./pages/HowToGetStarted";
 import NotFound from "./pages/NotFound";
 import ChatButton from "./components/chat/ChatButton";
 import SessionTimeoutDialog from "./components/SessionTimeoutDialog";
@@ -71,6 +74,9 @@ const App = () => (
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/dashboard" element={<PatientDashboard />} />
+              <Route path="/membership" element={<Membership />} />
+              <Route path="/our-peptides" element={<OurPeptides />} />
+              <Route path="/how-to-get-started" element={<HowToGetStarted />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
