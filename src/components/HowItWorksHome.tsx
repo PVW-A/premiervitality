@@ -3,25 +3,25 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const steps = [
   {
-    title: "Comprehensive Assessment",
+    title: "Get Your Labs",
     description:
       "We start with advanced bloodwork panels and a physician consultation to map your unique biology — hormones, metabolic markers, inflammation, and more.",
     image:
-      "https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=800",
   },
   {
-    title: "Personalized Protocol",
+    title: "Physician Review",
     description:
       "Your physician builds a precision protocol tailored to your goals — whether it's performance, recovery, longevity, or all three. Every peptide, every dose, backed by your data.",
     image:
-      "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=800&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800",
   },
   {
-    title: "Ongoing Optimization",
+    title: "Protocol Delivered",
     description:
       "Regular lab rechecks, protocol adjustments, and concierge-level support keep you progressing. Your biology evolves — your protocol evolves with it.",
     image:
-      "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800",
   },
 ];
 

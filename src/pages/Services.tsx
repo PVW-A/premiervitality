@@ -4,7 +4,6 @@ import { openCalendly } from "@/hooks/useCalendly";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Sparkles } from "lucide-react";
-import confetti from "canvas-confetti";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -139,17 +138,7 @@ const Services = () => {
   ];
 
   const handleToggleAnnual = () => {
-    if (billingCycle !== "annual") {
-      setBillingCycle("annual");
-      confetti({
-        particleCount: 80,
-        spread: 60,
-        origin: { y: 0.55 },
-        colors: ["#c9a96e", "#e8d5a3", "#ffffff"],
-      });
-    } else {
-      setBillingCycle("annual");
-    }
+    setBillingCycle("annual");
   };
 
   const handleJoinPlan = (slug: string) => {
@@ -206,7 +195,7 @@ const Services = () => {
         <HowItWorks />
 
         {/* Billing Toggle */}
-        <div className="flex flex-col items-center mt-16 mb-14 gap-3" style={{ position: "relative", zIndex: 1 }}>
+        <div className="flex flex-col items-center mt-20 mb-14 gap-3" style={{ position: "relative", zIndex: 1 }}>
           <div className="inline-flex items-center bg-secondary rounded-full p-1 gap-1">
             <button
               onClick={() => setBillingCycle("monthly")}
