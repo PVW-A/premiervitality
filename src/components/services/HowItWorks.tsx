@@ -5,7 +5,7 @@ const steps = [
   {
     icon: UserPlus,
     title: "Choose Your Plan",
-    description: "Select the membership tier that fits your goals. No contracts — cancel anytime.",
+    description: "Select the membership tier that fits your goals. No contracts - cancel anytime.",
   },
   {
     icon: TestTube,

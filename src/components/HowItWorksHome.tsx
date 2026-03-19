@@ -1,27 +1,21 @@
 import { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 const steps = [
   {
     title: "Get Your Labs",
     description:
-      "We start with advanced bloodwork panels and a physician consultation to map your unique biology — hormones, metabolic markers, inflammation, and more.",
-    image:
-      "https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=800",
+      "We start with advanced bloodwork panels and a physician consultation to map your unique biology - hormones, metabolic markers, inflammation, and more.",
   },
   {
     title: "Physician Review",
     description:
-      "Your physician builds a precision protocol tailored to your goals — whether it's performance, recovery, longevity, or all three. Every peptide, every dose, backed by your data.",
-    image:
-      "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800",
+      "Your physician builds a precision protocol tailored to your goals - whether it's performance, recovery, longevity, or all three. Every peptide, every dose, backed by your data.",
   },
   {
     title: "Protocol Delivered",
     description:
-      "Regular lab rechecks, protocol adjustments, and concierge-level support keep you progressing. Your biology evolves — your protocol evolves with it.",
-    image:
-      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800",
+      "Regular lab rechecks, protocol adjustments, and concierge-level support keep you progressing. Your biology evolves - your protocol evolves with it.",
   },
 ];
 
@@ -56,7 +50,7 @@ const HowItWorksHome = () => {
 
   return (
     <section className="py-20 px-6">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-2xl mx-auto">
         <div className="text-center mb-14">
           <p className="text-xs tracking-[0.3em] uppercase text-primary font-body font-light mb-3">
             How It Works
@@ -66,76 +60,54 @@ const HowItWorksHome = () => {
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          {/* Left — Steps */}
-          <div className="flex flex-col gap-2">
-            {steps.map((step, i) => (
-              <button
-                key={i}
-                onClick={() => select(i)}
-                className={`text-left p-5 rounded-lg transition-all duration-300 ${
-                  active === i
-                    ? "bg-secondary border border-primary/20"
-                    : "border border-transparent hover:bg-secondary/50"
-                }`}
-              >
-                <div className="flex items-center gap-3 mb-2">
-                  <span
-                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-body ${
-                      active === i
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-secondary text-muted-foreground"
-                    }`}
-                  >
-                    {i + 1}
-                  </span>
-                  <h3
-                    className={`text-sm font-light tracking-wide ${
-                      active === i ? "text-foreground" : "text-muted-foreground"
-                    }`}
-                  >
-                    {step.title}
-                  </h3>
+        <div className="flex flex-col gap-2">
+          {steps.map((step, i) => (
+            <button
+              key={i}
+              onClick={() => select(i)}
+              className={`text-left p-5 rounded-lg transition-all duration-300 ${
+                active === i
+                  ? "bg-secondary border border-primary/20"
+                  : "border border-transparent hover:bg-secondary/50"
+              }`}
+            >
+              <div className="flex items-center gap-3 mb-2">
+                <span
+                  className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-body ${
+                    active === i
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary text-muted-foreground"
+                  }`}
+                >
+                  {i + 1}
+                </span>
+                <h3
+                  className={`text-sm font-light tracking-wide ${
+                    active === i ? "text-foreground" : "text-muted-foreground"
+                  }`}
+                >
+                  {step.title}
+                </h3>
+              </div>
+              {active === i && (
+                <motion.p
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  className="text-sm text-muted-foreground font-body font-light leading-relaxed pl-10"
+                >
+                  {step.description}
+                </motion.p>
+              )}
+              {active === i && (
+                <div className="mt-3 ml-10 h-0.5 bg-border rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-primary transition-all duration-100 ease-linear"
+                    style={{ width: `${progress}%` }}
+                  />
                 </div>
-                {active === i && (
-                  <motion.p
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    className="text-sm text-muted-foreground font-body font-light leading-relaxed pl-10"
-                  >
-                    {step.description}
-                  </motion.p>
-                )}
-                {/* Progress bar */}
-                {active === i && (
-                  <div className="mt-3 ml-10 h-0.5 bg-border rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-primary transition-all duration-100 ease-linear"
-                      style={{ width: `${progress}%` }}
-                    />
-                  </div>
-                )}
-              </button>
-            ))}
-          </div>
-
-          {/* Right — Image */}
-          <div className="relative aspect-[4/3] rounded-xl overflow-hidden">
-            <AnimatePresence mode="wait">
-              <motion.img
-                key={active}
-                src={steps[active].image}
-                alt={steps[active].title}
-                initial={{ opacity: 0, scale: 1.05 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.98 }}
-                transition={{ duration: 0.5 }}
-                className="absolute inset-0 w-full h-full object-cover rounded-xl"
-              />
-            </AnimatePresence>
-            {/* Overlay gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
-          </div>
+              )}
+            </button>
+          ))}
         </div>
       </div>
     </section>

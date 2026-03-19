@@ -1,14 +1,14 @@
 const testimonials = [
   {
     quote:
-      "I've tried every biohacking trend out there. This is the first program that actually moved my bloodwork in the right direction — and I feel it every morning.",
+      "I've tried every biohacking trend out there. This is the first program that actually moved my bloodwork in the right direction - and I feel it every morning.",
     name: "Marcus T.",
     location: "Scottsdale, AZ",
     initials: "MT",
   },
   {
     quote:
-      "The physician oversight makes all the difference. I'm not just taking peptides — I have a team monitoring my labs and adjusting my protocol in real time.",
+      "The physician oversight makes all the difference. I'm not just taking peptides - I have a team monitoring my labs and adjusting my protocol in real time.",
     name: "Dr. Sarah K.",
     location: "Austin, TX",
     initials: "SK",
@@ -22,7 +22,7 @@ const testimonials = [
   },
   {
     quote:
-      "I was skeptical about peptide therapy until I saw my before-and-after labs. The data doesn't lie — this is the real deal.",
+      "I was skeptical about peptide therapy until I saw my before-and-after labs. The data doesn't lie - this is the real deal.",
     name: "Amanda L.",
     location: "San Diego, CA",
     initials: "AL",

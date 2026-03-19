@@ -281,7 +281,7 @@ const UserSettingsMenu = ({ firstName, lastName, userId, onSignOut, onProfileUpd
                         {format(new Date(savedBirthday + "T00:00:00"), "MMMM d, yyyy")}
                       </p>
                       <p className="text-[10px] text-muted-foreground/60 font-body font-light">
-                        🔒 Locked — contact support to change
+                        🔒 Locked - contact support to change
                       </p>
                     </div>
                   </div>
@@ -326,7 +326,7 @@ const UserSettingsMenu = ({ firstName, lastName, userId, onSignOut, onProfileUpd
                 {saving ? "Saving…" : "Save Changes"}
               </Button>
 
-              {/* Change Password — inline */}
+              {/* Change Password - inline */}
               <div className="border-t border-border/30 pt-4 space-y-3">
                 <Label className="font-body text-[10px] uppercase tracking-[0.15em] text-muted-foreground">Change Password</Label>
                 <form onSubmit={handleChangePassword} className="space-y-3">
@@ -373,7 +373,7 @@ const UserSettingsMenu = ({ firstName, lastName, userId, onSignOut, onProfileUpd
               <span className="text-foreground font-medium">
                 {pendingBirthday ? format(pendingBirthday, "MMMM d, yyyy") : ""}
               </span>
-              . This action <span className="text-destructive font-medium">cannot be undone</span> — your birthday will be permanently locked after saving.
+              . This action <span className="text-destructive font-medium">cannot be undone</span> - your birthday will be permanently locked after saving.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

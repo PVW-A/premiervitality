@@ -164,12 +164,12 @@ const AdminOrders = () => {
                     </div>
                   )}
 
-                  {/* Actions — only for pending */}
+                  {/* Actions - only for pending */}
                   {order.status === "pending" && (
                     <div className="space-y-3 pt-2 border-t border-border/20">
                       <div>
                         <label className="block text-[9px] tracking-[0.15em] uppercase text-muted-foreground/30 font-body mb-1.5">
-                          Notes for patient (optional — sent via SMS)
+                          Notes for patient (optional - sent via SMS)
                         </label>
                         <textarea
                           rows={2}

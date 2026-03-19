@@ -173,7 +173,7 @@ export default function PortalNews() {
             <h2 className="text-2xl font-heading font-light text-foreground">Peptide News</h2>
           </div>
           <p className="text-sm text-muted-foreground font-body font-light">
-            Curated research, regulatory updates, and clinical developments — refreshed regularly.
+            Curated research, regulatory updates, and clinical developments - refreshed regularly.
           </p>
         </div>
         <Button

@@ -406,7 +406,7 @@ export default function LinkedAccounts() {
                         }}
                       >
                         <span className="w-12 h-12 rounded-full bg-background flex items-center justify-center text-foreground">
-                          {memberData.vitalityScore ?? "—"}
+                          {memberData.vitalityScore ?? "-"}
                         </span>
                       </div>
                       <div>

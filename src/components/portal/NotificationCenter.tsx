@@ -59,7 +59,7 @@ export default function NotificationCenter({ onNavigate }: { onNavigate?: (tab: 
 
   const markAsRead = async (id: string, userId: string | null) => {
     if (userId === null) {
-      // Broadcast — track locally
+      // Broadcast - track locally
       const updated = [...readBroadcasts, id];
       localStorage.setItem("pv_read_broadcasts", JSON.stringify(updated));
       setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));

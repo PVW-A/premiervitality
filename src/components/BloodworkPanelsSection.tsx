@@ -68,7 +68,7 @@ const BloodworkPanelsSection = () => {
             More Markers. Real Physicians. Better Care.
           </h2>
           <p className="text-muted-foreground font-body font-light text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
-            Every membership starts with a comprehensive 100+ biomarker baseline — then quarterly core checkups
+            Every membership starts with a comprehensive 100+ biomarker baseline - then quarterly core checkups
             track what matters most. All physician-reviewed, not just data dumps.
           </p>
         </motion.div>
@@ -186,7 +186,7 @@ const BloodworkPanelsSection = () => {
             {/* Core markers list */}
             <div className="p-6 flex-1">
               <p className="text-xs text-muted-foreground/50 font-body font-light mb-5 leading-relaxed">
-                The essential markers that change quarter-to-quarter — tracking your response to peptide therapy,
+                The essential markers that change quarter-to-quarter - tracking your response to peptide therapy,
                 lifestyle changes, and supplementation.
               </p>
               <div className="space-y-2.5">

@@ -157,7 +157,7 @@ const RequestOrderDialog = ({
           </div>
 
           <p className="text-[9px] font-body font-extralight text-muted-foreground/30 leading-relaxed">
-            By submitting, you consent to receiving SMS updates. Standard rates may apply. This is a request for physician review — not a guaranteed prescription.
+            By submitting, you consent to receiving SMS updates. Standard rates may apply. This is a request for physician review - not a guaranteed prescription.
           </p>
         </div>
 

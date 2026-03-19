@@ -44,9 +44,9 @@ const statusConfig = {
 };
 
 const steps = [
-  { icon: Upload, title: "Upload Your Bloodwork", desc: "Snap a photo or upload a PDF — our AI reads it instantly." },
+  { icon: Upload, title: "Upload Your Bloodwork", desc: "Snap a photo or upload a PDF - our AI reads it instantly." },
   { icon: BarChart3, title: "Get Your Score & Age", desc: "We grade 65+ biomarkers into a unified score and estimate your biological age." },
-  { icon: Lightbulb, title: "See How to Improve", desc: "Personalized tips for every marker — know exactly what to optimize." },
+  { icon: Lightbulb, title: "See How to Improve", desc: "Personalized tips for every marker - know exactly what to optimize." },
 ];
 
 /* ── Component ── */
@@ -104,7 +104,7 @@ const HealthIntelligenceSection = () => {
           </h2>
           <p className="text-muted-foreground font-body font-light text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
             Upload your bloodwork and instantly receive a comprehensive vitality score
-            and biological age estimate — no appointment needed.
+            and biological age estimate - no appointment needed.
           </p>
         </motion.div>
 
@@ -391,7 +391,7 @@ const HealthIntelligenceSection = () => {
             <h3 className="text-xl md:text-2xl font-heading font-extralight text-foreground mb-3">Epigenetic Age Testing</h3>
             <p className="text-xs text-muted-foreground/60 font-body font-light max-w-lg mx-auto leading-relaxed">
               Go beyond blood markers with DNA methylation analysis. Measure your true epigenetic age
-              with clinical-grade precision — available as an add-on for Elite members.
+              with clinical-grade precision - available as an add-on for Elite members.
             </p>
           </div>
         </motion.div>

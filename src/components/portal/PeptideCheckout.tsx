@@ -215,7 +215,7 @@ export default function PeptideCheckout({
 
   const displayName = request
     ? request.variation_label
-      ? `${request.peptide_name} — ${request.variation_label}`
+      ? `${request.peptide_name} - ${request.variation_label}`
       : request.peptide_name
     : "";
 
@@ -253,7 +253,7 @@ export default function PeptideCheckout({
                   <div className="flex items-center gap-2">
                     <Syringe size={14} strokeWidth={1.2} className="text-muted-foreground" />
                     <div>
-                      <p className="text-sm font-body font-light text-foreground">Injection Kit — $30.00</p>
+                      <p className="text-sm font-body font-light text-foreground">Injection Kit - $30.00</p>
                       <p className="text-[10px] text-muted-foreground font-body font-light">35 needles & 35 alcohol swabs</p>
                     </div>
                   </div>
@@ -295,7 +295,7 @@ export default function PeptideCheckout({
                   >
                     <Truck size={14} strokeWidth={1.2} className={delivery === "shipping" ? "text-primary mt-0.5" : "text-muted-foreground mt-0.5"} />
                     <div>
-                      <p className="text-xs font-body font-light text-foreground">Ship — $35</p>
+                      <p className="text-xs font-body font-light text-foreground">Ship - $35</p>
                       <p className="text-[10px] text-muted-foreground font-body font-light mt-0.5">Overnight</p>
                     </div>
                   </button>
@@ -311,7 +311,7 @@ export default function PeptideCheckout({
                   >
                     <Truck size={14} strokeWidth={1.2} className={delivery === "courier" ? "text-primary mt-0.5" : "text-muted-foreground mt-0.5"} />
                     <div>
-                      <p className="text-xs font-body font-light text-foreground">Courier — $50</p>
+                      <p className="text-xs font-body font-light text-foreground">Courier - $50</p>
                       <p className="text-[10px] text-muted-foreground font-body font-light mt-0.5">To your door</p>
                     </div>
                   </button>
@@ -393,7 +393,7 @@ export default function PeptideCheckout({
               </div>
             )}
 
-            {/* New card form — shown when no saved card or user chose new */}
+            {/* New card form - shown when no saved card or user chose new */}
             {!useSavedCard && (
               <div>
                 <div id="peptide-card-container" className="min-h-[90px] rounded border border-border bg-secondary p-3" />
@@ -420,7 +420,7 @@ export default function PeptideCheckout({
               {loading ? (
                 <><Loader2 size={14} className="animate-spin" /> Processing…</>
               ) : (
-                `Pay Now — $${calcTotal().toFixed(2)}`
+                `Pay Now - $${calcTotal().toFixed(2)}`
               )}
             </button>
           </div>

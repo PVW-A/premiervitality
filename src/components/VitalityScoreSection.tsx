@@ -6,7 +6,7 @@ const steps = [
   {
     icon: Upload,
     title: "Upload Your Bloodwork",
-    desc: "Snap a photo or upload a PDF of your lab results — our AI reads it instantly.",
+    desc: "Snap a photo or upload a PDF of your lab results - our AI reads it instantly.",
   },
   {
     icon: BarChart3,
@@ -16,7 +16,7 @@ const steps = [
   {
     icon: Lightbulb,
     title: "See How to Improve",
-    desc: "Tap into personalized tips for every marker — know exactly what to optimize and how.",
+    desc: "Tap into personalized tips for every marker - know exactly what to optimize and how.",
   },
 ];
 
@@ -93,7 +93,7 @@ const VitalityScoreSection = () => {
           </h2>
           <p className="text-muted-foreground font-body font-light text-sm md:text-base max-w-xl mx-auto leading-relaxed">
             Upload your bloodwork and instantly receive a comprehensive health
-            score — no appointment needed.
+            score - no appointment needed.
           </p>
         </motion.div>
 

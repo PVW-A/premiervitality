@@ -49,39 +49,33 @@ type CategoryData = StandardCategory | GenderedCategory;
 
 const tierMeta = {
   premier: {
-    label: "Premier",
+    label: "PREMIER",
     accent: "#D4AF37",
-    accentRgb: "212,175,55",
-    borderIdle: "rgba(212,175,55,0.3)",
-    borderHover: "rgba(212,175,55,0.7)",
-    glow: "0 0 20px rgba(212,175,55,0.15)",
-    badge: "text-[#D4AF37]",
-    badgeBg: "rgba(212,175,55,0.08)",
-    badgeBorder: "rgba(212,175,55,0.25)",
+    borderIdle: "rgba(255,255,255,0.08)",
+    borderHover: "rgba(255,255,255,0.15)",
+    badge: "text-white/50",
+    badgeBg: "rgba(255,255,255,0.04)",
+    badgeBorder: "rgba(255,255,255,0.08)",
     description: "Elevated solutions for full-spectrum optimization",
   },
   core: {
-    label: "Core",
-    accent: "#94A3B8",
-    accentRgb: "148,163,184",
-    borderIdle: "rgba(148,163,184,0.25)",
-    borderHover: "rgba(148,163,184,0.6)",
-    glow: "0 0 20px rgba(148,163,184,0.1)",
-    badge: "text-slate-400",
-    badgeBg: "rgba(148,163,184,0.08)",
-    badgeBorder: "rgba(148,163,184,0.25)",
+    label: "CORE",
+    accent: "#D4AF37",
+    borderIdle: "rgba(255,255,255,0.08)",
+    borderHover: "rgba(255,255,255,0.15)",
+    badge: "text-white/50",
+    badgeBg: "rgba(255,255,255,0.04)",
+    badgeBorder: "rgba(255,255,255,0.08)",
     description: "Strategic balance of efficacy and value",
   },
   essential: {
-    label: "Essential",
-    accent: "#C4846C",
-    accentRgb: "196,132,108",
-    borderIdle: "rgba(196,132,108,0.25)",
-    borderHover: "rgba(196,132,108,0.6)",
-    glow: "0 0 20px rgba(196,132,108,0.1)",
-    badge: "text-[#C4846C]",
-    badgeBg: "rgba(196,132,108,0.08)",
-    badgeBorder: "rgba(196,132,108,0.25)",
+    label: "ESSENTIAL",
+    accent: "#D4AF37",
+    borderIdle: "rgba(255,255,255,0.08)",
+    borderHover: "rgba(255,255,255,0.15)",
+    badge: "text-white/50",
+    badgeBg: "rgba(255,255,255,0.04)",
+    badgeBorder: "rgba(255,255,255,0.08)",
     description: "Foundational support for targeted needs",
   },
 } as const;
@@ -222,7 +216,7 @@ const CATEGORIES: CategoryData[] = [
     id: "sexual",
     name: "Sexual Well-Being",
     icon: Heart,
-    description: "Targeted protocols for sexual health, libido, and intimate wellness — with formulations designed specifically for her and for him.",
+    description: "Targeted protocols for sexual health, libido, and intimate wellness - with formulations designed specifically for her and for him.",
     gendered: true,
     her: {
       premier: [
@@ -254,7 +248,7 @@ const CATEGORIES: CategoryData[] = [
     id: "cognitive",
     name: "Cognitive Enhancement",
     icon: Brain,
-    description: "Neuropeptide protocols for focus, memory, and cognitive longevity — from foundational nootropic support to advanced neurotrophin stacks.",
+    description: "Neuropeptide protocols for focus, memory, and cognitive longevity - from foundational nootropic support to advanced neurotrophin stacks.",
     gendered: false,
     tiers: {
       premier: [
@@ -387,7 +381,7 @@ const ProtocolCardEl = ({ card, tier, index }: { card: ProtocolCard; tier: Tier;
       }}
       whileHover={{
         y: -6,
-        boxShadow: `${meta.glow}, 0 16px 48px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06)`,
+        boxShadow: `0 16px 48px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06)`,
         borderColor: meta.borderHover,
         transition: { duration: 0.25 },
       }}
@@ -402,7 +396,7 @@ const ProtocolCardEl = ({ card, tier, index }: { card: ProtocolCard; tier: Tier;
 
       {/* Price */}
       <div className="mt-auto mb-5">
-        <p className="text-[8px] tracking-[0.3em] uppercase font-body font-extralight mb-1" style={{ color: meta.accent, opacity: 0.6 }}>
+        <p className="text-[8px] tracking-[0.3em] uppercase font-body font-extralight mb-1 text-white/40">
           Starting From
         </p>
         <span className="text-3xl font-heading font-light" style={{ color: "#D4AF37" }}>
@@ -413,22 +407,7 @@ const ProtocolCardEl = ({ card, tier, index }: { card: ProtocolCard; tier: Tier;
       {/* CTA */}
       <button
         onClick={openCalendly}
-        className="w-full py-3 flex items-center justify-center gap-2 text-[10px] tracking-[0.2em] uppercase font-body font-light rounded-sm transition-all duration-300"
-        style={{
-          border: `1px solid ${meta.borderIdle}`,
-          color: meta.accent,
-          background: "transparent",
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = meta.accent;
-          e.currentTarget.style.color = "#0d1117";
-          e.currentTarget.style.borderColor = meta.accent;
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = "transparent";
-          e.currentTarget.style.color = meta.accent;
-          e.currentTarget.style.borderColor = meta.borderIdle;
-        }}
+        className="w-full py-3 flex items-center justify-center gap-2 text-[10px] tracking-[0.2em] uppercase font-body font-light rounded-sm transition-all duration-300 border border-white/20 text-white hover:bg-white hover:text-black"
       >
         Book a Consultation
         <ArrowRight size={12} />
@@ -452,7 +431,7 @@ const TierSection = ({ tier, cards }: { tier: Tier; cards: ProtocolCard[] }) => 
           className="flex items-center gap-2.5 px-5 py-1.5 rounded-sm"
           style={{ background: meta.badgeBg, border: `1px solid ${meta.badgeBorder}` }}
         >
-          <div className="w-1.5 h-1.5 rounded-full" style={{ background: meta.accent, opacity: 0.7 }} />
+          <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
           <span className={`text-[10px] tracking-[0.3em] uppercase font-body font-light ${meta.badge}`}>
             {meta.label}
           </span>
@@ -532,8 +511,8 @@ const Protocols = () => {
             className="text-muted-foreground font-body font-light text-sm md:text-base max-w-2xl mx-auto leading-relaxed"
           >
             Physician-directed multi-compound protocols designed for specific health
-            goals. Each protocol is available in three tiers — Premier, Core, and
-            Essential — so you can choose the intensity that fits your journey.
+            goals. Each protocol is available in three tiers - Premier, Core, and
+            Essential - so you can choose the intensity that fits your journey.
           </motion.p>
         </section>
 
@@ -589,7 +568,7 @@ const Protocols = () => {
               return (
                 <div key={t} className="text-center">
                   <div className="inline-flex items-center gap-2 mb-2">
-                    <div className="w-2 h-2 rounded-full" style={{ background: meta.accent, opacity: 0.6 }} />
+                    <div className="w-2 h-2 rounded-full bg-white/30" />
                     <span className={`text-[10px] tracking-[0.25em] uppercase font-body font-light ${meta.badge}`}>
                       {meta.label}
                     </span>

@@ -81,7 +81,7 @@ export default function BloodworkUploader({ uploads, onRefresh }: Props) {
 
       if (dbError) throw dbError;
 
-      toast.success("Bloodwork uploaded — AI is analyzing your results…");
+      toast.success("Bloodwork uploaded - AI is analyzing your results…");
       onRefresh();
 
       // Trigger AI parsing
@@ -95,17 +95,17 @@ export default function BloodworkUploader({ uploads, onRefresh }: Props) {
 
           if (parseError) {
             console.error("Parse error:", parseError);
-            toast.error("AI analysis had an issue — your provider can still review manually.");
+            toast.error("AI analysis had an issue - your provider can still review manually.");
           } else if (parseResult?.markers_found > 0) {
             toast.success(
-              `AI found ${parseResult.markers_found} biomarker${parseResult.markers_found > 1 ? "s" : ""} — check your Premier Markers!`,
+              `AI found ${parseResult.markers_found} biomarker${parseResult.markers_found > 1 ? "s" : ""} - check your Premier Markers!`,
               { duration: 6000 }
             );
           } else {
-            toast.info("AI couldn't extract markers from this file — your provider will review manually.");
+            toast.info("AI couldn't extract markers from this file - your provider will review manually.");
           }
         } catch {
-          toast.error("AI analysis unavailable — your provider will review manually.");
+          toast.error("AI analysis unavailable - your provider will review manually.");
         } finally {
           setParsingId(null);
           onRefresh();
@@ -128,7 +128,7 @@ export default function BloodworkUploader({ uploads, onRefresh }: Props) {
             Upload Bloodwork
           </h3>
           <p className="text-xs text-muted-foreground font-body font-light mt-1">
-            Upload your lab results (PDF or image) — AI will automatically extract and chart your biomarkers.
+            Upload your lab results (PDF or image) - AI will automatically extract and chart your biomarkers.
           </p>
         </div>
       </div>
@@ -158,7 +158,7 @@ export default function BloodworkUploader({ uploads, onRefresh }: Props) {
           {uploading ? "Uploading…" : parsingId ? "AI Analyzing…" : "Choose File"}
         </Button>
         <span className="text-[10px] text-muted-foreground font-body font-light">
-          PDF, JPG, PNG — max 20MB
+          PDF, JPG, PNG - max 20MB
         </span>
       </div>
 

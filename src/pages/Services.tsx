@@ -97,11 +97,11 @@ const Services = () => {
       annualPrice: 82,
       popular: false,
       features: [
-        "Physician consultation",
-        "Basic peptide access",
-        "Quarterly bloodwork panel",
+        "Access to peptide catalog",
+        "Full-price peptide access",
+        "1 Baseline Panel at sign-up (100+ biomarkers)",
+        "1 Core Checkup per year (40+ biomarkers)",
         "Email support",
-        "Member pricing on all peptides",
       ],
     },
     {
@@ -111,12 +111,12 @@ const Services = () => {
       annualPrice: 165,
       popular: true,
       features: [
-        "Everything in Essential",
-        "Full peptide catalog access",
-        "Monthly bloodwork panels",
-        "Priority concierge support",
-        "15% member discount",
-        "Custom protocol design",
+        "Access to peptide catalog",
+        "15% discount on peptides",
+        "1 Baseline Panel at sign-up (100+ biomarkers)",
+        "2 Core Checkups per year (40+ biomarkers each)",
+        "Quarterly physician check-ins",
+        "Priority support",
       ],
     },
     {
@@ -126,13 +126,13 @@ const Services = () => {
       annualPrice: 290,
       popular: false,
       features: [
-        "Everything in Premium",
-        "Unlimited physician consultations",
-        "Advanced biomarker panels",
-        "24/7 concierge access",
-        "25% member discount",
-        "Personalized longevity plan",
-        "Quarterly health reviews",
+        "Access to peptide catalog",
+        "25% discount on peptides",
+        "1 Baseline Panel at sign-up (100+ biomarkers)",
+        "3 Core Checkups per year (40+ biomarkers each)",
+        "Monthly physician check-ins",
+        "Dedicated wellness concierge",
+        "Early access to new protocols",
       ],
     },
   ];
@@ -287,7 +287,7 @@ const Services = () => {
 
                 {billingCycle === "annual" ? (
                   <span className="text-xs text-primary font-body mb-6">
-                    Save 17% — billed annually
+                    Save 17% - billed annually
                   </span>
                 ) : (
                   <div className="mb-6" />

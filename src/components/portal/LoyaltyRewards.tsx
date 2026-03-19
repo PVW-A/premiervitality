@@ -141,7 +141,7 @@ const LoyaltyRewards = () => {
                   variant="outline"
                   className="border-primary/30 text-primary text-xs font-body font-light"
                 >
-                  Current: {currentTier.name} — {currentTier.discount} off
+                  Current: {currentTier.name} - {currentTier.discount} off
                 </Badge>
               )}
             </CardContent>

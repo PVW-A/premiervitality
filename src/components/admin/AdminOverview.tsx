@@ -204,7 +204,7 @@ const AdminOverview = ({ patients, orders, patientPeptides, peptides, recentActi
 
   return (
     <div className="space-y-6">
-      {/* Date Range Bar — Square-style */}
+      {/* Date Range Bar - Square-style */}
       <div className="flex flex-wrap items-center gap-2">
         {PRESETS.map(p => (
           <Button

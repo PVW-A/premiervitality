@@ -41,7 +41,7 @@ const HeroSection = () => (
     <div className="relative z-10 max-w-3xl mx-auto px-6 pt-20 sm:pt-0 text-center flex flex-col items-center">
       {/* Monogram with yin-yang animated reveal */}
       <div className="relative mb-10 w-32 h-32 md:w-36 md:h-36 flex items-center justify-center aspect-square">
-        {/* Phase 1-2: Double Helix — starts tiny, expands, then fades as ring forms */}
+        {/* Phase 1-2: Double Helix - starts tiny, expands, then fades as ring forms */}
         <motion.div
           className="absolute inset-0 flex items-center justify-center pointer-events-none"
           initial={{ opacity: 0, scale: 0.15 }}
@@ -157,7 +157,7 @@ const HeroSection = () => (
           </svg>
         </motion.div>
 
-        {/* Phase 3: Circle ring — helix "unwraps" into this ring */}
+        {/* Phase 3: Circle ring - helix "unwraps" into this ring */}
         <motion.div
           className="absolute inset-0 flex items-center justify-center pointer-events-none"
         >
@@ -201,7 +201,7 @@ const HeroSection = () => (
           }}
         />
 
-        {/* Phase 4: PV — starts as a dot and grows into the monogram */}
+        {/* Phase 4: PV - starts as a dot and grows into the monogram */}
         <motion.div
           className="relative z-10"
           initial={{ opacity: 0, scale: 0.05 }}

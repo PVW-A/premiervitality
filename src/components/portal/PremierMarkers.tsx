@@ -229,7 +229,7 @@ function CategorySection({ catName, config, getMarkerResults, openCategory, setO
                           </Badge>
                         </div>
                       ) : (
-                        <span className="text-[10px] text-muted-foreground/25">—</span>
+                        <span className="text-[10px] text-muted-foreground/25">-</span>
                       )}
                     </button>
 
@@ -298,7 +298,7 @@ function CategorySection({ catName, config, getMarkerResults, openCategory, setO
                               <div className="p-3 rounded-md flex items-center gap-2" style={{ background: "hsl(152 69% 50% / 0.05)" }}>
                                 <span className="text-emerald-400 text-sm">✓</span>
                                 <span className="text-[11px] text-emerald-400/70 font-body font-light">
-                                  This marker is in the optimal range — keep doing what you're doing.
+                                  This marker is in the optimal range - keep doing what you're doing.
                                 </span>
                               </div>
                             )}
@@ -391,11 +391,11 @@ export default function PremierMarkers() {
       <div>
         <h2 className="text-xl font-heading font-light text-foreground">Vitality Score</h2>
         <p className="text-xs text-muted-foreground/60 font-body font-light mt-0.5">
-          Your overall health at a glance — tap any category to explore.
+          Your overall health at a glance - tap any category to explore.
         </p>
       </div>
 
-      {/* Score trend projection — only after MIN_TESTS_FOR_TREND blood tests */}
+      {/* Score trend projection - only after MIN_TESTS_FOR_TREND blood tests */}
       {hasEnoughForTrend && trend && (
         <motion.div
           initial={{ opacity: 0, y: 8 }}
@@ -682,7 +682,7 @@ export default function PremierMarkers() {
             <Activity size={24} strokeWidth={1} className="text-primary/25 mx-auto mb-3" />
           </motion.div>
           <p className="text-xs text-muted-foreground/40 font-body font-light">
-            Upload your bloodwork above — AI will read it and chart your markers automatically.
+            Upload your bloodwork above - AI will read it and chart your markers automatically.
           </p>
         </motion.div>
       )}

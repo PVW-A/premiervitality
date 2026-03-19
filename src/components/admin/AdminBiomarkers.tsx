@@ -327,7 +327,7 @@ export default function AdminBiomarkers({ patients }: Props) {
                   <div className="flex items-center gap-3">
                     <FileText size={14} strokeWidth={1.2} className="text-muted-foreground" />
                     <div>
-                      <p className="text-sm font-body font-light text-foreground">{u.patient_name} — {u.file_name}</p>
+                      <p className="text-sm font-body font-light text-foreground">{u.patient_name} - {u.file_name}</p>
                       <p className="text-[10px] text-muted-foreground font-body font-light">
                         {new Date(u.created_at).toLocaleDateString()}
                       </p>

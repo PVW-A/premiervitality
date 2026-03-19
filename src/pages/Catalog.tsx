@@ -23,7 +23,7 @@ interface Peptide {
 }
 
 const extractBaseName = (name: string): string => {
-  const idx = name.indexOf(" — ");
+  const idx = name.indexOf(" - ");
   return idx > -1 ? name.substring(0, idx) : name;
 };
 

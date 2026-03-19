@@ -67,7 +67,7 @@ const PeptideCard = ({ group, index, isExpanded, onToggle }: PeptideCardProps) =
             : "border-border/60 hover:border-primary/10 hover:bg-card/80"
         }`}
       >
-        {/* Header — no price on right */}
+        {/* Header - no price on right */}
         <div className="flex items-center gap-4 p-5 sm:p-6">
           <div className="w-11 h-11 flex-shrink-0 rounded bg-secondary/30 overflow-hidden flex items-center justify-center">
             <img src={peptideVial} alt="" className="w-9 h-9 object-contain opacity-70" />
@@ -131,7 +131,7 @@ const PeptideCard = ({ group, index, isExpanded, onToggle }: PeptideCardProps) =
                         </p>
                         <div className="flex flex-col gap-1.5">
                           {group.variations.map(v => {
-                            const label = v.name.replace(group.baseName, "").replace(/^\s*—\s*/, "").trim() || v.name;
+                            const label = v.name.replace(group.baseName, "").replace(/^\s*-\s*/, "").trim() || v.name;
                             return (
                               <div
                                 key={v.id}

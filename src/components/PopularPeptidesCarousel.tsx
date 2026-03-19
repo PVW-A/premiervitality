@@ -48,7 +48,7 @@ export default function PopularPeptidesCarousel() {
         const seen = new Set<string>();
         const unique: PeptideItem[] = [];
         for (const p of data) {
-          const base = p.name.split(" — ")[0];
+          const base = p.name.split(" - ")[0];
           if (!seen.has(base) && p.benefits && p.description && p.category) {
             seen.add(base);
             unique.push({

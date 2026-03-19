@@ -224,7 +224,7 @@ const ChatPanel = ({ open, onClose }: ChatPanelProps) => {
                 <ChatMessage key={i} role={m.role} content={m.content} />
               ))}
 
-              {/* Suggestion chips — shown only before first user message */}
+              {/* Suggestion chips - shown only before first user message */}
               {showSuggestions && (
                 <div className="flex flex-col gap-2 mt-1">
                   {SUGGESTIONS.map((s) => (

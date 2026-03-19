@@ -166,7 +166,7 @@ const Portal = () => {
   }, [fetchData]);
 
   const getDaysRemaining = (qty: number, perDay: number) => {
-    if (!perDay || perDay <= 0) return "—";
+    if (!perDay || perDay <= 0) return "-";
     const days = Math.floor(qty / perDay);
     return days <= 0 ? "Reorder needed" : `~${days} days`;
   };
@@ -511,7 +511,7 @@ const Portal = () => {
                 )}
               </>
             ) : (
-              /* Non-member — just show a prompt to subscribe */
+              /* Non-member - just show a prompt to subscribe */
               !tiers && (
                 <Card className="border-border bg-card/50">
                   <CardContent className="py-12 text-center space-y-3">

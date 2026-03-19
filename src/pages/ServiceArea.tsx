@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { openCalendly } from "@/hooks/useCalendly";
 
 const serviceAreas = [
-  { name: "Chandler", description: "Our home base — located at 1870 W Frye Rd, Ste 1." },
+  { name: "Chandler", description: "Our home base - located at 1870 W Frye Rd, Ste 1." },
   { name: "Gilbert", description: "Serving Gilbert residents with advanced peptide protocols and bloodwork analysis." },
   { name: "Tempe", description: "Convenient access for Tempe professionals seeking performance optimization." },
   { name: "Mesa", description: "Comprehensive longevity programs for the Mesa community." },
@@ -50,7 +50,7 @@ const localJsonLd = {
 const ServiceArea = () => (
   <div className="min-h-screen bg-background">
     <SEO
-      title="Service Areas — Chandler, Gilbert, Tempe & East Valley AZ"
+      title="Service Areas - Chandler, Gilbert, Tempe & East Valley AZ"
       description="Premier Vitality & Wellness serves Chandler, Gilbert, Tempe, Mesa, Scottsdale, and the greater Phoenix East Valley with physician-directed peptide therapy, bloodwork analysis, and longevity protocols."
       canonical="/service-area"
       jsonLd={localJsonLd}

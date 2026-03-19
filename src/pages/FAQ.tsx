@@ -16,7 +16,7 @@ const faqSections = [
     items: [
       {
         q: "How does the membership work?",
-        a: "Premier Vitality offers three membership tiers — Essential, Premium, and Elite. Each tier unlocks access to our peptide catalog with member-exclusive pricing, scheduled blood work, and physician consultations. You can choose monthly or annual billing, and upgrade or change your plan at any time from your patient portal.",
+        a: "Premier Vitality offers three membership tiers - Essential, Premium, and Elite. Each tier unlocks access to our peptide catalog with member-exclusive pricing, scheduled blood work, and physician consultations. You can choose monthly or annual billing, and upgrade or change your plan at any time from your patient portal.",
       },
       {
         q: "Can I see the peptide catalog before subscribing?",
@@ -28,7 +28,7 @@ const faqSections = [
       },
       {
         q: "What does the included bloodwork cover?",
-        a: "We offer two panel levels. The Vitality Panel (40+ biomarkers) covers CBC, comprehensive metabolic panel, thyroid, HbA1c, inflammation markers, Vitamin D, iron studies, urinalysis, and more. The Premier Panel (67+ biomarkers) adds advanced cardiovascular markers (ApoB, Lp(a)), full hormone panels (testosterone, estradiol, FSH/LH, SHBG, prolactin), IGF-1, C-peptide, OmegaCheck, homocysteine, and magnesium. The Vitality Panel retails at $199 and the Premier Panel at $499 — both are included with your membership at no extra charge.",
+        a: "We offer two panel levels. The Vitality Panel (40+ biomarkers) covers CBC, comprehensive metabolic panel, thyroid, HbA1c, inflammation markers, Vitamin D, iron studies, urinalysis, and more. The Premier Panel (67+ biomarkers) adds advanced cardiovascular markers (ApoB, Lp(a)), full hormone panels (testosterone, estradiol, FSH/LH, SHBG, prolactin), IGF-1, C-peptide, OmegaCheck, homocysteine, and magnesium. The Vitality Panel retails at $199 and the Premier Panel at $499 - both are included with your membership at no extra charge.",
       },
       {
         q: "Can I cancel my membership?",
@@ -92,15 +92,15 @@ const faqSections = [
     items: [
       {
         q: "What is the Vitality Score?",
-        a: "The Vitality Score is your unified health metric — a single number from 0 to 100 that aggregates over 65 biomarkers across hormones, metabolic health, lipids, thyroid, inflammation, liver & kidney function, and more. It gives you an instant snapshot of your overall wellness and shows exactly which areas need attention.",
+        a: "The Vitality Score is your unified health metric - a single number from 0 to 100 that aggregates over 65 biomarkers across hormones, metabolic health, lipids, thyroid, inflammation, liver & kidney function, and more. It gives you an instant snapshot of your overall wellness and shows exactly which areas need attention.",
       },
       {
         q: "Is it free to get my Vitality Score?",
-        a: "Yes! Simply create a free account, upload your existing bloodwork (a photo or PDF), and our AI will read it automatically. Within seconds you'll have your Vitality Score along with a full category breakdown and personalized improvement tips — no appointment or membership required.",
+        a: "Yes! Simply create a free account, upload your existing bloodwork (a photo or PDF), and our AI will read it automatically. Within seconds you'll have your Vitality Score along with a full category breakdown and personalized improvement tips - no appointment or membership required.",
       },
       {
         q: "What bloodwork do I need to upload?",
-        a: "Any standard blood panel works — a comprehensive metabolic panel, CBC, lipid panel, or hormone panel. The more markers your labs include, the more comprehensive your Vitality Score will be. We support results from any lab provider (Quest, LabCorp, etc.).",
+        a: "Any standard blood panel works - a comprehensive metabolic panel, CBC, lipid panel, or hormone panel. The more markers your labs include, the more comprehensive your Vitality Score will be. We support results from any lab provider (Quest, LabCorp, etc.).",
       },
       {
         q: "How is the Vitality Score calculated?",
@@ -108,7 +108,7 @@ const faqSections = [
       },
       {
         q: "Will the Vitality Score tell me how to improve?",
-        a: "Absolutely. Every marker that's outside the optimal range comes with specific, actionable tips — from diet and supplement recommendations to lifestyle changes. You'll see your top areas to improve at a glance and can drill into each category for detailed guidance.",
+        a: "Absolutely. Every marker that's outside the optimal range comes with specific, actionable tips - from diet and supplement recommendations to lifestyle changes. You'll see your top areas to improve at a glance and can drill into each category for detailed guidance.",
       },
     ],
   },
@@ -155,7 +155,7 @@ const FAQ = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-muted-foreground font-body font-light text-sm md:text-base max-w-xl mx-auto leading-relaxed"
           >
-            From membership details to peptide safety — find answers to the most
+            From membership details to peptide safety - find answers to the most
             common questions about Premier Vitality.
           </motion.p>
         </section>

@@ -358,7 +358,7 @@ export default function MembershipUpgradeDialog({
                   onChange={(e) => setAddressState(e.target.value)}
                   className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring text-foreground"
                 >
-                  <option value="">—</option>
+                  <option value="">-</option>
                   {US_STATES.map((s) => (
                     <option key={s} value={s}>{s}</option>
                   ))}

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Layers, FlaskConical, Pill, Menu, X, User } from "lucide-react";
+import { Layers, FlaskConical, Pill, Menu, X, User, Home, HelpCircle, BookOpen } from "lucide-react";
 import { openCalendly } from "@/hooks/useCalendly";
 
 const navItems = [
@@ -10,15 +10,17 @@ const navItems = [
   { label: "Peptides", href: "/peptides", icon: Pill },
 ];
 
-const drawerLinks = [
-  { label: "Sign In", href: "/auth" },
-  { label: "FAQ", href: "/faq" },
-];
-
-const allMobileLinks = [
+const mobileDrawerLinks = [
+  { label: "Home", href: "/" },
   { label: "Membership", href: "/services" },
   { label: "Protocols", href: "/protocols" },
   { label: "Peptides", href: "/peptides" },
+  { label: "How It Works", href: "/services#how-it-works" },
+  { label: "FAQ", href: "/faq" },
+  { label: "Sign In", href: "/auth" },
+];
+
+const desktopDrawerLinks = [
   { label: "Sign In", href: "/auth" },
   { label: "FAQ", href: "/faq" },
 ];
@@ -64,12 +66,14 @@ const Navbar = () => {
                       className="absolute inset-0 rounded-full bg-primary/5"
                       transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
                     />
-                    {/* Top indicator bar — clean, sharp */}
+                    {/* Top indicator bar - centered */}
                     <motion.div
                       layoutId="lamp-bar"
-                      className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-amber-400 rounded-full"
+                      className="absolute top-0 left-0 right-0 flex justify-center"
                       transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
-                    />
+                    >
+                      <div className="w-8 h-0.5 bg-amber-400 rounded-full" />
+                    </motion.div>
                   </>
                 )}
               </Link>
@@ -86,7 +90,7 @@ const Navbar = () => {
         </button>
       </nav>
 
-      {/* Mobile Top Bar — Logo + Hamburger only */}
+      {/* Mobile Top Bar - Logo + Hamburger only */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 h-14 bg-background/80 backdrop-blur-xl border-b border-border/50">
         <Link to="/" className="flex items-baseline gap-1.5">
           {/* LOGO SWAP: Replace with <img src="/logo.png" alt="Premier Vitality" className="h-7" /> when new logo is ready */}
@@ -138,9 +142,9 @@ const Navbar = () => {
               </div>
 
               <div className="flex flex-col px-6 py-8 gap-1">
-                {/* On mobile show all links; on desktop show only drawer-specific links */}
+                {/* Mobile: all links */}
                 <div className="md:hidden flex flex-col gap-1">
-                  {allMobileLinks.map((link) => (
+                  {mobileDrawerLinks.map((link) => (
                     <Link
                       key={link.label}
                       to={link.href}
@@ -152,8 +156,9 @@ const Navbar = () => {
                     </Link>
                   ))}
                 </div>
+                {/* Desktop: just Sign In + FAQ */}
                 <div className="hidden md:flex flex-col gap-1">
-                  {drawerLinks.map((link) => (
+                  {desktopDrawerLinks.map((link) => (
                     <Link
                       key={link.label}
                       to={link.href}

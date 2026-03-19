@@ -13,7 +13,7 @@ const faqs = [
   },
   {
     q: "How do the blood panels work?",
-    a: "After joining, you'll receive a lab requisition form. Visit any Quest Diagnostics or Labcorp location near you — no appointment needed. Results are uploaded to your portal within 3–5 business days and reviewed by your physician.",
+    a: "After joining, you'll receive a lab requisition form. Visit any Quest Diagnostics or Labcorp location near you - no appointment needed. Results are uploaded to your portal within 3–5 business days and reviewed by your physician.",
   },
   {
     q: "Do I need a membership to purchase peptides?",

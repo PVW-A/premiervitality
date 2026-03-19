@@ -223,7 +223,7 @@ const SubscriptionCheckout = ({
           </DialogTitle>
           <DialogDescription className="font-body font-light text-muted-foreground text-sm">
             {step === 1
-              ? `${tier?.name} — $${price}/mo, billed ${billingCycle === "annual" ? "annually" : "monthly"}`
+              ? `${tier?.name} - $${price}/mo, billed ${billingCycle === "annual" ? "annually" : "monthly"}`
               : "Enter your card details to complete your subscription"}
           </DialogDescription>
         </DialogHeader>
@@ -301,7 +301,7 @@ const SubscriptionCheckout = ({
                   onChange={(e) => setAddress((a) => ({ ...a, state: e.target.value }))}
                   className={cn("mt-1 flex h-10 w-full rounded-md border px-3 py-2", inputCls)}
                 >
-                  <option value="">—</option>
+                  <option value="">-</option>
                   {US_STATES.map((s) => (
                     <option key={s} value={s}>{s}</option>
                   ))}
@@ -357,7 +357,7 @@ const SubscriptionCheckout = ({
                 {loading ? (
                   <><Loader2 size={14} className="animate-spin" /> Processing…</>
                 ) : (
-                  `Pay Now — $${price}/mo`
+                  `Pay Now - $${price}/mo`
                 )}
               </button>
             </div>

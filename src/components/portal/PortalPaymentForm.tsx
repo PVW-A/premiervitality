@@ -1,4 +1,4 @@
-// Native Square Web Payments SDK — no redirect, card form embedded in portal
+// Native Square Web Payments SDK - no redirect, card form embedded in portal
 // Drop this into any page: <PortalPaymentForm tierId="premium" billing="monthly" onSuccess={...} />
 
 import { useState, useEffect, useRef } from "react";

@@ -105,7 +105,7 @@ const BirthdaySettings = ({ userId }: BirthdaySettingsProps) => {
                   {format(new Date(savedBirthday + "T00:00:00"), "MMMM d, yyyy")}
                 </p>
                 <p className="text-[11px] text-muted-foreground/60 font-body font-light mt-0.5">
-                  🔒 Locked — contact support to change
+                  🔒 Locked - contact support to change
                 </p>
               </div>
             </div>
@@ -160,7 +160,7 @@ const BirthdaySettings = ({ userId }: BirthdaySettingsProps) => {
                       <span className="text-foreground font-medium">
                         {birthday ? format(birthday, "MMMM d, yyyy") : ""}
                       </span>
-                      . This action <span className="text-destructive font-medium">cannot be undone</span> — your birthday will be permanently locked after saving.
+                      . This action <span className="text-destructive font-medium">cannot be undone</span> - your birthday will be permanently locked after saving.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>

@@ -118,7 +118,7 @@ const BiologicalAgeSection = () => {
           </h2>
           <p className="text-muted-foreground font-body font-light text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
             Your chronological age is just a number. Using the Levine PhenoAge algorithm and key biomarkers,
-            we calculate your <em className="text-foreground/80 not-italic font-normal">true biological age</em> — the age
+            we calculate your <em className="text-foreground/80 not-italic font-normal">true biological age</em> - the age
             your cells are actually performing at.
           </p>
         </motion.div>
@@ -310,7 +310,7 @@ const BiologicalAgeSection = () => {
             </h3>
             <p className="text-xs text-muted-foreground/60 font-body font-light max-w-lg mx-auto leading-relaxed">
               Go beyond blood markers with DNA methylation analysis. Measure your true epigenetic age
-              with clinical-grade precision — available as an add-on for Elite members.
+              with clinical-grade precision - available as an add-on for Elite members.
             </p>
           </div>
         </motion.div>

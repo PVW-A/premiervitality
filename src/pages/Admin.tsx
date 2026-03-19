@@ -177,14 +177,14 @@ const PatientRow = ({ patient, onSMS }: { patient: Patient; onSMS: (p: Patient) 
       </span>
     </div>
     <div className="flex-1 min-w-0">
-      <p className="text-xs text-white/70 font-light truncate">{patient.name || "—"}</p>
+      <p className="text-xs text-white/70 font-light truncate">{patient.name || "-"}</p>
       <p className="text-[10px] text-white/30 truncate">{patient.email}</p>
     </div>
     <div className="hidden md:flex items-center gap-6 text-[10px] text-white/25 shrink-0">
-      <span>{patient.phone || "—"}</span>
+      <span>{patient.phone || "-"}</span>
       <span>{patient.orderCount || 0} orders</span>
       {patient.totalSpent ? <span className="text-cyan-400/50">${patient.totalSpent.toFixed(0)}</span> : <span>$0</span>}
-      <span>{patient.lastOrder ? new Date(patient.lastOrder).toLocaleDateString() : "—"}</span>
+      <span>{patient.lastOrder ? new Date(patient.lastOrder).toLocaleDateString() : "-"}</span>
     </div>
     <button
       onClick={() => onSMS(patient)}
@@ -293,7 +293,7 @@ const AdminPanel = () => {
       .from("orders").select("*").order("created_at", { ascending: false });
     if (orderData) setOrders(orderData as Order[]);
 
-    // Patients from auth — use orders to build roster
+    // Patients from auth - use orders to build roster
     const { data: allOrders } = await supabase
       .from("orders").select("patient_id, patient_name, patient_email, patient_phone, price, created_at")
       .order("created_at", { ascending: false });
@@ -615,7 +615,7 @@ const AdminPanel = () => {
             {/* Patient SMS quick-send list */}
             <div className="mt-6 border border-white/5 bg-white/[0.01]">
               <div className="px-5 py-4 border-b border-white/5">
-                <p className="text-xs text-white/40 font-light">Quick Send — Individual Patient</p>
+                <p className="text-xs text-white/40 font-light">Quick Send - Individual Patient</p>
               </div>
               {patients.slice(0, 10).map(p => (
                 <div key={p.id} className="flex items-center justify-between px-5 py-3 border-b border-white/[0.03] last:border-0">

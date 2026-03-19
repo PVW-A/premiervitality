@@ -10,7 +10,7 @@ const legalLinks = [
 const Footer = () => (
   <footer className="border-t border-border py-12 px-6">
     <div className="max-w-6xl mx-auto">
-      {/* Top row — brand + contact */}
+      {/* Top row - brand + contact */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-8">
         <div>
           {/* LOGO SWAP: Replace with <img src="/logo.png" alt="Premier Vitality" className="h-8" /> when new logo is ready */}
@@ -44,7 +44,7 @@ const Footer = () => (
         </div>
       </div>
 
-      {/* Bottom row — legal */}
+      {/* Bottom row - legal */}
       <div className="border-t border-border/50 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <p className="text-xs text-muted-foreground font-body">
           © {new Date().getFullYear()} Premier Vitality & Wellness. All rights reserved.

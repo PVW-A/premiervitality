@@ -31,7 +31,7 @@ const extractBaseName = (name: string): string =>
 const getDisplayName = (fullName: string, baseName: string): string => {
   if (fullName.toLowerCase().startsWith(baseName.toLowerCase())) {
     const rest = fullName.slice(baseName.length).replace(/^\s*\+?\s*/, "").trim();
-    if (rest) return rest.replace(/\s+per\s+mL\s*--\s*/i, " — ").replace(/\s+in\s+\w+\s+(Pump|Bottle|Jar)\s*$/i, "").replace(/\s+--\s+.*/g, "").replace(/\s+\[\d+mL\]\s*$/i, "").trim();
+    if (rest) return rest.replace(/\s+per\s+mL\s*--\s*/i, " - ").replace(/\s+in\s+\w+\s+(Pump|Bottle|Jar)\s*$/i, "").replace(/\s+--\s+.*/g, "").replace(/\s+\[\d+mL\]\s*$/i, "").trim();
   }
   return fullName.replace(/\s+--\s+.*/g, "").trim();
 };
@@ -220,7 +220,7 @@ const Peptides = () => {
 
   return (
     <div className="min-h-screen bg-background" style={{ backgroundImage: "radial-gradient(ellipse 80% 40% at 20% 10%, hsl(39 38% 60% / 0.05) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 80% 80%, hsl(39 38% 40% / 0.04) 0%, transparent 55%)" }}>
-      <SEO title="Treatments & Peptide Catalog" description="Physician-directed peptide therapy and longevity treatments. Browse by goal — weight loss, anti-aging, hormones, recovery, and more." canonical="/peptides" />
+      <SEO title="Treatments & Peptide Catalog" description="Physician-directed peptide therapy and longevity treatments. Browse by goal - weight loss, anti-aging, hormones, recovery, and more." canonical="/peptides" />
       <Navbar />
 
       <main>

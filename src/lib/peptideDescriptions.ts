@@ -1,5 +1,5 @@
 // Clinical descriptions for common compounds
-// Language uses "research suggests / studies indicate" framing — not medical advice
+// Language uses "research suggests / studies indicate" framing - not medical advice
 // Review all entries before publishing. Consult your physician advisor for compliance sign-off.
 
 export const peptideDescriptions: Record<string, string> = {
@@ -26,9 +26,9 @@ export const peptideDescriptions: Record<string, string> = {
 
   "GHRP-2": "Second-generation GH-releasing peptide, GHSR-1a agonist. Produces robust GH pulses with moderate elevation of cortisol and prolactin. Studies indicate enhanced GH secretion of 7–15 fold above baseline with synergistic amplification when combined with GHRH analogues (Arvat et al., 1997).",
 
-  "GHRP-6": "First-generation hexapeptide GH secretagogue. In addition to GH release, exhibits cytoprotective and anti-inflammatory properties via GHS-R1a-independent pathways. Stimulates appetite via ghrelin pathways — clinically relevant in cachexia and muscle-wasting indications (Granado et al., 2011).",
+  "GHRP-6": "First-generation hexapeptide GH secretagogue. In addition to GH release, exhibits cytoprotective and anti-inflammatory properties via GHS-R1a-independent pathways. Stimulates appetite via ghrelin pathways - clinically relevant in cachexia and muscle-wasting indications (Granado et al., 2011).",
 
-  "Hexarelin": "Most potent synthetic GHRP to date. Produces maximal GH release in human subjects (Ghigo et al., 1994). Also demonstrates direct cardioprotective effects via CD36 scavenger receptor binding, independent of GH secretion — studied in ischemia-reperfusion models (Muccioli et al., 2004).",
+  "Hexarelin": "Most potent synthetic GHRP to date. Produces maximal GH release in human subjects (Ghigo et al., 1994). Also demonstrates direct cardioprotective effects via CD36 scavenger receptor binding, independent of GH secretion - studied in ischemia-reperfusion models (Muccioli et al., 2004).",
 
   "MK-677": "Orally active, non-peptide GHSR-1a agonist (ibutamoren). 12-month trial in elderly subjects demonstrated sustained IGF-1 elevation (+39%), increases in lean body mass, and improved sleep quality with no significant impact on glucose homeostasis at 25mg/day (Nass et al., JCEM 2008).",
 
@@ -44,25 +44,25 @@ export const peptideDescriptions: Record<string, string> = {
 
   "LL-37": "Sole member of human cathelicidin antimicrobial peptide family. Broad-spectrum antibacterial, antiviral, and antifungal activity. Additionally modulates immune response, promotes wound re-epithelialization, and demonstrates anti-biofilm properties. Studied in chronic wounds, rosacea, and atopic dermatitis (Gallo et al., 2012).",
 
-  "VIP": "Vasoactive Intestinal Peptide — 28 AA neuropeptide with potent immunomodulatory and anti-inflammatory properties. Activates VPAC1/VPAC2 receptors, inhibiting production of TNF-α, IL-6, IL-12, and nitric oxide. Studied in rheumatoid arthritis, Crohn's disease, and pulmonary hypertension. Promotes Treg differentiation (Delgado et al., 2004).",
+  "VIP": "Vasoactive Intestinal Peptide - 28 AA neuropeptide with potent immunomodulatory and anti-inflammatory properties. Activates VPAC1/VPAC2 receptors, inhibiting production of TNF-α, IL-6, IL-12, and nitric oxide. Studied in rheumatoid arthritis, Crohn's disease, and pulmonary hypertension. Promotes Treg differentiation (Delgado et al., 2004).",
 
   "Dihexa": "Angiotensin IV analogue and HGF/Met system potentiator. Animal studies demonstrate up to 7-fold greater potency than BDNF in synaptogenesis assays. Crosses blood-brain barrier; improves spatial learning and memory in aged rodent models (McCoy et al., 2013). Investigated for cognitive decline and neurodegeneration.",
 
   "Semax": "Synthetic ACTH(4–10) analogue. Increases BDNF and NGF expression in the prefrontal cortex and hippocampus. Russian clinical data supports neuroprotective applications in ischemic stroke, optic nerve disease, and cognitive impairment. Activates dopaminergic and serotonergic transmission (Dolotov et al., 2006).",
 
-  "Selank": "Heptapeptide analogue of tuftsin (Thr-Lys-Pro-Arg-Pro-Gly-Pro). Anxiolytic without sedation or dependence — modulates GABAergic, serotonergic, and dopaminergic systems. Russian phase 2/3 data shows efficacy in generalized anxiety disorder comparable to benzodiazepines without cognitive impairment (Zozulya et al., 2001). Upregulates IL-6 and stabilizes enkephalins.",
+  "Selank": "Heptapeptide analogue of tuftsin (Thr-Lys-Pro-Arg-Pro-Gly-Pro). Anxiolytic without sedation or dependence - modulates GABAergic, serotonergic, and dopaminergic systems. Russian phase 2/3 data shows efficacy in generalized anxiety disorder comparable to benzodiazepines without cognitive impairment (Zozulya et al., 2001). Upregulates IL-6 and stabilizes enkephalins.",
 
   "Epithalon": "Tetrapeptide (Ala-Glu-Asp-Gly) developed by the St. Petersburg Institute of Bioregulation. Stimulates telomerase activity and elongates telomeres in somatic cells in vitro (Khavinson et al., 2003). Russian longitudinal data in elderly cohorts reported reduced mortality, improved melatonin regulation, and decreased neoplasm incidence over 6–12 years of follow-up.",
 
   // ── SEXUAL WELL-BEING ──────────────────────────────────────────────────────
 
-  "PT-141": "Bremelanotide — cyclic heptapeptide melanocortin receptor agonist (MC1R, MC3R, MC4R). FDA-approved as Vyleesi® for hypoactive sexual desire disorder (HSDD) in premenopausal women. MC4R activation in the CNS drives pro-erectile and libido-enhancing effects in both sexes. Phase 2 data in men with erectile dysfunction showed 80% response rate (Diamond et al., 2004).",
+  "PT-141": "Bremelanotide - cyclic heptapeptide melanocortin receptor agonist (MC1R, MC3R, MC4R). FDA-approved as Vyleesi® for hypoactive sexual desire disorder (HSDD) in premenopausal women. MC4R activation in the CNS drives pro-erectile and libido-enhancing effects in both sexes. Phase 2 data in men with erectile dysfunction showed 80% response rate (Diamond et al., 2004).",
 
   "Oxytocin": "Hypothalamic neuropeptide and pituitary hormone. Beyond parturition and lactation, oxytocin mediates social bonding, trust, empathy, and sexual arousal. Intranasal administration studies demonstrate enhanced emotional recognition, reduced cortisol stress response, and improved sexual function. Modulates HPA axis and interacts with dopaminergic reward pathways (MacDonald & Macdonald, 2010).",
 
   // ── IMMUNE / THYMIC ────────────────────────────────────────────────────────
 
-  "Thymosin Alpha-1": "N-terminal fragment of prothymosin alpha (28 AA). FDA-designated orphan drug. Potent immunomodulator — upregulates Th1 cytokines (IL-2, IFN-γ), enhances NK cell and dendritic cell activity, and promotes T-cell maturation. Approved in 35+ countries for hepatitis B/C and immunodeficiency. Studied in COVID-19 for cytokine storm modulation (Romani et al., 2012).",
+  "Thymosin Alpha-1": "N-terminal fragment of prothymosin alpha (28 AA). FDA-designated orphan drug. Potent immunomodulator - upregulates Th1 cytokines (IL-2, IFN-γ), enhances NK cell and dendritic cell activity, and promotes T-cell maturation. Approved in 35+ countries for hepatitis B/C and immunodeficiency. Studied in COVID-19 for cytokine storm modulation (Romani et al., 2012).",
 
   "Thymalin": "Polypeptide thymic extract with broad immunomodulatory activity. Restores T-cell differentiation and thymic function in aged and immunocompromised subjects. Russian clinical trials report reduced infection frequency and improved immune parameters in elderly patients with age-related immunodeficiency (Khavinson & Morozov, 2003).",
 
@@ -72,13 +72,13 @@ export const peptideDescriptions: Record<string, string> = {
 
   "Melanotan II": "Cyclic heptapeptide α-MSH analogue. Non-selective melanocortin receptor agonist (MC1R–MC5R). Stimulates eumelanin production (tanning) via MC1R, pro-erectile effects via MC4R, and appetite suppression via MC3R/MC4R. Phase 2 data demonstrated efficacy in erectile dysfunction and female sexual dysfunction. Not FDA-approved; used off-label.",
 
-  "Tretinoin": "All-trans retinoic acid — biologically active form of Vitamin A. Extensively validated in randomized trials for photoaging: upregulates procollagen I/III synthesis, normalizes keratinocyte differentiation, and reduces matrix metalloproteinase expression. FDA-approved for acne vulgaris; extensive evidence base for facial rejuvenation (Griffiths et al., NEJM 1995).",
+  "Tretinoin": "All-trans retinoic acid - biologically active form of Vitamin A. Extensively validated in randomized trials for photoaging: upregulates procollagen I/III synthesis, normalizes keratinocyte differentiation, and reduces matrix metalloproteinase expression. FDA-approved for acne vulgaris; extensive evidence base for facial rejuvenation (Griffiths et al., NEJM 1995).",
 
   "Hydroquinone": "Phenolic melanogenesis inhibitor. Competitively inhibits tyrosinase, the rate-limiting enzyme in melanin biosynthesis. Standard of care for melasma, post-inflammatory hyperpigmentation, and solar lentigines. Meta-analyses support efficacy at 4% concentration; combination with tretinoin and corticosteroids (Kligman formula) shows superior outcomes.",
 
   // ── HORMONE RESTORATION ────────────────────────────────────────────────────
 
-  "Testosterone": "Primary androgen — steroid hormone governing libido, muscle protein synthesis, erythropoiesis, bone density, and cognitive function. Extensive RCT data supports testosterone replacement therapy (TRT) in hypogonadal men for improvements in body composition, sexual function, mood, and metabolic parameters (Bhasin et al., NEJM 2010). Aromatizes to estradiol — monitoring required.",
+  "Testosterone": "Primary androgen - steroid hormone governing libido, muscle protein synthesis, erythropoiesis, bone density, and cognitive function. Extensive RCT data supports testosterone replacement therapy (TRT) in hypogonadal men for improvements in body composition, sexual function, mood, and metabolic parameters (Bhasin et al., NEJM 2010). Aromatizes to estradiol - monitoring required.",
 
   "Estradiol": "Predominant endogenous estrogen (E2). Governs female reproductive function, bone mineral density, cardiovascular health, and cognitive function. Transdermal delivery avoids first-pass hepatic metabolism, reducing thrombotic risk vs. oral formulations. Women's Health Initiative and subsequent analyses support favorable benefit-risk profile for women initiating HRT within 10 years of menopause (Manson et al., 2017).",
 
@@ -90,13 +90,13 @@ export const peptideDescriptions: Record<string, string> = {
 
   // ── IV / IM / SQ THERAPY ──────────────────────────────────────────────────
 
-  "NAD+": "Nicotinamide adenine dinucleotide — essential coenzyme in redox metabolism and substrate for sirtuins (SIRT1-7), PARP DNA repair enzymes, and CD38. Declines ~50% from age 40–60. IV repletion studies show rapid restoration of tissue NAD+ levels with reported improvements in energy, cognitive function, and metabolic flexibility. Preclinical data demonstrates neuroprotection and lifespan extension (Rajman et al., 2018).",
+  "NAD+": "Nicotinamide adenine dinucleotide - essential coenzyme in redox metabolism and substrate for sirtuins (SIRT1-7), PARP DNA repair enzymes, and CD38. Declines ~50% from age 40–60. IV repletion studies show rapid restoration of tissue NAD+ levels with reported improvements in energy, cognitive function, and metabolic flexibility. Preclinical data demonstrates neuroprotection and lifespan extension (Rajman et al., 2018).",
 
   "Glutathione": "Master endogenous antioxidant tripeptide (γ-Glu-Cys-Gly). Declines with age, chronic illness, and oxidative stress. IV/IM administration bypasses limited oral bioavailability. Clinical data supports utility in Parkinson's disease, liver disease, cisplatin-induced nephrotoxicity, and skin brightening via melanin pathway modulation. Regenerates vitamins C and E.",
 
-  "Alpha Lipoic Acid": "Universal antioxidant — active in both aqueous and lipid environments. Regenerates glutathione, vitamins C and E, and CoQ10. Crosses blood-brain barrier. RCTs demonstrate significant reduction in peripheral neuropathy symptoms in diabetic patients (600mg IV/day). Anti-inflammatory via NF-κB inhibition.",
+  "Alpha Lipoic Acid": "Universal antioxidant - active in both aqueous and lipid environments. Regenerates glutathione, vitamins C and E, and CoQ10. Crosses blood-brain barrier. RCTs demonstrate significant reduction in peripheral neuropathy symptoms in diabetic patients (600mg IV/day). Anti-inflammatory via NF-κB inhibition.",
 
-  "Phosphatidylcholine": "Major phospholipid constituent of cell membranes. IV infusion studied for non-surgical reduction of localized fat deposits (mesotherapy). Preclinical data supports hepatoprotective, neuroprotective, and cardiovascular benefits via membrane fluidity restoration. Precursor to acetylcholine — relevant in cognitive decline.",
+  "Phosphatidylcholine": "Major phospholipid constituent of cell membranes. IV infusion studied for non-surgical reduction of localized fat deposits (mesotherapy). Preclinical data supports hepatoprotective, neuroprotective, and cardiovascular benefits via membrane fluidity restoration. Precursor to acetylcholine - relevant in cognitive decline.",
 
   "Methylene Blue": "Mitochondrial electron carrier and MAO inhibitor. Low-dose studies (0.5–4 mg/kg) demonstrate enhanced mitochondrial respiration, neuroprotection, and cognitive augmentation. RCT data shows improved memory consolidation. Also investigated as a photosensitizer in antimicrobial photodynamic therapy (Rojas et al., 2012).",
 
@@ -114,7 +114,7 @@ export const getDescription = (baseName: string): string | null => {
   // Exact match first
   if (peptideDescriptions[baseName]) return peptideDescriptions[baseName];
 
-  // Partial match — check if any key is contained in the baseName or vice versa
+  // Partial match - check if any key is contained in the baseName or vice versa
   const lower = baseName.toLowerCase();
   for (const [key, desc] of Object.entries(peptideDescriptions)) {
     if (lower.includes(key.toLowerCase()) || key.toLowerCase().includes(lower)) {

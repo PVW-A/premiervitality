@@ -185,7 +185,7 @@ export default function PeptideReminders({ peptide, userId }: Props) {
       {daysRemaining !== null && daysRemaining <= 10 && (
         <div className="flex items-center gap-2 text-xs text-destructive font-body font-light bg-destructive/10 border border-destructive/20 px-3 py-2 rounded">
           <AlertTriangle size={13} />
-          <span>~{daysRemaining} days remaining — low supply alert active</span>
+          <span>~{daysRemaining} days remaining - low supply alert active</span>
         </div>
       )}
 

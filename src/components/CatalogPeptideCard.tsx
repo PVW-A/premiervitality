@@ -61,7 +61,7 @@ const CatalogPeptideCard = ({
     e.stopPropagation();
     if (!user || !selectedVariation) return;
     setSubmitting(true);
-    const label = selectedVariation.name.replace(group.baseName, "").replace(/^\s*—\s*/, "").trim() || selectedVariation.name;
+    const label = selectedVariation.name.replace(group.baseName, "").replace(/^\s*-\s*/, "").trim() || selectedVariation.name;
     const { error } = await supabase.from("peptide_requests").insert({
       user_id: user.id,
       peptide_id: selectedVariation.id,
@@ -158,7 +158,7 @@ const CatalogPeptideCard = ({
                         </p>
                         <div className="flex flex-col gap-1.5">
                           {group.variations.map(v => {
-                            const label = v.name.replace(group.baseName, "").replace(/^\s*—\s*/, "").trim() || v.name;
+                            const label = v.name.replace(group.baseName, "").replace(/^\s*-\s*/, "").trim() || v.name;
                             const isSelected = selectedVariationId === v.id;
                             const variationRequested = requestedPeptideIds.has(v.id);
                             return (
@@ -203,7 +203,7 @@ const CatalogPeptideCard = ({
                         <div>
                           <p className="text-[10px] tracking-[0.2em] uppercase text-primary/70 font-body font-extralight">Selected</p>
                           <p className="text-sm font-body font-light text-foreground mt-0.5">
-                            {selectedVariation.name.replace(group.baseName, "").replace(/^\s*—\s*/, "").trim() || selectedVariation.name}
+                            {selectedVariation.name.replace(group.baseName, "").replace(/^\s*-\s*/, "").trim() || selectedVariation.name}
                           </p>
                         </div>
                         <p className="text-2xl font-heading font-light text-primary">${selectedVariation.price.toFixed(2)}</p>
