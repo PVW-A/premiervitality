@@ -133,25 +133,34 @@
 }
 
 /* Remove white border/background from Calendly popup widget */
+.calendly-overlay {
+  background: rgba(0, 0, 0, 0.85) !important;
+}
 .calendly-overlay .calendly-popup {
   background: transparent !important;
+  background-color: transparent !important;
   border: none !important;
+  border-radius: 0 !important;
   box-shadow: none !important;
   padding: 0 !important;
   max-width: 100% !important;
+  overflow: hidden !important;
 }
-.calendly-overlay .calendly-popup-content {
+.calendly-overlay .calendly-popup-content,
+.calendly-overlay .calendly-popup-content > div,
+.calendly-overlay .calendly-popup-content > div > div {
   background: transparent !important;
+  background-color: transparent !important;
   border: none !important;
+  border-radius: 0 !important;
   padding: 0 !important;
+  margin: 0 !important;
   overflow: hidden !important;
 }
 .calendly-overlay .calendly-popup-content iframe {
   border: none !important;
+  border-radius: 0 !important;
 }
 .calendly-overlay .calendly-popup-close {
   color: #fff !important;
-}
-.calendly-overlay {
-  background: rgba(0, 0, 0, 0.8) !important;
 }
