@@ -50,25 +50,44 @@ type CategoryData = StandardCategory | GenderedCategory;
 const tierMeta = {
   premier: {
     label: "Premier",
-    badge: "bg-amber-500/15 text-amber-400 border-amber-500/30",
-    border: "rgba(251,191,36,0.25)",
+    accent: "#D4AF37",
+    accentRgb: "212,175,55",
+    borderIdle: "rgba(212,175,55,0.3)",
+    borderHover: "rgba(212,175,55,0.7)",
+    glow: "0 0 20px rgba(212,175,55,0.15)",
+    badge: "text-[#D4AF37]",
+    badgeBg: "rgba(212,175,55,0.08)",
+    badgeBorder: "rgba(212,175,55,0.25)",
     description: "Elevated solutions for full-spectrum optimization",
   },
   core: {
     label: "Core",
-    badge: "bg-sky-500/15 text-sky-400 border-sky-500/30",
-    border: "rgba(56,189,248,0.2)",
+    accent: "#94A3B8",
+    accentRgb: "148,163,184",
+    borderIdle: "rgba(148,163,184,0.25)",
+    borderHover: "rgba(148,163,184,0.6)",
+    glow: "0 0 20px rgba(148,163,184,0.1)",
+    badge: "text-slate-400",
+    badgeBg: "rgba(148,163,184,0.08)",
+    badgeBorder: "rgba(148,163,184,0.25)",
     description: "Strategic balance of efficacy and value",
   },
   essential: {
     label: "Essential",
-    badge: "bg-rose-400/15 text-rose-400 border-rose-400/30",
-    border: "rgba(251,113,133,0.2)",
+    accent: "#C4846C",
+    accentRgb: "196,132,108",
+    borderIdle: "rgba(196,132,108,0.25)",
+    borderHover: "rgba(196,132,108,0.6)",
+    glow: "0 0 20px rgba(196,132,108,0.1)",
+    badge: "text-[#C4846C]",
+    badgeBg: "rgba(196,132,108,0.08)",
+    badgeBorder: "rgba(196,132,108,0.25)",
     description: "Foundational support for targeted needs",
   },
 } as const;
 
 const TIERS = ["premier", "core", "essential"] as const;
+type Tier = (typeof TIERS)[number];
 
 /* ───────────────────────────── data ───────────────────────────── */
 
@@ -349,56 +368,102 @@ const CATEGORIES: CategoryData[] = [
 
 /* ───────────────────────── card component ──────────────────────── */
 
-const CARD_STYLE = (borderColor: string): React.CSSProperties => ({
-  background: "rgba(255,255,255,0.03)",
-  backdropFilter: "blur(12px)",
-  WebkitBackdropFilter: "blur(12px)",
-  border: `1px solid ${borderColor}`,
-  boxShadow: "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)",
-});
+const ProtocolCardEl = ({ card, tier, index }: { card: ProtocolCard; tier: Tier; index: number }) => {
+  const meta = tierMeta[tier];
 
-const ProtocolCardEl = ({ card, tier }: { card: ProtocolCard; tier: keyof typeof tierMeta }) => (
-  <div
-    className="pv-card-reveal pv-hover-lift flex flex-col p-5"
-    style={CARD_STYLE(tierMeta[tier].border)}
-  >
-    <h3 className="text-sm font-heading font-light text-foreground mb-2 leading-snug">
-      {card.name}
-    </h3>
-    <p className="text-[10px] text-muted-foreground/50 font-body font-extralight mb-4">
-      {card.duration}
-    </p>
-    <div className="mt-auto">
-      <span className="text-2xl font-heading font-light text-foreground">
-        ${card.price.toFixed(2)}
-      </span>
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.45, delay: index * 0.07, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className="group flex flex-col p-6 rounded-sm transition-all duration-300"
+      style={{
+        background: "rgba(255,255,255,0.03)",
+        backdropFilter: "blur(14px)",
+        WebkitBackdropFilter: "blur(14px)",
+        border: `1px solid ${meta.borderIdle}`,
+        boxShadow: `0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04)`,
+      }}
+      whileHover={{
+        y: -6,
+        boxShadow: `${meta.glow}, 0 16px 48px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06)`,
+        borderColor: meta.borderHover,
+        transition: { duration: 0.25 },
+      }}
+    >
+      {/* Protocol name */}
+      <h3 className="text-base md:text-lg font-heading font-light text-foreground/90 mb-1.5 leading-snug tracking-wide">
+        {card.name}
+      </h3>
+      <p className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground/40 font-body font-extralight mb-6">
+        {card.duration}
+      </p>
+
+      {/* Price */}
+      <div className="mt-auto mb-5">
+        <p className="text-[8px] tracking-[0.3em] uppercase font-body font-extralight mb-1" style={{ color: meta.accent, opacity: 0.6 }}>
+          Starting From
+        </p>
+        <span className="text-3xl font-heading font-light" style={{ color: "#D4AF37" }}>
+          ${card.price.toFixed(2)}
+        </span>
+      </div>
+
+      {/* CTA */}
       <button
         onClick={openCalendly}
-        className="w-full mt-4 py-2.5 flex items-center justify-center gap-2 text-[10px] tracking-[0.2em] uppercase font-body font-light bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+        className="w-full py-3 flex items-center justify-center gap-2 text-[10px] tracking-[0.2em] uppercase font-body font-light rounded-sm transition-all duration-300"
+        style={{
+          border: `1px solid ${meta.borderIdle}`,
+          color: meta.accent,
+          background: "transparent",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = meta.accent;
+          e.currentTarget.style.color = "#0d1117";
+          e.currentTarget.style.borderColor = meta.accent;
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = "transparent";
+          e.currentTarget.style.color = meta.accent;
+          e.currentTarget.style.borderColor = meta.borderIdle;
+        }}
       >
         Book a Consultation
         <ArrowRight size={12} />
       </button>
-    </div>
-  </div>
-);
+    </motion.div>
+  );
+};
 
-/* ─────────────── tier section (badge + card grid) ─────────────── */
+/* ─────────────── tier section (centered divider + card grid) ───── */
 
-const TierSection = ({ tier, cards }: { tier: keyof typeof tierMeta; cards: ProtocolCard[] }) => {
+const TierSection = ({ tier, cards }: { tier: Tier; cards: ProtocolCard[] }) => {
   if (cards.length === 0) return null;
   const meta = tierMeta[tier];
+
   return (
-    <div className="mb-10">
-      <div className="flex items-center gap-3 mb-5">
-        <span className={`text-[10px] tracking-[0.25em] uppercase font-body px-3 py-1 border ${meta.badge}`}>
-          {meta.label}
-        </span>
-        <div className="flex-1 h-px bg-border/40" />
+    <div className="mb-14">
+      {/* Centered tier divider */}
+      <div className="flex items-center gap-4 mb-8">
+        <div className="flex-1 h-px" style={{ background: `linear-gradient(to right, transparent, ${meta.borderIdle})` }} />
+        <div
+          className="flex items-center gap-2.5 px-5 py-1.5 rounded-sm"
+          style={{ background: meta.badgeBg, border: `1px solid ${meta.badgeBorder}` }}
+        >
+          <div className="w-1.5 h-1.5 rounded-full" style={{ background: meta.accent, opacity: 0.7 }} />
+          <span className={`text-[10px] tracking-[0.3em] uppercase font-body font-light ${meta.badge}`}>
+            {meta.label}
+          </span>
+        </div>
+        <div className="flex-1 h-px" style={{ background: `linear-gradient(to left, transparent, ${meta.borderIdle})` }} />
       </div>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {cards.map((c) => (
-          <ProtocolCardEl key={c.id} card={c} tier={tier} />
+
+      {/* Cards */}
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {cards.map((c, i) => (
+          <ProtocolCardEl key={c.id} card={c} tier={tier} index={i} />
         ))}
       </div>
     </div>
@@ -410,34 +475,27 @@ const TierSection = ({ tier, cards }: { tier: keyof typeof tierMeta; cards: Prot
 const Protocols = () => {
   const [activeCatId, setActiveCatId] = useState(CATEGORIES[0].id);
   const activeCat = CATEGORIES.find((c) => c.id === activeCatId) || CATEGORIES[0];
+  const tabsRef = useRef<HTMLDivElement>(null);
 
-  const contentRef = useRef<HTMLDivElement>(null);
+  /* Scroll active tab into view on mobile */
   useEffect(() => {
-    const cards = contentRef.current?.querySelectorAll<HTMLElement>(".pv-card-reveal");
-    if (!cards?.length) return;
-    const obs = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            (e.target as HTMLElement).classList.add("pv-visible");
-            obs.unobserve(e.target);
-          }
-        }),
-      { threshold: 0.04 },
-    );
-    cards.forEach((c, i) => {
-      c.style.animationDelay = `${Math.min(i * 0.04, 0.16)}s`;
-      obs.observe(c);
-    });
-    return () => obs.disconnect();
+    const container = tabsRef.current;
+    if (!container) return;
+    const activeBtn = container.querySelector("[data-active='true']") as HTMLElement | null;
+    if (activeBtn) {
+      activeBtn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    }
   }, [activeCatId]);
 
   return (
     <div
       className="min-h-screen bg-background"
       style={{
-        backgroundImage:
-          "radial-gradient(ellipse 60% 40% at 70% 10%, hsl(39 38% 60% / 0.05) 0%, transparent 55%), radial-gradient(ellipse 50% 35% at 20% 80%, hsl(39 38% 40% / 0.04) 0%, transparent 55%)",
+        backgroundImage: [
+          "radial-gradient(ellipse 80% 50% at 20% 0%, hsl(39 38% 60% / 0.06) 0%, transparent 60%)",
+          "radial-gradient(ellipse 60% 40% at 80% 100%, hsl(39 38% 40% / 0.04) 0%, transparent 55%)",
+          "radial-gradient(ellipse 40% 30% at 50% 50%, hsl(220 20% 30% / 0.03) 0%, transparent 50%)",
+        ].join(", "),
       }}
     >
       <SEO
@@ -449,19 +507,20 @@ const Protocols = () => {
 
       <main className="pt-24 pb-20">
         {/* Header */}
-        <section className="max-w-4xl mx-auto text-center px-6 mb-14">
+        <section className="max-w-4xl mx-auto text-center px-6 mb-16">
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35 }}
-            className="text-xs tracking-[0.35em] uppercase text-primary font-body font-light mb-4"
+            transition={{ duration: 0.4 }}
+            className="text-xs tracking-[0.35em] uppercase font-body font-light mb-4"
+            style={{ color: "#D4AF37" }}
           >
             Precision Protocols
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, delay: 0.05 }}
+            transition={{ duration: 0.4, delay: 0.05 }}
             className="text-4xl md:text-5xl lg:text-6xl font-heading font-light text-foreground mb-6"
           >
             Curated Treatment Packages
@@ -469,7 +528,7 @@ const Protocols = () => {
           <motion.p
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, delay: 0.1 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
             className="text-muted-foreground font-body font-light text-sm md:text-base max-w-2xl mx-auto leading-relaxed"
           >
             Physician-directed multi-compound protocols designed for specific health
@@ -478,21 +537,26 @@ const Protocols = () => {
           </motion.p>
         </section>
 
-        {/* Category Tabs — scrollable on mobile */}
-        <div className="max-w-6xl mx-auto px-4 mb-14">
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0">
+        {/* Category Tabs */}
+        <div className="max-w-6xl mx-auto px-4 mb-16">
+          <div
+            ref={tabsRef}
+            className="flex gap-1 overflow-x-auto pb-3 scrollbar-hide sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0"
+          >
             {CATEGORIES.map((cat) => {
               const Icon = cat.icon;
               const isActive = cat.id === activeCatId;
               return (
                 <button
                   key={cat.id}
+                  data-active={isActive}
                   onClick={() => setActiveCatId(cat.id)}
-                  className={`flex items-center gap-1.5 px-3 py-2 md:px-4 md:py-2.5 text-[9px] md:text-[10px] tracking-[0.15em] uppercase font-body font-light border whitespace-nowrap transition-all duration-200 shrink-0 ${
+                  className={`relative flex items-center gap-1.5 px-4 py-2.5 md:px-5 md:py-3 text-[9px] md:text-[10px] tracking-[0.15em] uppercase font-body font-light whitespace-nowrap transition-all duration-300 shrink-0 border-b-2 bg-transparent ${
                     isActive
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "border-border/50 text-muted-foreground hover:text-foreground hover:border-primary/40"
+                      ? "text-[#D4AF37] border-[#D4AF37]"
+                      : "text-muted-foreground/50 border-transparent hover:text-foreground/70 hover:border-border/40"
                   }`}
+                  style={isActive ? { textShadow: "0 0 12px rgba(212,175,55,0.4)" } : undefined}
                 >
                   <Icon size={13} strokeWidth={1.2} className="hidden sm:block" />
                   {cat.name}
@@ -500,14 +564,17 @@ const Protocols = () => {
               );
             })}
           </div>
+          {/* Subtle full-width rule under tabs */}
+          <div className="h-px bg-border/20 -mt-px" />
         </div>
 
         {/* Category Description */}
         <motion.div
           key={activeCat.id}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="max-w-3xl mx-auto text-center px-6 mb-12"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35 }}
+          className="max-w-3xl mx-auto text-center px-6 mb-14"
         >
           <p className="text-muted-foreground font-body font-light text-sm leading-relaxed">
             {activeCat.description}
@@ -515,18 +582,19 @@ const Protocols = () => {
         </motion.div>
 
         {/* Tier Legend */}
-        <div className="max-w-4xl mx-auto px-6 mb-10">
-          <div className="grid grid-cols-3 gap-4">
+        <div className="max-w-4xl mx-auto px-6 mb-12">
+          <div className="grid grid-cols-3 gap-6">
             {TIERS.map((t) => {
               const meta = tierMeta[t];
               return (
                 <div key={t} className="text-center">
-                  <span
-                    className={`inline-block text-[10px] tracking-[0.2em] uppercase font-body px-3 py-1 border ${meta.badge} mb-2`}
-                  >
-                    {meta.label}
-                  </span>
-                  <p className="text-[10px] text-muted-foreground font-body font-light leading-relaxed">
+                  <div className="inline-flex items-center gap-2 mb-2">
+                    <div className="w-2 h-2 rounded-full" style={{ background: meta.accent, opacity: 0.6 }} />
+                    <span className={`text-[10px] tracking-[0.25em] uppercase font-body font-light ${meta.badge}`}>
+                      {meta.label}
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground/50 font-body font-extralight leading-relaxed">
                     {meta.description}
                   </p>
                 </div>
@@ -536,17 +604,24 @@ const Protocols = () => {
         </div>
 
         {/* Protocol content */}
-        <div ref={contentRef} className="max-w-6xl mx-auto px-6">
+        <div className="max-w-6xl mx-auto px-6">
           {activeCat.gendered ? (
             /* ── Gendered layout: two columns ── */
-            <div className="grid md:grid-cols-2 gap-8 md:gap-12">
+            <div className="grid md:grid-cols-2 gap-8 md:gap-14">
               {(["her", "him"] as const).map((gender) => {
                 const genderTiers = (activeCat as GenderedCategory)[gender];
                 return (
                   <div key={gender}>
-                    <h2 className="text-center text-sm tracking-[0.25em] uppercase font-body font-light text-foreground/70 mb-8 pb-3 border-b border-border/30">
-                      {gender === "her" ? "For Her" : "For Him"}
-                    </h2>
+                    <div className="flex items-center gap-4 mb-10">
+                      <div className="flex-1 h-px bg-gradient-to-r from-transparent to-border/30" />
+                      <h2
+                        className="text-sm tracking-[0.3em] uppercase font-body font-light px-4"
+                        style={{ color: "#D4AF37", opacity: 0.7 }}
+                      >
+                        {gender === "her" ? "For Her" : "For Him"}
+                      </h2>
+                      <div className="flex-1 h-px bg-gradient-to-l from-transparent to-border/30" />
+                    </div>
                     {TIERS.map((tier) => (
                       <TierSection key={tier} tier={tier} cards={genderTiers[tier]} />
                     ))}
@@ -569,11 +644,12 @@ const Protocols = () => {
         </div>
 
         {/* Bottom CTA */}
-        <section className="max-w-3xl mx-auto text-center px-6 mt-16">
+        <section className="max-w-3xl mx-auto text-center px-6 mt-20">
+          <div className="h-px w-24 mx-auto mb-8" style={{ background: "linear-gradient(to right, transparent, rgba(212,175,55,0.3), transparent)" }} />
           <p className="text-muted-foreground font-body font-light text-sm leading-relaxed">
             All protocols are physician-directed and customized to your lab results.
             Need guidance choosing the right protocol?{" "}
-            <button onClick={openCalendly} className="text-primary hover:underline">
+            <button onClick={openCalendly} className="hover:underline transition-colors" style={{ color: "#D4AF37" }}>
               Book a free consultation
             </button>{" "}
             with our clinical team.
