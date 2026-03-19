@@ -131,3 +131,14 @@
 .pv-hover-lift:hover {
   transform: translateY(-4px);
 }
+
+/* Remove white border/background from Calendly popup widget */
+.calendly-overlay .calendly-popup {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.calendly-overlay .calendly-popup-close {
+  color: #fff !important;
+}
