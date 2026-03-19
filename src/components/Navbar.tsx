@@ -1,97 +1,118 @@
-import { useState } from "react";
-import { Menu, X, User } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useLocation, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Layers, FlaskConical, Pill } from "lucide-react";
+import { openCalendly } from "@/hooks/useCalendly";
+
+const navItems = [
+  { label: "Membership", href: "/services", icon: Layers },
+  { label: "Protocols", href: "/protocols", icon: FlaskConical },
+  { label: "Peptides", href: "/peptides", icon: Pill },
+];
 
 const Navbar = () => {
-  const [open, setOpen] = useState(false);
+  const { pathname } = useLocation();
 
-  const links = [
-    { label: "About", href: "/about" },
-    { label: "Membership", href: "/services" },
-    { label: "Protocols", href: "/protocols" },
-    { label: "Peptides", href: "/peptides" },
-    { label: "FAQ", href: "/faq" },
-  ];
+  const activeIndex = navItems.findIndex((item) => pathname.startsWith(item.href));
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
-      <div className="max-w-7xl mx-auto px-6 flex items-center h-16">
-        {/* Left — Text wordmark */}
-        <div className="flex-1 flex items-center">
-          <a href="/" className="flex items-baseline gap-1.5 group">
-            <span className="text-lg font-heading font-light tracking-wide text-foreground group-hover:text-primary transition-colors duration-300">
-              Premier
-            </span>
-            <span className="text-lg font-heading font-light italic tracking-wide text-primary">
-              Vitality
-            </span>
-          </a>
-        </div>
+    <>
+      {/* Desktop Navbar */}
+      <nav className="hidden md:flex fixed top-0 left-0 right-0 z-50 items-center justify-between px-8 h-16 bg-background/80 backdrop-blur-xl border-b border-border/50">
+        {/* Logo */}
+        <Link to="/" className="flex items-baseline gap-1.5 group">
+          {/* LOGO SWAP: Replace with <img src="/logo.png" alt="Premier Vitality" className="h-8" /> when new logo is ready */}
+          <span className="text-lg font-heading font-light tracking-wide text-foreground group-hover:text-primary transition-colors duration-300">
+            Premier
+          </span>
+          <span className="text-lg font-heading font-light italic tracking-wide text-primary">
+            Vitality
+          </span>
+        </Link>
 
-        {/* Center — nav links */}
-        <div className="hidden md:flex items-center gap-9">
-          {links.map((l) => (
-            <a
-              key={l.label}
-              href={l.href}
-              className="text-[11px] font-body font-light tracking-[0.22em] uppercase text-muted-foreground hover:text-primary transition-colors duration-300"
-            >
-              {l.label}
-            </a>
-          ))}
-        </div>
-
-        {/* Right — Sign In */}
-        <div className="flex-1 hidden md:flex items-center justify-end">
-          <a
-            href="/auth"
-            className="flex items-center gap-2 px-5 py-2 text-[10px] font-body font-light tracking-[0.2em] uppercase border border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-          >
-            <User size={14} strokeWidth={1.2} />
-            Sign In
-          </a>
-        </div>
-
-        {/* Mobile toggle */}
-        <button className="md:hidden text-foreground p-1" onClick={() => setOpen(!open)}>
-          {open ? <X size={22} strokeWidth={1.2} /> : <Menu size={22} strokeWidth={1.2} />}
-        </button>
-      </div>
-
-      {/* Mobile menu */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-background/95 backdrop-blur-xl border-b border-border/50 overflow-hidden"
-          >
-            <div className="flex flex-col items-center px-6 py-6 gap-5">
-              {links.map((l) => (
-                <a
-                  key={l.label}
-                  href={l.href}
-                  onClick={() => setOpen(false)}
-                  className="text-[11px] tracking-[0.25em] uppercase text-muted-foreground hover:text-primary transition-colors font-body font-light"
-                >
-                  {l.label}
-                </a>
-              ))}
-              <div className="w-12 h-px bg-border/60 my-1" />
-              <a
-                href="/auth"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-2 px-6 py-2.5 text-[10px] font-body font-light tracking-[0.2em] uppercase border border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+        {/* Center Tubelight Pill Nav */}
+        <div className="absolute left-1/2 -translate-x-1/2">
+          <div className="relative flex items-center gap-1 bg-background/5 border border-border backdrop-blur-lg rounded-full px-1.5 py-1.5">
+            {navItems.map((item, i) => (
+              <Link
+                key={item.label}
+                to={item.href}
+                className={`relative z-10 px-5 py-1.5 text-[11px] tracking-[0.18em] uppercase font-body font-light rounded-full transition-colors duration-200 ${
+                  activeIndex === i ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                }`}
               >
-                <User size={14} strokeWidth={1.2} />
-                Sign In
-              </a>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
+                {item.label}
+                {activeIndex === i && (
+                  <>
+                    {/* Background glow */}
+                    <motion.div
+                      layoutId="lamp"
+                      className="absolute inset-0 rounded-full bg-primary/5"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
+                    />
+                    {/* Top lamp indicator */}
+                    <motion.div
+                      layoutId="lamp-glow"
+                      className="absolute -top-1 left-1/2 -translate-x-1/2 w-8 h-1"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
+                    >
+                      <div className="w-full h-full bg-primary rounded-full" />
+                      <div className="absolute inset-0 bg-primary rounded-full blur-[4px]" />
+                      <div className="absolute -inset-1 bg-primary/40 rounded-full blur-[8px]" />
+                    </motion.div>
+                  </>
+                )}
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Book a Consult */}
+        <button
+          onClick={openCalendly}
+          className="px-5 py-2 text-[10px] tracking-[0.2em] uppercase font-body font-light bg-primary text-primary-foreground hover:bg-primary/90 rounded-full transition-colors duration-200"
+        >
+          Book a Consult
+        </button>
+      </nav>
+
+      {/* Mobile Bottom Pill Bar */}
+      <div className="md:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
+        <div className="relative flex items-center gap-1 bg-background/80 border border-border backdrop-blur-lg rounded-full px-2 py-2 shadow-lg shadow-black/30">
+          {navItems.map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.label}
+                to={item.href}
+                className={`relative z-10 p-3 rounded-full transition-colors duration-200 ${
+                  activeIndex === i ? "text-primary" : "text-muted-foreground"
+                }`}
+              >
+                <Icon size={20} strokeWidth={1.5} />
+                {activeIndex === i && (
+                  <>
+                    <motion.div
+                      layoutId="lamp-mobile"
+                      className="absolute inset-0 rounded-full bg-primary/5"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
+                    />
+                    <motion.div
+                      layoutId="lamp-glow-mobile"
+                      className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-6 h-0.5"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
+                    >
+                      <div className="w-full h-full bg-primary rounded-full" />
+                      <div className="absolute inset-0 bg-primary rounded-full blur-[3px]" />
+                      <div className="absolute -inset-1 bg-primary/40 rounded-full blur-[6px]" />
+                    </motion.div>
+                  </>
+                )}
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    </>
   );
 };
 

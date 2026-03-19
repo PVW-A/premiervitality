@@ -13,6 +13,7 @@ const Footer = () => (
       {/* Top row — brand + contact */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-8">
         <div>
+          {/* LOGO SWAP: Replace with <img src="/logo.png" alt="Premier Vitality" className="h-8" /> when new logo is ready */}
           <p className="text-lg font-light tracking-[0.2em] uppercase text-foreground mb-2">
             Premier Vitality
           </p>

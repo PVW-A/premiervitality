@@ -2,8 +2,9 @@ import SEO from "@/components/SEO";
 import { useState, useEffect, useRef } from "react";
 import { openCalendly } from "@/hooks/useCalendly";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Check, Sparkles } from "lucide-react";
+import confetti from "canvas-confetti";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -89,13 +90,78 @@ const Services = () => {
     setCheckoutOpen(true);
   };
 
-  const tierAccents: Record<string, string> = {
-    essential: "border-border",
-    premium: "border-primary/60",
-    elite: "border-primary",
+  const hardcodedPlans = [
+    {
+      slug: "essential",
+      name: "Essential",
+      monthlyPrice: 99,
+      annualPrice: 82,
+      popular: false,
+      features: [
+        "Physician consultation",
+        "Basic peptide access",
+        "Quarterly bloodwork panel",
+        "Email support",
+        "Member pricing on all peptides",
+      ],
+    },
+    {
+      slug: "premium",
+      name: "Premium",
+      monthlyPrice: 199,
+      annualPrice: 165,
+      popular: true,
+      features: [
+        "Everything in Essential",
+        "Full peptide catalog access",
+        "Monthly bloodwork panels",
+        "Priority concierge support",
+        "15% member discount",
+        "Custom protocol design",
+      ],
+    },
+    {
+      slug: "elite",
+      name: "Elite",
+      monthlyPrice: 349,
+      annualPrice: 290,
+      popular: false,
+      features: [
+        "Everything in Premium",
+        "Unlimited physician consultations",
+        "Advanced biomarker panels",
+        "24/7 concierge access",
+        "25% member discount",
+        "Personalized longevity plan",
+        "Quarterly health reviews",
+      ],
+    },
+  ];
+
+  const handleToggleAnnual = () => {
+    if (billingCycle !== "annual") {
+      setBillingCycle("annual");
+      confetti({
+        particleCount: 80,
+        spread: 60,
+        origin: { y: 0.55 },
+        colors: ["#c9a96e", "#e8d5a3", "#ffffff"],
+      });
+    } else {
+      setBillingCycle("annual");
+    }
   };
-  const savingsPercent = (monthly: number, annual: number) =>
-    Math.round(((monthly - annual) / monthly) * 100);
+
+  const handleJoinPlan = (slug: string) => {
+    if (!user) {
+      navigate("/auth?redirect=/services");
+      return;
+    }
+    const tier = tiers?.find((t) => t.slug === slug);
+    if (tier) {
+      handleJoin(tier);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background" style={{ backgroundImage: "radial-gradient(ellipse 70% 40% at 50% 0%, hsl(39 38% 60% / 0.06) 0%, transparent 55%), radial-gradient(ellipse 50% 35% at 80% 70%, hsl(39 38% 40% / 0.04) 0%, transparent 55%)" }}>
@@ -140,7 +206,7 @@ const Services = () => {
         <HowItWorks />
 
         {/* Billing Toggle */}
-        <div className="flex justify-center mt-16 mb-14" style={{ position: "relative", zIndex: 1 }}>
+        <div className="flex flex-col items-center mt-16 mb-14 gap-3" style={{ position: "relative", zIndex: 1 }}>
           <div className="inline-flex items-center bg-secondary rounded-full p-1 gap-1">
             <button
               onClick={() => setBillingCycle("monthly")}
@@ -153,7 +219,7 @@ const Services = () => {
               Monthly
             </button>
             <button
-              onClick={() => setBillingCycle("annual")}
+              onClick={handleToggleAnnual}
               className={`px-5 py-2 text-xs tracking-[0.15em] uppercase font-body font-light rounded-full transition-colors duration-200 ${
                 billingCycle === "annual"
                   ? "bg-primary text-primary-foreground"
@@ -163,97 +229,112 @@ const Services = () => {
               Annual
             </button>
           </div>
+          <AnimatePresence>
+            {billingCycle === "annual" && (
+              <motion.span
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                className="text-xs text-primary font-body font-light"
+              >
+                Save 17% annually
+              </motion.span>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Tier Cards */}
-        {isLoading ? (
-          <div className="flex justify-center py-20">
-            <div className="w-6 h-6 border border-primary/40 border-t-primary rounded-full animate-spin" />
-          </div>
-        ) : (
-          <div ref={tiersGridRef} className="max-w-6xl mx-auto px-6 grid gap-8 md:grid-cols-3" style={{ position: "relative", zIndex: 1 }}>
-            {tiers?.map((tier, i) => {
-              const price =
-                billingCycle === "monthly" ? tier.monthly_price : tier.annual_price;
-              const isPopular = tier.slug === "premium";
-              const isCurrentTier = membership?.tier_id === tier.id;
-              const features = (tier.features as string[]) || [];
+        <div ref={tiersGridRef} className="max-w-6xl mx-auto px-6 grid gap-8 md:grid-cols-3" style={{ position: "relative", zIndex: 1 }}>
+          {hardcodedPlans.map((plan) => {
+            const price = billingCycle === "monthly" ? plan.monthlyPrice : plan.annualPrice;
+            const supabaseTier = tiers?.find((t) => t.slug === plan.slug);
+            const isCurrentTier = supabaseTier && membership?.tier_id === supabaseTier.id;
 
-              return (
-                <div
-                  key={tier.id}
-                  className={`pv-card-reveal pv-hover-lift relative flex flex-col p-8 md:p-10 ${
-                    isPopular ? "md:-mt-4 md:mb-0 md:pb-12" : ""
-                  }`}
-                  style={{
-                    background: "rgba(255,255,255,0.03)",
-                    backdropFilter: "blur(12px)",
-                    WebkitBackdropFilter: "blur(12px)",
-                    border: `1px solid ${isPopular ? "hsl(39 38% 60% / 0.4)" : "rgba(255,255,255,0.08)"}`,
-                    boxShadow: isPopular
-                      ? "0 12px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)"
-                      : "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)",
-                  }}
-                >
-                  {isPopular && (
-                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                      <span className="inline-flex items-center gap-1.5 bg-primary text-primary-foreground text-[10px] tracking-[0.2em] uppercase font-body px-4 py-1.5">
-                        <Sparkles size={12} /> Most Popular
-                      </span>
-                    </div>
-                  )}
-
-                  <h3 className="text-xs tracking-[0.3em] uppercase text-primary font-body font-light mb-3">
-                    {tier.name}
-                  </h3>
-
-                  <div className="flex items-baseline gap-1 mb-1">
-                    <span className="text-4xl font-heading font-light text-foreground">
-                      ${price.toFixed(2)}
+            return (
+              <div
+                key={plan.slug}
+                className={`pv-card-reveal pv-hover-lift relative flex flex-col p-8 md:p-10 ${
+                  plan.popular ? "md:-mt-4 md:mb-0 md:pb-12" : ""
+                }`}
+                style={{
+                  background: "rgba(255,255,255,0.03)",
+                  backdropFilter: "blur(12px)",
+                  WebkitBackdropFilter: "blur(12px)",
+                  border: `1px solid ${plan.popular ? "hsl(39 38% 60% / 0.4)" : "rgba(255,255,255,0.08)"}`,
+                  boxShadow: plan.popular
+                    ? "0 12px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)"
+                    : "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)",
+                }}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                    <span className="inline-flex items-center gap-1.5 bg-primary text-primary-foreground text-[10px] tracking-[0.2em] uppercase font-body px-4 py-1.5">
+                      <Sparkles size={12} /> Most Popular
                     </span>
-                    <span className="text-muted-foreground text-xs font-body">/mo</span>
                   </div>
+                )}
 
-                  {billingCycle === "annual" && (
-                    <span className="text-xs text-primary font-body mb-6">
-                      Save {savingsPercent(tier.monthly_price, tier.annual_price)}% — billed
-                      annually
-                    </span>
-                  )}
-                  {billingCycle === "monthly" && <div className="mb-6" />}
+                <h3 className="text-xs tracking-[0.3em] uppercase text-primary font-body font-light mb-3">
+                  {plan.name}
+                </h3>
 
-                  <div className="flex-1 flex flex-col gap-3 mb-8">
-                    {features.map((f, fi) => (
-                      <div
-                        key={fi}
-                        className="flex items-start gap-2.5 text-sm text-muted-foreground font-body font-light"
+                <div className="flex items-baseline gap-1 mb-1">
+                  <span className="text-4xl font-heading font-light text-foreground">
+                    <AnimatePresence mode="wait">
+                      <motion.span
+                        key={price}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="inline-block"
                       >
-                        <Check size={15} className="text-primary mt-0.5 shrink-0" />
-                        <span>{f}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <BloodworkBreakdown slug={tier.slug} />
-
-                  <button
-                    onClick={() => handleJoin(tier)}
-                    disabled={isCurrentTier}
-                    className={`w-full py-3 text-xs tracking-[0.2em] uppercase font-body font-light transition-colors duration-200 ${
-                      isCurrentTier
-                        ? "bg-secondary text-muted-foreground cursor-default"
-                        : isPopular
-                        ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                        : "border border-primary/40 text-primary hover:bg-primary/10"
-                    }`}
-                  >
-                    {isCurrentTier ? "Current Plan" : "Get Started"}
-                  </button>
+                        ${price}
+                      </motion.span>
+                    </AnimatePresence>
+                  </span>
+                  <span className="text-muted-foreground text-xs font-body">/mo</span>
                 </div>
-              );
-            })}
-          </div>
-        )}
+
+                {billingCycle === "annual" ? (
+                  <span className="text-xs text-primary font-body mb-6">
+                    Save 17% — billed annually
+                  </span>
+                ) : (
+                  <div className="mb-6" />
+                )}
+
+                <div className="flex-1 flex flex-col gap-3 mb-8">
+                  {plan.features.map((f, fi) => (
+                    <div
+                      key={fi}
+                      className="flex items-start gap-2.5 text-sm text-muted-foreground font-body font-light"
+                    >
+                      <Check size={15} className="text-primary mt-0.5 shrink-0" />
+                      <span>{f}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <BloodworkBreakdown slug={plan.slug} />
+
+                <button
+                  onClick={() => handleJoinPlan(plan.slug)}
+                  disabled={!!isCurrentTier}
+                  className={`w-full py-3 text-xs tracking-[0.2em] uppercase font-body font-light transition-colors duration-200 ${
+                    isCurrentTier
+                      ? "bg-secondary text-muted-foreground cursor-default"
+                      : plan.popular
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                      : "border border-primary/40 text-primary hover:bg-primary/10"
+                  }`}
+                >
+                  {isCurrentTier ? "Current Plan" : "Get Started"}
+                </button>
+              </div>
+            );
+          })}
+        </div>
 
         {/* Comparison Table */}
         <TierComparisonTable />

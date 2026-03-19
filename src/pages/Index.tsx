@@ -1,6 +1,8 @@
 import SEO from "@/components/SEO";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
+import HowItWorksHome from "@/components/HowItWorksHome";
+import TestimonialsMarquee from "@/components/TestimonialsMarquee";
 import FoundersSection from "@/components/FoundersSection";
 import AboutSection from "@/components/AboutSection";
 import HealthIntelligenceSection from "@/components/HealthIntelligenceSection";
@@ -17,6 +19,8 @@ const Index = () => (
     <Navbar />
     <main>
       <HeroSection />
+      <HowItWorksHome />
+      <TestimonialsMarquee />
       <FoundersSection />
       <AboutSection />
       <HealthIntelligenceSection />

@@ -1,6 +1,7 @@
 import SEO from "@/components/SEO";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import TestimonialsMarquee from "@/components/TestimonialsMarquee";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
@@ -218,6 +219,8 @@ const About = () => (
             ))}
           </div>
         </motion.div>
+
+        <TestimonialsMarquee />
       </div>
     </main>
     <Footer />
