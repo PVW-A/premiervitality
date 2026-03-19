@@ -1,35 +1,33 @@
 import { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Layers, FlaskConical, Pill, Menu, X, User, Home, HelpCircle, BookOpen } from "lucide-react";
+import { Home, Layers, FlaskConical, Pill, Users, Menu, X, User } from "lucide-react";
 import { openCalendly } from "@/hooks/useCalendly";
 
 const navItems = [
+  { label: "Home", href: "/", icon: Home },
   { label: "Membership", href: "/services", icon: Layers },
   { label: "Protocols", href: "/protocols", icon: FlaskConical },
   { label: "Peptides", href: "/peptides", icon: Pill },
+  { label: "About", href: "/about", icon: Users },
 ];
 
-const mobileDrawerLinks = [
-  { label: "Home", href: "/" },
-  { label: "Membership", href: "/services" },
-  { label: "Protocols", href: "/protocols" },
-  { label: "Peptides", href: "/peptides" },
-  { label: "How It Works", href: "/services#how-it-works" },
+const drawerLinks = [
   { label: "FAQ", href: "/faq" },
   { label: "Sign In", href: "/auth" },
-];
-
-const desktopDrawerLinks = [
-  { label: "Sign In", href: "/auth" },
-  { label: "FAQ", href: "/faq" },
+  { label: "Privacy Policy", href: "/privacy" },
+  { label: "Terms & Conditions", href: "/terms" },
+  { label: "SMS Consent", href: "/sms-consent" },
+  { label: "Disclaimer", href: "/disclaimer" },
 ];
 
 const Navbar = () => {
   const { pathname } = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const activeIndex = navItems.findIndex((item) => pathname.startsWith(item.href));
+  const activeIndex = navItems.findIndex((item) =>
+    item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)
+  );
 
   return (
     <>
@@ -142,34 +140,34 @@ const Navbar = () => {
               </div>
 
               <div className="flex flex-col px-6 py-8 gap-1">
-                {/* Mobile: all links */}
-                <div className="md:hidden flex flex-col gap-1">
-                  {mobileDrawerLinks.map((link) => (
+                {/* Mobile: show main nav items first */}
+                <div className="md:hidden flex flex-col gap-1 mb-2">
+                  {navItems.map((item) => (
                     <Link
-                      key={link.label}
-                      to={link.href}
+                      key={item.label}
+                      to={item.href}
                       onClick={() => setDrawerOpen(false)}
                       className="flex items-center gap-3 px-3 py-3 text-sm font-body font-light text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
                     >
-                      {link.label === "Sign In" && <User size={16} strokeWidth={1.5} />}
-                      {link.label}
+                      <item.icon size={16} strokeWidth={1.5} />
+                      {item.label}
                     </Link>
                   ))}
+                  <div className="my-2 h-px bg-border/50" />
                 </div>
-                {/* Desktop: just Sign In + FAQ */}
-                <div className="hidden md:flex flex-col gap-1">
-                  {desktopDrawerLinks.map((link) => (
-                    <Link
-                      key={link.label}
-                      to={link.href}
-                      onClick={() => setDrawerOpen(false)}
-                      className="flex items-center gap-3 px-3 py-3 text-sm font-body font-light text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
-                    >
-                      {link.label === "Sign In" && <User size={16} strokeWidth={1.5} />}
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
+
+                {/* Secondary links (shown on both desktop and mobile) */}
+                {drawerLinks.map((link) => (
+                  <Link
+                    key={link.label}
+                    to={link.href}
+                    onClick={() => setDrawerOpen(false)}
+                    className="flex items-center gap-3 px-3 py-3 text-sm font-body font-light text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
+                  >
+                    {link.label === "Sign In" && <User size={16} strokeWidth={1.5} />}
+                    {link.label}
+                  </Link>
+                ))}
 
                 <div className="my-4 h-px bg-border/50" />
 

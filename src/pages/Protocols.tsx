@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import { openCalendly } from "@/hooks/useCalendly";
 import {
   Scale, Heart, Flame, Sparkles, Scissors, Bandage, Zap, Shield,
-  Brain, ArrowRight,
+  Brain,
 } from "lucide-react";
 
 /* ───────────────────────────── types ───────────────────────────── */
@@ -360,59 +360,69 @@ const CATEGORIES: CategoryData[] = [
   },
 ];
 
+/* ───────────────────────── card styles (match Peptides page) ───── */
+
+const CARD_GLASS: React.CSSProperties = {
+  background: "rgba(255,255,255,0.03)",
+  backdropFilter: "blur(12px)",
+  WebkitBackdropFilter: "blur(12px)",
+  boxShadow: "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)",
+};
+
 /* ───────────────────────── card component ──────────────────────── */
 
 const ProtocolCardEl = ({ card, tier, index }: { card: ProtocolCard; tier: Tier; index: number }) => {
-  const meta = tierMeta[tier];
+  const [hovered, setHovered] = useState(false);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.45, delay: index * 0.07, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className="group flex flex-col p-6 rounded-sm transition-all duration-300"
+    <div
+      className="flex flex-col h-full"
       style={{
-        background: "rgba(255,255,255,0.03)",
-        backdropFilter: "blur(14px)",
-        WebkitBackdropFilter: "blur(14px)",
-        border: `1px solid ${meta.borderIdle}`,
-        boxShadow: `0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04)`,
+        ...CARD_GLASS,
+        border: `1px solid ${hovered ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.08)"}`,
+        boxShadow: hovered
+          ? "0 16px 48px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)"
+          : CARD_GLASS.boxShadow as string,
+        transition: "border-color 0.3s ease, box-shadow 0.3s ease",
       }}
-      whileHover={{
-        y: -6,
-        boxShadow: `0 16px 48px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06)`,
-        borderColor: meta.borderHover,
-        transition: { duration: 0.25 },
-      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      {/* Protocol name */}
-      <h3 className="text-base md:text-lg font-heading font-light text-foreground/90 mb-1.5 leading-snug tracking-wide">
-        {card.name}
-      </h3>
-      <p className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground/40 font-body font-extralight mb-6">
-        {card.duration}
-      </p>
-
-      {/* Price */}
-      <div className="mt-auto mb-5">
-        <p className="text-[8px] tracking-[0.3em] uppercase font-body font-extralight mb-1 text-white/40">
-          Starting From
+      <div className="p-5 flex-1">
+        {/* Tier badge */}
+        <p className="text-[8px] tracking-[0.2em] uppercase font-body font-extralight text-muted-foreground/40 mb-3">
+          {tierMeta[tier].label}
         </p>
-        <span className="text-3xl font-heading font-light" style={{ color: "#D4AF37" }}>
-          ${card.price.toFixed(2)}
-        </span>
+
+        {/* Protocol name */}
+        <p className="text-lg font-heading font-light text-foreground/90 mb-1">
+          {card.name}
+        </p>
+        <p className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground/50 font-body font-extralight mb-4">
+          {card.duration}
+        </p>
+
+        {/* Price */}
+        <div className="mt-auto">
+          <p className="text-[8px] tracking-[0.2em] uppercase font-body font-extralight text-muted-foreground/40 mb-1">
+            Starting From
+          </p>
+          <span className="text-2xl font-heading font-light text-primary">
+            ${card.price.toFixed(2)}
+          </span>
+        </div>
       </div>
 
       {/* CTA */}
-      <button
-        onClick={openCalendly}
-        className="w-full py-3 flex items-center justify-center gap-2 text-[10px] tracking-[0.2em] uppercase font-body font-light rounded-sm transition-all duration-300 border border-white/20 text-white hover:bg-white hover:text-black"
-      >
-        Book a Consultation
-        <ArrowRight size={12} />
-      </button>
-    </motion.div>
+      <div className="px-5 pb-5">
+        <button
+          onClick={openCalendly}
+          className="w-full py-2.5 border border-border/40 text-center text-[10px] font-body font-extralight tracking-[0.2em] uppercase text-muted-foreground/50 hover:text-foreground/70 hover:border-border/60 transition-colors"
+        >
+          Book a Consultation
+        </button>
+      </div>
+    </div>
   );
 };
 
@@ -491,8 +501,7 @@ const Protocols = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="text-xs tracking-[0.35em] uppercase font-body font-light mb-4"
-            style={{ color: "#D4AF37" }}
+            className="text-xs tracking-[0.35em] uppercase font-body font-light mb-4 text-primary"
           >
             Precision Protocols
           </motion.p>
@@ -520,7 +529,7 @@ const Protocols = () => {
         <div className="max-w-6xl mx-auto px-4 mb-16">
           <div
             ref={tabsRef}
-            className="flex gap-1 overflow-x-auto pb-3 scrollbar-hide sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0"
+            className="flex gap-2 overflow-x-auto pb-3 scrollbar-hide sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0"
           >
             {CATEGORIES.map((cat) => {
               const Icon = cat.icon;
@@ -530,21 +539,18 @@ const Protocols = () => {
                   key={cat.id}
                   data-active={isActive}
                   onClick={() => setActiveCatId(cat.id)}
-                  className={`relative flex items-center gap-1.5 px-4 py-2.5 md:px-5 md:py-3 text-[9px] md:text-[10px] tracking-[0.15em] uppercase font-body font-light whitespace-nowrap transition-all duration-300 shrink-0 border-b-2 bg-transparent ${
+                  className={`flex items-center gap-1.5 px-4 py-2 text-[9px] tracking-[0.2em] uppercase font-body font-extralight border whitespace-nowrap shrink-0 transition-all duration-300 ${
                     isActive
-                      ? "text-[#D4AF37] border-[#D4AF37]"
-                      : "text-muted-foreground/50 border-transparent hover:text-foreground/70 hover:border-border/40"
+                      ? "bg-primary/10 text-primary/80 border-primary/20"
+                      : "border-border/40 text-muted-foreground/50 hover:text-foreground/60 hover:border-border/60"
                   }`}
-                  style={isActive ? { textShadow: "0 0 12px rgba(212,175,55,0.4)" } : undefined}
                 >
-                  <Icon size={13} strokeWidth={1.2} className="hidden sm:block" />
+                  <Icon size={9} strokeWidth={1.5} className="hidden sm:inline" />
                   {cat.name}
                 </button>
               );
             })}
           </div>
-          {/* Subtle full-width rule under tabs */}
-          <div className="h-px bg-border/20 -mt-px" />
         </div>
 
         {/* Category Description */}
@@ -594,8 +600,7 @@ const Protocols = () => {
                     <div className="flex items-center gap-4 mb-10">
                       <div className="flex-1 h-px bg-gradient-to-r from-transparent to-border/30" />
                       <h2
-                        className="text-sm tracking-[0.3em] uppercase font-body font-light px-4"
-                        style={{ color: "#D4AF37", opacity: 0.7 }}
+                        className="text-sm tracking-[0.3em] uppercase font-body font-light px-4 text-primary/70"
                       >
                         {gender === "her" ? "For Her" : "For Him"}
                       </h2>
@@ -624,11 +629,11 @@ const Protocols = () => {
 
         {/* Bottom CTA */}
         <section className="max-w-3xl mx-auto text-center px-6 mt-20">
-          <div className="h-px w-24 mx-auto mb-8" style={{ background: "linear-gradient(to right, transparent, rgba(212,175,55,0.3), transparent)" }} />
+          <div className="h-px w-24 mx-auto mb-8 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
           <p className="text-muted-foreground font-body font-light text-sm leading-relaxed">
             All protocols are physician-directed and customized to your lab results.
             Need guidance choosing the right protocol?{" "}
-            <button onClick={openCalendly} className="hover:underline transition-colors" style={{ color: "#D4AF37" }}>
+            <button onClick={openCalendly} className="text-primary hover:underline transition-colors">
               Book a free consultation
             </button>{" "}
             with our clinical team.
