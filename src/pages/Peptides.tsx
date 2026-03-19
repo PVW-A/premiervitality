@@ -171,7 +171,6 @@ const Peptides = () => {
   const [expandedFormulation, setExpandedFormulation] = useState<string | null>(null);
   const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({});
   const [orderDialog, setOrderDialog] = useState<{ open: boolean; compound: FeaturedCompound | null }>({ open: false, compound: null });
-  const featuredGridRef = useRevealGrid(filteredFeatured);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -194,6 +193,8 @@ const Peptides = () => {
       return matchGoal && matchSearch;
     });
   }, [activeGoal, search]);
+
+  const featuredGridRef = useRevealGrid(filteredFeatured);
 
   // Full catalog groups
   const groups = useMemo(() => {

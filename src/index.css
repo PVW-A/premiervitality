@@ -138,7 +138,20 @@
   border: none !important;
   box-shadow: none !important;
   padding: 0 !important;
+  max-width: 100% !important;
+}
+.calendly-overlay .calendly-popup-content {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+.calendly-overlay .calendly-popup-content iframe {
+  border: none !important;
 }
 .calendly-overlay .calendly-popup-close {
   color: #fff !important;
+}
+.calendly-overlay {
+  background: rgba(0, 0, 0, 0.8) !important;
 }

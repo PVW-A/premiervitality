@@ -69,11 +69,37 @@ interface Category {
   sort_order: number;
 }
 
+const FALLBACK_CATEGORIES: Category[] = [
+  { id: "weight", name: "Weight Management", slug: "weight", description: "Physician-directed protocols targeting metabolic optimization, appetite regulation, and sustainable body composition change.", icon: "Scale", sort_order: 1 },
+  { id: "wellness", name: "Wellness & Longevity", slug: "wellness", description: "Comprehensive protocols designed to enhance cellular health, immune resilience, and overall vitality for long-term well-being.", icon: "Heart", sort_order: 2 },
+  { id: "performance", name: "Performance & Recovery", slug: "performance", description: "Targeted protocols for athletic performance, tissue repair, and accelerated recovery between training sessions.", icon: "Zap", sort_order: 3 },
+  { id: "hormones", name: "Hormone Optimization", slug: "hormones", description: "Precision protocols to restore and optimize hormonal balance for energy, mood, and metabolic function.", icon: "Flame", sort_order: 4 },
+];
+
+const FALLBACK_PROTOCOLS: Protocol[] = [
+  // Weight Management
+  { id: "w-premier", category_id: "weight", name: "Elite Metabolic Reset", tier: "premier", description: "Our most comprehensive weight management protocol combining GLP-1 therapy with metabolic support peptides for maximum results.", items: [{ product: "Semaglutide", dose: "0.25–2.4 mg/week titration", cost: 0, price: 299, rationale: "GLP-1 receptor agonist for appetite regulation and metabolic optimization" }, { product: "BPC-157", dose: "500 mcg/day SQ", cost: 0, price: 89, rationale: "Gut healing and systemic tissue repair support" }, { product: "AOD 9604", dose: "300 mcg/day", cost: 0, price: 119, rationale: "Fat metabolism fragment of growth hormone" }], total_cost: 0, total_price: 507, duration_weeks: 12, sort_order: 1 },
+  { id: "w-core", category_id: "weight", name: "Metabolic Accelerator", tier: "core", description: "Strategic weight management combining GLP-1 therapy with targeted metabolic support.", items: [{ product: "Semaglutide", dose: "0.25–2.4 mg/week titration", cost: 0, price: 299, rationale: "Primary appetite regulation and metabolic support" }, { product: "AOD 9604", dose: "300 mcg/day", cost: 0, price: 119, rationale: "Targeted fat metabolism support" }], total_cost: 0, total_price: 418, duration_weeks: 12, sort_order: 2 },
+  { id: "w-essential", category_id: "weight", name: "Metabolic Foundations", tier: "essential", description: "Foundational GLP-1 protocol for steady, physician-guided weight management.", items: [{ product: "Semaglutide", dose: "0.25–1.0 mg/week titration", cost: 0, price: 249, rationale: "Clinically proven GLP-1 agonist for weight management" }], total_cost: 0, total_price: 249, duration_weeks: 12, sort_order: 3 },
+  // Wellness & Longevity
+  { id: "l-premier", category_id: "wellness", name: "Total Vitality Protocol", tier: "premier", description: "A full-spectrum longevity protocol targeting cellular repair, immune defense, and systemic rejuvenation.", items: [{ product: "NAD+ IV Therapy", dose: "500 mg IV weekly", cost: 0, price: 350, rationale: "Cellular energy and DNA repair" }, { product: "Thymosin Alpha-1", dose: "1.6 mg 2x/week SQ", cost: 0, price: 199, rationale: "Immune system modulation and resilience" }, { product: "BPC-157", dose: "500 mcg/day SQ", cost: 0, price: 89, rationale: "Systemic tissue repair and gut health" }], total_cost: 0, total_price: 638, duration_weeks: 8, sort_order: 4 },
+  { id: "l-core", category_id: "wellness", name: "Cellular Renewal", tier: "core", description: "Targeted longevity support combining cellular energy optimization with immune modulation.", items: [{ product: "NAD+ IV Therapy", dose: "250 mg IV bi-weekly", cost: 0, price: 225, rationale: "Cellular energy restoration" }, { product: "Thymosin Alpha-1", dose: "1.6 mg 2x/week SQ", cost: 0, price: 199, rationale: "Immune optimization" }], total_cost: 0, total_price: 424, duration_weeks: 8, sort_order: 5 },
+  { id: "l-essential", category_id: "wellness", name: "Longevity Basics", tier: "essential", description: "Essential immune and cellular support for everyday vitality.", items: [{ product: "Thymosin Alpha-1", dose: "1.6 mg 2x/week SQ", cost: 0, price: 199, rationale: "Foundational immune support" }], total_cost: 0, total_price: 199, duration_weeks: 8, sort_order: 6 },
+  // Performance & Recovery
+  { id: "p-premier", category_id: "performance", name: "Peak Performance Stack", tier: "premier", description: "Elite-level recovery and performance protocol for serious athletes and active individuals.", items: [{ product: "BPC-157", dose: "500 mcg/day SQ", cost: 0, price: 89, rationale: "Accelerated tissue repair and recovery" }, { product: "TB-500", dose: "750 mcg 2x/week SQ", cost: 0, price: 129, rationale: "Systemic tissue regeneration and flexibility" }, { product: "CJC-1295/Ipamorelin", dose: "300 mcg/300 mcg nightly SQ", cost: 0, price: 179, rationale: "Growth hormone optimization for recovery and lean mass" }], total_cost: 0, total_price: 397, duration_weeks: 10, sort_order: 7 },
+  { id: "p-core", category_id: "performance", name: "Recovery Accelerator", tier: "core", description: "Targeted recovery support combining tissue repair peptides for faster bounce-back.", items: [{ product: "BPC-157", dose: "500 mcg/day SQ", cost: 0, price: 89, rationale: "Tissue healing and anti-inflammatory support" }, { product: "TB-500", dose: "750 mcg 2x/week SQ", cost: 0, price: 129, rationale: "Complementary tissue regeneration" }], total_cost: 0, total_price: 218, duration_weeks: 10, sort_order: 8 },
+  { id: "p-essential", category_id: "performance", name: "Recovery Foundations", tier: "essential", description: "Foundational peptide support for injury recovery and general tissue health.", items: [{ product: "BPC-157", dose: "500 mcg/day SQ", cost: 0, price: 89, rationale: "Versatile healing peptide for gut and musculoskeletal repair" }], total_cost: 0, total_price: 89, duration_weeks: 10, sort_order: 9 },
+  // Hormone Optimization
+  { id: "h-premier", category_id: "hormones", name: "Complete Hormonal Reset", tier: "premier", description: "Comprehensive hormone optimization protocol addressing multiple axes for total endocrine balance.", items: [{ product: "CJC-1295/Ipamorelin", dose: "300 mcg/300 mcg nightly SQ", cost: 0, price: 179, rationale: "Growth hormone axis optimization" }, { product: "Gonadorelin", dose: "100 mcg 2x/week SQ", cost: 0, price: 99, rationale: "LH/FSH support for reproductive hormone balance" }, { product: "DHEA", dose: "25 mg/day oral", cost: 0, price: 45, rationale: "Adrenal precursor for downstream hormone support" }], total_cost: 0, total_price: 323, duration_weeks: 12, sort_order: 10 },
+  { id: "h-core", category_id: "hormones", name: "Growth Hormone Support", tier: "core", description: "Targeted growth hormone optimization for energy, sleep, and body composition.", items: [{ product: "CJC-1295/Ipamorelin", dose: "300 mcg/300 mcg nightly SQ", cost: 0, price: 179, rationale: "Stimulates natural GH release" }, { product: "DHEA", dose: "25 mg/day oral", cost: 0, price: 45, rationale: "Hormonal precursor support" }], total_cost: 0, total_price: 224, duration_weeks: 12, sort_order: 11 },
+  { id: "h-essential", category_id: "hormones", name: "GH Foundations", tier: "essential", description: "Entry-level growth hormone secretagogue protocol for sleep and recovery benefits.", items: [{ product: "CJC-1295/Ipamorelin", dose: "300 mcg/300 mcg nightly SQ", cost: 0, price: 179, rationale: "Clinically studied GH secretagogue combination" }], total_cost: 0, total_price: 179, duration_weeks: 12, sort_order: 12 },
+];
+
 const Protocols = () => {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [expandedProtocol, setExpandedProtocol] = useState<string | null>(null);
 
-  const { data: categories } = useQuery({
+  const { data: dbCategories } = useQuery({
     queryKey: ["protocol-categories"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -85,7 +111,7 @@ const Protocols = () => {
     },
   });
 
-  const { data: protocols, isLoading } = useQuery({
+  const { data: dbProtocols, isLoading } = useQuery({
     queryKey: ["protocols"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -96,6 +122,10 @@ const Protocols = () => {
       return data as unknown as Protocol[];
     },
   });
+
+  // Use DB data if available, otherwise fall back to hardcoded content
+  const categories = dbCategories && dbCategories.length > 0 ? dbCategories : FALLBACK_CATEGORIES;
+  const protocols = dbProtocols && dbProtocols.length > 0 ? dbProtocols : FALLBACK_PROTOCOLS;
 
   const selectedCatId = activeCategory || categories?.[0]?.id || null;
   const selectedCat = categories?.find((c) => c.id === selectedCatId);
