@@ -195,7 +195,7 @@ const Services = () => {
         <HowItWorks />
 
         {/* Billing Toggle */}
-        <div className="flex flex-col items-center mt-20 mb-14 gap-3" style={{ position: "relative", zIndex: 1 }}>
+        <div className="flex flex-col items-center pt-4 mb-14 gap-3">
           <div className="inline-flex items-center bg-secondary rounded-full p-1 gap-1">
             <button
               onClick={() => setBillingCycle("monthly")}
@@ -233,7 +233,7 @@ const Services = () => {
         </div>
 
         {/* Tier Cards */}
-        <div ref={tiersGridRef} className="max-w-6xl mx-auto px-6 grid gap-8 md:grid-cols-3" style={{ position: "relative", zIndex: 1 }}>
+        <div ref={tiersGridRef} className="max-w-6xl mx-auto px-6 grid gap-8 md:grid-cols-3">
           {hardcodedPlans.map((plan) => {
             const price = billingCycle === "monthly" ? plan.monthlyPrice : plan.annualPrice;
             const supabaseTier = tiers?.find((t) => t.slug === plan.slug);

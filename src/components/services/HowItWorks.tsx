@@ -20,7 +20,7 @@ const steps = [
 ];
 
 const HowItWorks = () => (
-  <section className="max-w-5xl mx-auto px-6 mb-14 md:mb-20">
+  <section className="max-w-5xl mx-auto px-6 pb-16 mb-0">
     <motion.p
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -59,10 +59,6 @@ const HowItWorks = () => (
       ))}
     </div>
 
-    {/* Connecting line (desktop only) */}
-    <div className="hidden md:block relative -mt-[88px] mx-auto max-w-[70%]">
-      <div className="border-t border-dashed border-primary/20" />
-    </div>
   </section>
 );
 
