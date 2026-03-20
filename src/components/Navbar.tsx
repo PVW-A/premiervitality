@@ -78,18 +78,15 @@ const Navbar = () => {
             ref={navContainerRef}
             className="relative flex items-center gap-1 bg-background/5 border border-border backdrop-blur-lg rounded-full px-1.5 py-1.5"
           >
-            {/* Sliding indicator */}
+            {/* Sliding gold bar — sits just above text, touching top border */}
             <span
-              className="absolute top-0 h-[2px] rounded-full"
-              style={{ background: "#AB8F5F", ...indicatorStyle }}
+              className="absolute h-[2px] rounded-full"
+              style={{ background: "#AB8F5F", top: -1, ...indicatorStyle }}
             />
+            {/* Sliding highlight bg */}
             <span
               className="absolute rounded-full bg-primary/5"
-              style={{
-                top: 0,
-                bottom: 0,
-                ...indicatorStyle,
-              }}
+              style={{ top: 0, bottom: 0, ...indicatorStyle }}
             />
 
             {navItems.map((item, i) => (

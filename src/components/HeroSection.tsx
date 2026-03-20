@@ -7,11 +7,22 @@ const HeroSection = () => (
     className="relative min-h-screen flex items-center justify-center overflow-hidden"
     id="home"
   >
-    {/* Background image overlay */}
+    {/* Background image + warm radial atmosphere */}
     <div className="absolute inset-0">
       <img src={heroBg} alt="" className="w-full h-full object-cover opacity-15" />
-      <div className="absolute inset-0 bg-black/60" />
+      <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 40%, #2a2418 0%, #1a1610 30%, #0a0a08 60%, #000000 100%)" }} />
     </div>
+
+    {/* Warm golden atmospheric glow */}
+    <div
+      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+      style={{
+        width: 800,
+        height: 800,
+        background: "radial-gradient(circle, rgba(171,143,95,0.08) 0%, transparent 70%)",
+        filter: "blur(40px)",
+      }}
+    />
 
     <div className="relative z-10 max-w-5xl mx-auto px-4 md:px-6 pt-20 sm:pt-0 text-center flex flex-col items-center">
       <motion.h1
