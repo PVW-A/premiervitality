@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Home, Layers, FlaskConical, Pill, Users, Menu, X, User } from "lucide-react";
@@ -24,71 +24,90 @@ const drawerLinks = [
 const Navbar = () => {
   const { pathname } = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [canAnimate, setCanAnimate] = useState(false);
+  const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({ opacity: 0 });
+  const navContainerRef = useRef<HTMLDivElement>(null);
+  const linkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
 
   const activeIndex = navItems.findIndex((item) =>
     item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)
   );
 
-  // After first render, enable transitions
-  useEffect(() => {
-    const timer = setTimeout(() => setMounted(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
+  const updateIndicator = useCallback((animate: boolean) => {
+    const container = navContainerRef.current;
+    const activeLink = linkRefs.current[activeIndex];
+    if (!container || !activeLink || activeIndex < 0) {
+      setIndicatorStyle({ opacity: 0 });
+      return;
+    }
+    const containerRect = container.getBoundingClientRect();
+    const linkRect = activeLink.getBoundingClientRect();
+    setIndicatorStyle({
+      left: linkRect.left - containerRect.left,
+      width: linkRect.width,
+      opacity: 1,
+      transition: animate ? "left 0.3s ease, width 0.3s ease, opacity 0.15s ease" : "none",
+    });
+  }, [activeIndex]);
 
-  // Reset mounted on route change so indicator snaps on navigation, then re-enables for in-page clicks
+  // On mount or route change: snap instantly, then enable animation after 50ms
   useEffect(() => {
-    setMounted(false);
-    const timer = setTimeout(() => setMounted(true), 100);
+    setCanAnimate(false);
+    updateIndicator(false);
+    const timer = setTimeout(() => setCanAnimate(true), 50);
     return () => clearTimeout(timer);
-  }, [pathname]);
+  }, [pathname, updateIndicator]);
 
-  const springTransition = mounted
-    ? { type: "spring" as const, bounce: 0.2, duration: 0.5 }
-    : { duration: 0 };
+  // On activeIndex change from in-page click: animate
+  useEffect(() => {
+    if (canAnimate) updateIndicator(true);
+  }, [activeIndex, canAnimate, updateIndicator]);
 
   return (
     <>
       {/* Desktop Navbar */}
       <nav className="hidden md:flex fixed top-0 left-0 right-0 z-50 items-center justify-between px-8 h-16 bg-background/80 backdrop-blur-xl border-b border-border/50">
-        {/* Logo - emblem only */}
+        {/* Logo */}
         <Link to="/" className="flex items-center">
           <img src="/logo-emblem.svg" alt="Premier Vitality & Wellness" className="h-8 w-auto" style={{ filter: "brightness(0) saturate(100%) invert(72%) sepia(28%) saturate(600%) hue-rotate(5deg)" }} />
         </Link>
 
         {/* Center Nav */}
         <div className="absolute left-1/2 -translate-x-1/2">
-          <div className="relative flex items-center gap-1 bg-background/5 border border-border backdrop-blur-lg rounded-full px-1.5 py-1.5">
+          <div
+            ref={navContainerRef}
+            className="relative flex items-center gap-1 bg-background/5 border border-border backdrop-blur-lg rounded-full px-1.5 py-1.5"
+          >
+            {/* Sliding indicator */}
+            <span
+              className="absolute top-0 h-[2px] rounded-full"
+              style={{ background: "#AB8F5F", ...indicatorStyle }}
+            />
+            <span
+              className="absolute rounded-full bg-primary/5"
+              style={{
+                top: 0,
+                bottom: 0,
+                ...indicatorStyle,
+              }}
+            />
+
             {navItems.map((item, i) => (
               <Link
                 key={item.label}
                 to={item.href}
+                ref={(el) => { linkRefs.current[i] = el; }}
                 className={`relative z-10 px-5 py-1.5 text-[11px] tracking-[0.18em] uppercase rounded-full transition-colors duration-200 ${
                   activeIndex === i ? "text-primary" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                <span className="relative z-10">{item.label}</span>
-                {activeIndex === i && (
-                  <>
-                    <motion.span
-                      layoutId="nav-bg"
-                      className="absolute inset-0 rounded-full bg-primary/5"
-                      transition={springTransition}
-                    />
-                    <motion.span
-                      layoutId="nav-bar"
-                      className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full"
-                      style={{ background: "#AB8F5F" }}
-                      transition={springTransition}
-                    />
-                  </>
-                )}
+                {item.label}
               </Link>
             ))}
           </div>
         </div>
 
-        {/* Hamburger button */}
+        {/* Hamburger */}
         <button
           onClick={() => setDrawerOpen(true)}
           className="p-2 text-muted-foreground hover:text-foreground transition-colors"
@@ -97,7 +116,7 @@ const Navbar = () => {
         </button>
       </nav>
 
-      {/* Mobile Top Bar - Logo + Hamburger only */}
+      {/* Mobile Top Bar */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 h-14 bg-background/80 backdrop-blur-xl border-b border-border/50">
         <Link to="/" className="flex items-center">
           <img src="/logo-emblem.svg" alt="Premier Vitality & Wellness" className="h-8 w-auto" style={{ filter: "brightness(0) saturate(100%) invert(72%) sepia(28%) saturate(600%) hue-rotate(5deg)" }} />
@@ -129,54 +148,29 @@ const Navbar = () => {
               className="fixed top-0 right-0 bottom-0 z-[70] w-72 bg-background border-l border-border shadow-2xl"
             >
               <div className="flex items-center justify-between px-6 h-16 border-b border-border/50">
-                <span className="text-xs tracking-[0.2em] uppercase text-muted-foreground">
-                  Menu
-                </span>
-                <button
-                  onClick={() => setDrawerOpen(false)}
-                  className="p-2 text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <span className="text-xs tracking-[0.2em] uppercase text-muted-foreground">Menu</span>
+                <button onClick={() => setDrawerOpen(false)} className="p-2 text-muted-foreground hover:text-foreground transition-colors">
                   <X size={18} strokeWidth={1.5} />
                 </button>
               </div>
-
               <div className="flex flex-col px-6 py-8 gap-1">
                 <div className="md:hidden flex flex-col gap-1 mb-2">
                   {navItems.map((item) => (
-                    <Link
-                      key={item.label}
-                      to={item.href}
-                      onClick={() => setDrawerOpen(false)}
-                      className="flex items-center gap-3 px-3 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
-                    >
+                    <Link key={item.label} to={item.href} onClick={() => setDrawerOpen(false)} className="flex items-center gap-3 px-3 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors">
                       <item.icon size={16} strokeWidth={1.5} />
                       {item.label}
                     </Link>
                   ))}
                   <div className="my-2 h-px bg-border/50" />
                 </div>
-
                 {drawerLinks.map((link) => (
-                  <Link
-                    key={link.label}
-                    to={link.href}
-                    onClick={() => setDrawerOpen(false)}
-                    className="flex items-center gap-3 px-3 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
-                  >
+                  <Link key={link.label} to={link.href} onClick={() => setDrawerOpen(false)} className="flex items-center gap-3 px-3 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors">
                     {link.label === "Sign In" && <User size={16} strokeWidth={1.5} />}
                     {link.label}
                   </Link>
                 ))}
-
                 <div className="my-4 h-px bg-border/50" />
-
-                <button
-                  onClick={() => {
-                    setDrawerOpen(false);
-                    openCalendly();
-                  }}
-                  className="w-full py-3 text-xs tracking-[0.2em] uppercase bg-primary text-primary-foreground hover:bg-primary/90 rounded-full transition-colors duration-200"
-                >
+                <button onClick={() => { setDrawerOpen(false); openCalendly(); }} className="w-full py-3 text-xs tracking-[0.2em] uppercase bg-primary text-primary-foreground hover:bg-primary/90 rounded-full transition-colors duration-200">
                   Book a Consult
                 </button>
               </div>

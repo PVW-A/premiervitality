@@ -49,7 +49,7 @@ const HowItWorksHome = () => {
   };
 
   return (
-    <section className="py-20 px-6" style={{ background: "#0a0a0e" }}>
+    <section className="py-20 px-6">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-14">
           <p className="text-xs tracking-[0.3em] uppercase text-primary font-body font-light mb-3">

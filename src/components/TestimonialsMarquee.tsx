@@ -70,7 +70,7 @@ const Card = ({ t }: { t: (typeof testimonials)[number] }) => (
 );
 
 const TestimonialsMarquee = () => (
-  <section className="py-20 overflow-hidden" style={{ background: "#0a0a0e" }}>
+  <section className="py-20 overflow-hidden">
     <div className="max-w-4xl mx-auto text-center px-6 mb-12">
       <p className="text-xs tracking-[0.3em] uppercase text-primary font-body font-light mb-3">
         Testimonials
