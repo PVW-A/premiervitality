@@ -64,7 +64,7 @@ const HeroSection = () => (
         transition={{ duration: 0.8, delay: 0.5 }}
         className="text-[11px] tracking-[0.35em] uppercase text-muted-foreground mb-8"
       >
-        The Future of Elite Performance Medicine
+        Bridging the Gap Between Modern Medicine and Innovative Science
       </motion.p>
 
       <motion.p
