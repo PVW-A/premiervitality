@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Separator } from "@/components/ui/separator";
 import LegalModal from "@/components/LegalModal";
 import { useAuth } from "@/hooks/useAuth";
 import { getDeviceFingerprint, getDeviceName } from "@/lib/deviceFingerprint";
@@ -145,24 +143,27 @@ const Auth = () => {
     setLoading(false);
   };
 
+  const inputClass = "h-11 text-sm text-white placeholder:text-[#6E7180] focus:ring-1 focus:ring-[#AB8F5F] focus:border-[#AB8F5F] transition-colors";
+  const inputStyle: React.CSSProperties = { background: "#0a0a0a", border: "1px solid #40424D" };
+
   // 2FA verification screen
   if (needs2FA) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-4 md:px-6">
-        <div className="w-full max-w-sm">
+      <div className="min-h-screen flex items-center justify-center px-4 md:px-6" style={{ background: "radial-gradient(ellipse 80% 70% at 50% 40%, #1E1E24 0%, #000000 70%)" }}>
+        <div className="w-full max-w-sm p-8 rounded-lg" style={{ background: "rgba(30,30,36,0.8)", border: "1px solid #40424D", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" }}>
           <div className="flex flex-col items-center mb-10">
             <img src="/logo-emblem.svg" alt="Premier Vitality & Wellness" className="h-12 w-auto mb-4" style={{ filter: "brightness(0) saturate(100%) invert(72%) sepia(28%) saturate(600%) hue-rotate(5deg)" }} />
-            <h1 className="text-2xl font-heading font-light tracking-wide text-foreground">
+            <h1 className="text-2xl font-light tracking-wide text-white">
               Verify Your Identity
             </h1>
-            <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mt-2 font-body font-light text-center">
+            <p className="text-xs tracking-[0.2em] uppercase text-[#9DA2B3] mt-2 text-center">
               We sent a code to {maskedPhone}
             </p>
           </div>
 
           <div className="space-y-5">
             <div className="space-y-2">
-              <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">
+              <Label className="text-xs tracking-wider uppercase text-[#9DA2B3]">
                 Verification Code
               </Label>
               <Input
@@ -172,19 +173,21 @@ const Auth = () => {
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, ""))}
                 placeholder="000000"
-                className="bg-secondary border-border text-foreground font-body font-light text-center text-lg tracking-[0.5em]"
+                className={`${inputClass} text-center text-lg tracking-[0.5em]`}
+                style={inputStyle}
               />
             </div>
 
-            {error && <p className="text-destructive text-sm font-body">{error}</p>}
+            {error && <p className="text-destructive text-sm">{error}</p>}
 
-            <Button
+            <button
               onClick={handleVerify2FA}
               disabled={loading || verificationCode.length !== 6}
-              className="w-full text-xs tracking-[0.2em] uppercase font-body font-light rounded-none h-11"
+              className="w-full h-11 text-xs tracking-[0.2em] uppercase text-white transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#AB8F5F]/10"
+              style={{ border: "1px solid rgba(171,143,95,0.4)" }}
             >
               {loading ? "Verifying..." : "Verify"}
-            </Button>
+            </button>
 
             <button
               onClick={() => {
@@ -192,7 +195,7 @@ const Auth = () => {
                 setPendingSession(null);
                 supabase.auth.signOut();
               }}
-              className="text-xs tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors font-body font-light block mx-auto"
+              className="text-xs tracking-wider uppercase text-[#6E7180] hover:text-white transition-colors block mx-auto"
             >
               Cancel &amp; sign out
             </button>
@@ -203,14 +206,14 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4 md:px-6">
-      <div className="w-full max-w-sm">
+    <div className="min-h-screen flex items-center justify-center px-4 md:px-6 py-16" style={{ background: "radial-gradient(ellipse 80% 70% at 50% 40%, #1E1E24 0%, #000000 70%)" }}>
+      <div className="w-full max-w-sm p-8 rounded-lg" style={{ background: "rgba(30,30,36,0.8)", border: "1px solid #40424D", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" }}>
         <div className="flex flex-col items-center mb-10">
           <img src="/logo-emblem.svg" alt="Premier Vitality & Wellness" className="h-12 w-auto mb-4" style={{ filter: "brightness(0) saturate(100%) invert(72%) sepia(28%) saturate(600%) hue-rotate(5deg)" }} />
-          <h1 className="text-2xl font-heading font-light tracking-wide text-foreground">
+          <h1 className="text-2xl font-light tracking-wide text-white">
             Patient Portal
           </h1>
-          <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mt-2 font-body font-light">
+          <p className="text-xs tracking-[0.2em] uppercase text-[#9DA2B3] mt-2">
             {isLogin ? "Sign in to your account" : "Create your account"}
           </p>
         </div>
@@ -220,62 +223,67 @@ const Auth = () => {
             <>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2">
-                  <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">First Name</Label>
+                  <Label className="text-xs tracking-wider uppercase text-[#9DA2B3]">First Name</Label>
                   <Input
                     value={firstName}
                     onChange={(e) => setFirstName(sanitizeName(e.target.value))}
                     maxLength={100}
                     required={!isLogin}
-                    className="bg-secondary border-border text-foreground font-body font-light"
+                    className={inputClass}
+                    style={inputStyle}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Last Name</Label>
+                  <Label className="text-xs tracking-wider uppercase text-[#9DA2B3]">Last Name</Label>
                   <Input
                     value={lastName}
                     onChange={(e) => setLastName(sanitizeName(e.target.value))}
                     maxLength={100}
                     required={!isLogin}
-                    className="bg-secondary border-border text-foreground font-body font-light"
+                    className={inputClass}
+                    style={inputStyle}
                   />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Phone Number</Label>
+                <Label className="text-xs tracking-wider uppercase text-[#9DA2B3]">Phone Number</Label>
                 <Input
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(sanitizePhone(e.target.value))}
                   placeholder="+1 (555) 123-4567"
                   required={!isLogin}
-                  className="bg-secondary border-border text-foreground font-body font-light"
+                  className={inputClass}
+                  style={inputStyle}
                 />
-                <p className="text-[10px] text-muted-foreground font-body font-light">
+                <p className="text-[10px] text-[#6E7180]">
                   Required for two-factor authentication &amp; account security.
                 </p>
               </div>
             </>
           )}
           <div className="space-y-2">
-            <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Email</Label>
+            <Label className="text-xs tracking-wider uppercase text-[#9DA2B3]">Email</Label>
             <Input
               type="email"
               value={email}
               onChange={(e) => setEmail(sanitizeEmail(e.target.value))}
               maxLength={255}
               required
-              className="bg-secondary border-border text-foreground font-body font-light"
+              className={inputClass}
+              style={inputStyle}
             />
           </div>
           <div className="space-y-2">
-            <Label className="text-xs tracking-wider uppercase text-muted-foreground font-body font-light">Password</Label>
+            <Label className="text-xs tracking-wider uppercase text-[#9DA2B3]">Password</Label>
             <Input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="bg-secondary border-border text-foreground font-body font-light"
+              className={inputClass}
+              style={inputStyle}
             />
           </div>
 
@@ -285,9 +293,9 @@ const Auth = () => {
                 id="legal-agree"
                 checked={agreed}
                 onCheckedChange={(checked) => setAgreed(checked === true)}
-                className="mt-0.5"
+                className="mt-0.5 border-[#40424D] data-[state=checked]:bg-[#AB8F5F] data-[state=checked]:border-[#AB8F5F]"
               />
-              <label htmlFor="legal-agree" className="text-[11px] text-muted-foreground font-body font-light leading-relaxed cursor-pointer">
+              <label htmlFor="legal-agree" className="text-[11px] text-[#9DA2B3] leading-relaxed cursor-pointer">
                 I acknowledge that peptide therapy carries inherent risks and I voluntarily assume all risks associated with treatment. I have read and agree to the{" "}
                 <button type="button" onClick={() => setLegalModal("terms")} className="underline text-foreground hover:text-primary transition-colors">
                   Terms of Service
@@ -311,8 +319,8 @@ const Auth = () => {
           <button
             type="submit"
             disabled={loading || (!isLogin && !agreed)}
-            className="w-full h-11 text-xs tracking-[0.2em] uppercase text-foreground transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/10"
-            style={{ border: "1px solid hsl(var(--primary) / 0.4)" }}
+            className="w-full h-11 text-xs tracking-[0.2em] uppercase text-white transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#AB8F5F]/10"
+            style={{ border: "1px solid rgba(171,143,95,0.4)" }}
           >
             {loading ? "Please wait..." : isLogin ? "Sign In" : "Create Account"}
           </button>
@@ -320,20 +328,20 @@ const Auth = () => {
 
         {/* Google OAuth divider + button */}
         <div className="mt-6 flex items-center gap-3">
-          <Separator className="flex-1" />
-          <span className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground font-body font-light">or</span>
-          <Separator className="flex-1" />
+          <div className="flex-1 h-px" style={{ background: "#40424D" }} />
+          <span className="text-[10px] tracking-[0.2em] uppercase text-[#6E7180]">or</span>
+          <div className="flex-1 h-px" style={{ background: "#40424D" }} />
         </div>
 
-        <Button
+        <button
           type="button"
-          variant="outline"
           onClick={async () => {
             setError("");
             const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: `${window.location.origin}/auth/callback` } });
             if (error) setError(error.message || "Google sign-in failed");
           }}
-          className="w-full mt-4 h-11 rounded-none border-border text-foreground font-body font-light text-xs tracking-[0.15em] uppercase flex items-center justify-center gap-3 hover:bg-secondary/80"
+          className="w-full mt-4 h-11 text-white text-xs tracking-[0.15em] uppercase flex items-center justify-center gap-3 hover:bg-white/5 transition-colors"
+          style={{ border: "1px solid #40424D" }}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" className="flex-shrink-0">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
@@ -342,7 +350,7 @@ const Auth = () => {
             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
           </svg>
           {isLogin ? "Sign in with Google" : "Sign up with Google"}
-        </Button>
+        </button>
 
         <div className="mt-6 text-center space-y-3">
           {isLogin && (
@@ -357,21 +365,21 @@ const Auth = () => {
                 else setMessage("Check your email for a password reset link.");
                 setLoading(false);
               }}
-              className="text-xs tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors font-body font-light block mx-auto"
+              className="text-xs tracking-wider uppercase text-[#6E7180] hover:text-white transition-colors block mx-auto"
             >
               Forgot password?
             </button>
           )}
           <button
             onClick={() => { setIsLogin(!isLogin); setError(""); setMessage(""); }}
-            className="text-xs tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors font-body font-light"
+            className="text-xs tracking-wider uppercase text-[#6E7180] hover:text-white transition-colors"
           >
             {isLogin ? "Need an account? Sign up" : "Already have an account? Sign in"}
           </button>
         </div>
 
         <div className="mt-8 text-center">
-          <a href="/" className="text-xs tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors font-body font-light">
+          <a href="/" className="text-xs tracking-wider uppercase text-[#6E7180] hover:text-white transition-colors">
             ← Back to website
           </a>
         </div>
