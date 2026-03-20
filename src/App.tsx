@@ -34,7 +34,7 @@ import OurPeptides from "./pages/OurPeptides";
 import HowToGetStarted from "./pages/HowToGetStarted";
 import NotFound from "./pages/NotFound";
 import ChatButton from "./components/chat/ChatButton";
-import AtmosphericBackground from "./components/AtmosphericBackground";
+import PageBackground from "./components/PageBackground";
 import SessionTimeoutDialog from "./components/SessionTimeoutDialog";
 import { useSessionTimeout } from "./hooks/useSessionTimeout";
 
@@ -62,7 +62,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <AuthProvider>
-            <AtmosphericBackground />
+            <PageBackground />
             <ScrollToTop />
             <SessionTimeoutWrapper />
             <ChatButton />
