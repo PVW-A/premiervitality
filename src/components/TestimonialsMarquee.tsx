@@ -29,7 +29,7 @@ const testimonials = [
   },
   {
     quote:
-      "As a competitive athlete, recovery is everything. Premier Vitality's protocols gave me back the edge I thought I'd lost to age.",
+      "As a competitive athlete, recovery is everything. Premier Vitality & Wellness's protocols gave me back the edge I thought I'd lost to age.",
     name: "David H.",
     location: "Denver, CO",
     initials: "DH",

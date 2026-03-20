@@ -218,7 +218,7 @@ const HeroSection = () => (
         transition={{ duration: 1, delay: 0.15 }}
         className="font-heading text-5xl md:text-7xl font-light italic tracking-wide mb-8"
       >
-        Premier Vitality
+        Premier Vitality & Wellness
       </motion.h1>
 
       {/* Horizontal accent line */}

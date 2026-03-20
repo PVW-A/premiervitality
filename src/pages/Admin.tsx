@@ -365,7 +365,7 @@ const AdminPanel = () => {
       <aside className="w-56 shrink-0 border-r border-white/5 flex flex-col">
         {/* Logo */}
         <div className="px-5 py-5 border-b border-white/5">
-          <p className="text-[9px] tracking-[0.35em] uppercase text-white/25 mb-0.5">Premier Vitality</p>
+          <p className="text-[9px] tracking-[0.35em] uppercase text-white/25 mb-0.5">Premier Vitality & Wellness</p>
           <p className="text-xs font-light text-white/60">Admin Console</p>
         </div>
 

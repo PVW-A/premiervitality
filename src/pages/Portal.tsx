@@ -194,7 +194,7 @@ const Portal = () => {
           <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <PVMonogram className="w-8 h-8" />
             <span className="text-xs tracking-[0.25em] uppercase text-foreground font-body font-light hidden sm:inline">
-              Premier Vitality
+              Premier Vitality & Wellness
             </span>
           </a>
           <div className="flex items-center gap-4">

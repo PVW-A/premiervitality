@@ -201,7 +201,7 @@ const SubscriptionCheckout = ({
         throw new Error(data?.details?.[0]?.detail || data?.error || "Subscription creation failed");
       }
 
-      toast({ title: "Subscription created!", description: "Welcome to Premier Vitality." });
+      toast({ title: "Subscription created!", description: "Welcome to Premier Vitality & Wellness." });
       onOpenChange(false);
       onSuccess();
     } catch (e: unknown) {

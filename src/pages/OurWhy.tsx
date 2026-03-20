@@ -50,7 +50,7 @@ const OurWhy = () => (
               I'm not here to make promises. I'm here because the science is real, the need is urgent, and I refuse to stand on the sidelines while the people I love, and people just like them, wait for answers that conventional medicine alone may never deliver.
             </p>
             <p>
-              Premier Vitality exists because of that refusal. Every protocol we build, every person we serve, is a step toward the future I want for my family. And for yours.
+              Premier Vitality & Wellness exists because of that refusal. Every protocol we build, every person we serve, is a step toward the future I want for my family. And for yours.
             </p>
           </div>
         </motion.div>

@@ -177,7 +177,7 @@ const About = () => (
                 </div>
               </div>
               <p className="text-muted-foreground font-body font-light text-sm leading-relaxed mb-4">
-                Driven by watching family members battle degenerative brain disease, Nicolas turned grief into purpose. His relentless pursuit of cutting-edge science and refusal to accept the status quo is the foundation of Premier Vitality's mission.
+                Driven by watching family members battle degenerative brain disease, Nicolas turned grief into purpose. His relentless pursuit of cutting-edge science and refusal to accept the status quo is the foundation of Premier Vitality & Wellness's mission.
               </p>
               <span className="inline-flex items-center gap-1.5 text-xs text-primary font-body font-light tracking-wider uppercase group-hover:gap-2.5 transition-all">
                 Read His Story <ArrowRight size={12} />

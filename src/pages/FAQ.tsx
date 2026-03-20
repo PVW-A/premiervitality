@@ -16,7 +16,7 @@ const faqSections = [
     items: [
       {
         q: "How does the membership work?",
-        a: "Premier Vitality offers three membership tiers - Essential, Premium, and Elite. Each tier unlocks access to our peptide catalog with member-exclusive pricing, scheduled blood work, and physician consultations. You can choose monthly or annual billing, and upgrade or change your plan at any time from your patient portal.",
+        a: "Premier Vitality & Wellness offers three membership tiers - Essential, Premium, and Elite. Each tier unlocks access to our peptide catalog with member-exclusive pricing, scheduled blood work, and physician consultations. You can choose monthly or annual billing, and upgrade or change your plan at any time from your patient portal.",
       },
       {
         q: "Can I see the peptide catalog before subscribing?",
@@ -45,11 +45,11 @@ const faqSections = [
       },
       {
         q: "Are peptides safe?",
-        a: "When prescribed and monitored by a licensed physician, peptides have an excellent safety profile. Every patient at Premier Vitality receives a thorough consultation and ongoing lab monitoring to ensure safety and efficacy throughout their treatment.",
+        a: "When prescribed and monitored by a licensed physician, peptides have an excellent safety profile. Every patient at Premier Vitality & Wellness receives a thorough consultation and ongoing lab monitoring to ensure safety and efficacy throughout their treatment.",
       },
       {
         q: "Do I need a prescription?",
-        a: "Yes. All peptide therapies at Premier Vitality are prescribed by our medical team after a clinical evaluation. This ensures each treatment plan is personalized and medically appropriate for you.",
+        a: "Yes. All peptide therapies at Premier Vitality & Wellness are prescribed by our medical team after a clinical evaluation. This ensures each treatment plan is personalized and medically appropriate for you.",
       },
     ],
   },
@@ -156,7 +156,7 @@ const FAQ = () => {
             className="text-muted-foreground font-body font-light text-sm md:text-base max-w-xl mx-auto leading-relaxed"
           >
             From membership details to peptide safety - find answers to the most
-            common questions about Premier Vitality.
+            common questions about Premier Vitality & Wellness.
           </motion.p>
         </section>
 

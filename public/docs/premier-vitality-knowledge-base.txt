@@ -214,7 +214,7 @@ Categories Tracked:
 SECTION 9: PROTOCOL CATEGORIES
 ================================================================================
 
-Premier Vitality offers physician-directed multi-compound protocols across 8 health categories. Each protocol is available in three tiers — Premier, Core, and Essential — so patients can choose the intensity that fits their journey.
+Premier Vitality & Wellness offers physician-directed multi-compound protocols across 8 health categories. Each protocol is available in three tiers — Premier, Core, and Essential — so patients can choose the intensity that fits their journey.
 
 Categories:
 1. Weight Management
@@ -237,7 +237,7 @@ All protocols are physician-directed and customized to the patient's lab results
 SECTION 10: PEPTIDE CATALOG (KEY PEPTIDES)
 ================================================================================
 
-Premier Vitality offers 15+ peptide compounds across multiple categories. All peptides are pharmaceutical-grade and physician-supervised.
+Premier Vitality & Wellness offers 15+ peptide compounds across multiple categories. All peptides are pharmaceutical-grade and physician-supervised.
 
 --- ANTI-AGING & PERFORMANCE ---
 
@@ -324,7 +324,7 @@ Consultation Frequency by Tier:
 SECTION 13: INSURANCE & PAYMENT
 ================================================================================
 
-Premier Vitality operates as a cash-pay concierge practice. We do not bill insurance directly. However:
+Premier Vitality & Wellness operates as a cash-pay concierge practice. We do not bill insurance directly. However:
 - Members can use HSA/FSA funds for lab work and consultations
 - We provide itemized receipts for potential reimbursement
 - Payment is processed through secure payment links (Square)
@@ -334,7 +334,7 @@ SECTION 14: FREQUENTLY ASKED QUESTIONS
 ================================================================================
 
 Q: How does the membership work?
-A: Premier Vitality offers three membership tiers — Essential, Premium, and Elite. Each tier unlocks access to our peptide catalog with member-exclusive pricing, scheduled blood work, and physician consultations. You can choose monthly or annual billing, and upgrade or change your plan at any time from your patient portal.
+A: Premier Vitality & Wellness offers three membership tiers — Essential, Premium, and Elite. Each tier unlocks access to our peptide catalog with member-exclusive pricing, scheduled blood work, and physician consultations. You can choose monthly or annual billing, and upgrade or change your plan at any time from your patient portal.
 
 Q: Can I see the peptide catalog before subscribing?
 A: Absolutely. Our peptide education pages are fully public so you can explore what we offer. Once you create an account, you'll be able to view membership tiers, pricing, and choose the plan that's right for you.
@@ -346,7 +346,7 @@ Q: Are peptides safe?
 A: When prescribed and monitored by a licensed physician, peptides have an excellent safety profile. Every patient receives a thorough consultation and ongoing lab monitoring to ensure safety and efficacy.
 
 Q: Do I need a prescription?
-A: Yes. All peptide therapies at Premier Vitality are prescribed by our medical team after a clinical evaluation. This ensures each treatment plan is personalized and medically appropriate.
+A: Yes. All peptide therapies at Premier Vitality & Wellness are prescribed by our medical team after a clinical evaluation. This ensures each treatment plan is personalized and medically appropriate.
 
 Q: Do I need a membership to purchase peptides?
 A: Yes. All peptide therapies are physician-directed and require an active membership so our medical team can monitor your health through regular bloodwork and consultations.

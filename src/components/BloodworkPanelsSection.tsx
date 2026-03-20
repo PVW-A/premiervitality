@@ -245,7 +245,7 @@ const BloodworkPanelsSection = () => {
               <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-[8px] tracking-[0.15em] uppercase font-body bg-primary text-primary-foreground">
                 You're Here
               </div>
-              <span className="text-xs font-body font-normal text-foreground block mb-1">Premier Vitality</span>
+              <span className="text-xs font-body font-normal text-foreground block mb-1">Premier Vitality & Wellness</span>
               <span className="text-2xl font-heading font-light text-primary block">100+</span>
               <span className="text-[9px] text-muted-foreground/50 font-body block mb-2">biomarkers</span>
               <span className="text-xs font-body font-light text-foreground/70 block mb-1">Included in membership</span>

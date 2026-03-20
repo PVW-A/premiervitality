@@ -21,7 +21,7 @@ const SUGGESTIONS: { label: string; message: string; href?: string }[] = [
   { label: "What is peptide therapy?", message: "What is peptide therapy and how does it work?" },
   { label: "Our peptides", message: "What peptides do you offer?", href: "/peptides" },
   { label: "Membership & pricing", message: "Tell me about your membership tiers.", href: "/membership" },
-  { label: "How to get started", message: "How do I get started with Premier Vitality?", href: "/protocols" },
+  { label: "How to get started", message: "How do I get started with Premier Vitality & Wellness?", href: "/protocols" },
   { label: "Book a consultation", message: "How do I schedule a consultation with your physicians?" },
 ];
 
