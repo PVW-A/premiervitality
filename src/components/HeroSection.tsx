@@ -36,12 +36,12 @@ const HeroSection = () => (
       }}
     />
 
-    <div className="relative z-10 max-w-5xl mx-auto px-6 pt-20 sm:pt-0 text-center flex flex-col items-center">
+    <div className="relative z-10 max-w-5xl mx-auto px-4 md:px-6 pt-20 sm:pt-0 text-center flex flex-col items-center">
       <motion.h1
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.15 }}
-        className="text-[36px] sm:text-[42px] md:text-[52px] lg:text-[60px] xl:text-[64px] font-light tracking-wide mb-8 whitespace-nowrap"
+        className="text-[28px] sm:text-[36px] md:text-[52px] lg:text-[60px] xl:text-[64px] font-light tracking-wide mb-8 md:whitespace-nowrap"
       >
         Premier Vitality{" "}<img src="/logo-emblem.svg" alt="&" className="inline-block h-[0.8em] w-auto align-middle" style={{ filter: "brightness(0) invert(1)" }} />{" "}Wellness
       </motion.h1>

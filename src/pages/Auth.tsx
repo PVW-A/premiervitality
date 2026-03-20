@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
-import PVMonogram from "@/components/PVMonogram";
 import LegalModal from "@/components/LegalModal";
 import { useAuth } from "@/hooks/useAuth";
 import { getDeviceFingerprint, getDeviceName } from "@/lib/deviceFingerprint";
@@ -149,10 +148,10 @@ const Auth = () => {
   // 2FA verification screen
   if (needs2FA) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-6">
+      <div className="min-h-screen bg-background flex items-center justify-center px-4 md:px-6">
         <div className="w-full max-w-sm">
           <div className="flex flex-col items-center mb-10">
-            <PVMonogram className="w-12 h-12 mb-4" />
+            <img src="/logo-emblem.svg" alt="Premier Vitality & Wellness" className="h-12 w-auto mb-4" style={{ filter: "brightness(0) saturate(100%) invert(72%) sepia(28%) saturate(600%) hue-rotate(5deg)" }} />
             <h1 className="text-2xl font-heading font-light tracking-wide text-foreground">
               Verify Your Identity
             </h1>
@@ -204,7 +203,7 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-6">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 md:px-6">
       <div className="w-full max-w-sm">
         <div className="flex flex-col items-center mb-10">
           <PVMonogram className="w-12 h-12 mb-4" />
@@ -309,13 +308,14 @@ const Auth = () => {
           {error && <p className="text-destructive text-sm font-body">{error}</p>}
           {message && <p className="text-primary text-sm font-body">{message}</p>}
 
-          <Button
+          <button
             type="submit"
             disabled={loading || (!isLogin && !agreed)}
-            className="w-full text-xs tracking-[0.2em] uppercase font-body font-light rounded-none h-11"
+            className="w-full h-11 text-xs tracking-[0.2em] uppercase text-foreground transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/10"
+            style={{ border: "1px solid hsl(var(--primary) / 0.4)" }}
           >
             {loading ? "Please wait..." : isLogin ? "Sign In" : "Create Account"}
-          </Button>
+          </button>
         </form>
 
         {/* Google OAuth divider + button */}

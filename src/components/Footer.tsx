@@ -8,12 +8,12 @@ const legalLinks = [
 ];
 
 const Footer = () => (
-  <footer className="border-t border-border py-12 px-6">
+  <footer className="border-t border-border py-12 px-4 md:px-6">
     <div className="max-w-6xl mx-auto">
       {/* Top row - brand + contact */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-8">
         <div>
-          <img src="/logo-emblem.svg" alt="Premier Vitality & Wellness" className="h-8 w-auto mb-2" />
+          <img src="/logo-emblem.svg" alt="Premier Vitality & Wellness" className="h-8 w-auto mb-2" style={{ filter: "brightness(0) saturate(100%) invert(72%) sepia(28%) saturate(600%) hue-rotate(5deg)" }} />
           <p className="text-lg font-light tracking-[0.2em] uppercase text-foreground mb-2">
             Premier Vitality & Wellness
           </p>

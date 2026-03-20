@@ -15,7 +15,7 @@ const LegalModal = ({ open, onClose, title, children }: LegalModalProps) => (
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[80] flex items-center justify-center px-4"
+        className="fixed inset-0 z-[80] flex items-end md:items-center justify-center md:px-4"
         style={{ backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}
       >
         {/* Backdrop */}
@@ -27,7 +27,7 @@ const LegalModal = ({ open, onClose, title, children }: LegalModalProps) => (
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ duration: 0.2 }}
-          className="relative w-full max-w-2xl bg-background border border-border rounded-lg shadow-2xl overflow-hidden"
+          className="relative w-full md:max-w-2xl max-h-[95vh] md:max-h-none bg-background border border-border rounded-t-xl md:rounded-lg shadow-2xl overflow-hidden"
         >
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-border/50">
@@ -46,7 +46,7 @@ const LegalModal = ({ open, onClose, title, children }: LegalModalProps) => (
           </div>
 
           {/* Scrollable content */}
-          <div className="px-6 py-6 overflow-y-auto" style={{ maxHeight: "70vh" }}>
+          <div className="px-4 md:px-6 py-6 overflow-y-auto" style={{ maxHeight: "70vh" }}>
             <div className="space-y-6 text-muted-foreground font-body font-light text-sm leading-relaxed">
               {children}
             </div>
