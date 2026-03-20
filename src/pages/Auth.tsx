@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import PVMonogram from "@/components/PVMonogram";
+import LegalModal from "@/components/LegalModal";
 import { useAuth } from "@/hooks/useAuth";
 import { getDeviceFingerprint, getDeviceName } from "@/lib/deviceFingerprint";
 import { sanitizeName, sanitizePhone, sanitizeEmail } from "@/lib/sanitize";
@@ -18,8 +19,8 @@ const Auth = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
-  const [smsConsent, setSmsConsent] = useState(false);
-  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [agreed, setAgreed] = useState(false);
+  const [legalModal, setLegalModal] = useState<"terms" | "disclaimer" | "privacy" | null>(null);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -124,7 +125,7 @@ const Auth = () => {
         email: normalizedEmail,
         password,
         options: {
-          data: { first_name: firstName, last_name: lastName, phone, sms_consent: smsConsent },
+          data: { first_name: firstName, last_name: lastName, phone, sms_consent: agreed },
           emailRedirectTo: window.location.origin,
         },
       });
@@ -280,51 +281,29 @@ const Auth = () => {
           </div>
 
           {!isLogin && (
-            <>
-              <div className="flex items-start space-x-3">
-                <Checkbox
-                  id="sms-consent"
-                  checked={smsConsent}
-                  onCheckedChange={(checked) => setSmsConsent(checked === true)}
-                  className="mt-0.5"
-                />
-                <label htmlFor="sms-consent" className="text-[11px] text-muted-foreground font-body font-light leading-relaxed cursor-pointer">
-                  I consent to receive SMS messages from Premier Vitality &amp; Wellness including security codes, order notifications, wellness reminders, and refill alerts. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to cancel. See our{" "}
-                  <a href="/privacy-policy" target="_blank" className="underline text-foreground hover:text-primary transition-colors">
-                    privacy policy
-                  </a>
-                  {" "}and{" "}
-                  <a href="/terms" target="_blank" className="underline text-foreground hover:text-primary transition-colors">
-                    terms
-                  </a>
-                  .
-                </label>
-              </div>
-
-              <div className="flex items-start space-x-3">
-                <Checkbox
-                  id="terms-accept"
-                  checked={termsAccepted}
-                  onCheckedChange={(checked) => setTermsAccepted(checked === true)}
-                  className="mt-0.5"
-                />
-                <label htmlFor="terms-accept" className="text-[11px] text-muted-foreground font-body font-light leading-relaxed cursor-pointer">
-                  I acknowledge that peptide therapy carries inherent risks and I voluntarily assume all risks associated with treatment. I have read and agree to the{" "}
-                  <a href="/terms" target="_blank" className="underline text-foreground hover:text-primary transition-colors">
-                    Terms of Service
-                  </a>
-                  ,{" "}
-                  <a href="/disclaimer" target="_blank" className="underline text-foreground hover:text-primary transition-colors">
-                    Medical Disclaimer
-                  </a>
-                  , and{" "}
-                  <a href="/privacy" target="_blank" className="underline text-foreground hover:text-primary transition-colors">
-                    Privacy Policy
-                  </a>
-                  , including the limitation of liability and assumption of risk provisions. I waive any and all claims against Premier Vitality &amp; Wellness, its founders, physicians, employees, and affiliates arising from my use of these services.
-                </label>
-              </div>
-            </>
+            <div className="flex items-start space-x-3">
+              <Checkbox
+                id="legal-agree"
+                checked={agreed}
+                onCheckedChange={(checked) => setAgreed(checked === true)}
+                className="mt-0.5"
+              />
+              <label htmlFor="legal-agree" className="text-[11px] text-muted-foreground font-body font-light leading-relaxed cursor-pointer">
+                I acknowledge that peptide therapy carries inherent risks and I voluntarily assume all risks associated with treatment. I have read and agree to the{" "}
+                <button type="button" onClick={() => setLegalModal("terms")} className="underline text-foreground hover:text-primary transition-colors">
+                  Terms of Service
+                </button>
+                ,{" "}
+                <button type="button" onClick={() => setLegalModal("disclaimer")} className="underline text-foreground hover:text-primary transition-colors">
+                  Medical Disclaimer
+                </button>
+                , and{" "}
+                <button type="button" onClick={() => setLegalModal("privacy")} className="underline text-foreground hover:text-primary transition-colors">
+                  Privacy Policy
+                </button>
+                , including the limitation of liability and assumption of risk provisions. I consent to receive SMS messages from Premier Vitality &amp; Wellness including security codes, order notifications, wellness reminders, and refill alerts. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to cancel.
+              </label>
+            </div>
           )}
 
           {error && <p className="text-destructive text-sm font-body">{error}</p>}
@@ -332,7 +311,7 @@ const Auth = () => {
 
           <Button
             type="submit"
-            disabled={loading || (!isLogin && (!smsConsent || !termsAccepted))}
+            disabled={loading || (!isLogin && !agreed)}
             className="w-full text-xs tracking-[0.2em] uppercase font-body font-light rounded-none h-11"
           >
             {loading ? "Please wait..." : isLogin ? "Sign In" : "Create Account"}
@@ -397,6 +376,75 @@ const Auth = () => {
           </a>
         </div>
       </div>
+
+      {/* Legal modals */}
+      <LegalModal open={legalModal === "terms"} onClose={() => setLegalModal(null)} title="Terms of Service">
+        <p><strong className="text-foreground">Effective Date:</strong> February 23, 2026</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">1. Acceptance of Terms</h2>
+        <p>By accessing or using the Premier Vitality & Wellness website and services, you agree to be bound by these Terms of Service. If you do not agree, you must discontinue use immediately.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">2. Medical Disclaimer</h2>
+        <p>The information provided on this website is for general informational and educational purposes only and does not constitute medical advice, diagnosis, or treatment. Peptide therapy and related services are provided under the supervision of licensed healthcare providers. Always seek the advice of a qualified healthcare professional with any questions you may have regarding a medical condition.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">3. No Guarantees</h2>
+        <p>We make no guarantees, representations, or warranties regarding the outcomes or results of any treatments, therapies, or protocols offered through our services. Individual results may vary significantly.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">4. Limitation of Liability</h2>
+        <p>To the fullest extent permitted by applicable law, Premier Vitality & Wellness, its founders, officers, employees, agents, and affiliates shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising out of or in connection with your use of our website or services.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">5. Assumption of Risk</h2>
+        <p>You acknowledge that peptide therapy and related treatments carry inherent risks, including but not limited to adverse reactions, side effects, and interactions with other medications. By using our services, you voluntarily assume all risks associated with such treatments and agree to hold Premier Vitality & Wellness harmless from any claims arising therefrom.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">6. Indemnification</h2>
+        <p>You agree to indemnify, defend, and hold harmless Premier Vitality & Wellness and its founders, employees, and affiliates from and against any and all claims, liabilities, damages, losses, and expenses arising out of or in connection with your use of our services, your violation of these Terms, or your violation of any rights of another party.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">7. Intellectual Property</h2>
+        <p>All content on this website, including text, graphics, logos, and images, is the property of Premier Vitality & Wellness and is protected by applicable intellectual property laws.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">8. Governing Law</h2>
+        <p>These Terms shall be governed by and construed in accordance with the laws of the state in which Premier Vitality & Wellness operates, without regard to its conflict of law provisions.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">9. Severability</h2>
+        <p>If any provision of these Terms is found to be unenforceable, the remaining provisions shall continue in full force and effect.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">10. Changes to Terms</h2>
+        <p>We reserve the right to modify these Terms at any time. Continued use of our services after any changes constitutes your acceptance of the new Terms.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">11. Contact</h2>
+        <p>For questions regarding these Terms of Service, please contact us through the information provided on our website.</p>
+      </LegalModal>
+
+      <LegalModal open={legalModal === "disclaimer"} onClose={() => setLegalModal(null)} title="Medical Disclaimer">
+        <p><strong className="text-foreground">Effective Date:</strong> February 23, 2026</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">General Information Only</h2>
+        <p>The content provided on this website, including all text, graphics, images, and other material, is for informational purposes only and is not intended to be a substitute for professional medical advice, diagnosis, or treatment.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">Not Medical Advice</h2>
+        <p>Nothing on this website should be construed as medical advice. The information provided does not create a physician-patient relationship. Always consult with a qualified, licensed healthcare provider before starting any new treatment, therapy, medication, or supplement, including peptide therapy.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">No Guaranteed Results</h2>
+        <p>Premier Vitality & Wellness makes no claims, promises, or guarantees about the efficacy, safety, or outcomes of any treatments described on this website. Individual results vary and depend on numerous factors including age, health status, genetics, lifestyle, and adherence to protocols.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">Assumption of Risk</h2>
+        <p>Peptide therapy and related treatments involve inherent risks including allergic reactions, injection site reactions, hormonal imbalances, drug interactions, and unknown long-term effects. By engaging with our services, you acknowledge these risks and accept full responsibility for your decision to pursue treatment.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">FDA Disclaimer</h2>
+        <p>The statements made on this website have not been evaluated by the Food and Drug Administration (FDA). The products and services offered are not intended to diagnose, treat, cure, or prevent any disease.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">Limitation of Liability</h2>
+        <p>Under no circumstances shall Premier Vitality & Wellness, its founders, physicians, employees, or affiliates be held liable for any damages whatsoever arising from your use of this website or any treatments, products, or services referenced herein.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">Emergency Situations</h2>
+        <p>If you are experiencing a medical emergency, call 911 or your local emergency services immediately. Do not rely on this website for emergency medical guidance.</p>
+      </LegalModal>
+
+      <LegalModal open={legalModal === "privacy"} onClose={() => setLegalModal(null)} title="Privacy Policy">
+        <p><strong className="text-foreground">Effective Date:</strong> February 26, 2026</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">1. Information We Collect</h2>
+        <p>We may collect personal information you voluntarily provide, including your name, email address, phone number, and health-related information necessary for consultation and treatment. This may include Protected Health Information (PHI) such as lab results, biomarker data, medication history, and treatment records. We also automatically collect certain technical data such as IP addresses, browser type, device identifiers, and usage patterns.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">2. How We Use Your Information</h2>
+        <p>We use your information to provide and improve our services, communicate with you about treatments and appointments, process orders, comply with legal obligations, and protect the safety and security of our platform and users. Health-related information is used exclusively for providing clinical wellness services, generating vitality assessments, and facilitating peptide therapy consultations under the supervision of licensed healthcare providers.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">3. Protected Health Information (PHI)</h2>
+        <p>When you voluntarily submit health-related information through our platform, we treat this information with the highest level of care. All PHI is encrypted in transit and at rest, access is restricted to authorized clinical personnel on a minimum-necessary basis, and all access to patient records is logged in an immutable audit trail.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">4. Information Sharing</h2>
+        <p>We do not sell, trade, or rent your personal information to third parties. We may share information with trusted service providers who assist in operating our platform, provided they are bound by agreements that require them to protect your information. Where applicable, we maintain Business Associate Agreements (BAAs) with third-party vendors who may access, process, or store PHI on our behalf.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">5. Data Security</h2>
+        <p>We implement reasonable administrative, technical, and physical safeguards to protect your personal and health information, including role-based access controls, two-factor authentication, automatic session timeouts, encryption of data in transit and at rest, and comprehensive audit logging.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">6. Data Retention</h2>
+        <p>We retain your personal information and health records for as long as necessary to provide our services and comply with applicable legal requirements. Health records are retained for a minimum of seven (7) years from the date of last service. Upon account deletion, non-essential personal data is removed within 30 days.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">7. Your Rights</h2>
+        <p>You may request access to, correction of, or deletion of your personal information at any time. You have the right to request an accounting of disclosures of your PHI, to request restrictions on certain uses of your health information, and to receive a copy of your health records in a portable format.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">8. Third-Party Links</h2>
+        <p>Our website may contain links to third-party sites. We are not responsible for the privacy practices or content of those sites.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">9. Changes to This Policy</h2>
+        <p>We reserve the right to update this Privacy Policy at any time. Material changes affecting PHI handling will be communicated directly to affected users.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">10. Contact Us</h2>
+        <p>If you have questions about this Privacy Policy or wish to exercise your rights regarding your health information, please contact us through the information provided on our website.</p>
+      </LegalModal>
     </div>
   );
 };
