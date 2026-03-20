@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Home, Layers, FlaskConical, Pill, Users, Menu, X, User } from "lucide-react";
 import { openCalendly } from "@/hooks/useCalendly";
 
@@ -38,38 +38,29 @@ const Navbar = () => {
           <img src="/logo-emblem.svg" alt="Premier Vitality & Wellness" className="h-8 w-auto" style={{ filter: "brightness(0) saturate(100%) invert(72%) sepia(28%) saturate(600%) hue-rotate(5deg)" }} />
         </Link>
 
-        {/* Center Tubelight Pill Nav */}
+        {/* Center Nav */}
         <div className="absolute left-1/2 -translate-x-1/2">
-          <div className="relative flex items-center gap-1 bg-background/5 border border-border backdrop-blur-lg rounded-full px-1.5 py-1.5">
-            {navItems.map((item, i) => (
-              <Link
-                key={item.label}
-                to={item.href}
-                className={`relative z-10 px-5 py-1.5 text-[11px] tracking-[0.18em] uppercase font-body font-light rounded-full transition-colors duration-200 ${
-                  activeIndex === i ? "text-primary" : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {item.label}
-                {activeIndex === i && (
-                  <>
-                    {/* Background highlight */}
-                    <motion.div
-                      layoutId="lamp"
-                      className="absolute inset-0 rounded-full bg-primary/5"
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
-                    />
-                    {/* Top indicator bar - centered */}
-                    <motion.div
-                      layoutId="lamp-bar"
-                      className="absolute top-0 left-0 right-0 flex justify-center"
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
-                    >
-                      <div className="w-8 h-0.5 rounded-full" style={{ background: "#AB8F5F" }} />
-                    </motion.div>
-                  </>
-                )}
-              </Link>
-            ))}
+          <div className="flex items-center gap-1 bg-background/5 border border-border backdrop-blur-lg rounded-full px-1.5 py-1.5">
+            {navItems.map((item, i) => {
+              const isActive = activeIndex === i;
+              return (
+                <Link
+                  key={item.label}
+                  to={item.href}
+                  className={`relative px-5 py-1.5 text-[11px] tracking-[0.18em] uppercase rounded-full transition-colors duration-200 ${
+                    isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {isActive && (
+                    <span className="absolute inset-0 rounded-full bg-primary/5" />
+                  )}
+                  {isActive && (
+                    <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full" style={{ background: "#AB8F5F" }} />
+                  )}
+                  <span className="relative z-10">{item.label}</span>
+                </Link>
+              );
+            })}
           </div>
         </div>
 

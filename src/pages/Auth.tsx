@@ -206,7 +206,7 @@ const Auth = () => {
     <div className="min-h-screen bg-background flex items-center justify-center px-4 md:px-6">
       <div className="w-full max-w-sm">
         <div className="flex flex-col items-center mb-10">
-          <PVMonogram className="w-12 h-12 mb-4" />
+          <img src="/logo-emblem.svg" alt="Premier Vitality & Wellness" className="h-12 w-auto mb-4" style={{ filter: "brightness(0) saturate(100%) invert(72%) sepia(28%) saturate(600%) hue-rotate(5deg)" }} />
           <h1 className="text-2xl font-heading font-light tracking-wide text-foreground">
             Patient Portal
           </h1>
