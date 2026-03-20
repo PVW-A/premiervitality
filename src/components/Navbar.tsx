@@ -74,13 +74,6 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Hamburger button (desktop right) */}
-        <button
-          onClick={() => setDrawerOpen(true)}
-          className="p-2 text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <Menu size={20} strokeWidth={1.5} />
-        </button>
       </nav>
 
       {/* Mobile Top Bar - Logo + Hamburger only */}

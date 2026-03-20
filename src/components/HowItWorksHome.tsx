@@ -19,7 +19,7 @@ const steps = [
   },
 ];
 
-const INTERVAL = 5000;
+const INTERVAL = 10000;
 
 const HowItWorksHome = () => {
   const [active, setActive] = useState(0);
