@@ -7,22 +7,16 @@ const HeroSection = () => (
     className="relative min-h-screen flex items-center justify-center overflow-hidden"
     id="home"
   >
-    {/* Background image + warm radial atmosphere */}
+    {/* Page-level warm background */}
+    <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, #1a1812 0%, #0d0d0b 50%, #000000 100%)" }} />
+
+    {/* Background image */}
     <div className="absolute inset-0">
-      <img src={heroBg} alt="" className="w-full h-full object-cover opacity-15" />
-      <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 40%, #2a2418 0%, #1a1610 30%, #0a0a08 60%, #000000 100%)" }} />
+      <img src={heroBg} alt="" className="w-full h-full object-cover opacity-12" />
     </div>
 
     {/* Warm golden atmospheric glow */}
-    <div
-      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-      style={{
-        width: 800,
-        height: 800,
-        background: "radial-gradient(circle, rgba(171,143,95,0.08) 0%, transparent 70%)",
-        filter: "blur(40px)",
-      }}
-    />
+    <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 50%, rgba(171,143,95,0.07) 0%, transparent 65%)" }} />
 
     <div className="relative z-10 max-w-5xl mx-auto px-4 md:px-6 pt-20 sm:pt-0 text-center flex flex-col items-center">
       <motion.h1
@@ -31,7 +25,7 @@ const HeroSection = () => (
         transition={{ duration: 1, delay: 0.15 }}
         className="text-[28px] sm:text-[36px] md:text-[52px] lg:text-[60px] xl:text-[64px] font-light tracking-wide mb-8 md:whitespace-nowrap"
       >
-        Premier Vitality{" "}<img src="/logo-emblem.svg" alt="&" className="inline-block h-[0.8em] w-auto align-middle" style={{ filter: "brightness(0) invert(1)" }} />{" "}Wellness
+        Premier Vitality{" "}<img src="/logo-emblem.svg" alt="&" className="h-[0.75em] w-auto" style={{ display: "inline-block", verticalAlign: "middle", position: "relative", top: "-0.05em", filter: "brightness(0) invert(1)" }} />{" "}Wellness
       </motion.h1>
 
       {/* Accent line */}
