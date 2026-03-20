@@ -37,14 +37,14 @@ const HeroSection = () => (
     />
 
 
-    <div className="relative z-10 max-w-3xl mx-auto px-6 pt-20 sm:pt-0 text-center flex flex-col items-center">
+    <div className="relative z-10 max-w-5xl mx-auto px-6 pt-20 sm:pt-0 text-center flex flex-col items-center">
       <motion.h1
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.15 }}
-        className="font-heading text-5xl md:text-7xl font-light italic tracking-wide mb-8"
+        className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light italic tracking-wide mb-8 whitespace-nowrap"
       >
-        Premier Vitality & Wellness
+        Premier Vitality &amp; Wellness
       </motion.h1>
 
       {/* Horizontal accent line */}
