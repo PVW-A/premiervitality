@@ -2,96 +2,94 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
-
 @layer base {
   :root {
-    --background: 40 20% 96%;
-    --foreground: 220 26% 14%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 7%;
 
-    --card: 40 18% 92%;
-    --card-foreground: 220 26% 14%;
+    --card: 0 0% 96%;
+    --card-foreground: 0 0% 7%;
 
-    --popover: 40 18% 92%;
-    --popover-foreground: 220 26% 14%;
+    --popover: 0 0% 96%;
+    --popover-foreground: 0 0% 7%;
 
     --primary: 38 31% 52%;
-    --primary-foreground: 40 20% 96%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 12% 88%;
-    --secondary-foreground: 220 22% 20%;
+    --secondary: 230 6% 90%;
+    --secondary-foreground: 0 0% 12%;
 
-    --muted: 220 12% 90%;
-    --muted-foreground: 218 12% 45%;
+    --muted: 230 6% 92%;
+    --muted-foreground: 230 5% 44%;
 
     --accent: 38 31% 52%;
-    --accent-foreground: 40 20% 96%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 220 14% 84%;
-    --input: 220 14% 84%;
+    --border: 230 8% 82%;
+    --input: 230 8% 82%;
     --ring: 38 31% 52%;
 
     --radius: 0.5rem;
 
-    --font-heading: 'Cormorant Garamond', serif;
+    --font-heading: 'Manrope', sans-serif;
     --font-body: 'Manrope', sans-serif;
     --brand-gold: #AB8F5F;
 
-    --sidebar-background: 40 18% 94%;
-    --sidebar-foreground: 220 26% 14%;
+    --sidebar-background: 0 0% 96%;
+    --sidebar-foreground: 0 0% 7%;
     --sidebar-primary: 38 31% 52%;
-    --sidebar-primary-foreground: 40 20% 96%;
-    --sidebar-accent: 220 12% 88%;
-    --sidebar-accent-foreground: 220 22% 20%;
-    --sidebar-border: 220 14% 84%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 230 6% 90%;
+    --sidebar-accent-foreground: 0 0% 12%;
+    --sidebar-border: 230 8% 82%;
     --sidebar-ring: 38 31% 52%;
   }
 
   .dark {
-    --background: 216 30% 6%;
-    --foreground: 40 20% 92%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
 
-    --card: 220 26% 11%;
-    --card-foreground: 40 20% 92%;
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 220 26% 11%;
-    --popover-foreground: 40 20% 92%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 100%;
 
     --primary: 38 31% 52%;
-    --primary-foreground: 220 26% 6%;
+    --primary-foreground: 0 0% 0%;
 
-    --secondary: 220 22% 16%;
-    --secondary-foreground: 40 18% 88%;
+    --secondary: 230 7% 12%;
+    --secondary-foreground: 230 6% 90%;
 
-    --muted: 220 22% 14%;
-    --muted-foreground: 218 12% 55%;
+    --muted: 230 7% 10%;
+    --muted-foreground: 230 5% 55%;
 
     --accent: 38 31% 52%;
-    --accent-foreground: 220 26% 6%;
+    --accent-foreground: 0 0% 0%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 220 20% 18%;
-    --input: 220 20% 18%;
+    --border: 230 7% 14%;
+    --input: 230 7% 14%;
     --ring: 38 31% 52%;
 
     --radius: 0.5rem;
 
-    --font-heading: 'Cormorant Garamond', serif;
+    --font-heading: 'Manrope', sans-serif;
     --font-body: 'Manrope', sans-serif;
     --brand-gold: #AB8F5F;
 
-    --sidebar-background: 220 26% 8%;
-    --sidebar-foreground: 40 20% 92%;
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 100%;
     --sidebar-primary: 38 31% 52%;
-    --sidebar-primary-foreground: 220 26% 6%;
-    --sidebar-accent: 220 22% 16%;
-    --sidebar-accent-foreground: 40 18% 88%;
-    --sidebar-border: 220 20% 18%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 230 7% 12%;
+    --sidebar-accent-foreground: 230 6% 90%;
+    --sidebar-border: 230 7% 14%;
     --sidebar-ring: 38 31% 52%;
   }
 }
@@ -104,11 +102,20 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Manrope', sans-serif;
+    font-size: 16px;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading);
+    font-family: 'Manrope', sans-serif;
     font-weight: 300;
+  }
+
+  h1 { font-size: 64px; line-height: 1.1; }
+  h2 { font-size: 48px; line-height: 1.15; }
+
+  @media (max-width: 768px) {
+    h1 { font-size: 36px; }
+    h2 { font-size: 28px; }
   }
 }
 

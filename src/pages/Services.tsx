@@ -318,7 +318,7 @@ const Services = () => {
                       : "border border-primary/40 text-primary hover:bg-primary/10"
                   }`}
                 >
-                  {isCurrentTier ? "Current Plan" : "Get Started"}
+                  {isCurrentTier ? "Current Plan" : "Begin Your Protocol"}
                 </button>
               </div>
             );

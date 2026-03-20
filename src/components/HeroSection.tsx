@@ -27,7 +27,7 @@ const HeroSection = () => (
       }}
     />
 
-    {/* Radial glow behind monogram */}
+    {/* Radial glow */}
     <div
       className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] pointer-events-none"
       style={{
@@ -36,18 +36,17 @@ const HeroSection = () => (
       }}
     />
 
-
     <div className="relative z-10 max-w-5xl mx-auto px-6 pt-20 sm:pt-0 text-center flex flex-col items-center">
       <motion.h1
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.15 }}
-        className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light italic tracking-wide mb-8 whitespace-nowrap"
+        className="text-[36px] sm:text-[42px] md:text-[52px] lg:text-[60px] xl:text-[64px] font-light tracking-wide mb-8 whitespace-nowrap"
       >
         Premier Vitality{" "}<img src="/logo-emblem.svg" alt="&" className="inline-block h-[0.8em] w-auto align-middle" style={{ filter: "brightness(0) saturate(100%) invert(78%) sepia(32%) saturate(500%) hue-rotate(5deg)" }} />{" "}Wellness
       </motion.h1>
 
-      {/* Horizontal accent line */}
+      {/* Accent line */}
       <motion.div
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
@@ -63,19 +62,19 @@ const HeroSection = () => (
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.5 }}
-        className="text-xs tracking-[0.35em] uppercase text-muted-foreground mb-8 font-body font-light"
+        className="text-[11px] tracking-[0.35em] uppercase text-muted-foreground mb-8"
       >
-        Bridging the Gap Between Modern Medicine and Innovative Science
+        The Future of Elite Performance Medicine
       </motion.p>
 
       <motion.p
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.65 }}
-        className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto mb-12 font-body font-light leading-relaxed"
+        className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto mb-12 leading-relaxed"
       >
-        Precision longevity protocols engineered for those who refuse to accept the
-        conventional trajectory of aging. Evidence-based. Physician-directed. Uncompromising.
+        Physician-directed precision medicine for those who demand measurable results.
+        Evidence-based protocols engineered to optimize your biology at every level.
       </motion.p>
 
       <motion.div
@@ -88,17 +87,17 @@ const HeroSection = () => (
           href="/auth"
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
-          className="px-10 py-3 text-xs font-body font-light tracking-[0.25em] uppercase text-foreground transition-all"
+          className="px-10 py-3 text-xs tracking-[0.25em] uppercase text-foreground transition-all"
           style={{
             border: "1px solid hsl(var(--primary) / 0.25)",
             boxShadow: "0 0 20px -6px hsl(var(--primary) / 0.1)",
           }}
         >
-          Create Your Account
+          Begin Your Protocol
         </motion.a>
         <a
           href="/protocols"
-          className="text-xs font-body font-light tracking-[0.25em] uppercase text-muted-foreground hover:text-foreground transition-colors"
+          className="text-xs tracking-[0.25em] uppercase text-muted-foreground hover:text-foreground transition-colors"
         >
           Explore Protocols
         </a>

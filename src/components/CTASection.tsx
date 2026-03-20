@@ -10,20 +10,20 @@ const CTASection = () => (
       transition={{ duration: 0.7 }}
       className="max-w-2xl mx-auto text-center"
     >
-      <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-3 font-body font-light">
-        Get Started
+      <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-3">
+        Your Next Step
       </p>
-      <h2 className="text-3xl md:text-5xl font-extralight mb-6 tracking-tight">
-        Ready to Optimize Your Health?
+      <h2 className="font-light mb-6 tracking-tight">
+        Ready to Optimize Your Biology?
       </h2>
-      <p className="text-muted-foreground font-body font-light text-sm leading-relaxed mb-10 max-w-lg mx-auto">
-        Book a free consultation to discuss your goals and discover the right peptide protocol for you.
+      <p className="text-muted-foreground text-base leading-relaxed mb-10 max-w-lg mx-auto">
+        Schedule a complimentary physician consultation. We will review your goals, discuss your options, and determine if our protocols are the right fit.
       </p>
       <button
         onClick={openCalendly}
-        className="inline-block px-10 py-3 bg-primary text-primary-foreground font-light tracking-widest uppercase text-xs rounded-sm hover:opacity-90 transition-opacity"
+        className="inline-block px-10 py-3 bg-primary text-primary-foreground tracking-widest uppercase text-xs rounded-sm hover:opacity-90 transition-opacity"
       >
-        Book Free Consultation
+        Book a Consultation
       </button>
     </motion.div>
   </section>

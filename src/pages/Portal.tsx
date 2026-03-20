@@ -363,7 +363,7 @@ const Portal = () => {
                                 : "border border-primary/40 text-primary hover:bg-primary/10"
                             }`}
                           >
-                            Get Started
+                            Begin Your Protocol
                           </button>
                         </CardContent>
                       </Card>

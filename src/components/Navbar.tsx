@@ -33,10 +33,9 @@ const Navbar = () => {
     <>
       {/* Desktop Navbar */}
       <nav className="hidden md:flex fixed top-0 left-0 right-0 z-50 items-center justify-between px-8 h-16 bg-background/80 backdrop-blur-xl border-b border-border/50">
-        {/* Logo */}
+        {/* Logo - full wordmark on desktop */}
         <Link to="/" className="flex items-center">
-          {/* LOGO SWAP: Real logo implemented */}
-          <img src="/logo-emblem.svg" alt="Premier Vitality & Wellness" className="h-8 w-auto" />
+          <img src="/logo-full.svg" alt="Premier Vitality & Wellness" className="h-8 w-auto" style={{ filter: "brightness(0) saturate(100%) invert(78%) sepia(32%) saturate(500%) hue-rotate(5deg)" }} />
         </Link>
 
         {/* Center Tubelight Pill Nav */}
@@ -86,8 +85,7 @@ const Navbar = () => {
       {/* Mobile Top Bar - Logo + Hamburger only */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 h-14 bg-background/80 backdrop-blur-xl border-b border-border/50">
         <Link to="/" className="flex items-center">
-          {/* LOGO SWAP: Real logo implemented */}
-          <img src="/logo-emblem.svg" alt="Premier Vitality & Wellness" className="h-7 w-auto" />
+          <img src="/logo-emblem.svg" alt="Premier Vitality & Wellness" className="h-7 w-auto" style={{ filter: "brightness(0) saturate(100%) invert(78%) sepia(32%) saturate(500%) hue-rotate(5deg)" }} />
         </Link>
         <button
           onClick={() => setDrawerOpen(true)}
