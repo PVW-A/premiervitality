@@ -97,7 +97,7 @@ const HeroSection = () => (
           Create Your Account
         </motion.a>
         <a
-          href="/peptides"
+          href="/protocols"
           className="text-xs font-body font-light tracking-[0.25em] uppercase text-muted-foreground hover:text-foreground transition-colors"
         >
           Explore Protocols
