@@ -25,6 +25,7 @@ import SmsConsent from "./pages/SmsConsent";
 import ResetPassword from "./pages/ResetPassword";
 import AuthCallback from "./pages/AuthCallback";
 import Protocols from "./pages/Protocols";
+import ProtocolDetail from "./pages/ProtocolDetail";
 import PatientDashboard from "./pages/PatientDashboard";
 import Membership from "./pages/Membership";
 import OurPeptides from "./pages/OurPeptides";
@@ -71,6 +72,7 @@ const App = () => (
               <Route path="/faq" element={<FAQ />} />
               <Route path="/sms-consent" element={<SmsConsent />} />
               <Route path="/protocols" element={<Protocols />} />
+              <Route path="/protocols/:categorySlug/:protocolSlug" element={<ProtocolDetail />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/dashboard" element={<PatientDashboard />} />
