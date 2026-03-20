@@ -26,6 +26,7 @@ import ResetPassword from "./pages/ResetPassword";
 import AuthCallback from "./pages/AuthCallback";
 import Protocols from "./pages/Protocols";
 import ProtocolDetail from "./pages/ProtocolDetail";
+import PeptideDetail from "./pages/PeptideDetail";
 import PatientDashboard from "./pages/PatientDashboard";
 import Membership from "./pages/Membership";
 import OurPeptides from "./pages/OurPeptides";
@@ -61,6 +62,7 @@ const App = () => (
               <Route path="/admin" element={<Admin />} />
               <Route path="/catalog" element={<Catalog />} />
               <Route path="/peptides" element={<PeptidesPage />} />
+              <Route path="/peptides/:slug" element={<PeptideDetail />} />
               <Route path="/our-why" element={<OurWhy />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />

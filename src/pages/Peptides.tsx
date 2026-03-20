@@ -1,7 +1,8 @@
 import SEO from "@/components/SEO";
 import { useState, useEffect, useMemo, useRef } from "react";
-import { Search, ChevronDown, ChevronUp, FlaskConical } from "lucide-react";
+import { Search, ChevronDown, ChevronUp, FlaskConical, ArrowRight } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,6 +36,9 @@ const getDisplayName = (fullName: string, baseName: string): string => {
   }
   return fullName.replace(/\s+--\s+.*/g, "").trim();
 };
+
+const peptideSlug = (name: string) =>
+  name.toLowerCase().replace(/\+/g, "-plus").replace(/[^a-z0-9]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
 
 const CARD_GLASS: React.CSSProperties = {
   background: "rgba(255,255,255,0.03)",
@@ -79,7 +83,7 @@ const CompoundCard = ({
             </span>
           )}
         </div>
-        <p className="text-lg font-heading font-light text-foreground/90 mb-1">{compound.name}</p>
+        <Link to={`/peptides/${peptideSlug(compound.name)}`} className="text-lg font-heading font-light text-foreground/90 mb-1 block hover:text-primary transition-colors">{compound.name}</Link>
         <p className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground/50 font-body font-extralight mb-3">
           {compound.category}
         </p>
@@ -122,21 +126,20 @@ const CompoundCard = ({
       </div>
 
       {/* CTA */}
-      <div className="px-5 pb-5">
-        {isLoggedIn ? (
+      <div className="px-5 pb-5 space-y-2">
+        <Link
+          to={`/peptides/${peptideSlug(compound.name)}`}
+          className="w-full py-2.5 flex items-center justify-center gap-2 border border-border/40 text-center text-[10px] font-body font-extralight tracking-[0.2em] uppercase text-muted-foreground/50 hover:text-foreground/70 hover:border-border/60 transition-colors"
+        >
+          Learn More <ArrowRight size={10} />
+        </Link>
+        {isLoggedIn && (
           <button
             onClick={() => onRequest(compound)}
             className="w-full py-2.5 bg-primary/90 text-primary-foreground text-[10px] font-body font-extralight tracking-[0.2em] uppercase hover:bg-primary transition-colors"
           >
             Request Treatment
           </button>
-        ) : (
-          <a
-            href="/auth"
-            className="block w-full py-2.5 border border-border/40 text-center text-[10px] font-body font-extralight tracking-[0.2em] uppercase text-muted-foreground/50 hover:text-foreground/70 hover:border-border/60 transition-colors"
-          >
-            Sign In to Request
-          </a>
         )}
       </div>
     </div>
