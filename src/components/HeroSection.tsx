@@ -7,16 +7,34 @@ const HeroSection = () => (
     className="relative min-h-screen flex items-center justify-center overflow-hidden"
     id="home"
   >
-    {/* Page-level warm background */}
-    <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, #1a1812 0%, #0d0d0b 50%, #000000 100%)" }} />
-
-    {/* Background image */}
+    {/* Background image + depth gradient */}
     <div className="absolute inset-0">
-      <img src={heroBg} alt="" className="w-full h-full object-cover opacity-12" />
+      <img src={heroBg} alt="" className="w-full h-full object-cover opacity-20" />
+      <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 80% 70% at 50% 40%, #1E1E24 0%, #000000 70%)", opacity: 0.85 }} />
     </div>
 
-    {/* Warm golden atmospheric glow */}
-    <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 50%, rgba(171,143,95,0.07) 0%, transparent 65%)" }} />
+    {/* Grid overlay */}
+    <div
+      className="absolute inset-0 pointer-events-none"
+      style={{
+        backgroundImage:
+          "linear-gradient(hsl(var(--foreground) / 0.02) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground) / 0.02) 1px, transparent 1px)",
+        backgroundSize: "80px 80px",
+        maskImage:
+          "radial-gradient(ellipse 70% 60% at 50% 50%, black 10%, transparent 80%)",
+        WebkitMaskImage:
+          "radial-gradient(ellipse 70% 60% at 50% 50%, black 10%, transparent 80%)",
+      }}
+    />
+
+    {/* Radial glow */}
+    <div
+      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] pointer-events-none"
+      style={{
+        background:
+          "radial-gradient(circle, hsl(var(--primary) / 0.06) 0%, transparent 60%)",
+      }}
+    />
 
     <div className="relative z-10 max-w-5xl mx-auto px-4 md:px-6 pt-20 sm:pt-0 text-center flex flex-col items-center">
       <motion.h1
