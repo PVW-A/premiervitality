@@ -141,6 +141,11 @@
   transform: translateY(-4px);
 }
 
+/* Subtle section depth for alternating homepage sections */
+.section-elevated {
+  background: #0a0a0e;
+}
+
 /* Calendly popup styling */
 .calendly-overlay { background: rgba(0,0,0,0.92) !important; }
 .calendly-overlay .calendly-popup { box-shadow: none !important; }

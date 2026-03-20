@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { openCalendly } from "@/hooks/useCalendly";
 
 const CTASection = () => (
-  <section id="contact" className="py-28 px-6">
+  <section id="contact" className="py-28 px-6" style={{ background: "#0a0a0e" }}>
     <motion.div
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}

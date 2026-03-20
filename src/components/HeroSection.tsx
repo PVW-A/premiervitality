@@ -7,10 +7,10 @@ const HeroSection = () => (
     className="relative min-h-screen flex items-center justify-center overflow-hidden"
     id="home"
   >
-    {/* Background image */}
+    {/* Background image + depth gradient */}
     <div className="absolute inset-0">
-      <img src={heroBg} alt="" className="w-full h-full object-cover opacity-30" />
-      <div className="absolute inset-0 bg-background/70" />
+      <img src={heroBg} alt="" className="w-full h-full object-cover opacity-20" />
+      <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 80% 70% at 50% 40%, #1E1E24 0%, #000000 70%)", opacity: 0.85 }} />
     </div>
 
     {/* Grid overlay */}
@@ -43,7 +43,7 @@ const HeroSection = () => (
         transition={{ duration: 1, delay: 0.15 }}
         className="text-[36px] sm:text-[42px] md:text-[52px] lg:text-[60px] xl:text-[64px] font-light tracking-wide mb-8 whitespace-nowrap"
       >
-        Premier Vitality{" "}<img src="/logo-emblem.svg" alt="&" className="inline-block h-[0.8em] w-auto align-middle" style={{ filter: "brightness(0) saturate(100%) invert(78%) sepia(32%) saturate(500%) hue-rotate(5deg)" }} />{" "}Wellness
+        Premier Vitality{" "}<img src="/logo-emblem.svg" alt="&" className="inline-block h-[0.8em] w-auto align-middle" style={{ filter: "brightness(0) invert(1)" }} />{" "}Wellness
       </motion.h1>
 
       {/* Accent line */}
