@@ -44,7 +44,7 @@ const HeroSection = () => (
         transition={{ duration: 1, delay: 0.15 }}
         className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light italic tracking-wide mb-8 whitespace-nowrap"
       >
-        Premier Vitality &amp; Wellness
+        Premier Vitality{" "}<img src="/logo-emblem.svg" alt="&" className="inline-block h-[0.8em] w-auto align-middle" style={{ filter: "brightness(0) saturate(100%) invert(78%) sepia(32%) saturate(500%) hue-rotate(5deg)" }} />{" "}Wellness
       </motion.h1>
 
       {/* Horizontal accent line */}
