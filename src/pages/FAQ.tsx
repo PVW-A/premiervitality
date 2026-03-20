@@ -83,7 +83,7 @@ const faqSections = [
       },
       {
         q: "Do you accept insurance?",
-        a: "Premier Vitality operates as a cash-pay concierge practice. While we don't bill insurance directly, we can provide documentation you may use to submit for reimbursement depending on your plan.",
+        a: "Insurance companies have mastered one thing: delay, deny, and make you give up. Our members don't wait. They get lab work, a physician review, and a personalized protocol - usually within days. HSA/FSA funds? Absolutely accepted. We just cut out the middleman who was never on your side.",
       },
     ],
   },

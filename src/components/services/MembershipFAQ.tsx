@@ -29,7 +29,7 @@ const faqs = [
   },
   {
     q: "Is this covered by insurance?",
-    a: "Membership fees and peptide therapies are not covered by insurance. However, many members use HSA/FSA funds for lab work and consultations. We provide itemized receipts for reimbursement.",
+    a: "Insurance companies have spent decades perfecting the art of saying no. We built something better. No gatekeepers. No prior authorizations. No 6-month wait times. Just physician-directed protocols that actually work, available to you now. HSA/FSA funds are absolutely accepted.",
   },
 ];
 

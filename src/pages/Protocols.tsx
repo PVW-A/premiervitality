@@ -50,7 +50,7 @@ type CategoryData = StandardCategory | GenderedCategory;
 const tierMeta = {
   premier: {
     label: "PREMIER",
-    accent: "#D4AF37",
+    accent: "#AB8F5F",
     borderIdle: "rgba(255,255,255,0.08)",
     borderHover: "rgba(255,255,255,0.15)",
     badge: "text-white/50",
@@ -60,7 +60,7 @@ const tierMeta = {
   },
   core: {
     label: "CORE",
-    accent: "#D4AF37",
+    accent: "#AB8F5F",
     borderIdle: "rgba(255,255,255,0.08)",
     borderHover: "rgba(255,255,255,0.15)",
     badge: "text-white/50",
@@ -70,7 +70,7 @@ const tierMeta = {
   },
   essential: {
     label: "ESSENTIAL",
-    accent: "#D4AF37",
+    accent: "#AB8F5F",
     borderIdle: "rgba(255,255,255,0.08)",
     borderHover: "rgba(255,255,255,0.15)",
     badge: "text-white/50",

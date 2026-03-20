@@ -34,14 +34,9 @@ const Navbar = () => {
       {/* Desktop Navbar */}
       <nav className="hidden md:flex fixed top-0 left-0 right-0 z-50 items-center justify-between px-8 h-16 bg-background/80 backdrop-blur-xl border-b border-border/50">
         {/* Logo */}
-        <Link to="/" className="flex items-baseline gap-1.5 group">
-          {/* LOGO SWAP: Replace with <img src="/logo.png" alt="Premier Vitality" className="h-8" /> when new logo is ready */}
-          <span className="text-lg font-heading font-light tracking-wide text-foreground group-hover:text-primary transition-colors duration-300">
-            Premier
-          </span>
-          <span className="text-lg font-heading font-light italic tracking-wide text-primary">
-            Vitality
-          </span>
+        <Link to="/" className="flex items-center">
+          {/* LOGO SWAP: Real logo implemented */}
+          <img src="/logo-emblem.svg" alt="Premier Vitality & Wellness" className="h-8 w-auto" />
         </Link>
 
         {/* Center Tubelight Pill Nav */}
@@ -70,7 +65,7 @@ const Navbar = () => {
                       className="absolute top-0 left-0 right-0 flex justify-center"
                       transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
                     >
-                      <div className="w-8 h-0.5 bg-amber-400 rounded-full" />
+                      <div className="w-8 h-0.5 rounded-full" style={{ background: "#AB8F5F" }} />
                     </motion.div>
                   </>
                 )}
@@ -90,14 +85,9 @@ const Navbar = () => {
 
       {/* Mobile Top Bar - Logo + Hamburger only */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 h-14 bg-background/80 backdrop-blur-xl border-b border-border/50">
-        <Link to="/" className="flex items-baseline gap-1.5">
-          {/* LOGO SWAP: Replace with <img src="/logo.png" alt="Premier Vitality" className="h-7" /> when new logo is ready */}
-          <span className="text-base font-heading font-light tracking-wide text-foreground">
-            Premier
-          </span>
-          <span className="text-base font-heading font-light italic tracking-wide text-primary">
-            Vitality
-          </span>
+        <Link to="/" className="flex items-center">
+          {/* LOGO SWAP: Real logo implemented */}
+          <img src="/logo-emblem.svg" alt="Premier Vitality & Wellness" className="h-7 w-auto" />
         </Link>
         <button
           onClick={() => setDrawerOpen(true)}

@@ -13,9 +13,9 @@ const Footer = () => (
       {/* Top row - brand + contact */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-8">
         <div>
-          {/* LOGO SWAP: Replace with <img src="/logo.png" alt="Premier Vitality" className="h-8" /> when new logo is ready */}
+          <img src="/logo-emblem.svg" alt="Premier Vitality & Wellness" className="h-8 w-auto mb-2" />
           <p className="text-lg font-light tracking-[0.2em] uppercase text-foreground mb-2">
-            Premier Vitality
+            Premier Vitality & Wellness
           </p>
           <p className="text-xs text-muted-foreground font-body font-light max-w-sm leading-relaxed">
             Physician-directed peptide therapy for longevity, performance, and recovery.
