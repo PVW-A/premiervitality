@@ -40,7 +40,7 @@ export function NavBar({ items, className }: NavBarProps) {
         className,
       )}
     >
-      <div className="flex items-center gap-3 bg-background/5 border border-border backdrop-blur-lg py-1 px-1 rounded-full shadow-lg">
+      <div className="relative flex items-center gap-3 bg-background/5 border border-border backdrop-blur-lg py-1 px-1 rounded-full shadow-lg" style={{ isolation: "isolate" }}>
         {items.map((item) => {
           const Icon = item.icon
           const isActive = activeTab === item.name
@@ -62,12 +62,15 @@ export function NavBar({ items, className }: NavBarProps) {
               {isActive && (
                 <motion.div
                   layoutId="lamp"
+                  layout="position"
                   className="absolute inset-0 w-full bg-primary/5 rounded-full -z-10"
+                  style={{ position: "absolute" }}
                   initial={false}
                   transition={{
                     type: "spring",
-                    stiffness: 300,
-                    damping: 30,
+                    stiffness: 400,
+                    damping: 40,
+                    mass: 0.8,
                   }}
                 >
                   <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-1 bg-primary rounded-t-full">
