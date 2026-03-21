@@ -222,7 +222,7 @@ const Peptides = () => {
     ), [groups, activeCategory, search]);
 
   return (
-    <div className="min-h-screen bg-background" style={{ backgroundImage: "radial-gradient(ellipse 80% 40% at 20% 10%, hsl(39 38% 60% / 0.05) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 80% 80%, hsl(39 38% 40% / 0.04) 0%, transparent 55%)" }}>
+    <div className="min-h-screen" style={{ backgroundImage: "radial-gradient(ellipse 80% 40% at 20% 10%, hsl(39 38% 60% / 0.05) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 80% 80%, hsl(39 38% 40% / 0.04) 0%, transparent 55%)" }}>
       <SEO title="Treatments & Peptide Catalog" description="Physician-directed peptide therapy and longevity treatments. Browse by goal - weight loss, anti-aging, hormones, recovery, and more." canonical="/peptides" />
       <Navbar />
 

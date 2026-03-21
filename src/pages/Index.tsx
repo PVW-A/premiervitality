@@ -11,7 +11,7 @@ import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
 const Index = () => (
-  <div className="min-h-screen bg-background">
+  <div className="min-h-screen">
     <SEO
       canonical="/"
       description="Premier Vitality & Wellness offers physician-directed peptide therapy for longevity, anti-aging, performance, and recovery. Evidence-based protocols tailored to your biology."

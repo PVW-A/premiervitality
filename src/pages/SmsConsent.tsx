@@ -2,7 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 const SmsConsent = () => (
-  <div className="min-h-screen bg-background">
+  <div className="min-h-screen">
     <Navbar />
     <main className="pt-32 pb-20 px-6">
       <div className="max-w-3xl mx-auto prose-sm">

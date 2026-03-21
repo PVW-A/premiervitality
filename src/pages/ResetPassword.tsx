@@ -57,7 +57,7 @@ const ResetPassword = () => {
 
   if (!isRecovery) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-6">
+      <div className="min-h-screen flex items-center justify-center px-6">
         <div className="w-full max-w-sm text-center">
           <PVMonogram className="w-12 h-12 mb-4 mx-auto" />
           <h1 className="text-2xl font-heading font-light tracking-wide text-foreground mb-4">
@@ -75,7 +75,7 @@ const ResetPassword = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-6">
+    <div className="min-h-screen flex items-center justify-center px-6">
       <div className="w-full max-w-sm">
         <div className="flex flex-col items-center mb-10">
           <PVMonogram className="w-12 h-12 mb-4" />

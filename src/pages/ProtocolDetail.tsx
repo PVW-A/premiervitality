@@ -52,7 +52,7 @@ const ProtocolDetail = () => {
 
   if (!result) {
     return (
-      <div className="min-h-screen bg-background" style={{ backgroundImage: "radial-gradient(ellipse 80% 50% at 20% 0%, hsl(39 38% 60% / 0.06) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 80% 100%, hsl(39 38% 40% / 0.04) 0%, transparent 55%)" }}>
+      <div className="min-h-screen" style={{ backgroundImage: "radial-gradient(ellipse 80% 50% at 20% 0%, hsl(39 38% 60% / 0.06) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 80% 100%, hsl(39 38% 40% / 0.04) 0%, transparent 55%)" }}>
         <SEO title="Protocol Not Found" />
         <Navbar />
         <main className="pt-32 pb-20 text-center px-6">
@@ -74,7 +74,7 @@ const ProtocolDetail = () => {
   const meta = tierMeta[tier];
 
   return (
-    <div className="min-h-screen bg-background" style={{ backgroundImage: "radial-gradient(ellipse 80% 50% at 20% 0%, hsl(39 38% 60% / 0.06) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 80% 100%, hsl(39 38% 40% / 0.04) 0%, transparent 55%), radial-gradient(ellipse 40% 30% at 50% 50%, hsl(220 20% 30% / 0.03) 0%, transparent 50%)" }}>
+    <div className="min-h-screen" style={{ backgroundImage: "radial-gradient(ellipse 80% 50% at 20% 0%, hsl(39 38% 60% / 0.06) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 80% 100%, hsl(39 38% 40% / 0.04) 0%, transparent 55%), radial-gradient(ellipse 40% 30% at 50% 50%, hsl(220 20% 30% / 0.03) 0%, transparent 50%)" }}>
       <SEO
         title={`${card.name} | ${category.name} Protocol`}
         description={card.protocolDescription}

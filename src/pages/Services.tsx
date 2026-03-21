@@ -153,7 +153,7 @@ const Services = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background" style={{ backgroundImage: "radial-gradient(ellipse 70% 40% at 50% 0%, hsl(39 38% 60% / 0.06) 0%, transparent 55%), radial-gradient(ellipse 50% 35% at 80% 70%, hsl(39 38% 40% / 0.04) 0%, transparent 55%)" }}>
+    <div className="min-h-screen" style={{ backgroundImage: "radial-gradient(ellipse 70% 40% at 50% 0%, hsl(39 38% 60% / 0.06) 0%, transparent 55%), radial-gradient(ellipse 50% 35% at 80% 70%, hsl(39 38% 40% / 0.04) 0%, transparent 55%)" }}>
       <SEO
         title="Membership Plans & Pricing"
         description="Join Premier Vitality & Wellness. Choose a membership plan for physician-directed peptide therapy, bloodwork analysis, and personalized longevity protocols."

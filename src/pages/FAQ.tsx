@@ -116,7 +116,7 @@ const faqSections = [
 
 const FAQ = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <SEO
         title="Frequently Asked Questions"
         description="Common questions about peptide therapy, membership plans, bloodwork analysis, ordering, and our Vitality Score. Get answers from Premier Vitality & Wellness."

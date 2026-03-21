@@ -39,7 +39,7 @@ const stats = [
 ];
 
 const About = () => (
-  <div className="min-h-screen bg-background">
+  <div className="min-h-screen">
     <SEO
       title="About Us"
       description="Premier Vitality & Wellness is a physician-led health optimization and longevity practice built for entrepreneurs, executives, and elite professionals who demand their biology keep up."

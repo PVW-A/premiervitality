@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import jamesPhoto from "@/assets/dr-james-loo.jpg";
 
 const DrJamesStory = () => (
-  <div className="min-h-screen bg-background">
+  <div className="min-h-screen">
     <Navbar />
     <main className="pt-32 pb-20 px-6">
       <div className="max-w-3xl mx-auto">

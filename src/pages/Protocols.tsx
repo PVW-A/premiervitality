@@ -142,7 +142,7 @@ const Protocols = () => {
 
   return (
     <div
-      className="min-h-screen bg-background"
+      className="min-h-screen"
       style={{
         backgroundImage: [
           "radial-gradient(ellipse 80% 50% at 20% 0%, hsl(39 38% 60% / 0.06) 0%, transparent 60%)",

@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import nicolasPhoto from "@/assets/nicolas-loo.jpg";
 
 const OurWhy = () => (
-  <div className="min-h-screen bg-background">
+  <div className="min-h-screen">
     <SEO
       title="Our Why"
       description="The personal story behind Premier Vitality & Wellness. Born from a family's battle with degenerative brain disease and a refusal to accept the status quo."

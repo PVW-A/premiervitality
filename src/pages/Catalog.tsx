@@ -134,14 +134,14 @@ const Catalog = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <p className="text-muted-foreground text-sm font-body font-light tracking-wider uppercase animate-pulse">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <header className="border-b border-border bg-background/90 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-6 flex items-center justify-between h-16">
           <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">

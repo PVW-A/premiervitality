@@ -48,7 +48,7 @@ const localJsonLd = {
 };
 
 const ServiceArea = () => (
-  <div className="min-h-screen bg-background">
+  <div className="min-h-screen">
     <SEO
       title="Service Areas - Chandler, Gilbert, Tempe & East Valley AZ"
       description="Premier Vitality & Wellness serves Chandler, Gilbert, Tempe, Mesa, Scottsdale, and the greater Phoenix East Valley with physician-directed peptide therapy, bloodwork analysis, and longevity protocols."
