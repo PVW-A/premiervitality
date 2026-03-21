@@ -19,7 +19,7 @@ const SmsConsent = () => (
             <li><strong className="text-foreground">Two-Factor Authentication (2FA):</strong> Security verification codes when signing in from a new device to protect your account.</li>
             <li><strong className="text-foreground">Account Notifications:</strong> Order status updates, bloodwork result alerts, appointment reminders, membership renewal notices, and delivery confirmations.</li>
             <li><strong className="text-foreground">Customer Care:</strong> Responses to your inquiries, prescription-related communications, and clinical follow-ups from our care team.</li>
-            <li><strong className="text-foreground">Promotional Messages:</strong> Special offers, new peptide availability, wellness tips, loyalty rewards updates, and exclusive member promotions.</li>
+            <li><strong className="text-foreground">Promotional Messages:</strong> Wellness tips, membership updates, and exclusive member offers.</li>
           </ul>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">2. Message Frequency</h2>
@@ -29,10 +29,10 @@ const SmsConsent = () => (
           <p>You opt in to receive SMS messages by entering your mobile phone number during account registration at premiervitalityandwellness.com and clicking "Create Account." By completing registration, you confirm you have read and agree to this SMS Consent Policy. We do not send SMS to users who have not explicitly opted in.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">4. Opt-Out Instructions</h2>
-          <p>Reply <strong className="text-foreground">STOP</strong> to any message to opt out at any time. You will receive one final confirmation message after opting out and will receive no further messages. For help, reply <strong className="text-foreground">HELP</strong> or contact us at contact@premiervitalityandwellness.com.</p>
+          <p>Reply <strong className="text-foreground" style={{ fontWeight: 700 }}>STOP</strong> to any message to opt out at any time. You will receive one final confirmation message after opting out and will receive no further messages. For help, reply <strong className="text-foreground" style={{ fontWeight: 700 }}>HELP</strong> or contact us at contact@premiervitalityandwellness.com.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">5. Help</h2>
-          <p>For assistance, reply <strong className="text-foreground">HELP</strong> to any message or email <strong className="text-foreground">contact@premiervitalityandwellness.com</strong>.</p>
+          <p>For assistance, reply <strong className="text-foreground" style={{ fontWeight: 700 }}>HELP</strong> to any message or email <strong className="text-foreground">contact@premiervitalityandwellness.com</strong>.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">6. Message &amp; Data Rates</h2>
           <p>Standard message and data rates may apply based on your mobile carrier plan. Premier Vitality &amp; Wellness is not responsible for any charges incurred from your wireless provider.</p>
@@ -50,7 +50,7 @@ const SmsConsent = () => (
           <p>Premier Vitality &amp; Wellness<br />
           Email: <strong className="text-foreground">contact@premiervitalityandwellness.com</strong><br />
           Website: <strong className="text-foreground">www.premiervitalityandwellness.com</strong><br />
-          SMS Support: Reply <strong className="text-foreground">HELP</strong> for assistance or <strong className="text-foreground">STOP</strong> to opt out.</p>
+          SMS Support: Reply <strong className="text-foreground" style={{ fontWeight: 700 }}>HELP</strong> for assistance or <strong className="text-foreground" style={{ fontWeight: 700 }}>STOP</strong> to opt out.</p>
         </div>
       </div>
     </main>
