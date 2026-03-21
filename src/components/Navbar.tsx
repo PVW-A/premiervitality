@@ -1,15 +1,16 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Home, Layers, FlaskConical, Pill, Users, Menu, X, User } from "lucide-react";
 import { openCalendly } from "@/hooks/useCalendly";
+import { NavBar } from "@/components/ui/tubelight-navbar";
 
 const navItems = [
-  { label: "Home", href: "/", icon: Home },
-  { label: "Membership", href: "/services", icon: Layers },
-  { label: "Protocols", href: "/protocols", icon: FlaskConical },
-  { label: "Peptides", href: "/peptides", icon: Pill },
-  { label: "About", href: "/about", icon: Users },
+  { name: "Home", url: "/", icon: Home },
+  { name: "Membership", url: "/services", icon: Layers },
+  { name: "Protocols", url: "/protocols", icon: FlaskConical },
+  { name: "Peptides", url: "/peptides", icon: Pill },
+  { name: "About", url: "/about", icon: Users },
 ];
 
 const drawerLinks = [
@@ -22,46 +23,7 @@ const drawerLinks = [
 ];
 
 const Navbar = () => {
-  const { pathname } = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [canAnimate, setCanAnimate] = useState(false);
-  const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({ opacity: 0 });
-  const navContainerRef = useRef<HTMLDivElement>(null);
-  const linkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
-
-  const activeIndex = navItems.findIndex((item) =>
-    item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)
-  );
-
-  const updateIndicator = useCallback((animate: boolean) => {
-    const container = navContainerRef.current;
-    const activeLink = linkRefs.current[activeIndex];
-    if (!container || !activeLink || activeIndex < 0) {
-      setIndicatorStyle({ opacity: 0 });
-      return;
-    }
-    const containerRect = container.getBoundingClientRect();
-    const linkRect = activeLink.getBoundingClientRect();
-    setIndicatorStyle({
-      left: linkRect.left - containerRect.left,
-      width: linkRect.width,
-      opacity: 1,
-      transition: animate ? "left 0.3s ease, width 0.3s ease, opacity 0.15s ease" : "none",
-    });
-  }, [activeIndex]);
-
-  // On mount or route change: snap instantly, then enable animation after 50ms
-  useEffect(() => {
-    setCanAnimate(false);
-    updateIndicator(false);
-    const timer = setTimeout(() => setCanAnimate(true), 50);
-    return () => clearTimeout(timer);
-  }, [pathname, updateIndicator]);
-
-  // On activeIndex change from in-page click: animate
-  useEffect(() => {
-    if (canAnimate) updateIndicator(true);
-  }, [activeIndex, canAnimate, updateIndicator]);
 
   return (
     <>
@@ -72,37 +34,8 @@ const Navbar = () => {
           <img src="/logo-emblem.svg" alt="Premier Vitality & Wellness" className="h-8 w-auto" style={{ filter: "brightness(0) saturate(100%) invert(72%) sepia(28%) saturate(600%) hue-rotate(5deg)" }} />
         </Link>
 
-        {/* Center Nav */}
-        <div className="absolute left-1/2 -translate-x-1/2">
-          <div
-            ref={navContainerRef}
-            className="relative flex items-center gap-1 bg-background/5 border border-border backdrop-blur-lg rounded-full px-1.5 py-1.5"
-          >
-            {/* Sliding gold bar — sits just above text, touching top border */}
-            <span
-              className="absolute h-[2px] rounded-full"
-              style={{ background: "#AB8F5F", top: -1, ...indicatorStyle }}
-            />
-            {/* Sliding highlight bg */}
-            <span
-              className="absolute rounded-full bg-primary/5"
-              style={{ top: 0, bottom: 0, ...indicatorStyle }}
-            />
-
-            {navItems.map((item, i) => (
-              <Link
-                key={item.label}
-                to={item.href}
-                ref={(el) => { linkRefs.current[i] = el; }}
-                className={`relative z-10 px-5 py-1.5 text-[11px] tracking-[0.18em] uppercase rounded-full transition-colors duration-200 ${
-                  activeIndex === i ? "text-primary" : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </div>
+        {/* Center Tubelight Nav */}
+        <NavBar items={navItems} className="!fixed !top-0 !bottom-auto !mb-0 !pt-3.5" />
 
         {/* Hamburger */}
         <button
@@ -153,9 +86,9 @@ const Navbar = () => {
               <div className="flex flex-col px-6 py-8 gap-1">
                 <div className="md:hidden flex flex-col gap-1 mb-2">
                   {navItems.map((item) => (
-                    <Link key={item.label} to={item.href} onClick={() => setDrawerOpen(false)} className="flex items-center gap-3 px-3 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors">
+                    <Link key={item.name} to={item.url} onClick={() => setDrawerOpen(false)} className="flex items-center gap-3 px-3 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors">
                       <item.icon size={16} strokeWidth={1.5} />
-                      {item.label}
+                      {item.name}
                     </Link>
                   ))}
                   <div className="my-2 h-px bg-border/50" />
