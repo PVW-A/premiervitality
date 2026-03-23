@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import PVMonogram from "@/components/PVMonogram";
 import MyRequests from "@/components/portal/MyRequests";
 import PremierMarkers from "@/components/portal/PremierMarkers";
 import LoyaltyRewards from "@/components/portal/LoyaltyRewards";
@@ -189,11 +188,11 @@ const Portal = () => {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <header className="border-b border-border bg-background/90 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-5xl mx-auto px-6 flex items-center justify-between h-16">
+      <header className="border-b border-border sticky top-0 z-50" style={{ background: "rgba(0,0,0,0.85)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
+        <div className="max-w-5xl mx-auto px-4 md:px-6 flex items-center justify-between h-16">
           <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <PVMonogram className="w-8 h-8" />
-            <span className="text-xs tracking-[0.25em] uppercase text-foreground font-body font-light hidden sm:inline">
+            <img src="/logo-emblem.svg" alt="Premier Vitality & Wellness" className="h-8 w-auto" style={{ filter: "brightness(0) saturate(100%) invert(72%) sepia(28%) saturate(600%) hue-rotate(5deg)" }} />
+            <span className="text-xs tracking-[0.25em] uppercase text-foreground hidden sm:inline">
               Premier Vitality & Wellness
             </span>
           </a>
@@ -253,7 +252,7 @@ const Portal = () => {
         <Tabs value={activeTab} onValueChange={(v) => {
           setActiveTab(v);
         }} className="w-full">
-          <TabsList className="bg-card border border-border rounded-none h-auto p-0 w-full justify-start gap-0 hidden sm:flex">
+          <TabsList className="border border-border rounded-none h-auto p-0 w-full justify-start gap-0 hidden sm:flex" style={{ background: "rgba(255,255,255,0.03)" }}>
             {[
               { value: "dashboard", icon: Pill, label: "Dashboard" },
               { value: "markers", icon: Activity, label: "Vitality Score" },
@@ -309,7 +308,7 @@ const Portal = () => {
                     const isPopular = tier.slug === "premium";
                     const features = (tier.features as string[]) || [];
                     return (
-                      <Card key={tier.id} className={`relative border ${isPopular ? "border-primary/60" : "border-border"} bg-card`}>
+                      <Card key={tier.id} className={`relative border ${isPopular ? "border-primary/60" : "border-border"}`} style={{ background: "rgba(255,255,255,0.03)" }}>
                         {isPopular && (
                           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                             <span className="inline-flex items-center gap-1 bg-primary text-primary-foreground text-[9px] tracking-[0.2em] uppercase font-body px-3 py-1">
@@ -402,7 +401,7 @@ const Portal = () => {
                     </div>
                     <div className="grid gap-3 md:grid-cols-2">
                       {peptides.map((p) => (
-                        <Card key={p.id} className="border-border bg-card">
+                        <Card key={p.id} className="border-border" style={{ background: "rgba(255,255,255,0.03)" }}>
                           <CardHeader className="pb-2">
                             <CardTitle className="text-base font-heading font-light text-foreground">
                               {p.peptide_name}
@@ -461,7 +460,7 @@ const Portal = () => {
                     </div>
                     <div className="space-y-2">
                       {orders.map((o) => (
-                        <Card key={o.id} className="border-border bg-card">
+                        <Card key={o.id} className="border-border" style={{ background: "rgba(255,255,255,0.03)" }}>
                           <CardContent className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                             <div className="flex items-center gap-2">
                               <Badge variant="outline" className={statusColor[o.status] || ""}>
