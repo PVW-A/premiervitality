@@ -14,7 +14,7 @@ const SmsConsent = () => (
           <p><strong className="text-foreground">Effective Date:</strong> February 25, 2026</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">1. Consent to Receive Messages</h2>
-          <p>By creating an account with Premier Vitality &amp; Wellness and providing your mobile phone number, you expressly consent to receive text messages (SMS and MMS) from Premier Vitality &amp; Wellness at the phone number you provided. These messages may include:</p>
+          <p>By creating an account with Premier Vitality and Wellness LLC and providing your mobile phone number, you expressly consent to receive text messages (SMS and MMS) from Premier Vitality and Wellness LLC at the phone number you provided. These messages may include:</p>
           <ul className="list-disc pl-6 space-y-2">
             <li><strong className="text-foreground">Two-Factor Authentication (2FA):</strong> Security verification codes when signing in from a new device to protect your account.</li>
             <li><strong className="text-foreground">Account Notifications:</strong> Order status updates, bloodwork result alerts, appointment reminders, membership renewal notices, and delivery confirmations.</li>
@@ -35,7 +35,7 @@ const SmsConsent = () => (
           <p>For assistance, reply <strong className="text-foreground" style={{ fontWeight: 700 }}>HELP</strong> to any message or email <strong className="text-foreground">contact@premiervitalityandwellness.com</strong>.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">6. Message &amp; Data Rates</h2>
-          <p>Standard message and data rates may apply based on your mobile carrier plan. Premier Vitality &amp; Wellness is not responsible for any charges incurred from your wireless provider.</p>
+          <p>Standard message and data rates may apply based on your mobile carrier plan. Premier Vitality and Wellness LLC is not responsible for any charges incurred from your wireless provider.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">7. Supported Carriers</h2>
           <p>Our SMS service is supported on all major U.S. carriers including AT&amp;T, Verizon, T-Mobile, Sprint, and others. Carrier support may vary. We are not liable for delayed or undelivered messages.</p>
@@ -47,7 +47,7 @@ const SmsConsent = () => (
           <p>By opting in to our SMS program, you also agree to our <a href="/terms" className="underline text-foreground hover:text-primary transition-colors">Terms of Service</a>. This SMS Consent Policy is incorporated into and subject to those Terms.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">10. Contact Information</h2>
-          <p>Premier Vitality &amp; Wellness<br />
+          <p>Premier Vitality and Wellness LLC<br />
           Email: <strong className="text-foreground">contact@premiervitalityandwellness.com</strong><br />
           Website: <strong className="text-foreground">www.premiervitalityandwellness.com</strong><br />
           SMS Support: Reply <strong className="text-foreground" style={{ fontWeight: 700 }}>HELP</strong> for assistance or <strong className="text-foreground" style={{ fontWeight: 700 }}>STOP</strong> to opt out.</p>

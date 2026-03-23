@@ -13,7 +13,7 @@ const Terms = () => (
           <p><strong className="text-foreground">Effective Date:</strong> February 23, 2026</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">1. Acceptance of Terms</h2>
-          <p>By accessing or using the Premier Vitality & Wellness website and services, you agree to be bound by these Terms of Service. If you do not agree, you must discontinue use immediately.</p>
+          <p>By accessing or using the Premier Vitality and Wellness LLC website and services, you agree to be bound by these Terms of Service. If you do not agree, you must discontinue use immediately.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">2. Medical Disclaimer</h2>
           <p>The information provided on this website is for general informational and educational purposes only and does not constitute medical advice, diagnosis, or treatment. Peptide therapy and related services are provided under the supervision of licensed healthcare providers. Always seek the advice of a qualified healthcare professional with any questions you may have regarding a medical condition. Never disregard professional medical advice or delay seeking it because of something you have read on this website.</p>
@@ -22,19 +22,19 @@ const Terms = () => (
           <p>We make no guarantees, representations, or warranties regarding the outcomes or results of any treatments, therapies, or protocols offered through our services. Individual results may vary significantly. Past performance or testimonials do not guarantee future results.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">4. Limitation of Liability</h2>
-          <p>To the fullest extent permitted by applicable law, Premier Vitality & Wellness, its founders, officers, employees, agents, and affiliates shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of profits, data, health outcomes, or other intangible losses, arising out of or in connection with your use of our website or services, even if we have been advised of the possibility of such damages.</p>
+          <p>To the fullest extent permitted by applicable law, Premier Vitality and Wellness LLC, its founders, officers, employees, agents, and affiliates shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of profits, data, health outcomes, or other intangible losses, arising out of or in connection with your use of our website or services, even if we have been advised of the possibility of such damages.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">5. Assumption of Risk</h2>
-          <p>You acknowledge that peptide therapy and related treatments carry inherent risks, including but not limited to adverse reactions, side effects, and interactions with other medications. By using our services, you voluntarily assume all risks associated with such treatments and agree to hold Premier Vitality & Wellness harmless from any claims arising therefrom.</p>
+          <p>You acknowledge that peptide therapy and related treatments carry inherent risks, including but not limited to adverse reactions, side effects, and interactions with other medications. By using our services, you voluntarily assume all risks associated with such treatments and agree to hold Premier Vitality and Wellness LLC harmless from any claims arising therefrom.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">6. Indemnification</h2>
-          <p>You agree to indemnify, defend, and hold harmless Premier Vitality & Wellness and its founders, employees, and affiliates from and against any and all claims, liabilities, damages, losses, and expenses (including reasonable attorneys' fees) arising out of or in connection with your use of our services, your violation of these Terms, or your violation of any rights of another party.</p>
+          <p>You agree to indemnify, defend, and hold harmless Premier Vitality and Wellness LLC and its founders, employees, and affiliates from and against any and all claims, liabilities, damages, losses, and expenses (including reasonable attorneys' fees) arising out of or in connection with your use of our services, your violation of these Terms, or your violation of any rights of another party.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">7. Intellectual Property</h2>
-          <p>All content on this website, including text, graphics, logos, and images, is the property of Premier Vitality & Wellness and is protected by applicable intellectual property laws. You may not reproduce, distribute, or create derivative works without our prior written consent.</p>
+          <p>All content on this website, including text, graphics, logos, and images, is the property of Premier Vitality and Wellness LLC and is protected by applicable intellectual property laws. You may not reproduce, distribute, or create derivative works without our prior written consent.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">8. Governing Law</h2>
-          <p>These Terms shall be governed by and construed in accordance with the laws of the state in which Premier Vitality & Wellness operates, without regard to its conflict of law provisions.</p>
+          <p>These Terms shall be governed by and construed in accordance with the laws of the state in which Premier Vitality and Wellness LLC operates, without regard to its conflict of law provisions.</p>
 
           <h2 className="text-lg font-extralight text-foreground pt-4">9. Severability</h2>
           <p>If any provision of these Terms is found to be unenforceable, the remaining provisions shall continue in full force and effect.</p>
