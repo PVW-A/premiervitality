@@ -1,4 +1,19 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createHmac } from "node:crypto";
+
+function validateTwilioSignature(
+  url: string,
+  params: Record<string, string>,
+  signature: string,
+  authToken: string
+): boolean {
+  const sortedParams = Object.keys(params)
+    .sort()
+    .reduce((acc, key) => acc + key + params[key], "");
+  const data = url + sortedParams;
+  const expected = createHmac("sha1", authToken).update(data).digest("base64");
+  return expected === signature;
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -8,6 +23,12 @@ Deno.serve(async (req) => {
         "Access-Control-Allow-Headers": "content-type",
       },
     });
+  }
+
+  // Validate Twilio signature
+  const twilioSignature = req.headers.get("x-twilio-signature");
+  if (!twilioSignature) {
+    return new Response("Forbidden", { status: 403 });
   }
 
   // Twilio sends form-encoded POST
@@ -23,6 +44,17 @@ Deno.serve(async (req) => {
 
   try {
     const formData = await req.formData();
+
+    // Validate Twilio request signature
+    const twilioAuth = Deno.env.get("TWILIO_AUTH_TOKEN")!;
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const webhookUrl = `${supabaseUrl}/functions/v1/twilio-webhook`;
+    const formParams: Record<string, string> = {};
+    formData.forEach((value, key) => { formParams[key] = String(value); });
+    if (!validateTwilioSignature(webhookUrl, formParams, twilioSignature!, twilioAuth)) {
+      return new Response("Forbidden", { status: 403 });
+    }
+
     const fromPhone = (formData.get("From") as string) || "";
     const rawBody = ((formData.get("Body") as string) || "").trim().toUpperCase();
 
@@ -30,10 +62,8 @@ Deno.serve(async (req) => {
       return twimlResponse();
     }
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const twilioSid = Deno.env.get("TWILIO_ACCOUNT_SID")!;
-    const twilioAuth = Deno.env.get("TWILIO_AUTH_TOKEN")!;
     const twilioPhone = Deno.env.get("TWILIO_PHONE_NUMBER")!;
 
     const admin = createClient(supabaseUrl, serviceRoleKey);

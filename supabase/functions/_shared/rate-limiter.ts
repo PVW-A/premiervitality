@@ -30,8 +30,14 @@ export async function checkRateLimit(
 
     if (error) {
       console.error("Rate limit check error:", error);
-      // Fail open — allow request if rate limiter errors
-      return { allowed: true };
+      // Fail closed — deny request if rate limiter errors
+      return {
+        allowed: false,
+        response: new Response(
+          JSON.stringify({ error: "Service temporarily unavailable. Please try again." }),
+          { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        ),
+      };
     }
 
     if (data === false) {
@@ -57,8 +63,14 @@ export async function checkRateLimit(
     return { allowed: true };
   } catch (err) {
     console.error("Rate limiter exception:", err);
-    // Fail open
-    return { allowed: true };
+    // Fail closed
+    return {
+      allowed: false,
+      response: new Response(
+        JSON.stringify({ error: "Service temporarily unavailable. Please try again." }),
+        { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      ),
+    };
   }
 }
 
