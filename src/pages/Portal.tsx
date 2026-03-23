@@ -217,22 +217,23 @@ const Portal = () => {
         />
       )}
 
-      <main className="max-w-5xl mx-auto px-6 py-8 space-y-6">
+      <main className="max-w-5xl mx-auto px-4 md:px-6 py-10 md:py-14 space-y-10">
         {/* Welcome + Vitality Badge */}
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-heading font-light text-foreground">
+            <p className="text-[10px] tracking-[0.35em] uppercase text-primary mb-2">Patient Portal</p>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-light tracking-tight text-foreground">
               Welcome{profile?.first_name ? `, ${profile.first_name}` : ""}
             </h1>
             {membership && (
               <button
                 onClick={() => setUpgradeOpen(true)}
-                className="group inline-flex items-center gap-2 mt-1.5"
+                className="group inline-flex items-center gap-2 mt-3"
               >
-                <Badge variant="outline" className="border-primary/40 text-primary text-[10px] tracking-wider uppercase font-body font-light px-2.5 py-0.5 group-hover:bg-primary/10 transition-colors cursor-pointer">
+                <Badge variant="outline" className="border-primary/40 text-primary text-[10px] tracking-[0.2em] uppercase px-2.5 py-0.5 group-hover:bg-primary/10 transition-colors cursor-pointer">
                   {(membership as any).membership_tiers?.name ?? "Active"} Member
                 </Badge>
-                <span className="text-[10px] text-muted-foreground font-body font-light group-hover:text-primary transition-colors flex items-center gap-0.5">
+                <span className="text-[10px] text-muted-foreground group-hover:text-primary transition-colors flex items-center gap-0.5">
                   <ArrowUp size={9} /> Upgrade
                 </span>
               </button>
@@ -252,7 +253,7 @@ const Portal = () => {
         <Tabs value={activeTab} onValueChange={(v) => {
           setActiveTab(v);
         }} className="w-full">
-          <TabsList className="border border-border rounded-none h-auto p-0 w-full justify-start gap-0 hidden sm:flex" style={{ background: "rgba(255,255,255,0.03)" }}>
+          <TabsList className="border border-border/30 rounded-none h-auto p-0 w-full justify-start gap-0 hidden sm:flex" style={{ background: "rgba(255,255,255,0.02)", backdropFilter: "blur(12px)" }}>
             {[
               { value: "dashboard", icon: Pill, label: "Dashboard" },
               { value: "markers", icon: Activity, label: "Vitality Score" },
@@ -261,111 +262,124 @@ const Portal = () => {
               <TabsTrigger
                 key={value}
                 value={value}
-                className="rounded-none px-5 py-3 text-xs tracking-[0.15em] uppercase font-body font-light data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
+                className="rounded-none px-6 py-3.5 text-[10px] tracking-[0.2em] uppercase data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary text-muted-foreground"
               >
-                <Icon size={14} className="mr-2" /> {label}
+                <Icon size={13} className="mr-2" strokeWidth={1.5} /> {label}
               </TabsTrigger>
             ))}
           </TabsList>
 
           {/* Dashboard Tab */}
-          <TabsContent value="dashboard" className="mt-6 space-y-8">
+          <TabsContent value="dashboard" className="mt-8 space-y-10">
             {/* Membership Upsell for non-subscribers */}
             {!membership && tiers && tiers.length > 0 && (
-              <section className="space-y-5">
-                <div>
-                  <h2 className="text-xs tracking-[0.3em] uppercase text-primary font-body font-light mb-1">
+              <section className="space-y-8">
+                <div className="text-center">
+                  <p className="text-[10px] tracking-[0.35em] uppercase text-primary mb-3">Membership Plans</p>
+                  <h2 className="text-2xl md:text-3xl font-light tracking-tight text-foreground mb-3">
                     Choose Your Plan
                   </h2>
-                  <p className="text-sm text-muted-foreground font-body font-light">
-                    Subscribe to unlock member pricing, lab work, and the ability to request peptides.
+                  <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
+                    Subscribe to unlock physician-directed protocols, member pricing, and comprehensive lab work.
                   </p>
                 </div>
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="inline-flex items-center bg-secondary rounded-full p-1 gap-1">
+                <div className="flex justify-center items-center gap-3">
+                  <div className="inline-flex items-center rounded-full p-1 gap-1" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
                     <button
                       onClick={() => setBillingCycle("monthly")}
-                      className={`px-4 py-1.5 text-[10px] tracking-[0.15em] uppercase font-body font-light rounded-full transition-colors ${
+                      className={`px-5 py-2 text-[10px] tracking-[0.15em] uppercase rounded-full transition-colors ${
                         billingCycle === "monthly" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                       }`}
                     >Monthly</button>
                     <button
                       onClick={() => setBillingCycle("annual")}
-                      className={`px-4 py-1.5 text-[10px] tracking-[0.15em] uppercase font-body font-light rounded-full transition-colors ${
+                      className={`px-5 py-2 text-[10px] tracking-[0.15em] uppercase rounded-full transition-colors ${
                         billingCycle === "annual" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                       }`}
                     >Annual</button>
                   </div>
                   {billingCycle === "monthly" && (
-                    <p className="text-[10px] text-primary font-body font-light animate-pulse">
-                      💰 Save up to 17% with annual
+                    <p className="text-[10px] text-primary">
+                      Save up to 17% with annual
                     </p>
                   )}
                 </div>
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-6 md:grid-cols-3">
                   {tiers.map((tier) => {
                     const price = billingCycle === "monthly" ? tier.monthly_price : tier.annual_price;
                     const isPopular = tier.slug === "premium";
                     const features = (tier.features as string[]) || [];
                     return (
-                      <Card key={tier.id} className={`relative border ${isPopular ? "border-primary/60" : "border-border"}`} style={{ background: "rgba(255,255,255,0.03)" }}>
+                      <div
+                        key={tier.id}
+                        className={`relative flex flex-col p-6 md:p-8 ${isPopular ? "md:-mt-3 md:pb-10" : ""}`}
+                        style={{
+                          background: "rgba(255,255,255,0.03)",
+                          backdropFilter: "blur(12px)",
+                          WebkitBackdropFilter: "blur(12px)",
+                          border: `1px solid ${isPopular ? "rgba(171,143,95,0.4)" : "rgba(255,255,255,0.08)"}`,
+                          boxShadow: isPopular
+                            ? "0 12px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)"
+                            : "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)",
+                        }}
+                      >
                         {isPopular && (
-                          <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                            <span className="inline-flex items-center gap-1 bg-primary text-primary-foreground text-[9px] tracking-[0.2em] uppercase font-body px-3 py-1">
+                          <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                            <span className="inline-flex items-center gap-1.5 bg-primary text-primary-foreground text-[9px] tracking-[0.2em] uppercase px-4 py-1.5">
                               <Sparkles size={10} /> Most Popular
                             </span>
                           </div>
                         )}
-                        <CardHeader className="pb-2">
-                          <CardTitle className="text-xs tracking-[0.3em] uppercase text-primary font-body font-light">
-                            {tier.name}
-                          </CardTitle>
-                          <div className="flex items-baseline gap-1">
-                            <span className="text-3xl font-heading font-light text-foreground">${price}</span>
-                            <span className="text-muted-foreground text-xs font-body">/mo</span>
-                            {billingCycle === "annual" && tier.monthly_price > price && (
-                              <span className="ml-1.5 text-[10px] font-body font-light text-primary bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded-full">
-                                Save ${tier.monthly_price - price}/mo
-                              </span>
-                            )}
-                          </div>
-                        </CardHeader>
-                        <CardContent className="space-y-1.5 pt-0">
+                        <p className="text-[10px] tracking-[0.3em] uppercase text-primary mb-3">
+                          {tier.name}
+                        </p>
+                        <div className="flex items-baseline gap-1 mb-1">
+                          <span className="text-3xl font-light text-foreground">${price}</span>
+                          <span className="text-muted-foreground text-xs">/mo</span>
+                          {billingCycle === "annual" && tier.monthly_price > price && (
+                            <span className="ml-2 text-[10px] text-primary bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded-full">
+                              Save ${tier.monthly_price - price}/mo
+                            </span>
+                          )}
+                        </div>
+                        <div className="mb-6" />
+                        <div className="flex-1 flex flex-col gap-2.5 mb-6">
                           {tier.discount_pct > 0 && (
-                            <div className="flex items-start gap-2 text-xs text-muted-foreground font-body font-light">
-                              <Check size={13} className="text-primary mt-0.5 shrink-0" />
+                            <div className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                              <Check size={14} className="text-primary mt-0.5 shrink-0" />
                               <span>{tier.discount_pct}% peptide discount</span>
                             </div>
                           )}
-                          <div className="flex items-start gap-2 text-xs text-muted-foreground font-body font-light">
-                            <Check size={13} className="text-primary mt-0.5 shrink-0" />
+                          <div className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                            <Check size={14} className="text-primary mt-0.5 shrink-0" />
                             <span>{tier.blood_work_frequency} blood work</span>
                           </div>
-                          <div className="flex items-start gap-2 text-xs text-muted-foreground font-body font-light">
-                            <Check size={13} className="text-primary mt-0.5 shrink-0" />
+                          <div className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                            <Check size={14} className="text-primary mt-0.5 shrink-0" />
                             <span>{tier.consultation_frequency}</span>
                           </div>
-                          {features.slice(0, 2).map((f, fi) => (
-                            <div key={fi} className="flex items-start gap-2 text-xs text-muted-foreground font-body font-light">
-                              <Check size={13} className="text-primary mt-0.5 shrink-0" />
+                          {features.slice(0, 3).map((f, fi) => (
+                            <div key={fi} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                              <Check size={14} className="text-primary mt-0.5 shrink-0" />
                               <span>{f}</span>
                             </div>
                           ))}
-                          <button
-                            onClick={() => {
-                              setCheckoutTier({ id: tier.id, name: tier.name, slug: tier.slug, monthly_price: tier.monthly_price, annual_price: tier.annual_price });
-                              setCheckoutOpen(true);
-                            }}
-                            className={`w-full mt-3 py-2.5 text-[10px] tracking-[0.2em] uppercase font-body font-light transition-colors ${
-                              isPopular
-                                ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                                : "border border-primary/40 text-primary hover:bg-primary/10"
-                            }`}
-                          >
-                            Begin Your Protocol
-                          </button>
-                        </CardContent>
-                      </Card>
+                        </div>
+                        <button
+                          onClick={() => {
+                            setCheckoutTier({ id: tier.id, name: tier.name, slug: tier.slug, monthly_price: tier.monthly_price, annual_price: tier.annual_price });
+                            setCheckoutOpen(true);
+                          }}
+                          className={`w-full py-3 text-[10px] tracking-[0.2em] uppercase transition-all duration-200 ${
+                            isPopular
+                              ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                              : "text-primary hover:bg-primary/10"
+                          }`}
+                          style={isPopular ? undefined : { border: "1px solid rgba(171,143,95,0.4)" }}
+                        >
+                          Begin Your Protocol
+                        </button>
+                      </div>
                     );
                   })}
                 </div>
@@ -377,14 +391,13 @@ const Portal = () => {
               <>
                 {/* Quick action */}
                 <div className="flex items-center gap-3">
-                  <Button
-                    variant="outline"
-                    size="sm"
+                  <button
                     onClick={() => navigate("/catalog")}
-                    className="text-xs tracking-wider uppercase font-body font-light rounded-none border-primary/40 text-primary hover:bg-primary/10"
+                    className="text-[10px] tracking-[0.2em] uppercase text-primary hover:bg-primary/10 transition-colors px-5 py-2.5 flex items-center gap-2"
+                    style={{ border: "1px solid rgba(171,143,95,0.4)" }}
                   >
-                    <ShoppingBag size={14} className="mr-1.5" /> Browse Catalog
-                  </Button>
+                    <ShoppingBag size={13} strokeWidth={1.5} /> Browse Catalog
+                  </button>
                 </div>
 
                 {/* Linked Accounts */}
@@ -393,21 +406,28 @@ const Portal = () => {
                 {/* Peptide Inventory */}
                 {peptides.length > 0 && (
                   <section>
-                    <div className="flex items-center gap-2 mb-3">
-                      <Pill size={16} strokeWidth={1.2} className="text-primary" />
-                      <h2 className="text-xs tracking-[0.2em] uppercase text-foreground font-body font-light">
+                    <div className="flex items-center gap-2 mb-5">
+                      <Pill size={14} strokeWidth={1.5} className="text-primary" />
+                      <h2 className="text-[10px] tracking-[0.3em] uppercase text-primary">
                         Your Peptides
                       </h2>
                     </div>
-                    <div className="grid gap-3 md:grid-cols-2">
+                    <div className="grid gap-4 md:grid-cols-2">
                       {peptides.map((p) => (
-                        <Card key={p.id} className="border-border" style={{ background: "rgba(255,255,255,0.03)" }}>
-                          <CardHeader className="pb-2">
-                            <CardTitle className="text-base font-heading font-light text-foreground">
-                              {p.peptide_name}
-                            </CardTitle>
-                          </CardHeader>
-                          <CardContent className="space-y-2">
+                        <div
+                          key={p.id}
+                          style={{
+                            background: "rgba(255,255,255,0.03)",
+                            backdropFilter: "blur(12px)",
+                            border: "1px solid rgba(255,255,255,0.08)",
+                            boxShadow: "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)",
+                          }}
+                          className="p-5"
+                        >
+                          <p className="text-base font-light text-foreground mb-3">
+                            {p.peptide_name}
+                          </p>
+                          <div className="space-y-2">
                             {p.dosage && (
                               <div className="flex justify-between text-sm font-body font-light">
                                 <span className="text-muted-foreground">Dosage</span>
@@ -432,8 +452,8 @@ const Portal = () => {
                               </p>
                             )}
                             {user && <PeptideReminders peptide={p} userId={user.id} />}
-                          </CardContent>
-                        </Card>
+                          </div>
+                        </div>
                       ))}
                     </div>
                   </section>
@@ -452,16 +472,15 @@ const Portal = () => {
                 {/* Orders */}
                 {orders.length > 0 && (
                   <section>
-                    <div className="flex items-center gap-2 mb-3">
-                      <Package size={16} strokeWidth={1.2} className="text-primary" />
-                      <h2 className="text-xs tracking-[0.2em] uppercase text-foreground font-body font-light">
+                    <div className="flex items-center gap-2 mb-5">
+                      <Package size={14} strokeWidth={1.5} className="text-primary" />
+                      <h2 className="text-[10px] tracking-[0.3em] uppercase text-primary">
                         Orders
                       </h2>
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       {orders.map((o) => (
-                        <Card key={o.id} className="border-border" style={{ background: "rgba(255,255,255,0.03)" }}>
-                          <CardContent className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div key={o.id} className="py-3 px-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                             <div className="flex items-center gap-2">
                               <Badge variant="outline" className={statusColor[o.status] || ""}>
                                 {o.status}
@@ -482,8 +501,7 @@ const Portal = () => {
                                 </span>
                               )}
                             </div>
-                          </CardContent>
-                        </Card>
+                          </div>
                       ))}
                     </div>
                   </section>
@@ -491,35 +509,30 @@ const Portal = () => {
 
                 {/* Empty state for members with no activity */}
                 {!hasActivity && (
-                  <Card className="border-border bg-card/50">
-                    <CardContent className="py-12 text-center space-y-3">
+                  <div className="py-12 text-center space-y-3" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                       <Pill size={28} strokeWidth={1} className="text-primary/40 mx-auto" />
                       <p className="text-sm text-muted-foreground font-body font-light">
                         You're all set! Browse the catalog to request your first peptide.
                       </p>
-                      <Button
-                        variant="outline"
-                        size="sm"
+                      <button
                         onClick={() => navigate("/catalog")}
-                        className="text-xs tracking-wider uppercase font-body font-light rounded-none border-primary/40 text-primary hover:bg-primary/10"
+                        className="text-[10px] tracking-[0.2em] uppercase text-primary hover:bg-primary/10 transition-colors px-5 py-2.5"
+                        style={{ border: "1px solid rgba(171,143,95,0.4)" }}
                       >
                         Browse Catalog
-                      </Button>
-                    </CardContent>
-                  </Card>
+                      </button>
+                  </div>
                 )}
               </>
             ) : (
               /* Non-member - just show a prompt to subscribe */
               !tiers && (
-                <Card className="border-border bg-card/50">
-                  <CardContent className="py-12 text-center space-y-3">
+                <div className="py-12 text-center space-y-3" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                     <Sparkles size={28} strokeWidth={1} className="text-primary/40 mx-auto" />
-                    <p className="text-sm text-muted-foreground font-body font-light">
+                    <p className="text-sm text-muted-foreground">
                       Choose a membership plan above to unlock your dashboard.
                     </p>
-                  </CardContent>
-                </Card>
+                </div>
               )
             )}
           </TabsContent>
