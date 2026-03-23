@@ -146,10 +146,35 @@
   background: #0a0a0e;
 }
 
-/* Calendly popup styling */
+/* Calendly popup — nuclear reset for all nested elements */
 .calendly-overlay { background: rgba(0,0,0,0.92) !important; }
 .calendly-overlay .calendly-popup { box-shadow: none !important; }
-.calendly-popup { background: #161616 !important; border-radius: 12px !important; overflow: hidden !important; border: none !important; }
-.calendly-popup-content { padding: 0 !important; background: transparent !important; }
-.calendly-popup iframe { border: none !important; border-radius: 12px !important; display: block !important; }
-.calendly-popup-close { background: rgba(0,0,0,0.5) !important; border-radius: 50% !important; }
+.calendly-popup {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.calendly-popup-content,
+.calendly-popup-content > div,
+.calendly-popup-content > div > div,
+.calendly-popup-content > div > div > div {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+.calendly-popup iframe {
+  border: none !important;
+  border-radius: 0 !important;
+  display: block !important;
+}
+.calendly-popup-close {
+  color: #fff !important;
+  background: rgba(255,255,255,0.1) !important;
+  border-radius: 50% !important;
+}
