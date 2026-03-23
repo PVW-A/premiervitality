@@ -1,6 +1,5 @@
 import SEO from "@/components/SEO";
 import { useState, useEffect, useRef } from "react";
-import { openCalendly } from "@/hooks/useCalendly";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Sparkles } from "lucide-react";
@@ -334,16 +333,22 @@ const Services = () => {
         {/* FAQ */}
         <MembershipFAQ />
 
-        {/* Bottom CTA */}
-        <section className="max-w-3xl mx-auto text-center px-6">
-          <p className="text-muted-foreground font-body font-light text-sm leading-relaxed">
-            All memberships include access to our complete peptide catalog with
-            member-exclusive pricing. Need help choosing?{" "}
-            <button onClick={openCalendly} className="text-primary hover:underline">
-              Contact us
-            </button>{" "}
-            for a free consultation.
-          </p>
+        {/* Inline Calendly Booking */}
+        <section className="mt-20 px-4 md:px-6">
+          <div className="max-w-4xl mx-auto text-center mb-10">
+            <p className="text-xs tracking-[0.35em] uppercase text-primary mb-4">Schedule</p>
+            <h2 className="font-light text-foreground mb-4">Book a Consultation</h2>
+            <p className="text-muted-foreground text-sm max-w-xl mx-auto leading-relaxed">
+              Select a time that works for you. Our physician team will review your goals and determine the right protocol.
+            </p>
+          </div>
+          <div className="max-w-4xl mx-auto rounded-lg overflow-hidden" style={{ background: "#161616", minHeight: 700 }}>
+            <div
+              className="calendly-inline-widget"
+              data-url="https://calendly.com/admin-premiervitalityandwellness/prerequisite?background_color=0d1117&text_color=ebe5d5&primary_color=c4a24e&hide_gdpr_banner=1"
+              style={{ minWidth: 320, height: 700, width: "100%" }}
+            />
+          </div>
         </section>
       </main>
       <SubscriptionCheckout
