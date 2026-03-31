@@ -32,6 +32,8 @@ import PatientDashboard from "./pages/PatientDashboard";
 import Membership from "./pages/Membership";
 import OurPeptides from "./pages/OurPeptides";
 import HowToGetStarted from "./pages/HowToGetStarted";
+import IntakeForm from "./pages/IntakeForm";
+import IntakeThankYou from "./pages/IntakeThankYou";
 import NotFound from "./pages/NotFound";
 import ChatButton from "./components/chat/ChatButton";
 import PageBackground from "./components/PageBackground";
@@ -93,6 +95,8 @@ const App = () => (
               <Route path="/membership" element={<Membership />} />
               <Route path="/our-peptides" element={<OurPeptides />} />
               <Route path="/how-to-get-started" element={<HowToGetStarted />} />
+              <Route path="/intake" element={<IntakeForm />} />
+              <Route path="/intake/thank-you" element={<IntakeThankYou />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
