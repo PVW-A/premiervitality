@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const IntakeThankYou = () => {
   return (
     <div
@@ -19,7 +21,19 @@ const IntakeThankYou = () => {
         A member of our team will review your information and reach out to you shortly.
         If you have any immediate questions, please contact our office directly.
       </p>
-      <div className="text-xs text-gray-400 uppercase tracking-widest">
+      <Link
+        to="/auth?mode=signup"
+        className="inline-block px-8 py-3 text-xs tracking-[0.2em] uppercase bg-black text-white hover:bg-gray-800 rounded-full transition-colors duration-200 mb-4"
+      >
+        Create Your Patient Account
+      </Link>
+      <Link
+        to="/"
+        className="text-xs text-gray-400 hover:text-gray-600 tracking-widest uppercase transition-colors"
+      >
+        Return to Home
+      </Link>
+      <div className="text-xs text-gray-400 uppercase tracking-widest mt-8">
         Premier Vitality and Wellness LLC
       </div>
     </div>

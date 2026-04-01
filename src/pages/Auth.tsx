@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -29,11 +29,19 @@ const Auth = () => {
   const [pendingSession, setPendingSession] = useState<any>(null);
 
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
 
   useEffect(() => {
     if (user && !needs2FA) navigate("/portal");
   }, [user, navigate, needs2FA]);
+
+  useEffect(() => {
+    const mode = searchParams.get("mode");
+    if (mode === "signup") setIsLogin(false);
+    const prefillEmail = searchParams.get("email");
+    if (prefillEmail) setEmail(prefillEmail);
+  }, [searchParams]);
 
   const check2FA = async (userId: string, session: any) => {
     const fingerprint = getDeviceFingerprint();
@@ -138,6 +146,7 @@ const Auth = () => {
           }).catch((e) => console.error("Slack signup notify error:", e));
         }
         setMessage("Check your email to confirm your account.");
+        navigate("/portal");
       }
     }
     setLoading(false);

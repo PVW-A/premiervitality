@@ -22,7 +22,7 @@ import ForcePasswordChangeDialog from "@/components/portal/ForcePasswordChangeDi
 import UserSettingsMenu from "@/components/portal/UserSettingsMenu";
 import NotificationCenter from "@/components/portal/NotificationCenter";
 import LinkedAccounts from "@/components/portal/LinkedAccounts";
-import { Pill, Package, Clock, Activity, Star, Check, Sparkles, ArrowUp, ShoppingBag } from "lucide-react";
+import { Pill, Package, Clock, Activity, Star, Check, Sparkles, ArrowUp, ShoppingBag, Calendar } from "lucide-react";
 import { type BiomarkerResult, getAllMarkers, computeVitalityScore } from "@/lib/vitality";
 
 interface PatientPeptide {
@@ -241,6 +241,16 @@ const Portal = () => {
           </div>
           <VitalityScoreBadge score={vitalityScore} onClick={() => setDrawerOpen(true)} />
         </div>
+
+        <a
+          href="https://calendly.com/admin-premiervitalityandwellness/prerequisite"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 w-full py-3.5 text-xs tracking-[0.2em] uppercase bg-primary text-primary-foreground hover:bg-primary/90 rounded-full transition-colors duration-200"
+        >
+          <Calendar size={14} />
+          Book Your Consultation
+        </a>
 
         <VitalityScoreDrawer
           open={drawerOpen}

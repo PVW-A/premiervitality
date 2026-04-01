@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Home, Layers, FlaskConical, Pill, Users, Menu, X, User } from "lucide-react";
-import { openCalendly } from "@/hooks/useCalendly";
 import { NavBar } from "@/components/ui/tubelight-navbar";
 
 const navItems = [
@@ -100,9 +99,9 @@ const Navbar = () => {
                   </Link>
                 ))}
                 <div className="my-4 h-px bg-border/50" />
-                <button onClick={() => { setDrawerOpen(false); openCalendly(); }} className="w-full py-3 text-xs tracking-[0.2em] uppercase bg-primary text-primary-foreground hover:bg-primary/90 rounded-full transition-colors duration-200">
-                  Book a Consult
-                </button>
+                <Link to="/intake" onClick={() => setDrawerOpen(false)} className="block w-full py-3 text-xs tracking-[0.2em] uppercase bg-primary text-primary-foreground hover:bg-primary/90 rounded-full transition-colors duration-200 text-center">
+                  Get Started
+                </Link>
               </div>
             </motion.div>
           </>
