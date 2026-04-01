@@ -1,9 +1,9 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import UserSettingsMenu from "@/components/portal/UserSettingsMenu";
-import { Calendar, CheckCircle2, ClipboardList, ArrowRight } from "lucide-react";
+import { Calendar, CheckCircle2, ClipboardList, ArrowRight, ChevronDown } from "lucide-react";
 import { syncIntakeToProfile } from "@/lib/syncIntakeToProfile";
 
 const Portal = () => {
@@ -12,6 +12,20 @@ const Portal = () => {
 
   const [profile, setProfile] = useState<{ first_name: string | null; last_name: string | null } | null>(null);
   const [intakeComplete, setIntakeComplete] = useState<boolean | null>(null);
+  const [showCalendly, setShowCalendly] = useState(false);
+  const calendlyInitialized = useRef(false);
+
+  // Re-initialize Calendly widget when embed becomes visible
+  useEffect(() => {
+    if (showCalendly && !calendlyInitialized.current && (window as any).Calendly) {
+      (window as any).Calendly.initInlineWidget({
+        url: "https://calendly.com/admin-premiervitalityandwellness/prerequisite?background_color=0a0a0a&text_color=ebe5d5&primary_color=c4a24e&hide_gdpr_banner=1",
+        parentElement: document.getElementById("calendly-embed-container"),
+      });
+      calendlyInitialized.current = true;
+    }
+    if (!showCalendly) calendlyInitialized.current = false;
+  }, [showCalendly]);
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
@@ -95,11 +109,12 @@ const Portal = () => {
         </div>
 
         {/* Hero CTA */}
-        <a
-          href="https://calendly.com/admin-premiervitalityandwellness/prerequisite"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group flex items-center justify-between w-full p-6 rounded-xl border border-primary/30 hover:border-primary/60 transition-all duration-300"
+        <button
+          onClick={() => {
+            setShowCalendly(true);
+            setTimeout(() => document.getElementById("calendly-embed")?.scrollIntoView({ behavior: "smooth" }), 100);
+          }}
+          className="group flex items-center justify-between w-full p-6 rounded-xl border border-primary/30 hover:border-primary/60 transition-all duration-300 text-left"
           style={{ background: "linear-gradient(135deg, rgba(171,143,95,0.08) 0%, rgba(171,143,95,0.02) 100%)" }}
         >
           <div className="flex items-center gap-4">
@@ -111,8 +126,19 @@ const Portal = () => {
               <p className="text-lg font-light text-foreground">Book Your Consultation</p>
             </div>
           </div>
-          <ArrowRight size={20} className="text-primary opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-        </a>
+          <ChevronDown size={20} className={`text-primary opacity-50 group-hover:opacity-100 transition-all ${showCalendly ? "rotate-180" : ""}`} />
+        </button>
+
+        {/* Calendly Inline Embed */}
+        {showCalendly && (
+          <div id="calendly-embed" className="rounded-xl border border-border/30 overflow-hidden" style={{ background: "rgba(255,255,255,0.02)" }}>
+            <div className="px-6 py-3 border-b border-border/20 flex items-center justify-between">
+              <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground">Schedule Your Consultation</p>
+              <button onClick={() => setShowCalendly(false)} className="text-xs text-muted-foreground hover:text-foreground transition-colors">Close</button>
+            </div>
+            <div id="calendly-embed-container" style={{ minWidth: "320px", height: "700px" }} />
+          </div>
+        )}
 
         {/* Intake Status */}
         {intakeComplete !== null && (
@@ -166,15 +192,16 @@ const Portal = () => {
             ) : intakeComplete === true ? (
               <div className="text-center space-y-4">
                 <p className="text-sm text-muted-foreground font-light">Your intake form is on file. Schedule your consultation to meet with a provider.</p>
-                <a
-                  href="https://calendly.com/admin-premiervitalityandwellness/prerequisite"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  onClick={() => {
+                    setShowCalendly(true);
+                    setTimeout(() => document.getElementById("calendly-embed")?.scrollIntoView({ behavior: "smooth" }), 100);
+                  }}
                   className="inline-flex items-center gap-2 px-8 py-3 text-xs tracking-[0.2em] uppercase rounded-full border border-primary/40 text-primary hover:bg-primary/10 transition-colors"
                 >
                   <Calendar size={14} />
                   Book Your Consultation
-                </a>
+                </button>
               </div>
             ) : (
               <div className="flex justify-center py-4">
