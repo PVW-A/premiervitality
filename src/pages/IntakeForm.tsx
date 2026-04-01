@@ -317,6 +317,8 @@ const IntakeForm = () => {
         ? signatureRef.current.getTrimmedCanvas().toDataURL("image/png")
         : "";
 
+      const address = [formData.street.trim(), formData.city.trim(), formData.state, formData.zip.trim()].filter(Boolean).join(", ");
+
       const payload = {
         first_name: formData.firstName.trim(),
         last_name: formData.lastName.trim(),
@@ -324,10 +326,7 @@ const IntakeForm = () => {
         sex: formData.sex,
         phone: formData.phone.trim(),
         email: formData.email.trim(),
-        street: formData.street.trim(),
-        city: formData.city.trim(),
-        state: formData.state,
-        zip: formData.zip.trim(),
+        address,
         emergency_contact_name: formData.emergencyContactName.trim(),
         emergency_contact_phone: formData.emergencyContactPhone.trim(),
         current_medications: formData.currentMedications.trim() || null,
@@ -335,7 +334,6 @@ const IntakeForm = () => {
         reason_for_visit: formData.reasonForVisit.trim(),
         current_symptoms: formData.currentSymptoms.trim(),
         health_conditions: formData.healthConditions,
-        health_conditions_other: formData.healthConditionsOther.trim() || null,
         prior_surgeries: formData.priorSurgeries === "yes",
         prior_surgeries_description: formData.priorSurgeriesDescription.trim() || null,
         blood_clots: formData.bloodClots === "yes",
@@ -345,13 +343,13 @@ const IntakeForm = () => {
         stress_level: formData.stressLevel,
         tobacco_use: formData.tobaccoUse,
         alcohol_use: formData.alcoholUse,
-        health_goals: formData.healthGoals.trim(),
-        additional_info: formData.additionalInfo.trim() || null,
-        consent_financial: formData.consentFinancial,
-        consent_medical: formData.consentMedical,
+        wellness_goals: formData.healthGoals.trim(),
+        additional_notes: formData.additionalInfo.trim() || null,
+        consent_self_pay: formData.consentFinancial,
+        consent_medical_services: formData.consentMedical,
         consent_hipaa: formData.consentHipaa,
-        signature_base64: signatureBase64,
-        submitted_at: new Date().toISOString(),
+        signature: signatureBase64,
+        submission_date: new Date().toISOString().split("T")[0],
       };
 
       const { error } = await supabase.from("patient_intake" as any).insert(payload as any);
