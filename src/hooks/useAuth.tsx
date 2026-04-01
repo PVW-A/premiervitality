@@ -22,9 +22,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    // If the URL has a ?code= param (OAuth PKCE callback), Supabase auto-exchanges it.
+    // Track this so we can redirect to /portal once the session is established.
+    const hasOAuthCode = new URLSearchParams(window.location.search).has("code");
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setLoading(false);
+
+      // Redirect to /portal after OAuth code exchange completes
+      if (hasOAuthCode && event === "SIGNED_IN" && session) {
+        window.location.replace("/portal");
+      }
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
