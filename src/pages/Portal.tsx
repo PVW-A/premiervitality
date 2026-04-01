@@ -1,6 +1,6 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import UserSettingsMenu from "@/components/portal/UserSettingsMenu";
 import { Calendar, CheckCircle2, ClipboardList, ArrowRight, ChevronDown } from "lucide-react";
@@ -13,19 +13,6 @@ const Portal = () => {
   const [profile, setProfile] = useState<{ first_name: string | null; last_name: string | null } | null>(null);
   const [intakeComplete, setIntakeComplete] = useState<boolean | null>(null);
   const [showCalendly, setShowCalendly] = useState(false);
-  const calendlyInitialized = useRef(false);
-
-  // Re-initialize Calendly widget when embed becomes visible
-  useEffect(() => {
-    if (showCalendly && !calendlyInitialized.current && (window as any).Calendly) {
-      (window as any).Calendly.initInlineWidget({
-        url: "https://calendly.com/admin-premiervitalityandwellness/prerequisite?background_color=0a0a0a&text_color=ebe5d5&primary_color=c4a24e&hide_gdpr_banner=1",
-        parentElement: document.getElementById("calendly-embed-container"),
-      });
-      calendlyInitialized.current = true;
-    }
-    if (!showCalendly) calendlyInitialized.current = false;
-  }, [showCalendly]);
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
@@ -136,7 +123,11 @@ const Portal = () => {
               <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground">Schedule Your Consultation</p>
               <button onClick={() => setShowCalendly(false)} className="text-xs text-muted-foreground hover:text-foreground transition-colors">Close</button>
             </div>
-            <div id="calendly-embed-container" className="overflow-hidden rounded-b-xl" style={{ minWidth: "320px", height: "700px", background: "#0a0a0a" }} />
+            <iframe
+              src="https://calendly.com/admin-premiervitalityandwellness/prerequisite?background_color=0a0a0a&text_color=ebe5d5&primary_color=c4a24e&hide_gdpr_banner=1"
+              title="Schedule Your Consultation"
+              style={{ width: "100%", height: "700px", border: "none", background: "#0a0a0a", minWidth: "320px" }}
+            />
           </div>
         )}
 
