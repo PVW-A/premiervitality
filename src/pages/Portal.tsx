@@ -1,6 +1,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
+import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import UserSettingsMenu from "@/components/portal/UserSettingsMenu";
 import BloodworkUploader from "@/components/portal/BloodworkUploader";
@@ -79,7 +80,7 @@ const Portal = () => {
   return (
     <div className="min-h-screen w-full relative">
       {/* Header */}
-      <header className="border-b border-border/30 sticky top-0 z-50" style={{ background: "rgba(0,0,0,0.85)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
+      <header className="sticky top-0 z-50" style={{ background: "rgba(0,0,0,0.85)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
         <div className="w-full px-6 flex items-center justify-between h-16">
           <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <img src="/logo-emblem.svg" alt="PVW" className="h-8 w-auto" style={{ filter: "brightness(0) saturate(100%) invert(72%) sepia(28%) saturate(600%) hue-rotate(5deg)" }} />
@@ -93,35 +94,50 @@ const Portal = () => {
             onProfileUpdated={fetchData}
           />
         </div>
-
-        {/* Tab Bar */}
-        <nav className="w-full overflow-x-auto scrollbar-hide">
-          <div className="flex items-center gap-1 px-6 min-w-max">
-            {TABS.map((tab) => {
-              const Icon = tab.icon;
-              const active = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`relative flex items-center gap-2 px-4 py-3 text-[11px] tracking-[0.18em] uppercase transition-colors whitespace-nowrap ${
-                    active ? "text-primary" : "text-foreground/50 hover:text-foreground/80"
-                  }`}
-                >
-                  <Icon size={14} strokeWidth={active ? 2 : 1.5} />
-                  <span className="hidden sm:inline">{tab.label}</span>
-                  {active && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-[2px] bg-primary rounded-full" />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </nav>
       </header>
 
+      {/* Tab Nav — matches tubelight-navbar pill style */}
+      <div className="fixed bottom-6 sm:bottom-auto sm:top-[76px] left-1/2 -translate-x-1/2 z-50 sm:pt-0">
+        <nav className="relative flex items-center gap-3 bg-background/5 border border-border backdrop-blur-lg py-1 px-1 rounded-full shadow-lg" style={{ isolation: "isolate" }}>
+          {TABS.map((tab) => {
+            const Icon = tab.icon;
+            const active = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`relative cursor-pointer text-[11px] tracking-[0.18em] uppercase px-6 py-2 rounded-full transition-colors ${
+                  active ? "bg-muted text-primary" : "text-foreground/80 hover:text-primary"
+                }`}
+              >
+                <span className="hidden md:inline">{tab.label}</span>
+                <span className="md:hidden">
+                  <Icon size={18} strokeWidth={2.5} />
+                </span>
+                {active && (
+                  <motion.div
+                    layoutId="portal-tab"
+                    layout="position"
+                    className="absolute inset-0 w-full bg-primary/5 rounded-full -z-10"
+                    style={{ position: "absolute" }}
+                    initial={false}
+                    transition={{ type: "spring", stiffness: 400, damping: 40, mass: 0.8 }}
+                  >
+                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-1 bg-primary rounded-t-full">
+                      <div className="absolute w-12 h-6 bg-primary/20 rounded-full blur-md -top-2 -left-2" />
+                      <div className="absolute w-8 h-6 bg-primary/20 rounded-full blur-md -top-1" />
+                      <div className="absolute w-4 h-4 bg-primary/20 rounded-full blur-sm top-0 left-2" />
+                    </div>
+                  </motion.div>
+                )}
+              </button>
+            );
+          })}
+        </nav>
+      </div>
+
       {/* Tab Content */}
-      <main className="max-w-3xl mx-auto px-6 py-10 md:py-14 space-y-10">
+      <main className="max-w-3xl mx-auto px-6 pt-6 sm:pt-16 pb-24 sm:pb-14 space-y-10">
         {activeTab === "dashboard" && <DashboardTab firstName={firstName} intakeComplete={intakeComplete} showCalendly={showCalendly} setShowCalendly={setShowCalendly} navigate={navigate} />}
         {activeTab === "protocol" && <PlaceholderTab title="My Protocol" description="Your active peptides, dosing schedule, and protocol details will appear here once your provider activates your treatment plan." icon={Pill} />}
         {activeTab === "health" && <HealthTab />}
