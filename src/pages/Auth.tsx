@@ -396,71 +396,64 @@ const Auth = () => {
 
       {/* Legal modals */}
       <LegalModal open={legalModal === "terms"} onClose={() => setLegalModal(null)} title="Terms of Service">
-        <p><strong className="text-foreground">Effective Date:</strong> February 23, 2026</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">1. Acceptance of Terms</h2>
-        <p>By accessing or using the Premier Vitality and Wellness LLC website and services, you agree to be bound by these Terms of Service. If you do not agree, you must discontinue use immediately.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">2. Medical Disclaimer</h2>
-        <p>The information provided on this website is for general informational and educational purposes only and does not constitute medical advice, diagnosis, or treatment. Peptide therapy and related services are provided under the supervision of licensed healthcare providers. Always seek the advice of a qualified healthcare professional with any questions you may have regarding a medical condition.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">3. No Guarantees</h2>
-        <p>We make no guarantees, representations, or warranties regarding the outcomes or results of any treatments, therapies, or protocols offered through our services. Individual results may vary significantly.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">4. Limitation of Liability</h2>
-        <p>To the fullest extent permitted by applicable law, Premier Vitality and Wellness LLC, its founders, officers, employees, agents, and affiliates shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising out of or in connection with your use of our website or services.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">5. Assumption of Risk</h2>
-        <p>You acknowledge that peptide therapy and related treatments carry inherent risks, including but not limited to adverse reactions, side effects, and interactions with other medications. By using our services, you voluntarily assume all risks associated with such treatments and agree to hold Premier Vitality and Wellness LLC harmless from any claims arising therefrom.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">6. Indemnification</h2>
-        <p>You agree to indemnify, defend, and hold harmless Premier Vitality and Wellness LLC and its founders, employees, and affiliates from and against any and all claims, liabilities, damages, losses, and expenses arising out of or in connection with your use of our services, your violation of these Terms, or your violation of any rights of another party.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">7. Intellectual Property</h2>
-        <p>All content on this website, including text, graphics, logos, and images, is the property of Premier Vitality and Wellness LLC and is protected by applicable intellectual property laws.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">8. Governing Law</h2>
-        <p>These Terms shall be governed by and construed in accordance with the laws of the state in which Premier Vitality and Wellness LLC operates, without regard to its conflict of law provisions.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">9. Severability</h2>
-        <p>If any provision of these Terms is found to be unenforceable, the remaining provisions shall continue in full force and effect.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">10. Changes to Terms</h2>
-        <p>We reserve the right to modify these Terms at any time. Continued use of our services after any changes constitutes your acceptance of the new Terms.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">11. Contact</h2>
-        <p>For questions regarding these Terms of Service, please contact us through the information provided on our website.</p>
+        <p><strong className="text-foreground">Last Updated:</strong> April 1, 2026</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">1. Overview</h2>
+        <p>Premier Vitality and Wellness LLC ("Premier Vitality &amp; Wellness," "we," "us," or "our") operates the website located at premiervitalityandwellness.com. By accessing or using our Site, Services, or Products, you agree to be bound by these Terms of Service. If you do not agree, do not use our Services. Our Services are available only to individuals who are at least 18 years of age.</p>
+        <p><strong className="text-foreground">ARBITRATION NOTICE:</strong> Except as described in Section 12, disputes arising under these Terms will be resolved by binding individual arbitration. BY ACCEPTING THESE TERMS, YOU WAIVE THE RIGHT TO A TRIAL BY JURY OR TO PARTICIPATE IN ANY CLASS ACTION.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">2. Services</h2>
+        <p>Premier Vitality &amp; Wellness provides physician-directed wellness and optimization services including peptide therapy, hormone optimization, biomarker analysis, nutritional counseling, and related medical services, both in-person and via telehealth.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">3. Self-Pay; Insurance Not Accepted</h2>
+        <p>All services are provided on a self-pay basis. We do not accept Medicare, Medicaid, or government health care programs. Payment is due at time of service unless otherwise arranged in writing.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">4. Refund Policy</h2>
+        <p>All fees for services, treatments, memberships, and products are non-refundable. Appointments cancelled with less than 24 hours notice may be subject to a cancellation fee.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">5. Your Responsibilities</h2>
+        <p>You agree to: provide complete and accurate medical history; report changes in health status; follow treatment instructions; attend follow-up appointments; promptly report adverse reactions; and maintain the security of your patient portal account.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">6. Disclaimer of Warranties</h2>
+        <p>ALL SERVICES AND CONTENT ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">7. Limitation of Liability</h2>
+        <p>PREMIER VITALITY &amp; WELLNESS SHALL NOT BE LIABLE FOR ANY INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES. LIABILITY SHALL NOT EXCEED THE AMOUNT PAID FOR SERVICES IN THE SIX MONTHS PRECEDING THE CLAIM.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">8. Dispute Resolution</h2>
+        <p>Disputes shall be resolved by binding arbitration in Maricopa County, Arizona. These Terms are governed by the laws of the State of Arizona.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">9. Contact</h2>
+        <p>Premier Vitality and Wellness LLC — admin@premiervitalityandwellness.com</p>
+        <p className="text-xs text-muted-foreground pt-2">View the full <a href="/terms" className="underline hover:text-foreground transition-colors">Terms of Service</a>.</p>
       </LegalModal>
 
       <LegalModal open={legalModal === "disclaimer"} onClose={() => setLegalModal(null)} title="Medical Disclaimer">
-        <p><strong className="text-foreground">Effective Date:</strong> February 23, 2026</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">General Information Only</h2>
-        <p>The content provided on this website, including all text, graphics, images, and other material, is for informational purposes only and is not intended to be a substitute for professional medical advice, diagnosis, or treatment.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">Not Medical Advice</h2>
-        <p>Nothing on this website should be construed as medical advice. The information provided does not create a physician-patient relationship. Always consult with a qualified, licensed healthcare provider before starting any new treatment, therapy, medication, or supplement, including peptide therapy.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">No Guaranteed Results</h2>
-        <p>Premier Vitality and Wellness LLC makes no claims, promises, or guarantees about the efficacy, safety, or outcomes of any treatments described on this website. Individual results vary and depend on numerous factors including age, health status, genetics, lifestyle, and adherence to protocols.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">Assumption of Risk</h2>
-        <p>Peptide therapy and related treatments involve inherent risks including allergic reactions, injection site reactions, hormonal imbalances, drug interactions, and unknown long-term effects. By engaging with our services, you acknowledge these risks and accept full responsibility for your decision to pursue treatment.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">FDA Disclaimer</h2>
-        <p>The statements made on this website have not been evaluated by the Food and Drug Administration (FDA). The products and services offered are not intended to diagnose, treat, cure, or prevent any disease.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">Limitation of Liability</h2>
-        <p>Under no circumstances shall Premier Vitality and Wellness LLC, its founders, physicians, employees, or affiliates be held liable for any damages whatsoever arising from your use of this website or any treatments, products, or services referenced herein.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">Emergency Situations</h2>
-        <p>If you are experiencing a medical emergency, call 911 or your local emergency services immediately. Do not rely on this website for emergency medical guidance.</p>
+        <p><strong className="text-foreground">Last Updated:</strong> April 1, 2026</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">1. Not Emergency Care</h2>
+        <p>IF YOU ARE EXPERIENCING A MEDICAL EMERGENCY, CALL 911 OR GO TO THE NEAREST EMERGENCY ROOM IMMEDIATELY. Premier Vitality &amp; Wellness does not provide emergency medical services.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">2. Scope of Services</h2>
+        <p>Premier Vitality &amp; Wellness provides physician-directed elective wellness and optimization services. Our services are not intended to replace your primary care physician, emergency services, or specialist care for acute medical conditions.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">3. Peptide Therapy and Compounded Medications</h2>
+        <p>Compounded medications are not FDA-approved as finished drug products, though individual ingredients may be FDA-approved. Results vary by individual. No specific outcome is guaranteed. All therapies carry inherent risks including adverse reactions, injection site reactions, allergic responses, and other side effects.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">4. No Physician-Patient Relationship Via Website</h2>
+        <p>Browsing our website or contacting us does not establish a physician-patient relationship. A physician-patient relationship is established only after a formal consultation with one of our licensed Providers and mutual agreement to proceed with care.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">5. Individual Results</h2>
+        <p>Results from peptide therapy, hormone optimization, and other wellness services vary significantly between individuals based on genetics, lifestyle, compliance, and other factors. Testimonials or case studies do not guarantee similar results.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">6. Off-Label Use</h2>
+        <p>Some treatments may constitute off-label use of medications. Your Provider will inform you when this applies and will explain the evidence base for the recommended treatment.</p>
+        <p className="text-xs text-muted-foreground pt-2">View the full <a href="/disclaimer" className="underline hover:text-foreground transition-colors">Medical Disclaimer</a>.</p>
       </LegalModal>
 
       <LegalModal open={legalModal === "privacy"} onClose={() => setLegalModal(null)} title="Privacy Policy">
-        <p><strong className="text-foreground">Effective Date:</strong> February 26, 2026</p>
+        <p><strong className="text-foreground">Effective Date:</strong> April 1, 2026</p>
+        <p className="uppercase font-medium text-foreground text-xs">THIS NOTICE DESCRIBES HOW MEDICAL INFORMATION ABOUT YOU MAY BE USED AND DISCLOSED AND HOW YOU CAN GET ACCESS TO THIS INFORMATION.</p>
         <h2 className="text-lg font-extralight text-foreground pt-4">1. Information We Collect</h2>
-        <p>We may collect personal information you voluntarily provide, including your name, email address, phone number, and health-related information necessary for consultation and treatment. This may include Protected Health Information (PHI) such as lab results, biomarker data, medication history, and treatment records. We also automatically collect certain technical data such as IP addresses, browser type, device identifiers, and usage patterns.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">2. How We Use Your Information</h2>
-        <p>We use your information to provide and improve our services, communicate with you about treatments and appointments, process orders, comply with legal obligations, and protect the safety and security of our platform and users. Health-related information is used exclusively for providing clinical wellness services, generating vitality assessments, and facilitating peptide therapy consultations under the supervision of licensed healthcare providers.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">3. Protected Health Information (PHI)</h2>
-        <p>When you voluntarily submit health-related information through our platform, we treat this information with the highest level of care. All PHI is encrypted in transit and at rest, access is restricted to authorized clinical personnel on a minimum-necessary basis, and all access to patient records is logged in an immutable audit trail.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">4. Information Sharing</h2>
-        <p>We do not sell, trade, or rent your personal information to third parties. We may share information with trusted service providers who assist in operating our platform, provided they are bound by agreements that require them to protect your information. Where applicable, we maintain Business Associate Agreements (BAAs) with third-party vendors who may access, process, or store PHI on our behalf.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">5. Data Security</h2>
-        <p>We implement reasonable administrative, technical, and physical safeguards to protect your personal and health information, including role-based access controls, two-factor authentication, automatic session timeouts, encryption of data in transit and at rest, and comprehensive audit logging.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">6. Data Retention</h2>
-        <p>We retain your personal information and health records for as long as necessary to provide our services and comply with applicable legal requirements. Health records are retained for a minimum of seven (7) years from the date of last service. Upon account deletion, non-essential personal data is removed within 30 days.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">7. Your Rights</h2>
-        <p>You may request access to, correction of, or deletion of your personal information at any time. You have the right to request an accounting of disclosures of your PHI, to request restrictions on certain uses of your health information, and to receive a copy of your health records in a portable format.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">8. Third-Party Links</h2>
-        <p>Our website may contain links to third-party sites. We are not responsible for the privacy practices or content of those sites.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">9. Changes to This Policy</h2>
-        <p>We reserve the right to update this Privacy Policy at any time. Material changes affecting PHI handling will be communicated directly to affected users.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">10. Contact Us</h2>
-        <p>If you have questions about this Privacy Policy or wish to exercise your rights regarding your health information, please contact us through the information provided on our website.</p>
+        <p>We collect: personal identification information (name, date of birth, address, phone, email); protected health information (PHI) including medical history, diagnoses, treatment records, prescriptions, and lab results; payment information; and device and usage data when you use our Site.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">2. HIPAA Compliance</h2>
+        <p>As a covered entity under HIPAA, we are required to maintain the privacy of your Protected Health Information (PHI). We may use PHI without authorization for treatment, payment, health care operations, and as required by law. All other uses require your written authorization, which you may revoke at any time.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">3. Your Rights</h2>
+        <p>You have the right to: inspect and copy your PHI; request amendment; request restrictions on use or disclosure; request confidential communications by alternative means; receive an accounting of disclosures; and obtain a paper copy of this Notice.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">4. Data Security</h2>
+        <p>We implement administrative, technical, and physical safeguards to protect your information. However, no method of transmission or storage is 100% secure.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">5. Third Parties</h2>
+        <p>We may share information with licensed pharmacies, laboratories, billing processors, and other business associates under written HIPAA-compliant agreements.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">6. Complaints</h2>
+        <p>If you believe your privacy rights have been violated, you may file a complaint with us or with the U.S. Department of Health and Human Services. We will not retaliate against you for filing a complaint.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">7. Contact</h2>
+        <p>Premier Vitality and Wellness LLC — admin@premiervitalityandwellness.com</p>
+        <p className="text-xs text-muted-foreground pt-2">View the full <a href="/privacy" className="underline hover:text-foreground transition-colors">Privacy Policy</a>.</p>
       </LegalModal>
     </div>
   );

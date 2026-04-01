@@ -10,28 +10,41 @@ const Disclaimer = () => (
         <h1 className="text-3xl md:text-5xl font-extralight mb-10 tracking-tight">Medical Disclaimer</h1>
 
         <div className="space-y-6 text-muted-foreground font-body font-light text-sm leading-relaxed">
-          <p><strong className="text-foreground">Effective Date:</strong> February 23, 2026</p>
+          <p><strong className="text-foreground">Last Updated:</strong> April 1, 2026</p>
 
-          <h2 className="text-lg font-extralight text-foreground pt-4">General Information Only</h2>
-          <p>The content provided on this website, including all text, graphics, images, and other material, is for informational purposes only and is not intended to be a substitute for professional medical advice, diagnosis, or treatment.</p>
+          <h2 className="text-lg font-extralight text-foreground pt-4">1. Not Emergency Care</h2>
+          <p>IF YOU ARE EXPERIENCING A MEDICAL EMERGENCY, CALL 911 OR GO TO THE NEAREST EMERGENCY ROOM IMMEDIATELY. Premier Vitality &amp; Wellness does not provide emergency medical services.</p>
 
-          <h2 className="text-lg font-extralight text-foreground pt-4">Not Medical Advice</h2>
-          <p>Nothing on this website should be construed as medical advice. The information provided does not create a physician-patient relationship. Always consult with a qualified, licensed healthcare provider before starting any new treatment, therapy, medication, or supplement, including peptide therapy.</p>
+          <h2 className="text-lg font-extralight text-foreground pt-4">2. Scope of Services</h2>
+          <p>Premier Vitality &amp; Wellness provides physician-directed elective wellness and optimization services. Our services are not intended to replace your primary care physician, emergency services, or specialist care for acute medical conditions.</p>
 
-          <h2 className="text-lg font-extralight text-foreground pt-4">No Guaranteed Results</h2>
-          <p>Premier Vitality and Wellness LLC makes no claims, promises, or guarantees about the efficacy, safety, or outcomes of any treatments described on this website. Individual results vary and depend on numerous factors including, but not limited to, age, health status, genetics, lifestyle, and adherence to protocols.</p>
+          <h2 className="text-lg font-extralight text-foreground pt-4">3. Peptide Therapy and Compounded Medications</h2>
+          <p>Peptide therapies and compounded medications are prescribed and supervised by licensed physicians. You acknowledge that:</p>
+          <p>(a) Compounded medications are not FDA-approved as finished drug products, though the individual ingredients may be FDA-approved.<br />
+          (b) Results vary by individual. No specific outcome is guaranteed.<br />
+          (c) All therapies carry inherent risks including adverse reactions, injection site reactions, allergic responses, and other known or unknown side effects.<br />
+          (d) Your Provider will discuss specific risks prior to initiating any treatment.<br />
+          (e) You must disclose all current medications, supplements, and health conditions to avoid contraindications.</p>
 
-          <h2 className="text-lg font-extralight text-foreground pt-4">Assumption of Risk</h2>
-          <p>Peptide therapy and related treatments involve inherent risks including, but not limited to, allergic reactions, injection site reactions, hormonal imbalances, drug interactions, and unknown long-term effects. By engaging with our services, you acknowledge these risks and accept full responsibility for your decision to pursue treatment.</p>
+          <h2 className="text-lg font-extralight text-foreground pt-4">4. In-Person Procedures</h2>
+          <p>For in-person services including injections, blood draws, and physical examinations:</p>
+          <p>(a) Procedures are performed by or under the supervision of licensed medical professionals.<br />
+          (b) You will be informed of the nature of each procedure before it is performed.<br />
+          (c) You have the right to refuse any procedure at any time.<br />
+          (d) Minor bruising, soreness, or discomfort at injection or blood draw sites is normal and expected.<br />
+          (e) Serious adverse events, while rare, are possible. Report any concerning symptoms immediately.</p>
 
-          <h2 className="text-lg font-extralight text-foreground pt-4">FDA Disclaimer</h2>
-          <p>The statements made on this website have not been evaluated by the Food and Drug Administration (FDA). The products and services offered are not intended to diagnose, treat, cure, or prevent any disease.</p>
+          <h2 className="text-lg font-extralight text-foreground pt-4">5. Telehealth Limitations</h2>
+          <p>Telehealth services have inherent limitations. Your Provider may determine that your condition requires in-person evaluation. The absence of a physical examination may limit diagnostic accuracy.</p>
 
-          <h2 className="text-lg font-extralight text-foreground pt-4">Limitation of Liability</h2>
-          <p>Under no circumstances shall Premier Vitality and Wellness LLC, its founders, physicians, employees, or affiliates be held liable for any damages whatsoever, including direct, indirect, incidental, punitive, or consequential damages, arising from your use of this website or any treatments, products, or services referenced herein.</p>
+          <h2 className="text-lg font-extralight text-foreground pt-4">6. No Physician-Patient Relationship Via Website</h2>
+          <p>Browsing our website or contacting us does not establish a physician-patient relationship. A physician-patient relationship is established only after a formal consultation with one of our licensed Providers and mutual agreement to proceed with care.</p>
 
-          <h2 className="text-lg font-extralight text-foreground pt-4">Emergency Situations</h2>
-          <p>If you are experiencing a medical emergency, call 911 or your local emergency services immediately. Do not rely on this website for emergency medical guidance.</p>
+          <h2 className="text-lg font-extralight text-foreground pt-4">7. Individual Results</h2>
+          <p>Results from peptide therapy, hormone optimization, and other wellness services vary significantly between individuals based on genetics, lifestyle, compliance, and other factors. Testimonials or case studies do not guarantee similar results.</p>
+
+          <h2 className="text-lg font-extralight text-foreground pt-4">8. Off-Label Use</h2>
+          <p>Some treatments provided by Premier Vitality &amp; Wellness may constitute off-label use of medications. Your Provider will inform you when this applies and will explain the evidence base for the recommended treatment.</p>
         </div>
       </div>
     </main>
