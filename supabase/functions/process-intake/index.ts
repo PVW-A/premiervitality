@@ -89,7 +89,7 @@ function ensureSpace(
   needed: number,
   regularFont: any,
   boldFont: any
-): { page: any; y: number } {
+): any {
   if (y - needed < 60) {
     const newPage = pdfDoc.addPage([595.28, 841.89]);
     return { page: newPage, y: 790 };
