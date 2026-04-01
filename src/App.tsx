@@ -3,9 +3,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { AuthProvider } from "@/hooks/useAuth";
+import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import About from "./pages/About";
@@ -55,6 +55,24 @@ const SessionTimeoutWrapper = () => {
   return <SessionTimeoutDialog open={showWarning} onStay={stayLoggedIn} />;
 };
 
+const AuthGate = ({ children }: { children: React.ReactNode }) => {
+  const { loading } = useAuth();
+  if (loading) {
+    return <div style={{ minHeight: "100vh", background: "#0a0a0a" }} />;
+  }
+  return <>{children}</>;
+};
+
+const HomeRedirect = () => {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!loading && user) navigate("/portal", { replace: true });
+  }, [user, loading, navigate]);
+  if (loading || user) return <div style={{ minHeight: "100vh", background: "#0a0a0a" }} />;
+  return <Index />;
+};
+
 const App = () => (
   <HelmetProvider>
   <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
@@ -64,12 +82,13 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <AuthProvider>
+            <AuthGate>
             <PageBackground />
             <ScrollToTop />
             <SessionTimeoutWrapper />
             <ChatButton />
             <Routes>
-              <Route path="/" element={<Index />} />
+              <Route path="/" element={<HomeRedirect />} />
               <Route path="/about" element={<About />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/portal" element={<Portal />} />
@@ -100,6 +119,7 @@ const App = () => (
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+            </AuthGate>
           </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>
