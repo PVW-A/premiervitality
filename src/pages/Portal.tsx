@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import UserSettingsMenu from "@/components/portal/UserSettingsMenu";
 import { Calendar, CheckCircle2, ClipboardList, ArrowRight } from "lucide-react";
+import { syncIntakeToProfile } from "@/lib/syncIntakeToProfile";
 
 const Portal = () => {
   const { user, loading, signOut } = useAuth();
@@ -22,10 +23,23 @@ const Portal = () => {
     // Fetch profile
     const { data: prof } = await supabase
       .from("profiles")
-      .select("first_name, last_name")
+      .select("first_name, last_name, phone")
       .eq("user_id", user.id)
       .single();
-    if (prof) setProfile(prof);
+
+    // If profile is missing data, try to populate from intake record
+    if (prof && (!prof.first_name || !prof.last_name || !prof.phone) && user.email) {
+      await syncIntakeToProfile(user.id, user.email);
+      // Re-fetch after sync
+      const { data: updated } = await supabase
+        .from("profiles")
+        .select("first_name, last_name")
+        .eq("user_id", user.id)
+        .single();
+      if (updated) setProfile(updated);
+    } else if (prof) {
+      setProfile(prof);
+    }
 
     // Check intake by email
     const email = user.email;

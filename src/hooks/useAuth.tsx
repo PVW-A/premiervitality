@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { syncIntakeToProfile } from "@/lib/syncIntakeToProfile";
 import { useNavigate } from "react-router-dom";
 
 interface AuthContextType {
@@ -30,9 +31,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setSession(session);
       setLoading(false);
 
-      // Redirect to /portal after OAuth code exchange completes
+      // After OAuth code exchange, sync intake data then redirect
       if (hasOAuthCode && event === "SIGNED_IN" && session) {
-        window.location.replace("/portal");
+        const user = session.user;
+        if (user.email) {
+          syncIntakeToProfile(user.id, user.email).finally(() => {
+            window.location.replace("/portal");
+          });
+        } else {
+          window.location.replace("/portal");
+        }
+        return;
       }
     });
 

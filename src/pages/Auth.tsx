@@ -8,6 +8,7 @@ import LegalModal from "@/components/LegalModal";
 import { useAuth } from "@/hooks/useAuth";
 import { getDeviceFingerprint, getDeviceName } from "@/lib/deviceFingerprint";
 import { sanitizeName, sanitizePhone, sanitizeEmail } from "@/lib/sanitize";
+import { syncIntakeToProfile } from "@/lib/syncIntakeToProfile";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -140,6 +141,8 @@ const Auth = () => {
         // Record terms acceptance timestamp
         if (signUpData?.user?.id) {
           await supabase.from("profiles").update({ terms_accepted_at: new Date().toISOString() }).eq("user_id", signUpData.user.id);
+          // Auto-populate profile from intake data if available
+          await syncIntakeToProfile(signUpData.user.id, normalizedEmail);
           // Non-blocking Slack signup notification
           supabase.functions.invoke("slack-notify", {
             body: { type: "signup", payload: { email, first_name: firstName, last_name: lastName } },
