@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 
 /**
- * If a patient_intake record exists for this email, copy name/phone/address/dob
+ * If a patient_intake record exists for this email, copy name/phone
  * into the profiles row — but only for fields the profile is currently missing.
  */
 export async function syncIntakeToProfile(userId: string, email: string) {
@@ -9,7 +9,7 @@ export async function syncIntakeToProfile(userId: string, email: string) {
     // Fetch intake record
     const { data: intake } = await supabase
       .from("patient_intake" as any)
-      .select("first_name, last_name, phone, address, date_of_birth")
+      .select("first_name, last_name, phone")
       .eq("email", email.toLowerCase())
       .order("submission_date", { ascending: false })
       .limit(1)
