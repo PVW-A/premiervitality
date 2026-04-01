@@ -98,8 +98,9 @@ const Portal = () => {
         {/* Hero CTA */}
         <button
           onClick={() => {
-            setShowCalendly(true);
-            setTimeout(() => document.getElementById("calendly-embed")?.scrollIntoView({ behavior: "smooth" }), 100);
+            const next = !showCalendly;
+            setShowCalendly(next);
+            if (next) setTimeout(() => document.getElementById("calendly-embed")?.scrollIntoView({ behavior: "smooth" }), 100);
           }}
           className="group flex items-center justify-between w-full p-6 rounded-xl border border-primary/30 hover:border-primary/60 transition-all duration-300 text-left"
           style={{ background: "linear-gradient(135deg, rgba(171,143,95,0.08) 0%, rgba(171,143,95,0.02) 100%)" }}
@@ -185,8 +186,9 @@ const Portal = () => {
                 <p className="text-sm text-muted-foreground font-light">Your intake form is on file. Schedule your consultation to meet with a provider.</p>
                 <button
                   onClick={() => {
-                    setShowCalendly(true);
-                    setTimeout(() => document.getElementById("calendly-embed")?.scrollIntoView({ behavior: "smooth" }), 100);
+                    const next = !showCalendly;
+                    setShowCalendly(next);
+                    if (next) setTimeout(() => document.getElementById("calendly-embed")?.scrollIntoView({ behavior: "smooth" }), 100);
                   }}
                   className="inline-flex items-center gap-2 px-8 py-3 text-xs tracking-[0.2em] uppercase rounded-full border border-primary/40 text-primary hover:bg-primary/10 transition-colors"
                 >
