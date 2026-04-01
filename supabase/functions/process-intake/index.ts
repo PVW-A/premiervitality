@@ -159,7 +159,7 @@ Deno.serve(async (req) => {
       const subheadingSize = 11;
 
       // ══════════════════════════════════════════
-      // PAGE 1 — Header + Personal Info
+      // PAGE 1 - Header + Personal Info
       // ══════════════════════════════════════════
       const page1 = pdfDoc.addPage([pageWidth, pageHeight]);
       let y = pageHeight - 50;
@@ -219,7 +219,7 @@ Deno.serve(async (req) => {
       y = drawField(page1, "Phone", record.emergency_contact_phone, y, helveticaBold, helvetica, bodySize, maxContentWidth);
 
       // ══════════════════════════════════════════
-      // PAGE 2 — Medical History
+      // PAGE 2 - Medical History
       // ══════════════════════════════════════════
       let page2 = pdfDoc.addPage([pageWidth, pageHeight]);
       y = pageHeight - 50;
@@ -266,7 +266,7 @@ Deno.serve(async (req) => {
       y = drawField(page2, "Prior Hormone Therapy", record.hormone_therapy ? "Yes" : "No", y, helveticaBold, helvetica, bodySize, maxContentWidth);
 
       // ══════════════════════════════════════════
-      // PAGE 3 — Lifestyle
+      // PAGE 3 - Lifestyle
       // ══════════════════════════════════════════
       let page3 = pdfDoc.addPage([pageWidth, pageHeight]);
       y = pageHeight - 50;
@@ -289,7 +289,7 @@ Deno.serve(async (req) => {
       y = drawField(page3, "Additional Notes", record.additional_notes, y, helveticaBold, helvetica, bodySize, maxContentWidth);
 
       // ══════════════════════════════════════════
-      // PAGE 4 — Consent & Signature
+      // PAGE 4 - Consent & Signature
       // ══════════════════════════════════════════
       let page4 = pdfDoc.addPage([pageWidth, pageHeight]);
       y = pageHeight - 50;
@@ -424,7 +424,7 @@ Deno.serve(async (req) => {
       console.log(`PDF generated: ${pdfBytes.length} bytes`);
     } catch (pdfError) {
       console.error("PDF generation failed:", pdfError);
-      // pdfBytes stays null — we'll still try to send emails without attachment
+      // pdfBytes stays null - we'll still try to send emails without attachment
     }
 
     // ─── 3. Upload PDF to Storage ───
