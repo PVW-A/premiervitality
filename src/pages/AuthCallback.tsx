@@ -8,9 +8,14 @@ const AuthCallback = () => {
     if (code) {
       supabase.auth.exchangeCodeForSession(code).then(({ data: { session } }) => {
         window.location.replace(session ? "/portal" : "/auth");
+      }).catch(() => {
+        window.location.replace("/auth");
       });
     } else {
-      window.location.replace("/auth");
+      // Handle implicit flow (hash fragment) — Supabase auto-detects session
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        window.location.replace(session ? "/portal" : "/auth");
+      });
     }
   }, []);
 
