@@ -13,19 +13,19 @@ npm run test:watch   # Vitest watch mode
 npm run preview      # Preview production build
 ```
 
-**Supabase CLI** (uses project ref `shwnyggnwajdfxbwsdhz`):
+**Supabase CLI** (uses project ref `yxadrzdqvstsrmivirfy`):
 ```bash
 # Link project first if needed
-npx supabase link --project-ref shwnyggnwajdfxbwsdhz
+npx supabase link --project-ref yxadrzdqvstsrmivirfy
 
 # Deploy an edge function
-npx supabase functions deploy <function-name> --project-ref shwnyggnwajdfxbwsdhz
+npx supabase functions deploy <function-name> --project-ref yxadrzdqvstsrmivirfy
 
 # Apply migrations
 npx supabase db push --linked --yes
 
 # Set secrets
-npx supabase secrets set KEY=value --project-ref shwnyggnwajdfxbwsdhz
+npx supabase secrets set KEY=value --project-ref yxadrzdqvstsrmivirfy
 ```
 
 **Auth token** for Supabase CLI (if 403 errors): `sbp_33dbb714d695f97b74d2e929c2ffa8d58b4593b8`
@@ -94,7 +94,7 @@ Loose config — `strict: false`, `noImplicitAny: false`. JSX files use `.jsx` e
 ```
 VITE_SUPABASE_URL
 VITE_SUPABASE_PUBLISHABLE_KEY
-VITE_SUPABASE_PROJECT_ID=shwnyggnwajdfxbwsdhz
+VITE_SUPABASE_PROJECT_ID=yxadrzdqvstsrmivirfy
 VITE_SQUARE_APP_ID          # From Square Developer Dashboard (not API-retrievable)
 VITE_SQUARE_LOCATION_ID=L85CTM0203T96
 ```
