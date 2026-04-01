@@ -439,6 +439,8 @@ const IntakeForm = () => {
             className={inputBase}
             value={formData.dateOfBirth}
             onChange={(e) => set("dateOfBirth", e.target.value)}
+            min="1900-01-01"
+            max="2099-12-31"
           />
           <FieldError field="dateOfBirth" />
         </div>
@@ -468,7 +470,8 @@ const IntakeForm = () => {
             type="tel"
             className={inputBase}
             value={formData.phone}
-            onChange={(e) => set("phone", e.target.value)}
+            maxLength={10}
+            onChange={(e) => set("phone", e.target.value.replace(/\D/g, ""))}
           />
           <FieldError field="phone" />
         </div>
@@ -531,7 +534,8 @@ const IntakeForm = () => {
             type="text"
             className={inputBase}
             value={formData.zip}
-            onChange={(e) => set("zip", e.target.value)}
+            maxLength={5}
+            onChange={(e) => set("zip", e.target.value.replace(/\D/g, ""))}
           />
           <FieldError field="zip" />
         </div>
@@ -556,7 +560,8 @@ const IntakeForm = () => {
             type="tel"
             className={inputBase}
             value={formData.emergencyContactPhone}
-            onChange={(e) => set("emergencyContactPhone", e.target.value)}
+            maxLength={10}
+            onChange={(e) => set("emergencyContactPhone", e.target.value.replace(/\D/g, ""))}
           />
           <FieldError field="emergencyContactPhone" />
         </div>

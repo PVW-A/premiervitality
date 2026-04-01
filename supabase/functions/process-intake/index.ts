@@ -1,5 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { PDFDocument, rgb, StandardFonts } from "https://esm.sh/pdf-lib@1.17.1";
+import { PDFDocument, rgb, StandardFonts } from "https://esm.sh/pdf-lib@1.17.1?target=deno";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -14,7 +14,7 @@ function wrapText(
   fontSize: number,
   maxWidth: number
 ): string[] {
-  if (!text) return [""];
+  if (!text || typeof text !== "string") return [""];
   const paragraphs = text.split("\n");
   const lines: string[] = [];
   for (const paragraph of paragraphs) {
@@ -165,7 +165,7 @@ Deno.serve(async (req) => {
       let y = pageHeight - 50;
 
       // Header
-      const headerText = "PREMIER VITALITY AND WELLNESS LLC";
+      const headerText = "PREMIER VITALITY & WELLNESS";
       const headerWidth = helveticaBold.widthOfTextAtSize(headerText, 18);
       page1.drawText(headerText, {
         x: (pageWidth - headerWidth) / 2,
@@ -215,7 +215,6 @@ Deno.serve(async (req) => {
       y -= 24;
 
       y = drawField(page1, "Name", record.emergency_contact_name, y, helveticaBold, helvetica, bodySize, maxContentWidth);
-      y = drawField(page1, "Relationship", record.emergency_contact_relationship, y, helveticaBold, helvetica, bodySize, maxContentWidth);
       y = drawField(page1, "Phone", record.emergency_contact_phone, y, helveticaBold, helvetica, bodySize, maxContentWidth);
 
       // ------------------------------------------
@@ -255,7 +254,7 @@ Deno.serve(async (req) => {
 
       result = ensureSpace(pdfDoc, page2, y, 40, helvetica, helveticaBold);
       page2 = result.page; y = result.y;
-      y = drawField(page2, "Prior Surgeries", record.prior_surgeries ?? "N/A", y, helveticaBold, helvetica, bodySize, maxContentWidth);
+      y = drawField(page2, "Prior Surgeries", record.prior_surgeries ? "Yes" : "No", y, helveticaBold, helvetica, bodySize, maxContentWidth);
 
       result = ensureSpace(pdfDoc, page2, y, 20, helvetica, helveticaBold);
       page2 = result.page; y = result.y;
@@ -276,7 +275,7 @@ Deno.serve(async (req) => {
 
       y = drawField(page3, "Exercise Frequency", record.exercise_frequency, y, helveticaBold, helvetica, bodySize, maxContentWidth);
       y = drawField(page3, "Sleep Quality", record.sleep_quality, y, helveticaBold, helvetica, bodySize, maxContentWidth);
-      y = drawField(page3, "Stress Level", record.stress_level, y, helveticaBold, helvetica, bodySize, maxContentWidth);
+      y = drawField(page3, "Stress Level", String(record.stress_level ?? "N/A"), y, helveticaBold, helvetica, bodySize, maxContentWidth);
       y = drawField(page3, "Tobacco Use", record.tobacco_use ? "Yes" : "No", y, helveticaBold, helvetica, bodySize, maxContentWidth);
       y = drawField(page3, "Alcohol Use", record.alcohol_use ?? "N/A", y, helveticaBold, helvetica, bodySize, maxContentWidth);
 
@@ -299,8 +298,8 @@ Deno.serve(async (req) => {
 
       // Consent sections
       const consentItems = [
-        { title: "Self-Pay Financial Agreement", field: record.consent_financial },
-        { title: "Informed Consent for Medical Services", field: record.consent_medical },
+        { title: "Self-Pay Financial Agreement", field: record.consent_self_pay },
+        { title: "Informed Consent for Medical Services", field: record.consent_medical_services },
         { title: "HIPAA Notice of Privacy Practices", field: record.consent_hipaa },
       ];
 
@@ -410,7 +409,7 @@ Deno.serve(async (req) => {
 
       // Footer
       const timestamp = new Date().toISOString();
-      const footerText = `Premier Vitality and Wellness LLC | Generated ${timestamp}`;
+      const footerText = `Premier Vitality & Wellness | Generated ${timestamp}`;
       const footerWidth = helvetica.widthOfTextAtSize(footerText, 8);
       page4.drawText(footerText, {
         x: (pageWidth - footerWidth) / 2,
@@ -491,7 +490,7 @@ Deno.serve(async (req) => {
       <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
         <tr><td style="text-align:center;padding-bottom:24px;">
           <h1 style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;font-size:28px;color:hsl(220,26%,14%);margin:0;">
-            Premier Vitality and Wellness LLC
+            Premier Vitality & Wellness
           </h1>
         </td></tr>
         <tr><td style="background:hsl(40,18%,92%);border-radius:8px;padding:40px 32px;">
@@ -499,7 +498,7 @@ Deno.serve(async (req) => {
             Dear ${patientFirstName},
           </p>
           <p style="font-size:14px;line-height:1.7;color:hsl(218,12%,45%);margin:0 0 16px;">
-            Thank you for completing your patient intake forms with Premier Vitality and Wellness LLC.
+            Thank you for completing your patient intake forms with Premier Vitality & Wellness.
           </p>
           <p style="font-size:14px;line-height:1.7;color:hsl(218,12%,45%);margin:0 0 16px;">
             Your forms have been received and our clinical team will review them promptly.
@@ -514,7 +513,7 @@ Deno.serve(async (req) => {
         </td></tr>
         <tr><td style="text-align:center;padding-top:24px;">
           <p style="font-size:11px;color:hsl(218,12%,45%);margin:0;">
-            Premier Vitality and Wellness LLC &middot; Chandler, AZ
+            Premier Vitality & Wellness &middot; Chandler, AZ
           </p>
         </td></tr>
       </table>
@@ -532,10 +531,10 @@ Deno.serve(async (req) => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              from: "Premier Vitality and Wellness LLC <admin@premiervitalityandwellness.com>",
+              from: "Premier Vitality & Wellness <admin@premiervitalityandwellness.com>",
               to: [record.email],
               subject:
-                "Your Premier Vitality and Wellness LLC Forms Have Been Received",
+                "Your Premier Vitality & Wellness Forms Have Been Received",
               html: patientEmailHtml,
               ...(attachments.length > 0 ? { attachments } : {}),
             }),
