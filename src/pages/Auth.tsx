@@ -397,63 +397,63 @@ const Auth = () => {
       {/* Legal modals */}
       <LegalModal open={legalModal === "terms"} onClose={() => setLegalModal(null)} title="Terms of Service">
         <p><strong className="text-foreground">Last Updated:</strong> April 1, 2026</p>
+        <p className="uppercase font-medium text-foreground text-xs">BY ACCESSING OR USING OUR SITE OR SERVICES, YOU AGREE TO BE BOUND BY THESE TERMS. YOU MAY NOT USE THE SERVICES IF YOU ARE NOT AT LEAST 18 YEARS OF AGE.</p>
+        <p className="uppercase font-medium text-foreground text-xs">ARBITRATION NOTICE: Disputes arising under these Terms will be resolved by binding, individual arbitration. YOU AND PREMIER VITALITY AND WELLNESS LLC ARE EACH WAIVING THE RIGHT TO A TRIAL BY JURY OR TO PARTICIPATE IN ANY CLASS ACTION OR REPRESENTATIVE PROCEEDING.</p>
         <h2 className="text-lg font-extralight text-foreground pt-4">1. Overview</h2>
-        <p>Premier Vitality and Wellness LLC ("Premier Vitality &amp; Wellness," "we," "us," or "our") operates the website located at premiervitalityandwellness.com. By accessing or using our Site, Services, or Products, you agree to be bound by these Terms of Service. If you do not agree, do not use our Services. Our Services are available only to individuals who are at least 18 years of age.</p>
-        <p><strong className="text-foreground">ARBITRATION NOTICE:</strong> Except as described in Section 12, disputes arising under these Terms will be resolved by binding individual arbitration. BY ACCEPTING THESE TERMS, YOU WAIVE THE RIGHT TO A TRIAL BY JURY OR TO PARTICIPATE IN ANY CLASS ACTION.</p>
+        <p>Premier Vitality and Wellness LLC owns and operates premiervitalityandwellness.com. By using our Site, Services, or Products, you accept these Terms and all applicable policies. New features added to the Site are subject to these Terms. We may update these Terms at any time; continued use constitutes acceptance.</p>
         <h2 className="text-lg font-extralight text-foreground pt-4">2. Services</h2>
-        <p>Premier Vitality &amp; Wellness provides physician-directed wellness and optimization services including peptide therapy, hormone optimization, biomarker analysis, nutritional counseling, and related medical services, both in-person and via telehealth.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">3. Self-Pay; Insurance Not Accepted</h2>
-        <p>All services are provided on a self-pay basis. We do not accept Medicare, Medicaid, or government health care programs. Payment is due at time of service unless otherwise arranged in writing.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">4. Refund Policy</h2>
-        <p>All fees for services, treatments, memberships, and products are non-refundable. Appointments cancelled with less than 24 hours notice may be subject to a cancellation fee.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">5. Your Responsibilities</h2>
-        <p>You agree to: provide complete and accurate medical history; report changes in health status; follow treatment instructions; attend follow-up appointments; promptly report adverse reactions; and maintain the security of your patient portal account.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">6. Disclaimer of Warranties</h2>
-        <p>ALL SERVICES AND CONTENT ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">7. Limitation of Liability</h2>
-        <p>PREMIER VITALITY &amp; WELLNESS SHALL NOT BE LIABLE FOR ANY INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES. LIABILITY SHALL NOT EXCEED THE AMOUNT PAID FOR SERVICES IN THE SIX MONTHS PRECEDING THE CLAIM.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">8. Dispute Resolution</h2>
-        <p>Disputes shall be resolved by binding arbitration in Maricopa County, Arizona. These Terms are governed by the laws of the State of Arizona.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">9. Contact</h2>
-        <p>Premier Vitality and Wellness LLC — admin@premiervitalityandwellness.com</p>
+        <p>We provide physician-directed wellness services including peptide therapy, hormone optimization, biomarker analysis, and nutritional counseling, both in-person at our Arizona location and via telehealth. We also provide access to prescription fulfillment through licensed compounding pharmacies.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">3. Self-Pay Financial Agreement</h2>
+        <p>We do not accept insurance, Medicare, Medicaid, or government health care programs. You are personally responsible for all charges. The cost of services, labs, and medications are final and not refundable. Cash payments are not accepted.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">4. Your Obligations</h2>
+        <p>You are responsible for account security and must submit only truthful information. You may not use the Site for unlawful purposes, to infringe intellectual property, harass others, or interfere with site security.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">5. Disclaimer of Warranties</h2>
+        <p className="uppercase text-xs">ALL SERVICES, THE SITE AND CONTENT ARE PROVIDED "AS IS," "AS AVAILABLE," AND "WITH ALL FAULTS." WE DISCLAIM ALL WARRANTIES OF ANY KIND.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">6. Limitation of Liability</h2>
+        <p className="uppercase text-xs">LIABILITY SHALL NOT EXCEED THE AMOUNT PAID FOR PRODUCTS AND SERVICES IN THE SIX (6) MONTHS PRECEDING THE CLAIM. CLAIMS MUST BE BROUGHT WITHIN ONE (1) YEAR.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">7. Arbitration</h2>
+        <p>Disputes will be resolved by binding arbitration under AAA Consumer Arbitration Rules in Maricopa County, Arizona. No class actions. These Terms are governed by Arizona law.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">8. Contact</h2>
+        <p>Premier Vitality and Wellness LLC<br />1870 W Frye Rd Ste 1, Chandler, AZ 85224<br />Phone: (480) 234-9108<br />Email: admin@premiervitalityandwellness.com</p>
         <p className="text-xs text-muted-foreground pt-2">View the full <a href="/terms" className="underline hover:text-foreground transition-colors">Terms of Service</a>.</p>
       </LegalModal>
 
-      <LegalModal open={legalModal === "disclaimer"} onClose={() => setLegalModal(null)} title="Medical Disclaimer">
+      <LegalModal open={legalModal === "disclaimer"} onClose={() => setLegalModal(null)} title="Medical Disclaimer &amp; Informed Consent">
         <p><strong className="text-foreground">Last Updated:</strong> April 1, 2026</p>
+        <p className="uppercase font-medium text-foreground text-xs">AUTHORIZATION AND CONSENT TO RECEIVE MEDICAL SERVICES (IN-PERSON AND TELEHEALTH)</p>
         <h2 className="text-lg font-extralight text-foreground pt-4">1. Not Emergency Care</h2>
-        <p>IF YOU ARE EXPERIENCING A MEDICAL EMERGENCY, CALL 911 OR GO TO THE NEAREST EMERGENCY ROOM IMMEDIATELY. Premier Vitality &amp; Wellness does not provide emergency medical services.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">2. Scope of Services</h2>
-        <p>Premier Vitality &amp; Wellness provides physician-directed elective wellness and optimization services. Our services are not intended to replace your primary care physician, emergency services, or specialist care for acute medical conditions.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">3. Peptide Therapy and Compounded Medications</h2>
-        <p>Compounded medications are not FDA-approved as finished drug products, though individual ingredients may be FDA-approved. Results vary by individual. No specific outcome is guaranteed. All therapies carry inherent risks including adverse reactions, injection site reactions, allergic responses, and other side effects.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">4. No Physician-Patient Relationship Via Website</h2>
-        <p>Browsing our website or contacting us does not establish a physician-patient relationship. A physician-patient relationship is established only after a formal consultation with one of our licensed Providers and mutual agreement to proceed with care.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">5. Individual Results</h2>
-        <p>Results from peptide therapy, hormone optimization, and other wellness services vary significantly between individuals based on genetics, lifestyle, compliance, and other factors. Testimonials or case studies do not guarantee similar results.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">6. Off-Label Use</h2>
-        <p>Some treatments may constitute off-label use of medications. Your Provider will inform you when this applies and will explain the evidence base for the recommended treatment.</p>
-        <p className="text-xs text-muted-foreground pt-2">View the full <a href="/disclaimer" className="underline hover:text-foreground transition-colors">Medical Disclaimer</a>.</p>
+        <p>IF YOU ARE EXPERIENCING A MEDICAL EMERGENCY, CALL 911 OR GO TO THE NEAREST EMERGENCY ROOM IMMEDIATELY. Our services are elective wellness and optimization services.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">2. In-Person Care</h2>
+        <p>By receiving in-person services at our Chandler, AZ facility, you consent to physical examination, blood draws, injections, and other procedures. You have the right to refuse any procedure, ask questions, seek a second opinion, and know the identity of all clinical staff involved in your care.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">3. Telehealth</h2>
+        <p>During telehealth consultations, your medical history, examinations, and lab tests will be discussed via interactive video, audio and telecommunications technology. In rare circumstances, security protocols could fail. Your Provider may determine in-person care is required.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">4. Risks and Benefits</h2>
+        <p>Potential risks include adverse reactions, injection site reactions, bruising, soreness, allergic responses, infection, and other known or unknown side effects. Your Provider will discuss specific risks prior to treatment.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">5. Compounded Medications</h2>
+        <p>Compounded medications are not FDA-approved as finished drug products, though individual ingredients may be FDA-approved. Results vary by individual. Some treatments may constitute off-label use. You must disclose all current medications and health conditions.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">6. Patient Responsibilities</h2>
+        <p>You agree to provide complete medical history, report health changes, follow treatment instructions, attend follow-up appointments, and promptly report adverse reactions.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">7. Acknowledgment</h2>
+        <p>I voluntarily consent to receive medical services from Premier Vitality and Wellness LLC, including both in-person and telehealth services.</p>
+        <p className="text-xs text-muted-foreground pt-2">View the full <a href="/disclaimer" className="underline hover:text-foreground transition-colors">Medical Disclaimer &amp; Informed Consent</a>.</p>
       </LegalModal>
 
-      <LegalModal open={legalModal === "privacy"} onClose={() => setLegalModal(null)} title="Privacy Policy">
+      <LegalModal open={legalModal === "privacy"} onClose={() => setLegalModal(null)} title="Notice of Privacy Practices">
         <p><strong className="text-foreground">Effective Date:</strong> April 1, 2026</p>
-        <p className="uppercase font-medium text-foreground text-xs">THIS NOTICE DESCRIBES HOW MEDICAL INFORMATION ABOUT YOU MAY BE USED AND DISCLOSED AND HOW YOU CAN GET ACCESS TO THIS INFORMATION.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">1. Information We Collect</h2>
-        <p>We collect: personal identification information (name, date of birth, address, phone, email); protected health information (PHI) including medical history, diagnoses, treatment records, prescriptions, and lab results; payment information; and device and usage data when you use our Site.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">2. HIPAA Compliance</h2>
-        <p>As a covered entity under HIPAA, we are required to maintain the privacy of your Protected Health Information (PHI). We may use PHI without authorization for treatment, payment, health care operations, and as required by law. All other uses require your written authorization, which you may revoke at any time.</p>
+        <p className="uppercase font-medium text-foreground text-xs">THIS NOTICE DESCRIBES HOW MEDICAL INFORMATION ABOUT YOU MAY BE USED AND DISCLOSED AND HOW YOU CAN GET ACCESS TO THIS INFORMATION. PLEASE REVIEW IT CAREFULLY.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">1. Uses Without Authorization</h2>
+        <p>Your PHI may be used and disclosed for treatment, payment, health care operations, by business associates under written agreements, for public health activities, health oversight, legal proceedings, law enforcement, and other purposes permitted or required by law.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">2. Uses Requiring Authorization</h2>
+        <p>Other uses of your PHI, including psychotherapy notes and certain marketing activities, require your written authorization. You may revoke authorization in writing at any time. We cannot take back disclosures already made with your authorization.</p>
         <h2 className="text-lg font-extralight text-foreground pt-4">3. Your Rights</h2>
-        <p>You have the right to: inspect and copy your PHI; request amendment; request restrictions on use or disclosure; request confidential communications by alternative means; receive an accounting of disclosures; and obtain a paper copy of this Notice.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">4. Data Security</h2>
-        <p>We implement administrative, technical, and physical safeguards to protect your information. However, no method of transmission or storage is 100% secure.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">5. Third Parties</h2>
-        <p>We may share information with licensed pharmacies, laboratories, billing processors, and other business associates under written HIPAA-compliant agreements.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">6. Complaints</h2>
-        <p>If you believe your privacy rights have been violated, you may file a complaint with us or with the U.S. Department of Health and Human Services. We will not retaliate against you for filing a complaint.</p>
-        <h2 className="text-lg font-extralight text-foreground pt-4">7. Contact</h2>
-        <p>Premier Vitality and Wellness LLC — admin@premiervitalityandwellness.com</p>
-        <p className="text-xs text-muted-foreground pt-2">View the full <a href="/privacy" className="underline hover:text-foreground transition-colors">Privacy Policy</a>.</p>
+        <p>You have the right to: inspect and copy your PHI; request amendment; request an accounting of disclosures; request restrictions on use; request confidential communications; and obtain a paper copy of this Notice.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">4. Privacy and Security</h2>
+        <p>For in-person visits, physical and administrative safeguards protect your PHI. For telehealth, we use encrypted HIPAA-compliant platforms. Standard SMS is not encrypted. We implement administrative, technical, and physical safeguards, though no method is 100% secure.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">5. Complaints</h2>
+        <p>You may file a complaint with us or with the Secretary of the U.S. Department of Health and Human Services. We will not retaliate against you for filing a complaint.</p>
+        <h2 className="text-lg font-extralight text-foreground pt-4">6. Contact — Privacy Officer</h2>
+        <p>Premier Vitality and Wellness LLC<br />1870 W Frye Rd Ste 1, Chandler, AZ 85224<br />Phone: (480) 234-9108<br />Email: admin@premiervitalityandwellness.com</p>
+        <p className="text-xs text-muted-foreground pt-2">View the full <a href="/privacy" className="underline hover:text-foreground transition-colors">Notice of Privacy Practices</a>.</p>
       </LegalModal>
     </div>
   );
