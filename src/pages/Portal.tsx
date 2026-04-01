@@ -131,12 +131,12 @@ const Portal = () => {
 
         {/* Calendly Inline Embed */}
         {showCalendly && (
-          <div id="calendly-embed" className="rounded-xl border border-border/30 overflow-hidden" style={{ background: "rgba(255,255,255,0.02)" }}>
+          <div id="calendly-embed" className="rounded-xl border border-border/30 overflow-hidden" style={{ background: "#0a0a0a" }}>
             <div className="px-6 py-3 border-b border-border/20 flex items-center justify-between">
               <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground">Schedule Your Consultation</p>
               <button onClick={() => setShowCalendly(false)} className="text-xs text-muted-foreground hover:text-foreground transition-colors">Close</button>
             </div>
-            <div id="calendly-embed-container" style={{ minWidth: "320px", height: "700px" }} />
+            <div id="calendly-embed-container" className="overflow-hidden rounded-b-xl" style={{ minWidth: "320px", height: "700px", background: "#0a0a0a" }} />
           </div>
         )}
 

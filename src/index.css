@@ -147,6 +147,17 @@
 }
 
 /* Calendly inline embed styling */
+#calendly-embed-container,
+#calendly-embed-container .calendly-inline-widget,
+#calendly-embed-container .calendly-inline-widget iframe,
+.calendly-inline-widget,
 .calendly-inline-widget iframe {
-  border: none !important;
+  background: #0a0a0a !important;
+  border: 0 !important;
+  border-color: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+#calendly-embed-container .calendly-inline-widget {
+  overflow: hidden !important;
 }
