@@ -59,7 +59,7 @@ const Portal = () => {
 
   if (loading || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0a0a0a" }}>
+      <div className="min-h-screen w-full flex items-center justify-center">
         <p className="text-primary text-sm tracking-[0.2em] uppercase animate-pulse">Loading...</p>
       </div>
     );
@@ -68,10 +68,10 @@ const Portal = () => {
   const firstName = profile?.first_name || "";
 
   return (
-    <div className="min-h-screen" style={{ background: "#0a0a0a" }}>
+    <div className="min-h-screen w-full relative">
       {/* Header */}
-      <header className="border-b border-border/30 sticky top-0 z-50" style={{ background: "rgba(10,10,10,0.9)", backdropFilter: "blur(12px)" }}>
-        <div className="max-w-3xl mx-auto px-4 flex items-center justify-between h-16">
+      <header className="border-b border-border/30 sticky top-0 z-50" style={{ background: "rgba(0,0,0,0.85)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
+        <div className="w-full px-6 flex items-center justify-between h-16">
           <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <img src="/logo-emblem.svg" alt="PVW" className="h-8 w-auto" style={{ filter: "brightness(0) saturate(100%) invert(72%) sepia(28%) saturate(600%) hue-rotate(5deg)" }} />
             <span className="text-xs tracking-[0.25em] uppercase text-foreground hidden sm:inline">Premier Vitality &amp; Wellness</span>
@@ -86,7 +86,7 @@ const Portal = () => {
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-4 py-10 md:py-16 space-y-10">
+      <main className="max-w-3xl mx-auto px-6 py-10 md:py-16 space-y-10">
         {/* Welcome */}
         <div>
           <p className="text-[10px] tracking-[0.35em] uppercase text-primary mb-2">Patient Portal</p>
@@ -118,7 +118,7 @@ const Portal = () => {
 
         {/* Calendly Inline Embed */}
         {showCalendly && (
-          <div id="calendly-embed" className="rounded-xl border border-border/30 overflow-hidden" style={{ background: "#0a0a0a" }}>
+          <div id="calendly-embed" className="rounded-xl border border-border/30 overflow-hidden" style={{ background: "rgba(0,0,0,0.4)" }}>
             <div className="px-6 py-3 border-b border-border/20 flex items-center justify-between">
               <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground">Schedule Your Consultation</p>
               <button onClick={() => setShowCalendly(false)} className="text-xs text-muted-foreground hover:text-foreground transition-colors">Close</button>
