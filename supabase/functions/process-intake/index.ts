@@ -7,7 +7,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-// ─── Helper: wrap long text into lines that fit within maxWidth ───
+// --- Helper: wrap long text into lines that fit within maxWidth ---
 function wrapText(
   text: string,
   font: any,
@@ -35,7 +35,7 @@ function wrapText(
   return lines;
 }
 
-// ─── Helper: draw a section heading ───
+// --- Helper: draw a section heading ---
 function drawSectionHeading(
   page: any,
   text: string,
@@ -52,7 +52,7 @@ function drawSectionHeading(
   });
 }
 
-// ─── Helper: draw a label + value row, returns new Y position ───
+// --- Helper: draw a label + value row, returns new Y position ---
 function drawField(
   page: any,
   label: string,
@@ -81,7 +81,7 @@ function drawField(
   return y - lines.length * (fontSize + 4) - 6;
 }
 
-// ─── Helper: ensure we have enough space on the page, add new page if not ───
+// --- Helper: ensure we have enough space on the page, add new page if not ---
 function ensureSpace(
   pdfDoc: any,
   currentPage: any,
@@ -126,7 +126,7 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    // ─── 1. Fetch intake record ───
+    // --- 1. Fetch intake record ---
     const { data: record, error: fetchError } = await supabase
       .from("patient_intake")
       .select("*")
@@ -141,7 +141,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    // ─── 2. Generate PDF ───
+    // --- 2. Generate PDF ---
     let pdfBytes: Uint8Array | null = null;
     let pdfUrl: string | null = null;
     const fileName = `${(record.last_name || "unknown").toLowerCase()}_${(record.first_name || "unknown").toLowerCase()}_${record.submission_date || new Date().toISOString().split("T")[0]}.pdf`;
@@ -158,9 +158,9 @@ Deno.serve(async (req) => {
       const headingSize = 13;
       const subheadingSize = 11;
 
-      // ══════════════════════════════════════════
+      // ------------------------------------------
       // PAGE 1 - Header + Personal Info
-      // ══════════════════════════════════════════
+      // ------------------------------------------
       const page1 = pdfDoc.addPage([pageWidth, pageHeight]);
       let y = pageHeight - 50;
 
@@ -218,9 +218,9 @@ Deno.serve(async (req) => {
       y = drawField(page1, "Relationship", record.emergency_contact_relationship, y, helveticaBold, helvetica, bodySize, maxContentWidth);
       y = drawField(page1, "Phone", record.emergency_contact_phone, y, helveticaBold, helvetica, bodySize, maxContentWidth);
 
-      // ══════════════════════════════════════════
+      // ------------------------------------------
       // PAGE 2 - Medical History
-      // ══════════════════════════════════════════
+      // ------------------------------------------
       let page2 = pdfDoc.addPage([pageWidth, pageHeight]);
       y = pageHeight - 50;
 
@@ -265,9 +265,9 @@ Deno.serve(async (req) => {
       page2 = result.page; y = result.y;
       y = drawField(page2, "Prior Hormone Therapy", record.hormone_therapy ? "Yes" : "No", y, helveticaBold, helvetica, bodySize, maxContentWidth);
 
-      // ══════════════════════════════════════════
+      // ------------------------------------------
       // PAGE 3 - Lifestyle
-      // ══════════════════════════════════════════
+      // ------------------------------------------
       let page3 = pdfDoc.addPage([pageWidth, pageHeight]);
       y = pageHeight - 50;
 
@@ -288,9 +288,9 @@ Deno.serve(async (req) => {
       page3 = result.page; y = result.y;
       y = drawField(page3, "Additional Notes", record.additional_notes, y, helveticaBold, helvetica, bodySize, maxContentWidth);
 
-      // ══════════════════════════════════════════
+      // ------------------------------------------
       // PAGE 4 - Consent & Signature
-      // ══════════════════════════════════════════
+      // ------------------------------------------
       let page4 = pdfDoc.addPage([pageWidth, pageHeight]);
       y = pageHeight - 50;
 
@@ -427,7 +427,7 @@ Deno.serve(async (req) => {
       // pdfBytes stays null - we'll still try to send emails without attachment
     }
 
-    // ─── 3. Upload PDF to Storage ───
+    // --- 3. Upload PDF to Storage ---
     if (pdfBytes) {
       try {
         const { data: uploadData, error: uploadError } = await supabase.storage
@@ -465,7 +465,7 @@ Deno.serve(async (req) => {
       }
     }
 
-    // ─── 4. Send emails via Resend ───
+    // --- 4. Send emails via Resend ---
     if (!RESEND_API_KEY) {
       console.warn("RESEND_API_KEY not configured, skipping emails");
     } else {
@@ -479,7 +479,7 @@ Deno.serve(async (req) => {
           ]
         : [];
 
-      // ─── Patient Confirmation Email ───
+      // --- Patient Confirmation Email ---
       const patientFirstName = record.first_name || "Patient";
       const patientEmailHtml = `
 <!DOCTYPE html>
@@ -554,7 +554,7 @@ Deno.serve(async (req) => {
         console.warn("No patient email on record, skipping patient confirmation");
       }
 
-      // ─── Admin Notification Email ───
+      // --- Admin Notification Email ---
       const adminEmailHtml = `
 <!DOCTYPE html>
 <html>
@@ -631,7 +631,7 @@ Deno.serve(async (req) => {
       }
     }
 
-    // ─── 5. Return success ───
+    // --- 5. Return success ---
     return new Response(
       JSON.stringify({
         success: true,
