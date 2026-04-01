@@ -1,6 +1,6 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import UserSettingsMenu from "@/components/portal/UserSettingsMenu";
@@ -79,26 +79,37 @@ const Portal = () => {
 
   return (
     <div className="min-h-screen w-full relative">
-      {/* Header */}
-      <header className="sticky top-0 z-50" style={{ background: "rgba(0,0,0,0.85)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
-        <div className="w-full px-6 flex items-center justify-between h-16">
-          <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <img src="/logo-emblem.svg" alt="PVW" className="h-8 w-auto" style={{ filter: "brightness(0) saturate(100%) invert(72%) sepia(28%) saturate(600%) hue-rotate(5deg)" }} />
-            <span className="text-xs tracking-[0.25em] uppercase text-foreground hidden sm:inline">Premier Vitality &amp; Wellness</span>
-          </a>
-          <UserSettingsMenu
-            firstName={profile?.first_name ?? null}
-            lastName={profile?.last_name ?? null}
-            userId={user.id}
-            onSignOut={signOut}
-            onProfileUpdated={fetchData}
-          />
-        </div>
-      </header>
+      {/* Desktop Header — logo left, pill nav center, account right */}
+      <nav className="hidden md:flex fixed top-0 left-0 right-0 z-50 items-center justify-between px-8 h-16 bg-background/80 backdrop-blur-xl border-b border-border/50">
+        <a href="/" className="flex items-center">
+          <img src="/logo-emblem.svg" alt="PVW" className="h-8 w-auto" style={{ filter: "brightness(0) saturate(100%) invert(72%) sepia(28%) saturate(600%) hue-rotate(5deg)" }} />
+        </a>
+        <UserSettingsMenu
+          firstName={profile?.first_name ?? null}
+          lastName={profile?.last_name ?? null}
+          userId={user.id}
+          onSignOut={signOut}
+          onProfileUpdated={fetchData}
+        />
+      </nav>
 
-      {/* Tab Nav — matches tubelight-navbar pill style */}
-      <div className="fixed bottom-6 sm:bottom-auto sm:top-[76px] left-1/2 -translate-x-1/2 z-50 sm:pt-0">
-        <nav className="relative flex items-center gap-3 bg-background/5 border border-border backdrop-blur-lg py-1 px-1 rounded-full shadow-lg" style={{ isolation: "isolate" }}>
+      {/* Mobile Header */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 h-14 bg-background/80 backdrop-blur-xl border-b border-border/50">
+        <a href="/" className="flex items-center">
+          <img src="/logo-emblem.svg" alt="PVW" className="h-8 w-auto" style={{ filter: "brightness(0) saturate(100%) invert(72%) sepia(28%) saturate(600%) hue-rotate(5deg)" }} />
+        </a>
+        <UserSettingsMenu
+          firstName={profile?.first_name ?? null}
+          lastName={profile?.last_name ?? null}
+          userId={user.id}
+          onSignOut={signOut}
+          onProfileUpdated={fetchData}
+        />
+      </div>
+
+      {/* Centered Pill Tab Nav — same as tubelight-navbar */}
+      <div className="fixed bottom-0 sm:top-0 left-1/2 -translate-x-1/2 z-50 mb-6 sm:pt-3.5">
+        <div className="relative flex items-center gap-3 bg-background/5 border border-border backdrop-blur-lg py-1 px-1 rounded-full shadow-lg" style={{ isolation: "isolate" }}>
           {TABS.map((tab) => {
             const Icon = tab.icon;
             const active = activeTab === tab.id;
@@ -133,11 +144,11 @@ const Portal = () => {
               </button>
             );
           })}
-        </nav>
+        </div>
       </div>
 
       {/* Tab Content */}
-      <main className="max-w-3xl mx-auto px-6 pt-6 sm:pt-16 pb-24 sm:pb-14 space-y-10">
+      <main className="max-w-3xl mx-auto px-6 pt-20 md:pt-24 pb-24 sm:pb-14 space-y-10">
         {activeTab === "dashboard" && <DashboardTab firstName={firstName} intakeComplete={intakeComplete} showCalendly={showCalendly} setShowCalendly={setShowCalendly} navigate={navigate} />}
         {activeTab === "protocol" && <PlaceholderTab title="My Protocol" description="Your active peptides, dosing schedule, and protocol details will appear here once your provider activates your treatment plan." icon={Pill} />}
         {activeTab === "health" && <HealthTab />}
