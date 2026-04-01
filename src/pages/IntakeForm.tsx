@@ -352,9 +352,20 @@ const IntakeForm = () => {
         submission_date: new Date().toISOString().split("T")[0],
       };
 
-      const { error } = await supabase.from("patient_intake" as any).insert(payload as any);
+      const { data: insertData, error } = await supabase
+        .from("patient_intake" as any)
+        .insert(payload as any)
+        .select("id")
+        .single();
 
       if (error) throw error;
+
+      // Trigger PDF generation + email delivery (non-blocking)
+      if (insertData?.id) {
+        supabase.functions.invoke("process-intake", {
+          body: { intakeId: insertData.id },
+        }).catch((e) => console.error("process-intake error:", e));
+      }
 
       toast({ title: "Form submitted successfully." });
       navigate("/intake/thank-you");

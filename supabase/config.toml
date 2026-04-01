@@ -13,6 +13,8 @@ project_id = "yxadrzdqvstsrmivirfy"
     verify_jwt = false
   [functions.parse-bloodwork]
     verify_jwt = false
+  [functions.process-intake]
+    verify_jwt = false
   [functions.pv-concierge]
     verify_jwt = false
   [functions.send-2fa-code]
