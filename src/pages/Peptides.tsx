@@ -8,17 +8,10 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { FEATURED_COMPOUNDS, GOALS, GOAL_ICONS, CATEGORY_ICONS, type Goal, type FeaturedCompound } from "@/data/peptideGoals";
+import COMPOUND_CATALOG from "@/data/compoundCatalog";
 import RequestOrderDialog from "@/components/RequestOrderDialog";
 
-interface Product {
-  id: string;
-  category: string;
-  name: string;
-  size: string;       // mapped from peptides.unit
-  price: number;
-}
-
-interface Variant { id: string; size: string; price: number; }
+interface Variant { size: string; price: number; }
 interface Formulation { fullName: string; displayName: string; variants: Variant[]; }
 interface ProductGroup { baseName: string; category: string; formulations: Formulation[]; }
 
@@ -165,8 +158,6 @@ const useRevealGrid = (dep: unknown) => {
 
 const Peptides = () => {
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
   const [activeGoal, setActiveGoal] = useState<Goal | null>(null);
   const [search, setSearch] = useState("");
   const [showFullCatalog, setShowFullCatalog] = useState(false);
@@ -175,17 +166,12 @@ const Peptides = () => {
   const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({});
   const [orderDialog, setOrderDialog] = useState<{ open: boolean; compound: FeaturedCompound | null }>({ open: false, compound: null });
 
+  const products = COMPOUND_CATALOG;
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       if (data.user) setUser({ id: data.user.id, email: data.user.email ?? undefined });
     });
-    supabase
-      .from("peptides").select("id, category, name, unit, price")
-      .order("category").order("name").order("unit")
-      .then(({ data }) => {
-        if (data) setProducts(data.map(r => ({ id: r.id, category: r.category ?? "", name: r.name, size: r.unit ?? "", price: r.price ?? 0 })));
-        setLoading(false);
-      });
   }, []);
 
   // Featured compounds filtered by goal/search
@@ -212,7 +198,7 @@ const Peptides = () => {
       const group = map.get(key)!;
       let form = group.formulations.find(f => f.fullName === p.name);
       if (!form) { form = { fullName: p.name, displayName: getDisplayName(p.name, base), variants: [] }; group.formulations.push(form); }
-      form.variants.push({ id: p.id, size: p.size, price: p.price });
+      form.variants.push({ size: p.size, price: p.price });
     }
     return Array.from(map.values());
   }, [products]);
@@ -344,7 +330,6 @@ const Peptides = () => {
                   ))}
                 </div>
 
-                {loading && <p className="text-center text-xs text-muted-foreground/40 font-body py-8 animate-pulse">Loading catalog...</p>}
 
                 <div className="space-y-1.5">
                   {filteredGroups.map(group => {
@@ -399,7 +384,7 @@ const Peptides = () => {
                                       {form.variants.map(v => {
                                         const isSel = selectedSizes[fKey] === v.size;
                                         return (
-                                          <button key={v.id} onClick={() => setSelectedSizes(p => ({ ...p, [fKey]: v.size }))} className={`px-3 py-1.5 border text-[10px] font-body font-extralight transition-all ${isSel ? "border-primary/40 bg-primary/10 text-primary/70" : "border-border/30 text-muted-foreground/50 hover:border-border/50"}`}>
+                                          <button key={v.size} onClick={() => setSelectedSizes(p => ({ ...p, [fKey]: v.size }))} className={`px-3 py-1.5 border text-[10px] font-body font-extralight transition-all ${isSel ? "border-primary/40 bg-primary/10 text-primary/70" : "border-border/30 text-muted-foreground/50 hover:border-border/50"}`}>
                                             {v.size}{isSel && <span className="ml-1.5 text-primary/60">${v.price.toFixed(2)}</span>}
                                           </button>
                                         );
@@ -422,7 +407,7 @@ const Peptides = () => {
                       </div>
                     );
                   })}
-                  {!loading && filteredGroups.length === 0 && (
+                  {filteredGroups.length === 0 && (
                     <p className="text-center text-xs text-muted-foreground/40 font-body py-8">No products match.</p>
                   )}
                 </div>
