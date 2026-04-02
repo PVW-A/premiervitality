@@ -409,7 +409,7 @@ const IntakeForm = () => {
       </h2>
 
       {/* Name row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6 mb-4 items-start">
         <div id="field-firstName">
           <label className={labelBase}>First Name *</label>
           <input
@@ -433,7 +433,7 @@ const IntakeForm = () => {
       </div>
 
       {/* DOB / Sex */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6 mb-4 items-start">
         <div id="field-dateOfBirth">
           <label className={labelBase}>Date of Birth *</label>
           <input
@@ -465,7 +465,7 @@ const IntakeForm = () => {
       </div>
 
       {/* Phone / Email */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6 mb-4 items-start">
         <div id="field-phone">
           <label className={labelBase}>Phone *</label>
           <input
@@ -545,7 +545,7 @@ const IntakeForm = () => {
 
       {/* Emergency Contact */}
       <h2 className={sectionHeading}>Emergency Contact</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6 mb-4 items-start">
         <div id="field-emergencyContactName">
           <label className={labelBase}>Contact Name *</label>
           <input
@@ -627,7 +627,7 @@ const IntakeForm = () => {
       <div className="mb-4" id="field-healthConditions">
         <label className={labelBase}>Current Health Conditions *</label>
         <p className="text-xs text-gray-500 mb-2">Select all that apply.</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 items-start">
           {HEALTH_CONDITIONS.map((condition) => (
             <label
               key={condition}
