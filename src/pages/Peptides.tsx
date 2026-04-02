@@ -1,6 +1,6 @@
 import SEO from "@/components/SEO";
 import { useState, useEffect, useMemo, useRef } from "react";
-import { Search, ChevronDown, ChevronUp, FlaskConical, ArrowRight } from "lucide-react";
+import { Search, ChevronDown, ChevronUp, FlaskConical, ArrowRight, Lock } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -370,9 +370,9 @@ const Peptides = () => {
                                     <p className="text-xs font-body font-extralight text-foreground/60 flex-1 pr-3 truncate">{form.displayName || form.fullName}</p>
                                     <div className="flex items-center gap-2 shrink-0">
                                       {isSingle ? (
-                                        <span className="text-[10px] font-body text-muted-foreground/40">{form.variants[0].size} · ${form.variants[0].price.toFixed(2)}</span>
+                                        <span className="text-[10px] font-body text-muted-foreground/40">{form.variants[0].size} · {user ? `$${form.variants[0].price.toFixed(2)}` : <span className="inline-flex items-center gap-0.5"><Lock size={8} />Members</span>}</span>
                                       ) : selVariant ? (
-                                        <span className="text-xs font-body text-primary/60">{selVariant.size} · ${selVariant.price.toFixed(2)}</span>
+                                        <span className="text-xs font-body text-primary/60">{selVariant.size} · {user ? `$${selVariant.price.toFixed(2)}` : <span className="inline-flex items-center gap-0.5"><Lock size={8} />Members</span>}</span>
                                       ) : (
                                         <span className="text-[9px] uppercase tracking-[0.1em] text-muted-foreground/30 font-body">select size</span>
                                       )}
@@ -385,7 +385,7 @@ const Peptides = () => {
                                         const isSel = selectedSizes[fKey] === v.size;
                                         return (
                                           <button key={v.size} onClick={() => setSelectedSizes(p => ({ ...p, [fKey]: v.size }))} className={`px-3 py-1.5 border text-[10px] font-body font-extralight transition-all ${isSel ? "border-primary/40 bg-primary/10 text-primary/70" : "border-border/30 text-muted-foreground/50 hover:border-border/50"}`}>
-                                            {v.size}{isSel && <span className="ml-1.5 text-primary/60">${v.price.toFixed(2)}</span>}
+                                            {v.size}{isSel && (user ? <span className="ml-1.5 text-primary/60">${v.price.toFixed(2)}</span> : <span className="ml-1.5 text-primary/60 inline-flex items-center gap-0.5"><Lock size={8} />Members</span>)}
                                           </button>
                                         );
                                       })}
