@@ -391,7 +391,7 @@ const IntakeForm = () => {
     ) : null;
 
   const inputBase =
-    "w-full bg-[#F5F5F5] border border-[#E0E0E0] text-black px-3 py-3 text-sm outline-none focus:border-black transition min-h-[44px]";
+    "w-full max-w-full bg-[#F5F5F5] border border-[#E0E0E0] text-black px-3 py-3 text-sm outline-none focus:border-black transition min-h-[44px] overflow-hidden";
   const labelBase = "block text-xs font-semibold uppercase tracking-wide text-black mb-1";
   const radioBase =
     "inline-flex items-center justify-center border border-[#E0E0E0] bg-[#F5F5F5] text-black text-sm px-4 py-3 cursor-pointer select-none transition min-h-[44px]";
@@ -434,7 +434,7 @@ const IntakeForm = () => {
 
       {/* DOB / Sex */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6 mb-4 items-start">
-        <div id="field-dateOfBirth">
+        <div id="field-dateOfBirth" className="min-w-0">
           <label className={labelBase}>Date of Birth *</label>
           <input
             type="date"
@@ -446,7 +446,7 @@ const IntakeForm = () => {
           />
           <FieldError field="dateOfBirth" />
         </div>
-        <div id="field-sex">
+        <div id="field-sex" className="min-w-0">
           <label className={labelBase}>Sex *</label>
           <div className="flex gap-2">
             {["Male", "Female", "Other"].map((opt) => (
