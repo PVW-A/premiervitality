@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import SignatureCanvas from "react-signature-canvas";
+import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -1009,11 +1010,20 @@ const IntakeForm = () => {
       {/* Header */}
       <div className="sticky top-0 z-50 bg-white border-b border-[#E0E0E0]">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
-          <img
-            src="/logo-emblem.svg"
-            alt="Premier Vitality and Wellness LLC"
-            className="h-10"
-          />
+          <div className="flex flex-col items-start">
+            <img
+              src="/logo-emblem.svg"
+              alt="Premier Vitality and Wellness LLC"
+              className="h-10"
+            />
+            <a
+              href="https://premiervitalityandwellness.com"
+              className="flex items-center gap-1 text-[10px] text-gray-400 hover:text-gray-600 transition-colors mt-1"
+            >
+              <ArrowLeft size={10} />
+              Back to Website
+            </a>
+          </div>
           <div className="text-xs font-semibold uppercase tracking-wide text-black">
             Patient Intake Form
           </div>
