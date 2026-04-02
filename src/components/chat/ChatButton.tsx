@@ -1,10 +1,15 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { MessageCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ChatPanel from "./ChatPanel";
 
 const ChatButton = () => {
   const [open, setOpen] = useState(false);
+  const { pathname } = useLocation();
+
+  // Hide on intake form pages to prevent overlay issues on iPad
+  if (pathname.startsWith("/intake")) return null;
 
   return (
     <>

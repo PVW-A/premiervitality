@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import SignatureCanvas from "react-signature-canvas";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -182,6 +182,8 @@ Effective Date: This Notice is effective as of January 1, 2025.`;
 
 const IntakeForm = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const source = searchParams.get("source") || "website";
   const { toast } = useToast();
   const signatureRef = useRef<SignatureCanvas | null>(null);
 
@@ -368,7 +370,7 @@ const IntakeForm = () => {
       }
 
       toast({ title: "Form submitted successfully." });
-      navigate("/intake/thank-you");
+      navigate("/intake/thank-you", { state: { source } });
     } catch (err: any) {
       console.error("Intake form submission error:", err);
       toast({
