@@ -109,7 +109,7 @@ const Portal = () => {
 
       {/* Centered Pill Tab Nav — same as tubelight-navbar */}
       <div className="fixed bottom-0 sm:top-0 left-1/2 -translate-x-1/2 z-50 mb-6 sm:pt-3.5">
-        <div className="relative flex items-center gap-3 bg-background/5 border border-border backdrop-blur-lg py-1 px-1 rounded-full shadow-lg" style={{ isolation: "isolate" }}>
+        <div className="relative flex items-center flex-nowrap gap-3 bg-background/5 border border-border backdrop-blur-lg py-1 px-1 rounded-full shadow-lg" style={{ isolation: "isolate" }}>
           {TABS.map((tab) => {
             const Icon = tab.icon;
             const active = activeTab === tab.id;

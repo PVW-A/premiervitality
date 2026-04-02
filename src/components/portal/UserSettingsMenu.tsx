@@ -10,10 +10,10 @@ import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User, Key, Sun, Moon, LogOut, UserCircle, CalendarIcon } from "lucide-react";
+import { Key, LogOut, UserCircle, CalendarIcon, Menu } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { useTheme } from "next-themes";
+
 import { cn } from "@/lib/utils";
 import { sanitizeName, sanitizePhone, sanitizeAddress, sanitizeZip } from "@/lib/sanitize";
 
@@ -37,7 +37,6 @@ const UserSettingsMenu = ({ firstName, lastName, userId, onSignOut, onProfileUpd
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
 
   // Profile fields
@@ -56,8 +55,6 @@ const UserSettingsMenu = ({ firstName, lastName, userId, onSignOut, onProfileUpd
   const [savedBirthday, setSavedBirthday] = useState<string | null>(null);
   const [confirmBirthdayOpen, setConfirmBirthdayOpen] = useState(false);
   const [pendingBirthday, setPendingBirthday] = useState<Date | undefined>();
-
-  const displayName = [firstName, lastName].filter(Boolean).join(" ") || "Account";
 
   const loadProfile = async () => {
     setProfileLoading(true);
@@ -177,29 +174,18 @@ const UserSettingsMenu = ({ firstName, lastName, userId, onSignOut, onProfileUpd
     }
   };
 
-  const isDark = theme === "dark" || theme === "system" || !theme;
-
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="flex items-center gap-2 text-xs text-muted-foreground font-body font-light hover:text-foreground transition-colors cursor-pointer outline-none">
-            <User size={14} strokeWidth={1.2} />
-            {displayName}
+          <button className="flex items-center justify-center w-9 h-9 text-muted-foreground hover:text-foreground transition-colors cursor-pointer outline-none">
+            <Menu size={20} strokeWidth={1.5} />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-52">
           <DropdownMenuItem onClick={() => setProfileDialogOpen(true)} className="cursor-pointer">
             <UserCircle size={14} className="mr-2" />
-            My Info
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={() => setTheme(isDark ? "light" : "dark")}
-            className="cursor-pointer"
-          >
-            {isDark ? <Sun size={14} className="mr-2" /> : <Moon size={14} className="mr-2" />}
-            {isDark ? "Light Mode" : "Dark Mode"}
+            Account Settings
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
