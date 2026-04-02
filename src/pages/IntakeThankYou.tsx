@@ -42,8 +42,8 @@ const IntakeThankYou = () => {
 
   return (
     <div
-      className="min-h-screen bg-white text-black flex flex-col items-center justify-center px-4"
-      style={{ fontFamily: "'Manrope', sans-serif" }}
+      className="bg-white text-black flex flex-col items-center justify-center px-4"
+      style={{ fontFamily: "'Manrope', sans-serif", minHeight: "100dvh", overflowY: "auto" }}
     >
       <img
         src="/logo-emblem.svg"
