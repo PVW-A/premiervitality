@@ -1,13 +1,15 @@
 import { useEffect, useState, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useKiosk } from "@/hooks/useKiosk";
 
 const SITE_URL = "https://premiervitalityandwellness.com";
 const COUNTDOWN_SECONDS = 20;
 
 const IntakeThankYou = () => {
   const location = useLocation();
+  const { isKiosk: kioskSession, clearKiosk } = useKiosk();
   const source = (location.state as any)?.source || "website";
-  const isKiosk = source === "kiosk";
+  const isKiosk = source === "kiosk" || kioskSession;
 
   const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -20,6 +22,7 @@ const IntakeThankYou = () => {
         if (prev <= 1) {
           clearInterval(timerRef.current!);
           if (!cancelledRef.current) {
+            clearKiosk();
             window.location.href = SITE_URL;
           }
           return 0;

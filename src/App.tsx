@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import { KioskProvider, useKiosk } from "@/hooks/useKiosk";
 import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import About from "./pages/About";
@@ -73,6 +74,24 @@ const HomeRedirect = () => {
   return <Index />;
 };
 
+// Redirects /intake to /intake?source=kiosk when kiosk mode is active
+const KioskIntakeRedirect = () => {
+  const { isKiosk } = useKiosk();
+  const { pathname, search } = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isKiosk && pathname === "/intake" && !search.includes("source=kiosk")) {
+      navigate("/intake?source=kiosk", { replace: true });
+    }
+  }, [isKiosk, pathname, search, navigate]);
+
+  return null;
+};
+
+// /kiosk renders the homepage — KioskProvider sets the flag on mount
+const KioskEntry = () => <Index />;
+
 const App = () => (
   <HelmetProvider>
   <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
@@ -82,9 +101,11 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <AuthProvider>
+            <KioskProvider>
             <AuthGate>
             <PageBackground />
             <ScrollToTop />
+            <KioskIntakeRedirect />
             <SessionTimeoutWrapper />
             <ChatButton />
             <Routes>
@@ -116,10 +137,12 @@ const App = () => (
               <Route path="/how-to-get-started" element={<HowToGetStarted />} />
               <Route path="/intake" element={<IntakeForm />} />
               <Route path="/intake/thank-you" element={<IntakeThankYou />} />
+              <Route path="/kiosk" element={<KioskEntry />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
             </AuthGate>
+            </KioskProvider>
           </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>
