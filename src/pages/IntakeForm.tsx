@@ -1003,8 +1003,8 @@ const IntakeForm = () => {
 
   return (
     <div
-      className="min-h-screen bg-white text-black"
-      style={{ fontFamily: "'Manrope', sans-serif" }}
+      className="bg-white text-black"
+      style={{ fontFamily: "'Manrope', sans-serif", minHeight: "100dvh", overflowY: "auto" }}
     >
       {/* Header */}
       <div className="sticky top-0 z-50 bg-white border-b border-[#E0E0E0]">
