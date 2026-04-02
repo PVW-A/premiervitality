@@ -433,7 +433,7 @@ const IntakeForm = () => {
       </div>
 
       {/* DOB / Sex */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6 mb-4 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-6 mb-4 items-start">
         <div id="field-dateOfBirth" className="min-w-0">
           <label className={labelBase}>Date of Birth *</label>
           <input
