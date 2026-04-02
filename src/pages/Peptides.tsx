@@ -14,7 +14,7 @@ interface Product {
   id: string;
   category: string;
   name: string;
-  size: string;
+  size: string;       // mapped from peptides.unit
   price: number;
 }
 
@@ -180,9 +180,12 @@ const Peptides = () => {
       if (data.user) setUser({ id: data.user.id, email: data.user.email ?? undefined });
     });
     supabase
-      .from("products").select("id, category, name, size, price").eq("active", true)
-      .order("category").order("name").order("size")
-      .then(({ data }) => { if (data) setProducts(data); setLoading(false); });
+      .from("peptides").select("id, category, name, unit, price")
+      .order("category").order("name").order("unit")
+      .then(({ data }) => {
+        if (data) setProducts(data.map(r => ({ id: r.id, category: r.category ?? "", name: r.name, size: r.unit ?? "", price: r.price ?? 0 })));
+        setLoading(false);
+      });
   }, []);
 
   // Featured compounds filtered by goal/search
