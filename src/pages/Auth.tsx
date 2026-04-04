@@ -33,9 +33,11 @@ const Auth = () => {
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
 
+  const redirectTo = searchParams.get("redirect") || "/portal";
+
   useEffect(() => {
-    if (user && !needs2FA) navigate("/portal");
-  }, [user, navigate, needs2FA]);
+    if (user && !needs2FA) navigate(redirectTo);
+  }, [user, navigate, needs2FA, redirectTo]);
 
   useEffect(() => {
     const mode = searchParams.get("mode");
@@ -91,7 +93,7 @@ const Auth = () => {
           _user_id: pendingSession.user.id,
           _role: "admin",
         });
-        navigate(isAdmin ? "/admin" : "/portal");
+        navigate(isAdmin ? "/admin" : redirectTo);
       } else {
         setError("Invalid or expired code. Please try again.");
       }
@@ -123,7 +125,7 @@ const Auth = () => {
             _user_id: data.user.id,
             _role: "admin",
           });
-          navigate(isAdmin ? "/admin" : "/portal");
+          navigate(isAdmin ? "/admin" : redirectTo);
         }
       }
     } else {
@@ -149,7 +151,7 @@ const Auth = () => {
           }).catch((e) => console.error("Slack signup notify error:", e));
         }
         setMessage("Check your email to confirm your account.");
-        navigate("/portal");
+        navigate(redirectTo);
       }
     }
     setLoading(false);
