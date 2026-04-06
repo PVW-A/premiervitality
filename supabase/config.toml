@@ -1,6 +1,8 @@
 project_id = "yxadrzdqvstsrmivirfy"
 
 [functions]
+  [functions.analyze-bloodwork]
+    verify_jwt = false
   [functions.auth-email-hook]
     verify_jwt = false
   [functions.create-payment-link]

@@ -4,8 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import UserSettingsMenu from "@/components/portal/UserSettingsMenu";
-import BloodworkUploader from "@/components/portal/BloodworkUploader";
-import PremierMarkers from "@/components/portal/PremierMarkers";
+import HealthReport from "@/components/portal/HealthReport";
 import { Calendar, CheckCircle2, ClipboardList, ChevronDown, LayoutDashboard, Pill, Activity, FileText, MessageSquare } from "lucide-react";
 import { syncIntakeToProfile } from "@/lib/syncIntakeToProfile";
 
@@ -288,17 +287,7 @@ const DashboardTab = ({ firstName, intakeComplete, showCalendly, setShowCalendly
 );
 
 /* ─── Health Report Tab ─── */
-const HealthTab = () => (
-  <>
-    <div>
-      <p className="text-[10px] tracking-[0.35em] uppercase text-primary mb-2">Health Intelligence</p>
-      <h2 className="text-2xl sm:text-3xl font-light tracking-tight text-foreground">Health Report</h2>
-      <p className="text-sm text-muted-foreground font-light mt-2">Upload bloodwork and track your biomarkers over time.</p>
-    </div>
-    <BloodworkUploader />
-    <PremierMarkers />
-  </>
-);
+const HealthTab = () => <HealthReport />;
 
 /* ─── Placeholder Tab ─── */
 const PlaceholderTab = ({ title, description, icon: Icon }: { title: string; description: string; icon: React.ElementType }) => (
