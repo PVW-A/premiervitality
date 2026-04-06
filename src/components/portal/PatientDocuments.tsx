@@ -27,13 +27,14 @@ export default function PatientDocuments() {
 
   const fetchDocuments = useCallback(async () => {
     if (!user) return;
-    const { data } = await supabase
-      .from("patient_documents")
+    const { data, error } = await supabase
+      .from("patient_documents" as any)
       .select("id, name, type, file_path, file_size, uploaded_at")
       .eq("user_id", user.id)
       .order("uploaded_at", { ascending: false });
 
-    if (data) setDocuments(data as Document[]);
+    if (error) console.error("Failed to fetch documents:", error);
+    else if (data) setDocuments(data as Document[]);
     setLoading(false);
   }, [user]);
 

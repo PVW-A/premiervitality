@@ -117,7 +117,7 @@ function VitalityGauge({ score }: { score: number }) {
 
 /* ─── Main Component ─── */
 export default function HealthReport() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [reports, setReports] = useState<HealthReportData[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -129,13 +129,15 @@ export default function HealthReport() {
 
   const fetchReports = useCallback(async () => {
     if (!user) return;
-    const { data } = await supabase
-      .from("health_reports")
+    const { data, error } = await supabase
+      .from("health_reports" as any)
       .select("*")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
-    if (data) {
+    if (error) {
+      console.error("Failed to fetch health reports:", error);
+    } else if (data) {
       const typed = data as unknown as HealthReportData[];
       setReports(typed);
       // Auto-select most recent completed report
@@ -156,7 +158,7 @@ export default function HealthReport() {
     setAnalyzing(true);
     const interval = setInterval(async () => {
       const { data } = await supabase
-        .from("health_reports")
+        .from("health_reports" as any)
         .select("*")
         .eq("id", processing.id)
         .single();
@@ -177,7 +179,11 @@ export default function HealthReport() {
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !user) return;
+    if (!file) return;
+    if (!user) {
+      toast.error("Please log in to upload bloodwork.");
+      return;
+    }
 
     if (file.size > 20 * 1024 * 1024) {
       toast.error("File must be under 20MB");
@@ -207,7 +213,7 @@ export default function HealthReport() {
 
       // Create health report record
       const { data: report, error: dbError } = await supabase
-        .from("health_reports")
+        .from("health_reports" as any)
         .insert({
           user_id: user.id,
           file_path: filePath,
@@ -240,7 +246,7 @@ export default function HealthReport() {
       })()
     : null;
 
-  if (loading) {
+  if (authLoading || loading) {
     return (
       <div className="flex items-center justify-center py-20">
         <div className="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
