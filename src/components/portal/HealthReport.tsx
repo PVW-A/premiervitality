@@ -125,6 +125,8 @@ export default function HealthReport() {
   const [selectedReport, setSelectedReport] = useState<HealthReportData | null>(null);
   const [showHistory, setShowHistory] = useState(false);
   const [biomarkerFilter, setBiomarkerFilter] = useState<string | null>(null);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [dragOver, setDragOver] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const fetchReports = useCallback(async () => {
@@ -177,38 +179,56 @@ export default function HealthReport() {
     return () => clearInterval(interval);
   }, [reports, fetchReports]);
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const allowedTypes = [
+    "application/pdf",
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "image/heic",
+  ];
+
+  const validateFile = (file: File): boolean => {
+    if (file.size > 20 * 1024 * 1024) {
+      toast.error("File must be under 20MB");
+      return false;
+    }
+    // HEIC files sometimes report empty type on some browsers — allow by extension too
+    const ext = file.name.split(".").pop()?.toLowerCase() || "";
+    if (!allowedTypes.includes(file.type) && !["heic", "heif"].includes(ext)) {
+      toast.error("Please upload a PDF or image (JPG, PNG, WebP, HEIC)");
+      return false;
+    }
+    return true;
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (file && validateFile(file)) setPendingFile(file);
+    if (fileRef.current) fileRef.current.value = "";
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file && validateFile(file)) setPendingFile(file);
+  };
+
+  const handleUpload = async () => {
+    if (!pendingFile) return;
     if (!user) {
       toast.error("Please log in to upload bloodwork.");
       return;
     }
 
-    if (file.size > 20 * 1024 * 1024) {
-      toast.error("File must be under 20MB");
-      return;
-    }
-
-    const allowed = [
-      "application/pdf",
-      "image/jpeg",
-      "image/png",
-      "image/webp",
-    ];
-    if (!allowed.includes(file.type)) {
-      toast.error("Please upload a PDF or image (JPG, PNG, WebP)");
-      return;
-    }
-
     setUploading(true);
     try {
-      const ext = file.name.split(".").pop();
+      const ext = pendingFile.name.split(".").pop();
       const filePath = `${user.id}/${Date.now()}.${ext}`;
 
       const { error: uploadError } = await supabase.storage
         .from("bloodwork")
-        .upload(filePath, file);
+        .upload(filePath, pendingFile);
       if (uploadError) throw uploadError;
 
       // Create health report record
@@ -217,7 +237,7 @@ export default function HealthReport() {
         .insert({
           user_id: user.id,
           file_path: filePath,
-          file_name: file.name,
+          file_name: pendingFile.name,
           status: "processing",
         })
         .select("id")
@@ -225,6 +245,7 @@ export default function HealthReport() {
       if (dbError) throw dbError;
 
       toast.success("Bloodwork uploaded — AI analysis in progress…");
+      setPendingFile(null);
       await fetchReports();
 
       // Trigger edge function (non-blocking for UI, polling handles result)
@@ -235,7 +256,6 @@ export default function HealthReport() {
       toast.error(err.message || "Upload failed");
     } finally {
       setUploading(false);
-      if (fileRef.current) fileRef.current.value = "";
     }
   };
 
@@ -312,52 +332,71 @@ export default function HealthReport() {
       </div>
 
       {/* Upload Zone */}
+      <input
+        ref={fileRef}
+        type="file"
+        accept=".pdf,.jpg,.jpeg,.png,.webp,.heic,.heif"
+        style={{ display: "none" }}
+        onChange={handleFileSelect}
+      />
       <div
-        className="rounded-xl border border-dashed border-border/40 hover:border-primary/40 transition-colors cursor-pointer"
-        style={{ background: "rgba(255,255,255,0.02)" }}
+        className={`rounded-xl border-2 border-dashed transition-colors cursor-pointer ${
+          dragOver
+            ? "border-primary/60 bg-primary/5"
+            : "border-border/40 hover:border-primary/40"
+        }`}
+        style={{ background: dragOver ? undefined : "rgba(255,255,255,0.02)" }}
         onClick={() => !uploading && !analyzing && fileRef.current?.click()}
+        onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={handleDrop}
       >
         <div className="px-6 py-8 flex flex-col items-center gap-3 text-center">
-          <input
-            ref={fileRef}
-            type="file"
-            accept=".pdf,.jpg,.jpeg,.png,.webp"
-            className="hidden"
-            onChange={handleUpload}
-          />
           {uploading || analyzing ? (
             <>
-              <Loader2
-                size={28}
-                className="text-primary animate-spin"
-                strokeWidth={1.2}
-              />
+              <Loader2 size={28} className="text-primary animate-spin" strokeWidth={1.2} />
               <div>
                 <p className="text-sm font-body font-light text-foreground">
                   {uploading ? "Uploading…" : "AI is analyzing your bloodwork…"}
                 </p>
                 <p className="text-[10px] text-muted-foreground font-body font-light mt-1">
-                  {analyzing
-                    ? "This usually takes 15-30 seconds"
-                    : "Please wait"}
+                  {analyzing ? "This usually takes 15-30 seconds" : "Please wait"}
                 </p>
+              </div>
+            </>
+          ) : pendingFile ? (
+            <>
+              <FileText size={28} className="text-primary/60" strokeWidth={1.2} />
+              <div>
+                <p className="text-sm font-body font-light text-foreground">{pendingFile.name}</p>
+                <p className="text-[10px] text-muted-foreground font-body font-light mt-1">
+                  {(pendingFile.size / 1024).toFixed(0)} KB — Ready to analyze
+                </p>
+              </div>
+              <div className="flex items-center gap-2 mt-1">
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleUpload(); }}
+                  className="px-5 py-2 text-[10px] tracking-[0.15em] uppercase font-body font-light rounded-full border border-primary/40 text-primary hover:bg-primary/10 transition-colors"
+                >
+                  Analyze Bloodwork
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); setPendingFile(null); }}
+                  className="px-3 py-2 text-[10px] tracking-[0.15em] uppercase font-body font-light text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Cancel
+                </button>
               </div>
             </>
           ) : (
             <>
-              <Upload
-                size={28}
-                className="text-primary/60"
-                strokeWidth={1.2}
-              />
+              <Upload size={28} className="text-primary/60" strokeWidth={1.2} />
               <div>
                 <p className="text-sm font-body font-light text-foreground">
-                  {completedReports.length > 0
-                    ? "Upload new bloodwork"
-                    : "Upload your lab results"}
+                  {completedReports.length > 0 ? "Upload new bloodwork" : "Upload your lab results"}
                 </p>
                 <p className="text-[10px] text-muted-foreground font-body font-light mt-1">
-                  PDF or image (JPG, PNG) — max 20MB
+                  Click to browse or drag and drop — PDF, JPG, PNG, HEIC — max 20MB
                 </p>
               </div>
             </>
