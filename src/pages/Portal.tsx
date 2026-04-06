@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import UserSettingsMenu from "@/components/portal/UserSettingsMenu";
 import HealthReport from "@/components/portal/HealthReport";
+import PatientDocuments from "@/components/portal/PatientDocuments";
 import { Calendar, CheckCircle2, ClipboardList, ChevronDown, LayoutDashboard, Pill, Activity, FileText, MessageSquare } from "lucide-react";
 import { syncIntakeToProfile } from "@/lib/syncIntakeToProfile";
 
@@ -151,7 +152,7 @@ const Portal = () => {
         {activeTab === "dashboard" && <DashboardTab firstName={firstName} intakeComplete={intakeComplete} showCalendly={showCalendly} setShowCalendly={setShowCalendly} navigate={navigate} />}
         {activeTab === "protocol" && <PlaceholderTab title="My Protocol" description="Your active peptides, dosing schedule, and protocol details will appear here once your provider activates your treatment plan." icon={Pill} />}
         {activeTab === "health" && <HealthTab />}
-        {activeTab === "documents" && <PlaceholderTab title="Documents" description="Signed consent forms, lab orders, and other documents will be available here." icon={FileText} />}
+        {activeTab === "documents" && <PatientDocuments />}
         {activeTab === "messages" && <PlaceholderTab title="Messages" description="Secure messages with your care team will appear here." icon={MessageSquare} />}
       </main>
     </div>
