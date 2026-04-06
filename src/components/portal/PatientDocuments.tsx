@@ -142,16 +142,16 @@ export default function PatientDocuments() {
                 className="rounded-xl border border-border/30 overflow-hidden"
                 style={{ background: "rgba(255,255,255,0.02)" }}
               >
-                <div className="px-5 py-4 flex items-center justify-between">
+                <div className="px-4 sm:px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/5 shrink-0">
+                    <div className="flex items-center justify-center w-10 h-10 sm:w-9 sm:h-9 rounded-lg bg-primary/5 shrink-0">
                       <FileText size={16} className="text-primary/60" strokeWidth={1.2} />
                     </div>
                     <div className="min-w-0">
                       <p className="text-sm font-body font-light text-foreground truncate">
                         {doc.name}
                       </p>
-                      <div className="flex items-center gap-2 mt-0.5">
+                      <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                         <span className="text-[10px] text-primary/50 font-body uppercase tracking-wider">
                           {typeLabel[doc.type] || doc.type}
                         </span>
@@ -174,26 +174,25 @@ export default function PatientDocuments() {
                       </div>
                     </div>
                   </div>
-
-                  <div className="flex items-center gap-1.5 shrink-0 ml-3">
+                  <div className="flex items-center gap-2 shrink-0">
                     <button
                       onClick={() => handleView(doc)}
                       disabled={isLoading}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] tracking-[0.1em] uppercase font-body font-extralight border border-border/40 text-muted-foreground/60 hover:text-foreground hover:border-border/60 transition-colors"
+                      className="flex items-center justify-center gap-1.5 px-4 py-2.5 sm:px-3 sm:py-1.5 text-xs sm:text-[10px] tracking-[0.1em] uppercase font-body font-extralight border border-border/40 text-muted-foreground/60 hover:text-foreground hover:border-border/60 transition-colors flex-1 sm:flex-none"
                     >
                       {isLoading ? (
-                        <Clock size={10} className="animate-spin" />
+                        <Clock size={12} className="animate-spin" />
                       ) : (
-                        <Eye size={10} />
+                        <Eye size={12} />
                       )}
                       View
                     </button>
                     <button
                       onClick={() => handleDownload(doc)}
                       disabled={isLoading}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] tracking-[0.1em] uppercase font-body font-extralight border border-primary/30 text-primary/60 hover:text-primary hover:border-primary/50 transition-colors"
+                      className="flex items-center justify-center gap-1.5 px-4 py-2.5 sm:px-3 sm:py-1.5 text-xs sm:text-[10px] tracking-[0.1em] uppercase font-body font-extralight border border-primary/30 text-primary/60 hover:text-primary hover:border-primary/50 transition-colors flex-1 sm:flex-none"
                     >
-                      <Download size={10} />
+                      <Download size={12} />
                       Download
                     </button>
                   </div>

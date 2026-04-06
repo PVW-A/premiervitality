@@ -108,8 +108,8 @@ const Portal = () => {
       </div>
 
       {/* Centered Pill Tab Nav — same as tubelight-navbar */}
-      <div className="fixed bottom-0 sm:top-0 left-1/2 -translate-x-1/2 z-50 mb-6 sm:pt-3.5">
-        <div className="relative flex items-center flex-nowrap gap-3 bg-background/5 border border-border backdrop-blur-lg py-1 px-1 rounded-full shadow-lg" style={{ isolation: "isolate" }}>
+      <div className="fixed bottom-0 sm:top-0 left-1/2 -translate-x-1/2 z-50 mb-4 sm:mb-6 sm:pt-3.5 w-[calc(100%-32px)] sm:w-auto">
+        <div className="relative flex items-center flex-nowrap justify-between sm:justify-start gap-1 sm:gap-3 bg-background/5 border border-border backdrop-blur-lg py-1 px-1 rounded-full shadow-lg" style={{ isolation: "isolate" }}>
           {TABS.map((tab) => {
             const Icon = tab.icon;
             const active = activeTab === tab.id;
@@ -117,7 +117,7 @@ const Portal = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`relative cursor-pointer text-[11px] tracking-[0.18em] uppercase px-6 py-2 rounded-full transition-colors ${
+                className={`relative cursor-pointer text-[11px] tracking-[0.18em] uppercase px-3 sm:px-6 py-2.5 sm:py-2 rounded-full transition-colors flex-1 sm:flex-none min-w-0 ${
                   active ? "bg-muted text-primary" : "text-foreground/80 hover:text-primary"
                 }`}
               >
@@ -148,7 +148,7 @@ const Portal = () => {
       </div>
 
       {/* Tab Content */}
-      <main className="max-w-3xl mx-auto px-6 pt-20 md:pt-24 pb-24 sm:pb-14 space-y-10">
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 pt-16 md:pt-24 pb-28 sm:pb-14 space-y-8 sm:space-y-10">
         {activeTab === "dashboard" && <DashboardTab firstName={firstName} intakeComplete={intakeComplete} showCalendly={showCalendly} setShowCalendly={setShowCalendly} navigate={navigate} />}
         {activeTab === "protocol" && <PlaceholderTab title="My Protocol" description="Your active peptides, dosing schedule, and protocol details will appear here once your provider activates your treatment plan." icon={Pill} />}
         {activeTab === "health" && <HealthTab />}

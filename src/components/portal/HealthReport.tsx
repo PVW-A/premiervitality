@@ -373,16 +373,16 @@ export default function HealthReport() {
                   {(pendingFile.size / 1024).toFixed(0)} KB — Ready to analyze
                 </p>
               </div>
-              <div className="flex items-center gap-2 mt-1">
+              <div className="flex items-center gap-2 mt-2 w-full sm:w-auto justify-center">
                 <button
                   onClick={(e) => { e.stopPropagation(); handleUpload(); }}
-                  className="px-5 py-2 text-[10px] tracking-[0.15em] uppercase font-body font-light rounded-full border border-primary/40 text-primary hover:bg-primary/10 transition-colors"
+                  className="px-6 py-3 sm:py-2.5 text-xs sm:text-[10px] tracking-[0.15em] uppercase font-body font-light rounded-full border border-primary/40 text-primary hover:bg-primary/10 transition-colors flex-1 sm:flex-none"
                 >
                   Analyze Bloodwork
                 </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); setPendingFile(null); }}
-                  className="px-3 py-2 text-[10px] tracking-[0.15em] uppercase font-body font-light text-muted-foreground hover:text-foreground transition-colors"
+                  className="px-4 py-3 sm:py-2.5 text-xs sm:text-[10px] tracking-[0.15em] uppercase font-body font-light text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Cancel
                 </button>
@@ -493,10 +493,10 @@ export default function HealthReport() {
 
             {/* Category filters */}
             {categories.length > 1 && (
-              <div className="px-6 pt-4 flex flex-wrap gap-1.5">
+              <div className="px-4 sm:px-6 pt-4 flex flex-wrap gap-1.5 sm:gap-1.5">
                 <button
                   onClick={() => setBiomarkerFilter(null)}
-                  className={`px-3 py-1 text-[9px] tracking-[0.15em] uppercase font-body font-extralight border transition-all ${
+                  className={`px-3 py-2 sm:py-1.5 text-[10px] sm:text-[9px] tracking-[0.15em] uppercase font-body font-extralight border transition-all ${
                     !biomarkerFilter
                       ? "bg-primary/10 text-primary/80 border-primary/20"
                       : "border-border/40 text-muted-foreground/50 hover:border-border/60"
@@ -510,7 +510,7 @@ export default function HealthReport() {
                     onClick={() =>
                       setBiomarkerFilter(biomarkerFilter === cat ? null : cat)
                     }
-                    className={`px-3 py-1 text-[9px] tracking-[0.15em] uppercase font-body font-extralight border transition-all ${
+                    className={`px-3 py-2 sm:py-1.5 text-[10px] sm:text-[9px] tracking-[0.15em] uppercase font-body font-extralight border transition-all ${
                       biomarkerFilter === cat
                         ? "bg-primary/10 text-primary/80 border-primary/20"
                         : "border-border/40 text-muted-foreground/50 hover:border-border/60"
@@ -523,19 +523,19 @@ export default function HealthReport() {
             )}
 
             {/* Biomarker table */}
-            <div className="px-6 py-4">
-              <div className="space-y-1">
+            <div className="px-4 sm:px-6 py-4">
+              <div className="space-y-0.5">
                 {filteredBiomarkers.map((b, i) => (
                   <div
                     key={`${b.name}-${i}`}
-                    className="flex items-center justify-between py-2.5 border-b border-border/10 last:border-0"
+                    className="flex items-center justify-between py-3 sm:py-2.5 border-b border-border/10 last:border-0 gap-2"
                   >
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
                       <span
-                        className={`w-2 h-2 rounded-full shrink-0 ${statusDot[b.status]}`}
+                        className={`w-2.5 h-2.5 sm:w-2 sm:h-2 rounded-full shrink-0 ${statusDot[b.status]}`}
                       />
                       <div className="min-w-0">
-                        <p className="text-xs font-body font-light text-foreground/80 truncate">
+                        <p className="text-sm sm:text-xs font-body font-light text-foreground/80 truncate">
                           {b.name}
                         </p>
                         <p className="text-[10px] text-muted-foreground/40 font-body font-light">
@@ -543,12 +543,12 @@ export default function HealthReport() {
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 shrink-0">
+                    <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                       <span className="text-sm font-body font-light text-foreground tabular-nums">
                         {b.value} <span className="text-[10px] text-muted-foreground/40">{b.unit}</span>
                       </span>
                       <span
-                        className={`text-[9px] tracking-[0.1em] uppercase font-body ${statusText[b.status]} w-16 text-right`}
+                        className={`text-[10px] sm:text-[9px] tracking-[0.1em] uppercase font-body ${statusText[b.status]} w-16 text-right`}
                       >
                         {statusLabel[b.status]}
                       </span>
